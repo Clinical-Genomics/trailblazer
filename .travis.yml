@@ -1,0 +1,21 @@
+---
+# config file for automatic testing at travis-ci.org
+language: python
+sudo: false
+
+python:
+  - "2.7"
+
+install:
+  # install package and dependencies
+  - pip install -q -r requirements-dev.txt .
+
+script:
+  # command to run tests and collect test coverage
+  - coverage run --source analysis setup.py test
+
+after_success:
+  coveralls
+
+notifications:
+  email: no

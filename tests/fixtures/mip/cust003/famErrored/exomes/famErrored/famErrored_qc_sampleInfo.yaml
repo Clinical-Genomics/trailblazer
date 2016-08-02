@@ -1,0 +1,1633 @@
+---
+'famErrored':
+  'famErrored':
+    AnalysisDate: 2016-08-01T13:29:13
+    AnalysisRunStatus: notFinished
+    AnalysisType: exomes
+    BCFFile:
+      Clinical:
+        Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.bcf
+      Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.bcf
+      Research:
+        Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.bcf
+    HumanGenomeBuild:
+      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/Homo_sapiens.GRCh37.d5.fasta
+      Source: GRCh
+      Version: '37'
+    InstanceTag:
+      - cust003
+    MIPVersion: v3.0.4
+    PedigreeFile:
+      Path: tests/fixtures/mip/cust003/famErrored/exomes/famErrored/famErrored_pedigree.txt
+    PedigreeFileAnalysis:
+      Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/qc_pedigree.yaml
+    Program:
+      Bcftools:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/freebayes
+        OutFile: famErrored_sorted_md_rreal_brecal_freebayes_BOTH.vcf
+      Freebayes:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/freebayes
+        OutFile: famErrored_sorted_md_rreal_brecal_freebayes_BOTH.vcf
+      GATK:
+        Version: g5029e01
+      Genmod:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk
+        OutFile: famErrored_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
+      InbreedingFactor:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/samplecheck
+        OutFile: famErrored.het
+      Manta:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/manta
+        OutFile: famErrored_sorted_md_rreal_brecal_manta_SV.vcf
+      PedigreeCheck:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk
+        OutFile: famErrored_sorted_md_rreal_brecal_gvcf_vrecal_BOTH.vcf
+      PicardTools:
+        Version: 2.3.0(9a00c87b7ffdb01cfb5a0d6e76556146196babb8_1463071327)
+      QCCollect:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored
+        OutFile: famErrored_qcmetrics.yaml
+        QCCollectMetricsFile:
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/famErrored_qcmetrics.yaml
+      RankVariants:
+        Clinical:
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
+        RankModel:
+          File: rank_model_cmms_v1.16.ini
+          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/rank_model_cmms_v1.16.ini
+          Version: '1.16'
+        Research:
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.vcf
+      RelationCheck:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/samplecheck
+        OutFile: famErrored.mibs
+      SVCombineVariantCallSets:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/info/
+        OutFile: SVCombineVariantCallSets_famErrored_SV.1.stderr.txt
+      SVGenmod:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk
+        OutFile: famErrored_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.selected.vcf
+      SVRankVariants:
+        Clinical:
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.selected.vcf
+        RankModel:
+          File: svrank_model_cmms_v1.0.ini
+          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/svrank_model_cmms_v1.0.ini
+          Version: '1.0'
+        Research:
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.vcf
+      SVVCFParser:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk
+        OutFile: famErrored_sorted_md_rreal_brecal_comb_vep_parsed_SV_1.vcf
+      SVVariantEffectPredictor:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk
+        OutFile: famErrored_sorted_md_rreal_brecal_comb_vep_SV_1.vcf
+      SVVariantEffectPredictorSummary:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk
+        OutFile: famErrored_sorted_md_rreal_brecal_comb_vep_SV_1.vcf_summary.html
+      Sambamba:
+        Version: 0.6.1
+      Samtools:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/samtools
+        OutFile: famErrored_sorted_md_rreal_brecal_mpileup_BOTH.vcf
+      SexCheck:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/samplecheck
+        OutFile: famErrored.sexcheck
+      SnpEff:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk
+        OutFile: famErrored_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_BOTH_1.selected.vcf
+      VCFParser:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk
+        OutFile: famErrored_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_BOTH_1.vcf
+      VariantAnnotationBlock:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/info/
+        OutFile: VariantAnnotationBlock_famErrored.1.stderr.txt
+      VariantEffectPredictor:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk
+        OutFile: famErrored_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_BOTH_1.vcf
+      VariantEffectPredictorSummary:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk
+        OutFile: famErrored_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_BOTH_1.vcf_summary.html
+      vt:
+        OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/info/
+        OutFile: VariantAnnotationBlock_famErrored.1.stderr.txt
+    ResearchEthicalApproval: notApproved
+    SVBCFFile:
+      Clinical:
+        Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.selected.bcf
+      Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_comb_SV.bcf
+      Research:
+        Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.bcf
+    SVVCFFile:
+      Clinical:
+        Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.selected.vcf
+      ReadyVcf:
+        Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_comb_SV.vcf
+      Research:
+        Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.vcf
+    SVVCFParser:
+      RangeFile:
+        Database:
+          cust000-Research.txt_Research:
+            Acronym: Research
+            CompleteName: Research
+            Date: 2015-03-01
+            FileName: cust000-Research.txt
+            GenomeBuild: GRCh37.p13
+            Version: '6.8'
+        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/cust000-Research.txt
+      SelectFile:
+        Database:
+          cust000-Clinical_master_list.txt_FullList:
+            Acronym: FullList
+            CompleteName: Clinical master list
+            Date: 2016-05-19
+            FileName: cust000-Clinical_master_list.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '18.0'
+          cust002-OMIM.txt_OMIM:
+            Acronym: OMIM
+            CompleteName: OMIM of 2016-04-15
+            Date: 2016-04-22
+            FileName: cust002-OMIM.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '58.0'
+          cust002-SKD.txt_SKD:
+            Acronym: SKD
+            CompleteName: Skeletal dysplasia
+            Date: 2016-04-22
+            FileName: cust002-SKD.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '54.0'
+          cust003-CMMS.txt_ENDO:
+            Acronym: ENDO
+            CompleteName: Endocrinology
+            Date: 2016-04-25
+            FileName: cust003-CMMS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '7.0'
+          cust003-CMMS.txt_EP:
+            Acronym: EP
+            CompleteName: Epilepsy
+            Date: 2016-04-25
+            FileName: cust003-CMMS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '7.0'
+          cust003-CMMS.txt_IEM:
+            Acronym: IEM
+            CompleteName: Inborn Errors of Metabolism
+            Date: 2016-04-25
+            FileName: cust003-CMMS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '7.0'
+          cust003-CMMS.txt_MIT:
+            Acronym: MIT
+            CompleteName: Mitochondrial nuclear
+            Date: 2016-04-25
+            FileName: cust003-CMMS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '7.0'
+          cust003-mtDNA.txt_mtDNA:
+            Acronym: mtDNA
+            CompleteName: Mitochondrial DNA
+            Date: 2016-04-25
+            FileName: cust003-mtDNA.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '8.0'
+          cust004-IBMFS.txt_IBMFS:
+            Acronym: IBMFS
+            CompleteName: Inherited Bone Marrow Failure Syndromes
+            Date: 2016-02-03
+            FileName: cust004-IBMFS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '9.1'
+          cust004-PID.txt_PID:
+            Acronym: PID
+            CompleteName: Primary Immune Deficiency
+            Date: 2016-02-02
+            FileName: cust004-PID.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '8.0'
+          cust004-PID.txt_PIDCAD:
+            Acronym: PIDCAD
+            CompleteName: PID Candidates
+            Date: 2016-02-02
+            FileName: cust004-PID.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '8.0'
+        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/cust000-Clinical_master_list.txt
+    VCFFile:
+      Clinical:
+        Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
+      ReadyVcf:
+        Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.vcf
+      Research:
+        Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/bwa/gatk/famErrored_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.vcf
+    VCFParser:
+      RangeFile:
+        Database:
+          cust000-Research.txt_Research:
+            Acronym: Research
+            CompleteName: Research
+            Date: 2015-03-01
+            FileName: cust000-Research.txt
+            GenomeBuild: GRCh37.p13
+            Version: '6.8'
+        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/cust000-Research.txt
+      SelectFile:
+        Database:
+          cust000-Clinical_master_list.txt_FullList:
+            Acronym: FullList
+            CompleteName: Clinical master list
+            Date: 2016-05-19
+            FileName: cust000-Clinical_master_list.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '18.0'
+          cust002-OMIM.txt_OMIM:
+            Acronym: OMIM
+            CompleteName: OMIM of 2016-04-15
+            Date: 2016-04-22
+            FileName: cust002-OMIM.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '58.0'
+          cust002-SKD.txt_SKD:
+            Acronym: SKD
+            CompleteName: Skeletal dysplasia
+            Date: 2016-04-22
+            FileName: cust002-SKD.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '54.0'
+          cust003-CMMS.txt_ENDO:
+            Acronym: ENDO
+            CompleteName: Endocrinology
+            Date: 2016-04-25
+            FileName: cust003-CMMS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '7.0'
+          cust003-CMMS.txt_EP:
+            Acronym: EP
+            CompleteName: Epilepsy
+            Date: 2016-04-25
+            FileName: cust003-CMMS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '7.0'
+          cust003-CMMS.txt_IEM:
+            Acronym: IEM
+            CompleteName: Inborn Errors of Metabolism
+            Date: 2016-04-25
+            FileName: cust003-CMMS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '7.0'
+          cust003-CMMS.txt_MIT:
+            Acronym: MIT
+            CompleteName: Mitochondrial nuclear
+            Date: 2016-04-25
+            FileName: cust003-CMMS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '7.0'
+          cust003-mtDNA.txt_mtDNA:
+            Acronym: mtDNA
+            CompleteName: Mitochondrial DNA
+            Date: 2016-04-25
+            FileName: cust003-mtDNA.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '8.0'
+          cust004-IBMFS.txt_IBMFS:
+            Acronym: IBMFS
+            CompleteName: Inherited Bone Marrow Failure Syndromes
+            Date: 2016-02-03
+            FileName: cust004-IBMFS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '9.1'
+          cust004-PID.txt_PID:
+            Acronym: PID
+            CompleteName: Primary Immune Deficiency
+            Date: 2016-02-02
+            FileName: cust004-PID.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '8.0'
+          cust004-PID.txt_PIDCAD:
+            Acronym: PIDCAD
+            CompleteName: PID Candidates
+            Date: 2016-02-02
+            FileName: cust004-PID.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '8.0'
+        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/cust000-Clinical_master_list.txt
+    lastLogFilePath: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/mip_log/2016-08-01/mip.pl_2016-08-01T13:29:13.log
+    logFileDir: tests/fixtures/mip/cust003/famErrored/analysis/exomes/famErrored/mip_log
+  ADM1619A117:
+    Capture_kit:
+      - Agilent_SureSelect.V4
+    Father: ADM1619A19
+    File:
+      ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane1:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane1_sorted.cram
+        ReadDirectionFile:
+          ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane1_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '1'
+            OriginalFileName: 1_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1.fastq.gz
+            OriginalFileNameNoEnding: 1_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_1_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+          ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane1_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '1'
+            OriginalFileName: 1_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2.fastq.gz
+            OriginalFileNameNoEnding: 1_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_1_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane2:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane2_sorted.cram
+        ReadDirectionFile:
+          ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane2_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '2'
+            OriginalFileName: 2_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1.fastq.gz
+            OriginalFileNameNoEnding: 2_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_2_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+          ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane2_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '2'
+            OriginalFileName: 2_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2.fastq.gz
+            OriginalFileNameNoEnding: 2_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_2_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane3:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane3_sorted.cram
+        ReadDirectionFile:
+          ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane3_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '3'
+            OriginalFileName: 3_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1.fastq.gz
+            OriginalFileNameNoEnding: 3_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_3_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+          ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane3_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '3'
+            OriginalFileName: 3_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2.fastq.gz
+            OriginalFileNameNoEnding: 3_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_3_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane4:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane4_sorted.cram
+        ReadDirectionFile:
+          ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane4_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '4'
+            OriginalFileName: 4_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1.fastq.gz
+            OriginalFileNameNoEnding: 4_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_4_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+          ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane4_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '4'
+            OriginalFileName: 4_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2.fastq.gz
+            OriginalFileNameNoEnding: 4_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_4_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane5:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane5_sorted.cram
+        ReadDirectionFile:
+          ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane5_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '5'
+            OriginalFileName: 5_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1.fastq.gz
+            OriginalFileNameNoEnding: 5_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_5_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+          ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane5_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '5'
+            OriginalFileName: 5_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2.fastq.gz
+            OriginalFileNameNoEnding: 5_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_5_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A117.160701_AD1U33ACXX_ACAAGCTA.lane8:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1U33ACXX_ACAAGCTA.lane8_sorted.cram
+        ReadDirectionFile:
+          ADM1619A117.160701_AD1U33ACXX_ACAAGCTA.lane8_1:
+            Date: 2016-07-01
+            Flow-cell: AD1U33ACXX
+            Lane: '8'
+            OriginalFileName: 8_160701_AD1U33ACXX_ADM1619A117_ACAAGCTA_1.fastq.gz
+            OriginalFileNameNoEnding: 8_160701_AD1U33ACXX_ADM1619A117_ACAAGCTA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1U33ACXX_8_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+          ADM1619A117.160701_AD1U33ACXX_ACAAGCTA.lane8_2:
+            Date: 2016-07-01
+            Flow-cell: AD1U33ACXX
+            Lane: '8'
+            OriginalFileName: 8_160701_AD1U33ACXX_ADM1619A117_ACAAGCTA_2.fastq.gz
+            OriginalFileNameNoEnding: 8_160701_AD1U33ACXX_ADM1619A117_ACAAGCTA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1U33ACXX_8_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane6:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane6_sorted.cram
+        ReadDirectionFile:
+          ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane6_1:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '6'
+            OriginalFileName: 6_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_1.fastq.gz
+            OriginalFileNameNoEnding: 6_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1Y5YACXX_6_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+          ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane6_2:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '6'
+            OriginalFileName: 6_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_2.fastq.gz
+            OriginalFileNameNoEnding: 6_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1Y5YACXX_6_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane7:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane7_sorted.cram
+        ReadDirectionFile:
+          ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane7_1:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '7'
+            OriginalFileName: 7_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_1.fastq.gz
+            OriginalFileNameNoEnding: 7_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1Y5YACXX_7_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+          ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane7_2:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '7'
+            OriginalFileName: 7_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_2.fastq.gz
+            OriginalFileNameNoEnding: 7_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1Y5YACXX_7_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane8:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane8_sorted.cram
+        ReadDirectionFile:
+          ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane8_1:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '8'
+            OriginalFileName: 8_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_1.fastq.gz
+            OriginalFileNameNoEnding: 8_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1Y5YACXX_8_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+          ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane8_2:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '8'
+            OriginalFileName: 8_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_2.fastq.gz
+            OriginalFileNameNoEnding: 8_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1Y5YACXX_8_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane1:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane1_sorted.cram
+        ReadDirectionFile:
+          ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane1_1:
+            Date: 2016-07-01
+            Flow-cell: AH0C6FADXX
+            Lane: '1'
+            OriginalFileName: 1_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_1.fastq.gz
+            OriginalFileNameNoEnding: 1_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AH0C6FADXX_1_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+          ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane1_2:
+            Date: 2016-07-01
+            Flow-cell: AH0C6FADXX
+            Lane: '1'
+            OriginalFileName: 1_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_2.fastq.gz
+            OriginalFileNameNoEnding: 1_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AH0C6FADXX_1_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane2:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane2_sorted.cram
+        ReadDirectionFile:
+          ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane2_1:
+            Date: 2016-07-01
+            Flow-cell: AH0C6FADXX
+            Lane: '2'
+            OriginalFileName: 2_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_1.fastq.gz
+            OriginalFileNameNoEnding: 2_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AH0C6FADXX_2_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+          ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane2_2:
+            Date: 2016-07-01
+            Flow-cell: AH0C6FADXX
+            Lane: '2'
+            OriginalFileName: 2_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_2.fastq.gz
+            OriginalFileNameNoEnding: 2_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AH0C6FADXX_2_ACAAGCTA
+            SampleBarcode: ACAAGCTA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+    MostCompleteBAM:
+      Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117_lanes_11223456788_sorted.bam
+    Mother: ADM1619A118
+    Phenotype: '2'
+    Program:
+      BamStats:
+        ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane1:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa
+          OutFile: ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane1_sorted.stats
+        ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane2:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa
+          OutFile: ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane2_sorted.stats
+        ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane3:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa
+          OutFile: ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane3_sorted.stats
+        ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane4:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa
+          OutFile: ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane4_sorted.stats
+        ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane5:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa
+          OutFile: ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane5_sorted.stats
+        ADM1619A117.160701_AD1U33ACXX_ACAAGCTA.lane8:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa
+          OutFile: ADM1619A117.160701_AD1U33ACXX_ACAAGCTA.lane8_sorted.stats
+        ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane6:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa
+          OutFile: ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane6_sorted.stats
+        ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane7:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa
+          OutFile: ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane7_sorted.stats
+        ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane8:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa
+          OutFile: ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane8_sorted.stats
+        ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane1:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa
+          OutFile: ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane1_sorted.stats
+        ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane2:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa
+          OutFile: ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane2_sorted.stats
+      Bwa:
+        ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane1:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/info/
+          OutFile: BwaMem_ADM1619A117.0.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane1_sorted.cram
+        ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane2:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/info/
+          OutFile: BwaMem_ADM1619A117.2.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane2_sorted.cram
+        ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane3:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/info/
+          OutFile: BwaMem_ADM1619A117.4.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane3_sorted.cram
+        ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane4:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/info/
+          OutFile: BwaMem_ADM1619A117.5.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane4_sorted.cram
+        ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane5:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/info/
+          OutFile: BwaMem_ADM1619A117.6.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1RWYACXX_ACAAGCTA.lane5_sorted.cram
+        ADM1619A117.160701_AD1U33ACXX_ACAAGCTA.lane8:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/info/
+          OutFile: BwaMem_ADM1619A117.9.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1U33ACXX_ACAAGCTA.lane8_sorted.cram
+        ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane6:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/info/
+          OutFile: BwaMem_ADM1619A117.7.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane6_sorted.cram
+        ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane7:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/info/
+          OutFile: BwaMem_ADM1619A117.8.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane7_sorted.cram
+        ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane8:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/info/
+          OutFile: BwaMem_ADM1619A117.10.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AD1Y5YACXX_ACAAGCTA.lane8_sorted.cram
+        ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane1:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/info/
+          OutFile: BwaMem_ADM1619A117.1.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane1_sorted.cram
+        ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane2:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/info/
+          OutFile: BwaMem_ADM1619A117.3.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/ADM1619A117.160701_AH0C6FADXX_ACAAGCTA.lane2_sorted.cram
+      CalculateHsMetrics:
+        ADM1619A117_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/coveragereport
+          OutFile: ADM1619A117_lanes_11223456788_sorted_md_rreal_brecal_CalculateHsMetrics
+      Chanjo:
+        ADM1619A117_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/coveragereport
+          OutFile: ADM1619A117_lanes_11223456788_sorted_md_rreal_brecal_chanjoSexCheck.log
+      ChanjoSexCheck:
+        ADM1619A117_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/coveragereport
+          OutFile: ADM1619A117_lanes_11223456788_sorted_md_rreal_brecal.sexcheck
+      CollectMultipleMetrics:
+        ADM1619A117_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/coveragereport
+          OutFile: ADM1619A117_lanes_11223456788_sorted_md_rreal_brecal.alignment_summary_metrics
+      FastQC:
+        1_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/1_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1_fastqc
+          OutFile: fastqc_data.txt
+        1_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/1_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2_fastqc
+          OutFile: fastqc_data.txt
+        1_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/1_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_1_fastqc
+          OutFile: fastqc_data.txt
+        1_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/1_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_2_fastqc
+          OutFile: fastqc_data.txt
+        2_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/2_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1_fastqc
+          OutFile: fastqc_data.txt
+        2_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/2_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2_fastqc
+          OutFile: fastqc_data.txt
+        2_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/2_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_1_fastqc
+          OutFile: fastqc_data.txt
+        2_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/2_160701_AH0C6FADXX_ADM1619A117_ACAAGCTA_2_fastqc
+          OutFile: fastqc_data.txt
+        3_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/3_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1_fastqc
+          OutFile: fastqc_data.txt
+        3_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/3_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2_fastqc
+          OutFile: fastqc_data.txt
+        4_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/4_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1_fastqc
+          OutFile: fastqc_data.txt
+        4_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/4_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2_fastqc
+          OutFile: fastqc_data.txt
+        5_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/5_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_1_fastqc
+          OutFile: fastqc_data.txt
+        5_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/5_160701_AD1RWYACXX_ADM1619A117_ACAAGCTA_2_fastqc
+          OutFile: fastqc_data.txt
+        6_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/6_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_1_fastqc
+          OutFile: fastqc_data.txt
+        6_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/6_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_2_fastqc
+          OutFile: fastqc_data.txt
+        7_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/7_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_1_fastqc
+          OutFile: fastqc_data.txt
+        7_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/7_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_2_fastqc
+          OutFile: fastqc_data.txt
+        8_160701_AD1U33ACXX_ADM1619A117_ACAAGCTA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/8_160701_AD1U33ACXX_ADM1619A117_ACAAGCTA_1_fastqc
+          OutFile: fastqc_data.txt
+        8_160701_AD1U33ACXX_ADM1619A117_ACAAGCTA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/8_160701_AD1U33ACXX_ADM1619A117_ACAAGCTA_2_fastqc
+          OutFile: fastqc_data.txt
+        8_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/8_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_1_fastqc
+          OutFile: fastqc_data.txt
+        8_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/fastqc/8_160701_AD1Y5YACXX_ADM1619A117_ACAAGCTA_2_fastqc
+          OutFile: fastqc_data.txt
+      SambambaDepth:
+        ADM1619A117_lanes_11223456788:
+          Bed:
+            Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/coveragereport/ADM1619A117_lanes_11223456788_sorted_md_rreal_brecal_coverage.bed
+      VariantEval_All:
+        ADM1619A117_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/gatk/varianteval
+          OutFile: ADM1619A117_lanes_11223456788_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.vcf.varianteval
+      VariantEval_Exome:
+        ADM1619A117_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A117/bwa/gatk/varianteval
+          OutFile: ADM1619A117_lanes_11223456788_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH_exome.vcf.varianteval
+    Sex: 1
+  ADM1619A118:
+    Capture_kit:
+      - Agilent_SureSelect.V4
+    Father: '0'
+    File:
+      ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane1:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane1_sorted.cram
+        ReadDirectionFile:
+          ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane1_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '1'
+            OriginalFileName: 1_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 1_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_1_ACACAGAA
+            SampleBarcode: ACACAGAA
+          ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane1_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '1'
+            OriginalFileName: 1_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 1_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_1_ACACAGAA
+            SampleBarcode: ACACAGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane2:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane2_sorted.cram
+        ReadDirectionFile:
+          ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane2_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '2'
+            OriginalFileName: 2_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 2_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_2_ACACAGAA
+            SampleBarcode: ACACAGAA
+          ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane2_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '2'
+            OriginalFileName: 2_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 2_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_2_ACACAGAA
+            SampleBarcode: ACACAGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane3:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane3_sorted.cram
+        ReadDirectionFile:
+          ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane3_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '3'
+            OriginalFileName: 3_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 3_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_3_ACACAGAA
+            SampleBarcode: ACACAGAA
+          ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane3_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '3'
+            OriginalFileName: 3_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 3_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_3_ACACAGAA
+            SampleBarcode: ACACAGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane4:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane4_sorted.cram
+        ReadDirectionFile:
+          ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane4_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '4'
+            OriginalFileName: 4_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 4_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_4_ACACAGAA
+            SampleBarcode: ACACAGAA
+          ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane4_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '4'
+            OriginalFileName: 4_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 4_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_4_ACACAGAA
+            SampleBarcode: ACACAGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane5:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane5_sorted.cram
+        ReadDirectionFile:
+          ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane5_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '5'
+            OriginalFileName: 5_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 5_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_5_ACACAGAA
+            SampleBarcode: ACACAGAA
+          ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane5_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '5'
+            OriginalFileName: 5_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 5_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_5_ACACAGAA
+            SampleBarcode: ACACAGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A118.160701_AD1U33ACXX_ACACAGAA.lane8:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1U33ACXX_ACACAGAA.lane8_sorted.cram
+        ReadDirectionFile:
+          ADM1619A118.160701_AD1U33ACXX_ACACAGAA.lane8_1:
+            Date: 2016-07-01
+            Flow-cell: AD1U33ACXX
+            Lane: '8'
+            OriginalFileName: 8_160701_AD1U33ACXX_ADM1619A118_ACACAGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 8_160701_AD1U33ACXX_ADM1619A118_ACACAGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1U33ACXX_8_ACACAGAA
+            SampleBarcode: ACACAGAA
+          ADM1619A118.160701_AD1U33ACXX_ACACAGAA.lane8_2:
+            Date: 2016-07-01
+            Flow-cell: AD1U33ACXX
+            Lane: '8'
+            OriginalFileName: 8_160701_AD1U33ACXX_ADM1619A118_ACACAGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 8_160701_AD1U33ACXX_ADM1619A118_ACACAGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1U33ACXX_8_ACACAGAA
+            SampleBarcode: ACACAGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane6:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane6_sorted.cram
+        ReadDirectionFile:
+          ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane6_1:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '6'
+            OriginalFileName: 6_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 6_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1Y5YACXX_6_ACACAGAA
+            SampleBarcode: ACACAGAA
+          ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane6_2:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '6'
+            OriginalFileName: 6_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 6_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1Y5YACXX_6_ACACAGAA
+            SampleBarcode: ACACAGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane7:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane7_sorted.cram
+        ReadDirectionFile:
+          ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane7_1:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '7'
+            OriginalFileName: 7_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 7_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1Y5YACXX_7_ACACAGAA
+            SampleBarcode: ACACAGAA
+          ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane7_2:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '7'
+            OriginalFileName: 7_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 7_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1Y5YACXX_7_ACACAGAA
+            SampleBarcode: ACACAGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane8:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane8_sorted.cram
+        ReadDirectionFile:
+          ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane8_1:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '8'
+            OriginalFileName: 8_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 8_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1Y5YACXX_8_ACACAGAA
+            SampleBarcode: ACACAGAA
+          ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane8_2:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '8'
+            OriginalFileName: 8_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 8_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1Y5YACXX_8_ACACAGAA
+            SampleBarcode: ACACAGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane1:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane1_sorted.cram
+        ReadDirectionFile:
+          ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane1_1:
+            Date: 2016-07-01
+            Flow-cell: AH0C6FADXX
+            Lane: '1'
+            OriginalFileName: 1_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 1_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AH0C6FADXX_1_ACACAGAA
+            SampleBarcode: ACACAGAA
+          ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane1_2:
+            Date: 2016-07-01
+            Flow-cell: AH0C6FADXX
+            Lane: '1'
+            OriginalFileName: 1_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 1_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AH0C6FADXX_1_ACACAGAA
+            SampleBarcode: ACACAGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane2:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane2_sorted.cram
+        ReadDirectionFile:
+          ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane2_1:
+            Date: 2016-07-01
+            Flow-cell: AH0C6FADXX
+            Lane: '2'
+            OriginalFileName: 2_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 2_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AH0C6FADXX_2_ACACAGAA
+            SampleBarcode: ACACAGAA
+          ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane2_2:
+            Date: 2016-07-01
+            Flow-cell: AH0C6FADXX
+            Lane: '2'
+            OriginalFileName: 2_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 2_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AH0C6FADXX_2_ACACAGAA
+            SampleBarcode: ACACAGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+    MostCompleteBAM:
+      Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118_lanes_11223456788_sorted.bam
+    Mother: '0'
+    Phenotype: '1'
+    Program:
+      BamStats:
+        ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane1:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa
+          OutFile: ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane1_sorted.stats
+        ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane2:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa
+          OutFile: ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane2_sorted.stats
+        ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane3:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa
+          OutFile: ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane3_sorted.stats
+        ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane4:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa
+          OutFile: ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane4_sorted.stats
+        ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane5:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa
+          OutFile: ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane5_sorted.stats
+        ADM1619A118.160701_AD1U33ACXX_ACACAGAA.lane8:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa
+          OutFile: ADM1619A118.160701_AD1U33ACXX_ACACAGAA.lane8_sorted.stats
+        ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane6:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa
+          OutFile: ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane6_sorted.stats
+        ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane7:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa
+          OutFile: ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane7_sorted.stats
+        ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane8:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa
+          OutFile: ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane8_sorted.stats
+        ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane1:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa
+          OutFile: ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane1_sorted.stats
+        ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane2:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa
+          OutFile: ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane2_sorted.stats
+      Bwa:
+        ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane1:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/info/
+          OutFile: BwaMem_ADM1619A118.0.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane1_sorted.cram
+        ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane2:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/info/
+          OutFile: BwaMem_ADM1619A118.2.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane2_sorted.cram
+        ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane3:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/info/
+          OutFile: BwaMem_ADM1619A118.4.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane3_sorted.cram
+        ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane4:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/info/
+          OutFile: BwaMem_ADM1619A118.5.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane4_sorted.cram
+        ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane5:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/info/
+          OutFile: BwaMem_ADM1619A118.6.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1RWYACXX_ACACAGAA.lane5_sorted.cram
+        ADM1619A118.160701_AD1U33ACXX_ACACAGAA.lane8:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/info/
+          OutFile: BwaMem_ADM1619A118.9.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1U33ACXX_ACACAGAA.lane8_sorted.cram
+        ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane6:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/info/
+          OutFile: BwaMem_ADM1619A118.7.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane6_sorted.cram
+        ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane7:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/info/
+          OutFile: BwaMem_ADM1619A118.8.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane7_sorted.cram
+        ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane8:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/info/
+          OutFile: BwaMem_ADM1619A118.10.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AD1Y5YACXX_ACACAGAA.lane8_sorted.cram
+        ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane1:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/info/
+          OutFile: BwaMem_ADM1619A118.1.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane1_sorted.cram
+        ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane2:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/info/
+          OutFile: BwaMem_ADM1619A118.3.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/ADM1619A118.160701_AH0C6FADXX_ACACAGAA.lane2_sorted.cram
+      CalculateHsMetrics:
+        ADM1619A118_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/coveragereport
+          OutFile: ADM1619A118_lanes_11223456788_sorted_md_rreal_brecal_CalculateHsMetrics
+      Chanjo:
+        ADM1619A118_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/coveragereport
+          OutFile: ADM1619A118_lanes_11223456788_sorted_md_rreal_brecal_chanjoSexCheck.log
+      ChanjoSexCheck:
+        ADM1619A118_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/coveragereport
+          OutFile: ADM1619A118_lanes_11223456788_sorted_md_rreal_brecal.sexcheck
+      CollectMultipleMetrics:
+        ADM1619A118_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/coveragereport
+          OutFile: ADM1619A118_lanes_11223456788_sorted_md_rreal_brecal.alignment_summary_metrics
+      FastQC:
+        1_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/1_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        1_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/1_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        1_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/1_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        1_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/1_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        2_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/2_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        2_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/2_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        2_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/2_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        2_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/2_160701_AH0C6FADXX_ADM1619A118_ACACAGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        3_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/3_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        3_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/3_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        4_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/4_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        4_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/4_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        5_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/5_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        5_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/5_160701_AD1RWYACXX_ADM1619A118_ACACAGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        6_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/6_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        6_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/6_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        7_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/7_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        7_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/7_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        8_160701_AD1U33ACXX_ADM1619A118_ACACAGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/8_160701_AD1U33ACXX_ADM1619A118_ACACAGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        8_160701_AD1U33ACXX_ADM1619A118_ACACAGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/8_160701_AD1U33ACXX_ADM1619A118_ACACAGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        8_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/8_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        8_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/fastqc/8_160701_AD1Y5YACXX_ADM1619A118_ACACAGAA_2_fastqc
+          OutFile: fastqc_data.txt
+      SambambaDepth:
+        ADM1619A118_lanes_11223456788:
+          Bed:
+            Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/coveragereport/ADM1619A118_lanes_11223456788_sorted_md_rreal_brecal_coverage.bed
+      VariantEval_All:
+        ADM1619A118_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/gatk/varianteval
+          OutFile: ADM1619A118_lanes_11223456788_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.vcf.varianteval
+      VariantEval_Exome:
+        ADM1619A118_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A118/bwa/gatk/varianteval
+          OutFile: ADM1619A118_lanes_11223456788_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH_exome.vcf.varianteval
+    Sex: 2
+  ADM1619A119:
+    Capture_kit:
+      - Agilent_SureSelect.V4
+    Father: '0'
+    File:
+      ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane1:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane1_sorted.cram
+        ReadDirectionFile:
+          ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane1_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '1'
+            OriginalFileName: 1_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 1_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_1_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+          ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane1_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '1'
+            OriginalFileName: 1_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 1_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_1_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane2:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane2_sorted.cram
+        ReadDirectionFile:
+          ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane2_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '2'
+            OriginalFileName: 2_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 2_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_2_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+          ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane2_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '2'
+            OriginalFileName: 2_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 2_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_2_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane3:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane3_sorted.cram
+        ReadDirectionFile:
+          ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane3_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '3'
+            OriginalFileName: 3_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 3_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_3_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+          ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane3_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '3'
+            OriginalFileName: 3_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 3_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_3_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane4:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane4_sorted.cram
+        ReadDirectionFile:
+          ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane4_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '4'
+            OriginalFileName: 4_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 4_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_4_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+          ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane4_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '4'
+            OriginalFileName: 4_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 4_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_4_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane5:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane5_sorted.cram
+        ReadDirectionFile:
+          ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane5_1:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '5'
+            OriginalFileName: 5_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 5_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1RWYACXX_5_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+          ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane5_2:
+            Date: 2016-07-01
+            Flow-cell: AD1RWYACXX
+            Lane: '5'
+            OriginalFileName: 5_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 5_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1RWYACXX_5_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A119.160701_AD1U33ACXX_AGCAGGAA.lane8:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1U33ACXX_AGCAGGAA.lane8_sorted.cram
+        ReadDirectionFile:
+          ADM1619A119.160701_AD1U33ACXX_AGCAGGAA.lane8_1:
+            Date: 2016-07-01
+            Flow-cell: AD1U33ACXX
+            Lane: '8'
+            OriginalFileName: 8_160701_AD1U33ACXX_ADM1619A119_AGCAGGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 8_160701_AD1U33ACXX_ADM1619A119_AGCAGGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1U33ACXX_8_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+          ADM1619A119.160701_AD1U33ACXX_AGCAGGAA.lane8_2:
+            Date: 2016-07-01
+            Flow-cell: AD1U33ACXX
+            Lane: '8'
+            OriginalFileName: 8_160701_AD1U33ACXX_ADM1619A119_AGCAGGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 8_160701_AD1U33ACXX_ADM1619A119_AGCAGGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1U33ACXX_8_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane6:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane6_sorted.cram
+        ReadDirectionFile:
+          ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane6_1:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '6'
+            OriginalFileName: 6_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 6_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1Y5YACXX_6_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+          ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane6_2:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '6'
+            OriginalFileName: 6_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 6_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1Y5YACXX_6_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane7:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane7_sorted.cram
+        ReadDirectionFile:
+          ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane7_1:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '7'
+            OriginalFileName: 7_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 7_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1Y5YACXX_7_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+          ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane7_2:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '7'
+            OriginalFileName: 7_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 7_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1Y5YACXX_7_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane8:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane8_sorted.cram
+        ReadDirectionFile:
+          ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane8_1:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '8'
+            OriginalFileName: 8_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 8_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AD1Y5YACXX_8_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+          ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane8_2:
+            Date: 2016-07-01
+            Flow-cell: AD1Y5YACXX
+            Lane: '8'
+            OriginalFileName: 8_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 8_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AD1Y5YACXX_8_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane1:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane1_sorted.cram
+        ReadDirectionFile:
+          ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane1_1:
+            Date: 2016-07-01
+            Flow-cell: AH0C6FADXX
+            Lane: '1'
+            OriginalFileName: 1_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 1_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AH0C6FADXX_1_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+          ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane1_2:
+            Date: 2016-07-01
+            Flow-cell: AH0C6FADXX
+            Lane: '1'
+            OriginalFileName: 1_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 1_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AH0C6FADXX_1_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+      ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane2:
+        CramFile: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane2_sorted.cram
+        ReadDirectionFile:
+          ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane2_1:
+            Date: 2016-07-01
+            Flow-cell: AH0C6FADXX
+            Lane: '2'
+            OriginalFileName: 2_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_1.fastq.gz
+            OriginalFileNameNoEnding: 2_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_1
+            ReadDirection: 1
+            RunBarcode: 160701_AH0C6FADXX_2_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+          ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane2_2:
+            Date: 2016-07-01
+            Flow-cell: AH0C6FADXX
+            Lane: '2'
+            OriginalFileName: 2_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_2.fastq.gz
+            OriginalFileNameNoEnding: 2_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_2
+            ReadDirection: 2
+            RunBarcode: 160701_AH0C6FADXX_2_AGCAGGAA
+            SampleBarcode: AGCAGGAA
+        SequenceLength: '101'
+        SequenceRunType: Paired-end
+    MostCompleteBAM:
+      Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119_lanes_11223456788_sorted.bam
+    Mother: '0'
+    Phenotype: '1'
+    Program:
+      BamStats:
+        ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane1:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa
+          OutFile: ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane1_sorted.stats
+        ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane2:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa
+          OutFile: ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane2_sorted.stats
+        ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane3:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa
+          OutFile: ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane3_sorted.stats
+        ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane4:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa
+          OutFile: ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane4_sorted.stats
+        ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane5:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa
+          OutFile: ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane5_sorted.stats
+        ADM1619A119.160701_AD1U33ACXX_AGCAGGAA.lane8:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa
+          OutFile: ADM1619A119.160701_AD1U33ACXX_AGCAGGAA.lane8_sorted.stats
+        ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane6:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa
+          OutFile: ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane6_sorted.stats
+        ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane7:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa
+          OutFile: ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane7_sorted.stats
+        ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane8:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa
+          OutFile: ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane8_sorted.stats
+        ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane1:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa
+          OutFile: ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane1_sorted.stats
+        ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane2:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa
+          OutFile: ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane2_sorted.stats
+      Bwa:
+        ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane1:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/info/
+          OutFile: BwaMem_ADM1619A119.0.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane1_sorted.cram
+        ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane2:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/info/
+          OutFile: BwaMem_ADM1619A119.2.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane2_sorted.cram
+        ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane3:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/info/
+          OutFile: BwaMem_ADM1619A119.4.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane3_sorted.cram
+        ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane4:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/info/
+          OutFile: BwaMem_ADM1619A119.5.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane4_sorted.cram
+        ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane5:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/info/
+          OutFile: BwaMem_ADM1619A119.6.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1RWYACXX_AGCAGGAA.lane5_sorted.cram
+        ADM1619A119.160701_AD1U33ACXX_AGCAGGAA.lane8:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/info/
+          OutFile: BwaMem_ADM1619A119.9.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1U33ACXX_AGCAGGAA.lane8_sorted.cram
+        ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane6:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/info/
+          OutFile: BwaMem_ADM1619A119.7.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane6_sorted.cram
+        ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane7:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/info/
+          OutFile: BwaMem_ADM1619A119.8.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane7_sorted.cram
+        ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane8:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/info/
+          OutFile: BwaMem_ADM1619A119.10.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AD1Y5YACXX_AGCAGGAA.lane8_sorted.cram
+        ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane1:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/info/
+          OutFile: BwaMem_ADM1619A119.1.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane1_sorted.cram
+        ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane2:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/info/
+          OutFile: BwaMem_ADM1619A119.3.stderr.txt
+          Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/ADM1619A119.160701_AH0C6FADXX_AGCAGGAA.lane2_sorted.cram
+      CalculateHsMetrics:
+        ADM1619A119_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/coveragereport
+          OutFile: ADM1619A119_lanes_11223456788_sorted_md_rreal_brecal_CalculateHsMetrics
+      Chanjo:
+        ADM1619A119_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/coveragereport
+          OutFile: ADM1619A119_lanes_11223456788_sorted_md_rreal_brecal_chanjoSexCheck.log
+      ChanjoSexCheck:
+        ADM1619A119_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/coveragereport
+          OutFile: ADM1619A119_lanes_11223456788_sorted_md_rreal_brecal.sexcheck
+      CollectMultipleMetrics:
+        ADM1619A119_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/coveragereport
+          OutFile: ADM1619A119_lanes_11223456788_sorted_md_rreal_brecal.alignment_summary_metrics
+      FastQC:
+        1_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/1_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        1_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/1_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        1_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/1_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        1_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/1_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        2_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/2_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        2_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/2_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        2_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/2_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        2_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/2_160701_AH0C6FADXX_ADM1619A119_AGCAGGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        3_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/3_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        3_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/3_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        4_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/4_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        4_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/4_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        5_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/5_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        5_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/5_160701_AD1RWYACXX_ADM1619A119_AGCAGGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        6_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/6_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        6_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/6_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        7_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/7_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        7_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/7_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        8_160701_AD1U33ACXX_ADM1619A119_AGCAGGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/8_160701_AD1U33ACXX_ADM1619A119_AGCAGGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        8_160701_AD1U33ACXX_ADM1619A119_AGCAGGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/8_160701_AD1U33ACXX_ADM1619A119_AGCAGGAA_2_fastqc
+          OutFile: fastqc_data.txt
+        8_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_1.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/8_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_1_fastqc
+          OutFile: fastqc_data.txt
+        8_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_2.fastq.gz:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/fastqc/8_160701_AD1Y5YACXX_ADM1619A119_AGCAGGAA_2_fastqc
+          OutFile: fastqc_data.txt
+      SambambaDepth:
+        ADM1619A119_lanes_11223456788:
+          Bed:
+            Path: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/coveragereport/ADM1619A119_lanes_11223456788_sorted_md_rreal_brecal_coverage.bed
+      VariantEval_All:
+        ADM1619A119_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/gatk/varianteval
+          OutFile: ADM1619A119_lanes_11223456788_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.vcf.varianteval
+      VariantEval_Exome:
+        ADM1619A119_lanes_11223456788:
+          OutDirectory: tests/fixtures/mip/cust003/famErrored/analysis/exomes/ADM1619A119/bwa/gatk/varianteval
+          OutFile: ADM1619A119_lanes_11223456788_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH_exome.vcf.varianteval
+    Sex: 1
+

@@ -1,0 +1,422 @@
+---
+famCompleted:
+  ADM1653A1:
+    Capture_kit:
+      - Agilent_FocusedExome.V1
+    Father: ADM1653A2
+    File:
+      ADM1653A1.160727_C9FHNANXX_ATGCCTAA.lane1:
+        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/bwa/ADM1653A1.160727_C9FHNANXX_ATGCCTAA.lane1_sorted.cram
+        ReadDirectionFile:
+          ADM1653A1.160727_C9FHNANXX_ATGCCTAA.lane1_1:
+            Date: 2016-07-27
+            Flow-cell: C9FHNANXX
+            Lane: '1'
+            OriginalFileName: 1_160727_C9FHNANXX_ADM1653A1_ATGCCTAA_1.fastq.gz
+            OriginalFileNameNoEnding: 1_160727_C9FHNANXX_ADM1653A1_ATGCCTAA_1
+            ReadDirection: 1
+            RunBarcode: 160727_C9FHNANXX_1_ATGCCTAA
+            SampleBarcode: ATGCCTAA
+          ADM1653A1.160727_C9FHNANXX_ATGCCTAA.lane1_2:
+            Date: 2016-07-27
+            Flow-cell: C9FHNANXX
+            Lane: '1'
+            OriginalFileName: 1_160727_C9FHNANXX_ADM1653A1_ATGCCTAA_2.fastq.gz
+            OriginalFileNameNoEnding: 1_160727_C9FHNANXX_ADM1653A1_ATGCCTAA_2
+            ReadDirection: 2
+            RunBarcode: 160727_C9FHNANXX_1_ATGCCTAA
+            SampleBarcode: ATGCCTAA
+        SequenceLength: '126'
+        SequenceRunType: Paired-end
+    MostCompleteBAM:
+      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/bwa/gatk/ADM1653A1_lanes_1_sorted_md_rreal_brecal.bam
+    Mother: ADM1653A3
+    Phenotype: '2'
+    Program:
+      BamStats:
+        ADM1653A1.160727_C9FHNANXX_ATGCCTAA.lane1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/bwa
+          OutFile: ADM1653A1.160727_C9FHNANXX_ATGCCTAA.lane1_sorted.stats
+      Bwa:
+        ADM1653A1.160727_C9FHNANXX_ATGCCTAA.lane1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/bwa/info/
+          OutFile: BwaMem_ADM1653A1.0.stderr.txt
+          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/bwa/ADM1653A1.160727_C9FHNANXX_ATGCCTAA.lane1_sorted.cram
+      CalculateHsMetrics:
+        ADM1653A1_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/bwa/coveragereport
+          OutFile: ADM1653A1_lanes_1_sorted_md_rreal_brecal_CalculateHsMetrics
+      Chanjo:
+        ADM1653A1_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/bwa/coveragereport
+          OutFile: ADM1653A1_lanes_1_sorted_md_rreal_brecal_chanjoSexCheck.log
+      ChanjoSexCheck:
+        ADM1653A1_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/bwa/coveragereport
+          OutFile: ADM1653A1_lanes_1_sorted_md_rreal_brecal.sexcheck
+      CollectMultipleMetrics:
+        ADM1653A1_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/bwa/coveragereport
+          OutFile: ADM1653A1_lanes_1_sorted_md_rreal_brecal.alignment_summary_metrics
+      FastQC:
+        1_160727_C9FHNANXX_ADM1653A1_ATGCCTAA_1.fastq.gz:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/fastqc/1_160727_C9FHNANXX_ADM1653A1_ATGCCTAA_1_fastqc
+          OutFile: fastqc_data.txt
+        1_160727_C9FHNANXX_ADM1653A1_ATGCCTAA_2.fastq.gz:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/fastqc/1_160727_C9FHNANXX_ADM1653A1_ATGCCTAA_2_fastqc
+          OutFile: fastqc_data.txt
+      SambambaDepth:
+        ADM1653A1_lanes_1:
+          Bed:
+            Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/bwa/coveragereport/ADM1653A1_lanes_1_sorted_md_rreal_brecal_coverage.bed
+      VariantEval_All:
+        ADM1653A1_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/bwa/gatk/varianteval
+          OutFile: ADM1653A1_lanes_1_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.vcf.varianteval
+      VariantEval_Exome:
+        ADM1653A1_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A1/bwa/gatk/varianteval
+          OutFile: ADM1653A1_lanes_1_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH_exome.vcf.varianteval
+    Sex: 2
+  ADM1653A2:
+    Capture_kit:
+      - Agilent_FocusedExome.V1
+    Father: '0'
+    File:
+      ADM1653A2.160727_C9FHNANXX_GAATCTGA.lane1:
+        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/bwa/ADM1653A2.160727_C9FHNANXX_GAATCTGA.lane1_sorted.cram
+        ReadDirectionFile:
+          ADM1653A2.160727_C9FHNANXX_GAATCTGA.lane1_1:
+            Date: 2016-07-27
+            Flow-cell: C9FHNANXX
+            Lane: '1'
+            OriginalFileName: 1_160727_C9FHNANXX_ADM1653A2_GAATCTGA_1.fastq.gz
+            OriginalFileNameNoEnding: 1_160727_C9FHNANXX_ADM1653A2_GAATCTGA_1
+            ReadDirection: 1
+            RunBarcode: 160727_C9FHNANXX_1_GAATCTGA
+            SampleBarcode: GAATCTGA
+          ADM1653A2.160727_C9FHNANXX_GAATCTGA.lane1_2:
+            Date: 2016-07-27
+            Flow-cell: C9FHNANXX
+            Lane: '1'
+            OriginalFileName: 1_160727_C9FHNANXX_ADM1653A2_GAATCTGA_2.fastq.gz
+            OriginalFileNameNoEnding: 1_160727_C9FHNANXX_ADM1653A2_GAATCTGA_2
+            ReadDirection: 2
+            RunBarcode: 160727_C9FHNANXX_1_GAATCTGA
+            SampleBarcode: GAATCTGA
+        SequenceLength: '126'
+        SequenceRunType: Paired-end
+    MostCompleteBAM:
+      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/bwa/gatk/ADM1653A2_lanes_1_sorted_md_rreal_brecal.bam
+    Mother: '0'
+    Phenotype: '1'
+    Program:
+      BamStats:
+        ADM1653A2.160727_C9FHNANXX_GAATCTGA.lane1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/bwa
+          OutFile: ADM1653A2.160727_C9FHNANXX_GAATCTGA.lane1_sorted.stats
+      Bwa:
+        ADM1653A2.160727_C9FHNANXX_GAATCTGA.lane1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/bwa/info/
+          OutFile: BwaMem_ADM1653A2.0.stderr.txt
+          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/bwa/ADM1653A2.160727_C9FHNANXX_GAATCTGA.lane1_sorted.cram
+      CalculateHsMetrics:
+        ADM1653A2_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/bwa/coveragereport
+          OutFile: ADM1653A2_lanes_1_sorted_md_rreal_brecal_CalculateHsMetrics
+      Chanjo:
+        ADM1653A2_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/bwa/coveragereport
+          OutFile: ADM1653A2_lanes_1_sorted_md_rreal_brecal_chanjoSexCheck.log
+      ChanjoSexCheck:
+        ADM1653A2_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/bwa/coveragereport
+          OutFile: ADM1653A2_lanes_1_sorted_md_rreal_brecal.sexcheck
+      CollectMultipleMetrics:
+        ADM1653A2_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/bwa/coveragereport
+          OutFile: ADM1653A2_lanes_1_sorted_md_rreal_brecal.alignment_summary_metrics
+      FastQC:
+        1_160727_C9FHNANXX_ADM1653A2_GAATCTGA_1.fastq.gz:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/fastqc/1_160727_C9FHNANXX_ADM1653A2_GAATCTGA_1_fastqc
+          OutFile: fastqc_data.txt
+        1_160727_C9FHNANXX_ADM1653A2_GAATCTGA_2.fastq.gz:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/fastqc/1_160727_C9FHNANXX_ADM1653A2_GAATCTGA_2_fastqc
+          OutFile: fastqc_data.txt
+      SambambaDepth:
+        ADM1653A2_lanes_1:
+          Bed:
+            Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/bwa/coveragereport/ADM1653A2_lanes_1_sorted_md_rreal_brecal_coverage.bed
+      VariantEval_All:
+        ADM1653A2_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/bwa/gatk/varianteval
+          OutFile: ADM1653A2_lanes_1_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.vcf.varianteval
+      VariantEval_Exome:
+        ADM1653A2_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A2/bwa/gatk/varianteval
+          OutFile: ADM1653A2_lanes_1_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH_exome.vcf.varianteval
+    Sex: 1
+  ADM1653A3:
+    Capture_kit:
+      - Agilent_FocusedExome.V1
+    Father: '0'
+    File:
+      ADM1653A3.160727_C9FHNANXX_AACGTGAT.lane1:
+        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/bwa/ADM1653A3.160727_C9FHNANXX_AACGTGAT.lane1_sorted.cram
+        ReadDirectionFile:
+          ADM1653A3.160727_C9FHNANXX_AACGTGAT.lane1_1:
+            Date: 2016-07-27
+            Flow-cell: C9FHNANXX
+            Lane: '1'
+            OriginalFileName: 1_160727_C9FHNANXX_ADM1653A3_AACGTGAT_1.fastq.gz
+            OriginalFileNameNoEnding: 1_160727_C9FHNANXX_ADM1653A3_AACGTGAT_1
+            ReadDirection: 1
+            RunBarcode: 160727_C9FHNANXX_1_AACGTGAT
+            SampleBarcode: AACGTGAT
+          ADM1653A3.160727_C9FHNANXX_AACGTGAT.lane1_2:
+            Date: 2016-07-27
+            Flow-cell: C9FHNANXX
+            Lane: '1'
+            OriginalFileName: 1_160727_C9FHNANXX_ADM1653A3_AACGTGAT_2.fastq.gz
+            OriginalFileNameNoEnding: 1_160727_C9FHNANXX_ADM1653A3_AACGTGAT_2
+            ReadDirection: 2
+            RunBarcode: 160727_C9FHNANXX_1_AACGTGAT
+            SampleBarcode: AACGTGAT
+        SequenceLength: '126'
+        SequenceRunType: Paired-end
+    MostCompleteBAM:
+      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/bwa/gatk/ADM1653A3_lanes_1_sorted_md_rreal_brecal.bam
+    Mother: '0'
+    Phenotype: '1'
+    Program:
+      BamStats:
+        ADM1653A3.160727_C9FHNANXX_AACGTGAT.lane1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/bwa
+          OutFile: ADM1653A3.160727_C9FHNANXX_AACGTGAT.lane1_sorted.stats
+      Bwa:
+        ADM1653A3.160727_C9FHNANXX_AACGTGAT.lane1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/bwa/info/
+          OutFile: BwaMem_ADM1653A3.0.stderr.txt
+          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/bwa/ADM1653A3.160727_C9FHNANXX_AACGTGAT.lane1_sorted.cram
+      CalculateHsMetrics:
+        ADM1653A3_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/bwa/coveragereport
+          OutFile: ADM1653A3_lanes_1_sorted_md_rreal_brecal_CalculateHsMetrics
+      Chanjo:
+        ADM1653A3_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/bwa/coveragereport
+          OutFile: ADM1653A3_lanes_1_sorted_md_rreal_brecal_chanjoSexCheck.log
+      ChanjoSexCheck:
+        ADM1653A3_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/bwa/coveragereport
+          OutFile: ADM1653A3_lanes_1_sorted_md_rreal_brecal.sexcheck
+      CollectMultipleMetrics:
+        ADM1653A3_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/bwa/coveragereport
+          OutFile: ADM1653A3_lanes_1_sorted_md_rreal_brecal.alignment_summary_metrics
+      FastQC:
+        1_160727_C9FHNANXX_ADM1653A3_AACGTGAT_1.fastq.gz:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/fastqc/1_160727_C9FHNANXX_ADM1653A3_AACGTGAT_1_fastqc
+          OutFile: fastqc_data.txt
+        1_160727_C9FHNANXX_ADM1653A3_AACGTGAT_2.fastq.gz:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/fastqc/1_160727_C9FHNANXX_ADM1653A3_AACGTGAT_2_fastqc
+          OutFile: fastqc_data.txt
+      SambambaDepth:
+        ADM1653A3_lanes_1:
+          Bed:
+            Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/bwa/coveragereport/ADM1653A3_lanes_1_sorted_md_rreal_brecal_coverage.bed
+      VariantEval_All:
+        ADM1653A3_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/bwa/gatk/varianteval
+          OutFile: ADM1653A3_lanes_1_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.vcf.varianteval
+      VariantEval_Exome:
+        ADM1653A3_lanes_1:
+          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/ADM1653A3/bwa/gatk/varianteval
+          OutFile: ADM1653A3_lanes_1_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH_exome.vcf.varianteval
+    Sex: 2
+  famCompleted:
+    AnalysisDate: 2016-08-01T15:05:58
+    AnalysisRunStatus: Finished
+    AnalysisType: exomes
+    BCFFile:
+      Clinical:
+        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk/famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.bcf
+      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk/famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.bcf
+      Research:
+        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk/famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.bcf
+    HumanGenomeBuild:
+      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/Homo_sapiens.GRCh37.d5.fasta
+      Source: GRCh
+      Version: '37'
+    InstanceTag:
+      - cust002
+    MIPVersion: v3.0.4
+    PedigreeFile:
+      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/exomes/famCompleted/famCompleted_pedigree.txt
+    PedigreeFileAnalysis:
+      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/qc_pedigree.yaml
+    Program:
+      Bcftools:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/freebayes
+        OutFile: famCompleted_sorted_md_rreal_brecal_freebayes_BOTH.vcf
+      Freebayes:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/freebayes
+        OutFile: famCompleted_sorted_md_rreal_brecal_freebayes_BOTH.vcf
+      GATK:
+        Version: g5029e01
+      Genmod:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk
+        OutFile: famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
+      InbreedingFactor:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/samplecheck
+        OutFile: famCompleted.het
+      PedigreeCheck:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk
+        OutFile: famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_BOTH.vcf
+      PicardTools:
+        Version: 2.3.0(9a00c87b7ffdb01cfb5a0d6e76556146196babb8_1463071327)
+      QCCollect:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted
+        OutFile: famCompleted_qcmetrics.yaml
+        QCCollectMetricsFile:
+          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/famCompleted_qcmetrics.yaml
+      RankVariants:
+        Clinical:
+          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk/famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
+        RankModel:
+          File: rank_model_cmms_v1.16.ini
+          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/rank_model_cmms_v1.16.ini
+          Version: '1.16'
+        Research:
+          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk/famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.vcf
+      RelationCheck:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/samplecheck
+        OutFile: famCompleted.mibs
+      Sambamba:
+        Version: 0.6.1
+      Samtools:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/samtools
+        OutFile: famCompleted_sorted_md_rreal_brecal_mpileup_BOTH.vcf
+      SexCheck:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/samplecheck
+        OutFile: famCompleted.sexcheck
+      SnpEff:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk
+        OutFile: famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_BOTH_1.selected.vcf
+      VCFParser:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk
+        OutFile: famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_BOTH_1.vcf
+      VariantAnnotationBlock:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/info/
+        OutFile: VariantAnnotationBlock_famCompleted.0.stderr.txt
+      VariantEffectPredictor:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk
+        OutFile: famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_BOTH_1.vcf
+      VariantEffectPredictorSummary:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk
+        OutFile: famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_BOTH_1.vcf_summary.html
+      vt:
+        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/info/
+        OutFile: VariantAnnotationBlock_famCompleted.0.stderr.txt
+    ResearchEthicalApproval: notApproved
+    VCFFile:
+      Clinical:
+        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk/famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
+      ReadyVcf:
+        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk/famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.vcf
+      Research:
+        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/bwa/gatk/famCompleted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.vcf
+    VCFParser:
+      RangeFile:
+        Database:
+          cust000-Research.txt_Research:
+            Acronym: Research
+            CompleteName: Research
+            Date: 2015-03-01
+            FileName: cust000-Research.txt
+            GenomeBuild: GRCh37.p13
+            Version: '6.8'
+        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/cust000-Research.txt
+      SelectFile:
+        Database:
+          cust000-Clinical_master_list.txt_FullList:
+            Acronym: FullList
+            CompleteName: Clinical master list
+            Date: 2016-05-19
+            FileName: cust000-Clinical_master_list.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '18.0'
+          cust002-OMIM.txt_OMIM:
+            Acronym: OMIM
+            CompleteName: OMIM of 2016-04-15
+            Date: 2016-04-22
+            FileName: cust002-OMIM.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '58.0'
+          cust002-SKD.txt_SKD:
+            Acronym: SKD
+            CompleteName: Skeletal dysplasia
+            Date: 2016-04-22
+            FileName: cust002-SKD.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '54.0'
+          cust003-CMMS.txt_ENDO:
+            Acronym: ENDO
+            CompleteName: Endocrinology
+            Date: 2016-04-25
+            FileName: cust003-CMMS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '7.0'
+          cust003-CMMS.txt_EP:
+            Acronym: EP
+            CompleteName: Epilepsy
+            Date: 2016-04-25
+            FileName: cust003-CMMS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '7.0'
+          cust003-CMMS.txt_IEM:
+            Acronym: IEM
+            CompleteName: Inborn Errors of Metabolism
+            Date: 2016-04-25
+            FileName: cust003-CMMS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '7.0'
+          cust003-CMMS.txt_MIT:
+            Acronym: MIT
+            CompleteName: Mitochondrial nuclear
+            Date: 2016-04-25
+            FileName: cust003-CMMS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '7.0'
+          cust003-mtDNA.txt_mtDNA:
+            Acronym: mtDNA
+            CompleteName: Mitochondrial DNA
+            Date: 2016-04-25
+            FileName: cust003-mtDNA.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '8.0'
+          cust004-IBMFS.txt_IBMFS:
+            Acronym: IBMFS
+            CompleteName: Inherited Bone Marrow Failure Syndromes
+            Date: 2016-02-03
+            FileName: cust004-IBMFS.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '9.1'
+          cust004-PID.txt_PID:
+            Acronym: PID
+            CompleteName: Primary Immune Deficiency
+            Date: 2016-02-02
+            FileName: cust004-PID.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '8.0'
+          cust004-PID.txt_PIDCAD:
+            Acronym: PIDCAD
+            CompleteName: PID Candidates
+            Date: 2016-02-02
+            FileName: cust004-PID.txt
+            GenomeBuild: 'GRCh37.p13																											'
+            Version: '8.0'
+        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/cust000-Clinical_master_list.txt
+    lastLogFilePath: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/mip_log/2016-08-01/mip.pl_2016-08-01T15:05:58.log
+    logFileDir: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust002/famCompleted/analysis/exomes/famCompleted/mip_log
+
