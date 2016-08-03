@@ -9,9 +9,9 @@ from analysis.store import Analysis, Model
 
 app = Flask(__name__)
 DEBUG = False
-SECRET_KEY = os.environ.get('ANALYSIS_SECRET_KEY') or 'daopkdpowanvigjråepl'
+SECRET_KEY = os.environ.get('ANALYSIS_SECRET_KEY') or 'thisIsNotSecret!'
 BOOTSTRAP_SERVE_LOCAL = True
-SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test-init.sqlite3'
+SQLSQLALCHEMY_DATABASE_URI = os.environ.get('SQLSQLALCHEMY_DATABASE_URI')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 TEMPLATES_AUTO_RELOAD = True
 app.config.from_object(__name__)
@@ -27,7 +27,7 @@ def index():
                                   .limit(10))
     error_query = (Analysis.query.filter_by(status='errored')
                                  .order_by(Analysis.started_at.desc())
-                                 .limit(10))
+                                 .limit(20))
     running_query = (Analysis.query.filter_by(status='running')
                                    .order_by(Analysis.started_at.desc()))
     return render_template('index.html', errors=error_query,
