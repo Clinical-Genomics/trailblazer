@@ -5,7 +5,7 @@ import click
 from path import path
 import yaml
 
-from analysis.store import Analysis, get_manager
+from analysis.store import Analysis
 from analysis import utils
 from analysis.exc import MissingFileError
 
@@ -71,7 +71,7 @@ def is_updated(old_analysis, new_analysis):
 @click.pass_context
 def add_cmd(context, qcsampleinfo):
     """Add an analysis to the database."""
-    manager = get_manager(context.obj['database'])
+    manager = context.obj['manager']
     data = yaml.load(qcsampleinfo)
     family_id = data.keys()[0]
     if is_newest(data):

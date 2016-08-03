@@ -5,7 +5,6 @@ import click
 from path import path
 
 from .models import Analysis
-from .utils import get_manager
 
 log = logging.getLogger(__name__)
 
@@ -24,7 +23,7 @@ def delete_analysis(manager, case_id, started_at):
 @click.pass_context
 def delete(context, case_id):
     """Delete an analysis and files."""
-    manager = get_manager(context.obj['database'])
+    manager = context.obj['manager']
     analysis_obj = Analysis.query.filter_by(case_id=case_id).one()
     click.echo("you are about to delete: {}".format(analysis_obj.root_dir))
     if click.confirm('are you sure?'):
@@ -41,7 +40,6 @@ def delete(context, case_id):
 @click.pass_context
 def list_cmd(context, analysis_id, compressed, limit):
     """List added analyses."""
-    get_manager(context.obj['database'])
     query = Analysis.query.order_by(Analysis.started_at)
 
     if analysis_id:
