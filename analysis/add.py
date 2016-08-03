@@ -7,6 +7,7 @@ import yaml
 
 from analysis.store import Analysis, get_manager
 from analysis import utils
+from analysis.exc import MissingFileError
 
 log = logging.getLogger(__name__)
 
@@ -33,8 +34,11 @@ def build_analysis(data):
         values['status'] = 'completed'
     else:
         sacct_out = "{}.status".format(fam_data['lastLogFilePath'])
-        with open(sacct_out, 'r') as stream:
-            error_jobs = utils.inspect_error(stream)
+        try:
+            with open(sacct_out, 'r') as stream:
+                error_jobs = utils.inspect_error(stream)
+        except IOError:
+            raise MissingFileError(sacct_out)
         if len(error_jobs) > 0:
             values['status'] = 'errored'
             values['failed_step'] = error_jobs[0]['name']
@@ -69,23 +73,28 @@ def add_cmd(context, qcsampleinfo):
     """Add an analysis to the database."""
     manager = get_manager(context.obj['database'])
     data = yaml.load(qcsampleinfo)
+    family_id = data.keys()[0]
     if is_newest(data):
-        new_analysis = build_analysis(data)
-        filters = dict(case_id=new_analysis.case_id,
-                       started_at=new_analysis.started_at)
-        old_analysis = (Analysis.query.filter_by(**filters)
-                                      .order_by(Analysis.started_at.desc())
-                                      .first())
-        if old_analysis and not is_updated(old_analysis, new_analysis):
-            log.debug("nothing updated since last analysis: %s",
-                      new_analysis.case_id)
-        else:
-            if old_analysis and old_analysis.status == 'running':
-                # replace if status was 'running'
-                log.debug("deleting existing analysis: %s", new_analysis.case_id)
-                old_analysis.delete()
-                manager.commit()
-            manager.add_commit(new_analysis)
-            log.info("added new analysis: %s", new_analysis.case_id)
+        try:
+            new_analysis = build_analysis(data)
+            filters = dict(case_id=new_analysis.case_id,
+                           started_at=new_analysis.started_at)
+            old_analysis = (Analysis.query.filter_by(**filters)
+                                          .order_by(Analysis.started_at.desc())
+                                          .first())
+            if old_analysis and not is_updated(old_analysis, new_analysis):
+                log.debug("nothing updated since last analysis: %s",
+                          new_analysis.case_id)
+            else:
+                if old_analysis and old_analysis.status == 'running':
+                    # replace if status was 'running'
+                    log.debug("deleting existing analysis: %s",
+                              new_analysis.case_id)
+                    old_analysis.delete()
+                    manager.commit()
+                manager.add_commit(new_analysis)
+                log.info("added new analysis: %s", new_analysis.case_id)
+        except MissingFileError:
+            log.error("missing status file for: %s", family_id)
     else:
-        log.warn("analysis version not supported: %s", data.keys()[0])
+        log.warn("analysis version not supported: %s", family_id)
