@@ -1,0 +1,38 @@
+{% extends "bootstrap/base.html" %}
+{% import "utils.html" as utils %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet"
+      href="{{ url_for('.static', filename='css/simplex.min.css') }}">
+{% endblock %}
+
+{% block title %}Analysis tracker{% endblock %}
+
+{% block content %}
+
+<br>
+
+<div class="container">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ url_for('index') }}">
+                    Analyses
+                </a>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+              {% block right_nav %}
+                  <li><a href="">View all</a></li>
+              {% endblock %}
+            </ul>
+        </div>
+    </nav>
+
+    {{ utils.analyses_panel('Error', errors, category='danger') }}
+    {{ utils.analyses_panel('Running', runnings, category='info', comments=False) }}
+    {{ utils.analyses_panel('Recently completed', recents, category='success') }}
+</div>
+
+{% endblock %}

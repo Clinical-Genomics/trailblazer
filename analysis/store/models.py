@@ -30,7 +30,7 @@ class Analysis(Model):
     """Analysis record."""
 
     id = Column(types.Integer, primary_key=True)
-    name = Column(types.String(128), unique=True)
+    case_id = Column(types.String(128))
 
     # metadata
     pipeline = Column(types.Enum('mip'))
@@ -38,6 +38,18 @@ class Analysis(Model):
     started_at = Column(types.DateTime)
     completed_at = Column(types.DateTime)
     status = Column(types.Enum('running', 'completed', 'errored'))
-    root_dir = Column(types.String(128), unique=True)
+    root_dir = Column(types.String(128))
     type = Column(types.Enum('exomes', 'genomes'))
     failed_step = Column(types.String(128))
+    failed_at = Column(types.DateTime)
+    comment = Column(types.Text)
+    _samples = Column(types.Text)
+
+    @property
+    def samples(self):
+        return self._samples.split(',')
+
+    @samples.setter
+    def samples(self, sample_list):
+        """Serialize a list of sample ids."""
+        self._samples = ','.join(sample_list)

@@ -38,13 +38,12 @@ def analysis_status(sampleinfo_stream):
 
 def inspect_error(sacct_stream):
     """Check STDOUT of the sacct command for failiures."""
-    # split lines on arbitrary whitespace
-    rows = (line.split() for line in sacct_stream)
+    rows = (line.split('\t') for line in sacct_stream)
     # filter rows that begin with a SLURM job id
     relevant_rows = [row for row in rows if row[0].isdigit()]
     # filter rows that have a FAILED status
-    nonsuccess_rows = (row for row in relevant_rows
-                       if row[9] not in ('COMPLETED', 'PENDING'))
+    nonsuccess_rows = (row for row in relevant_rows if row[9] not in
+                       ('COMPLETED', 'RUNNING'))
     # format the results
     nonsuccess_jobs = [convert_job(row) for row in nonsuccess_rows]
     return nonsuccess_jobs

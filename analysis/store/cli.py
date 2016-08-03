@@ -10,20 +10,22 @@ from .utils import get_manager
 log = logging.getLogger(__name__)
 
 
-def delete_analysis(manager, name):
+def delete_analysis(manager, case_id, started_at):
     """Delete an analysis."""
-    analysis_obj = Analysis.query.filter_by(name=name).one()
+    analysis_obj = (Analysis.query
+                            .filter_by(case_id=case_id, started_at=started_at)
+                            .one())
     analysis_obj.delete()
     manager.commit()
 
 
 @click.command()
-@click.argument('name')
+@click.argument('case_id')
 @click.pass_context
-def delete(context, name):
+def delete(context, case_id):
     """Delete an analysis and files."""
     manager = get_manager(context.obj['database'])
-    analysis_obj = Analysis.query.filter_by(name=name).one()
+    analysis_obj = Analysis.query.filter_by(case_id=case_id).one()
     click.echo("you are about to delete: {}".format(analysis_obj.root_dir))
     if click.confirm('are you sure?'):
         path(analysis_obj.root_dir).rmtree_p()
@@ -44,7 +46,7 @@ def list_cmd(context, analysis_id, compressed, limit):
 
     if analysis_id:
         log.debug("filter analyses on id pattern: ", analysis_id)
-        query = query.filter(Analysis.name.contains(analysis_id))
+        query = query.filter(Analysis.case_id.contains(analysis_id))
 
     if query.first() is None:
         log.warn('sorry, no analyses found')

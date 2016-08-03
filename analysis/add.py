@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
 import logging
 
 import click
@@ -12,44 +11,55 @@ from analysis import utils
 log = logging.getLogger(__name__)
 
 
-def build_analysis(qcsampleinfo):
+def build_analysis(data):
     """Build database record from analysis output."""
-    data = yaml.load(qcsampleinfo)
     fam_key = data.keys()[0]
     fam_data = data[fam_key][fam_key]
+    sample_ids = data[fam_key].keys()
+    sample_ids.remove(fam_key)
     started_at = fam_data['AnalysisDate']
     famanalysis_out = path(fam_data['Program']['QCCollect']['OutDirectory'])
     customer = fam_data['InstanceTag'][0]
     values = {
-        'name': "{}-{}".format(customer, fam_key),
+        'case_id': "{}-{}".format(customer, fam_key),
         'pipeline': 'mip',
         'pipeline_version': data[fam_key][fam_key]['MIPVersion'],
         'type': data[fam_key][fam_key]['AnalysisType'],
         'root_dir': famanalysis_out.parent.parent,
-        'started_at': fam_data['AnalysisDate'],
+        'started_at': started_at,
     }
 
     if fam_data['AnalysisRunStatus'] == 'Finished':
         values['status'] = 'completed'
     else:
-        sacct_out = utils.get_sacctout(famanalysis_out)
-        if sacct_out is None:
-            if (datetime.now() - started_at).days > 2:
-                values['status'] = 'errored'
-                values['failed_step'] = 'time'
-            else:
-                # expect the analysis is already running
-                values['status'] = 'running'
+        sacct_out = "{}.status".format(fam_data['lastLogFilePath'])
+        with open(sacct_out, 'r') as stream:
+            error_jobs = utils.inspect_error(stream)
+        if len(error_jobs) > 0:
+            values['status'] = 'errored'
+            values['failed_step'] = error_jobs[0]['name']
+            values['failed_at'] = error_jobs[0]['start']
         else:
-            with open(sacct_out, 'r') as stream:
-                error_jobs = utils.inspect_error(stream)
-            if len(error_jobs) > 0:
-                values['status'] = 'errored'
-                values['failed_step'] = error_jobs[0]['name']
-            else:
-                # not sure what's going on...
-                raise ValueError(famanalysis_out)
-    return Analysis(**values)
+            # assume the analysis is still running without fails
+            values['status'] = 'running'
+
+    new_analysis = Analysis(**values)
+    new_analysis.samples = sample_ids
+    return new_analysis
+
+
+def is_newest(data):
+    """Check if the analysis is up to date."""
+    fam_key = data.keys()[0]
+    version = data[fam_key][fam_key].get('MIPVersion')
+    return version is not None and version.startswith('v3.')
+
+
+def is_updated(old_analysis, new_analysis):
+    """Check if a new analysis has been updated."""
+    return any((old_analysis.status != new_analysis.status,
+                old_analysis.failed_step != new_analysis.failed_step,
+                old_analysis.failed_at != new_analysis.failed_at))
 
 
 @click.command('add')
@@ -58,10 +68,24 @@ def build_analysis(qcsampleinfo):
 def add_cmd(context, qcsampleinfo):
     """Add an analysis to the database."""
     manager = get_manager(context.obj['database'])
-    new_analysis = build_analysis(qcsampleinfo)
-    old_analysis = Analysis.query.filter_by(name=new_analysis.name)
-    if old_analysis:
-        log.debug("deleting existing analysis: %s", new_analysis.name)
-        old_analysis.delete()
-    manager.add_commit(new_analysis)
-    log.info("added new analysis: %s", new_analysis.name)
+    data = yaml.load(qcsampleinfo)
+    if is_newest(data):
+        new_analysis = build_analysis(data)
+        filters = dict(case_id=new_analysis.case_id,
+                       started_at=new_analysis.started_at)
+        old_analysis = (Analysis.query.filter_by(**filters)
+                                      .order_by(Analysis.started_at.desc())
+                                      .first())
+        if old_analysis and not is_updated(old_analysis, new_analysis):
+            log.debug("nothing updated since last analysis: %s",
+                      new_analysis.case_id)
+        else:
+            if old_analysis and old_analysis.status == 'running':
+                # replace if status was 'running'
+                log.debug("deleting existing analysis: %s", new_analysis.case_id)
+                old_analysis.delete()
+                manager.commit()
+            manager.add_commit(new_analysis)
+            log.info("added new analysis: %s", new_analysis.case_id)
+    else:
+        log.warn("analysis version not supported: %s", data.keys()[0])

@@ -18,6 +18,6 @@ def scan(context, cust_dirs):
         log.debug("scanning customer dir: %s", cust_dir)
         sampleinfo_files = utils.scan(cust_dir)
         for sampleinfo in sampleinfo_files:
-            log.info("adding analysis: %s", sampleinfo)
+            log.debug("adding analysis: %s", sampleinfo)
             with open(sampleinfo, 'r') as stream:
                 context.invoke(add_cmd, qcsampleinfo=stream)

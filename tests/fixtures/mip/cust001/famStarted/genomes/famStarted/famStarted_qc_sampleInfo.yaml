@@ -6,125 +6,125 @@
     AnalysisType: genomes
     BCFFile:
       Clinical:
-        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.bcf
-      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.bcf
+        Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.bcf
+      Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.bcf
       Research:
-        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.bcf
+        Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.bcf
     HumanGenomeBuild:
       Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/Homo_sapiens.GRCh37.d5.fasta
       Source: GRCh
       Version: '37'
     InstanceTag:
-      - cust003
+      - cust001
     MIPVersion: v3.0.5
     PedigreeFile:
-      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/genomes/famStarted/famStarted_pedigree.txt
+      Path: tests/fixtures/mip/cust001/famStarted/genomes/famStarted/famStarted_pedigree.txt
     PedigreeFileAnalysis:
-      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/qc_pedigree.yaml
+      Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/qc_pedigree.yaml
     Program:
       Bcftools:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/freebayes
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/freebayes
         OutFile: famStarted_sorted_md_rreal_brecal_freebayes_BOTH.vcf
       Freebayes:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/freebayes
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/freebayes
         OutFile: famStarted_sorted_md_rreal_brecal_freebayes_BOTH.vcf
       GATK:
         Version: g5029e01
       Genmod:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk
         OutFile: famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
       InbreedingFactor:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/samplecheck
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/samplecheck
         OutFile: famStarted.het
       Manta:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/manta
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/manta
         OutFile: famStarted_sorted_md_rreal_brecal_manta_SV.vcf
       PedigreeCheck:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk
         OutFile: famStarted_sorted_md_rreal_brecal_gvcf_vrecal_BOTH.vcf
       PicardTools:
         Version: 2.3.0(9a00c87b7ffdb01cfb5a0d6e76556146196babb8_1463071327)
       QCCollect:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted
         OutFile: famStarted_qcmetrics.yaml
         QCCollectMetricsFile:
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/famStarted_qcmetrics.yaml
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/famStarted_qcmetrics.yaml
       RankVariants:
         Clinical:
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
         RankModel:
           File: rank_model_cmms_v1.16.ini
           Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/rank_model_cmms_v1.16.ini
           Version: '1.16'
         Research:
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.vcf
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.vcf
       RelationCheck:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/samplecheck
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/samplecheck
         OutFile: famStarted.mibs
       SVCombineVariantCallSets:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/info/
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/info/
         OutFile: SVCombineVariantCallSets_famStarted_SV.0.stderr.txt
       SVGenmod:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk
         OutFile: famStarted_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.selected.vcf
       SVRankVariants:
         Clinical:
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.selected.vcf
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.selected.vcf
         RankModel:
           File: svrank_model_cmms_v1.0.ini
           Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/svrank_model_cmms_v1.0.ini
           Version: '1.0'
         Research:
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.vcf
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.vcf
       SVVCFParser:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk
         OutFile: famStarted_sorted_md_rreal_brecal_comb_vep_parsed_SV_1.vcf
       SVVariantEffectPredictor:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk
         OutFile: famStarted_sorted_md_rreal_brecal_comb_vep_SV_1.vcf
       SVVariantEffectPredictorSummary:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk
         OutFile: famStarted_sorted_md_rreal_brecal_comb_vep_SV_1.vcf_summary.html
       Sambamba:
         Version: 0.6.1
       Samtools:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/samtools
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/samtools
         OutFile: famStarted_sorted_md_rreal_brecal_mpileup_BOTH.vcf
       SexCheck:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/samplecheck
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/samplecheck
         OutFile: famStarted.sexcheck
       SnpEff:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk
         OutFile: famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_BOTH_1.selected.vcf
       VCFParser:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk
         OutFile: famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_BOTH_1.vcf
       VariantAnnotationBlock:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/info/
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/info/
         OutFile: VariantAnnotationBlock_famStarted.0.stderr.txt
       VariantEffectPredictor:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk
         OutFile: famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_BOTH_1.vcf
       VariantEffectPredictorSummary:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk
         OutFile: famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_BOTH_1.vcf_summary.html
       vt:
-        OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/info/
+        OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/info/
         OutFile: VariantAnnotationBlock_famStarted.0.stderr.txt
     ResearchEthicalApproval: notApproved
     SVBCFFile:
       Clinical:
-        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.selected.bcf
-      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_SV.bcf
+        Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.selected.bcf
+      Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_SV.bcf
       Research:
-        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.bcf
+        Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.bcf
     SVVCFFile:
       Clinical:
-        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.selected.vcf
+        Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.selected.vcf
       ReadyVcf:
-        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_SV.vcf
+        Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_SV.vcf
       Research:
-        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.vcf
+        Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_comb_vep_parsed_ranked_SV.vcf
     SVVCFParser:
       RangeFile:
         Database:
@@ -218,11 +218,11 @@
         Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/cust000-Clinical_master_list.txt
     VCFFile:
       Clinical:
-        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
+        Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
       ReadyVcf:
-        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.vcf
+        Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.vcf
       Research:
-        Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.vcf
+        Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/bwa/gatk/famStarted_sorted_md_rreal_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.vcf
     VCFParser:
       RangeFile:
         Database:
@@ -314,12 +314,12 @@
             GenomeBuild: 'GRCh37.p13																											'
             Version: '8.0'
         Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_3.0/cust000-Clinical_master_list.txt
-    lastLogFilePath: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/mip_log/2016-08-02/mip.pl_2016-08-02T11:09:08.log
-    logFileDir: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/famStarted/mip_log
+    lastLogFilePath: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/mip_log/2016-08-02/mip.pl_2016-08-02T11:09:08.log
+    logFileDir: tests/fixtures/mip/cust001/famStarted/analysis/genomes/famStarted/mip_log
   ADM1658A10:
     File:
       ADM1658A10.160729_HW32KCCXX-11-Undetermined_TCCGGAGA.lane4:
-        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-11-Undetermined_TCCGGAGA.lane4_sorted.cram
+        CramFile: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-11-Undetermined_TCCGGAGA.lane4_sorted.cram
         ReadDirectionFile:
           ADM1658A10.160729_HW32KCCXX-11-Undetermined_TCCGGAGA.lane4_1:
             Date: 2016-07-29
@@ -342,7 +342,7 @@
         SequenceLength: '151'
         SequenceRunType: Paired-end
       ADM1658A10.160729_HW32KCCXX-11_TCCGGAGA.lane4:
-        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-11_TCCGGAGA.lane4_sorted.cram
+        CramFile: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-11_TCCGGAGA.lane4_sorted.cram
         ReadDirectionFile:
           ADM1658A10.160729_HW32KCCXX-11_TCCGGAGA.lane4_1:
             Date: 2016-07-29
@@ -365,7 +365,7 @@
         SequenceLength: '151'
         SequenceRunType: Paired-end
       ADM1658A10.160729_HW32KCCXX-21-Undetermined_TCCGGAGA.lane4:
-        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-21-Undetermined_TCCGGAGA.lane4_sorted.cram
+        CramFile: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-21-Undetermined_TCCGGAGA.lane4_sorted.cram
         ReadDirectionFile:
           ADM1658A10.160729_HW32KCCXX-21-Undetermined_TCCGGAGA.lane4_1:
             Date: 2016-07-29
@@ -388,7 +388,7 @@
         SequenceLength: '151'
         SequenceRunType: Paired-end
       ADM1658A10.160729_HW32KCCXX-21_TCCGGAGA.lane4:
-        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-21_TCCGGAGA.lane4_sorted.cram
+        CramFile: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-21_TCCGGAGA.lane4_sorted.cram
         ReadDirectionFile:
           ADM1658A10.160729_HW32KCCXX-21_TCCGGAGA.lane4_1:
             Date: 2016-07-29
@@ -411,95 +411,95 @@
         SequenceLength: '151'
         SequenceRunType: Paired-end
     MostCompleteBAM:
-      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/gatk/ADM1658A10_lanes_4444_sorted_md_rreal_brecal.bam
+      Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/gatk/ADM1658A10_lanes_4444_sorted_md_rreal_brecal.bam
     Phenotype: '1'
     Program:
       BamStats:
         ADM1658A10.160729_HW32KCCXX-11_TCCGGAGA.lane4:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa
           OutFile: ADM1658A10.160729_HW32KCCXX-11_TCCGGAGA.lane4_sorted.stats
         ADM1658A10.160729_HW32KCCXX-21_TCCGGAGA.lane4:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa
           OutFile: ADM1658A10.160729_HW32KCCXX-21_TCCGGAGA.lane4_sorted.stats
       Bwa:
         ADM1658A10.160729_HW32KCCXX-11-Undetermined_TCCGGAGA.lane4:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/info/
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/info/
           OutFile: BwaMem_ADM1658A10.0.stderr.txt
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-11-Undetermined_TCCGGAGA.lane4_sorted.cram
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-11-Undetermined_TCCGGAGA.lane4_sorted.cram
         ADM1658A10.160729_HW32KCCXX-11_TCCGGAGA.lane4:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/info/
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/info/
           OutFile: BwaMem_ADM1658A10.1.stderr.txt
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-11_TCCGGAGA.lane4_sorted.cram
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-11_TCCGGAGA.lane4_sorted.cram
         ADM1658A10.160729_HW32KCCXX-21-Undetermined_TCCGGAGA.lane4:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/info/
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/info/
           OutFile: BwaMem_ADM1658A10.2.stderr.txt
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-21-Undetermined_TCCGGAGA.lane4_sorted.cram
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-21-Undetermined_TCCGGAGA.lane4_sorted.cram
         ADM1658A10.160729_HW32KCCXX-21_TCCGGAGA.lane4:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/info/
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/info/
           OutFile: BwaMem_ADM1658A10.3.stderr.txt
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-21_TCCGGAGA.lane4_sorted.cram
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/ADM1658A10.160729_HW32KCCXX-21_TCCGGAGA.lane4_sorted.cram
       CalculateHsMetrics:
         ADM1658A10_lanes_4444:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/coveragereport
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/coveragereport
           OutFile: ADM1658A10_lanes_4444_sorted_md_rreal_brecal_CalculateHsMetrics
       Chanjo:
         ADM1658A10_lanes_4444:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/coveragereport
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/coveragereport
           OutFile: ADM1658A10_lanes_4444_sorted_md_rreal_brecal_chanjoSexCheck.log
       ChanjoSexCheck:
         ADM1658A10_lanes_4444:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/coveragereport
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/coveragereport
           OutFile: ADM1658A10_lanes_4444_sorted_md_rreal_brecal.sexcheck
       CollectMultipleMetrics:
         ADM1658A10_lanes_4444:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/coveragereport
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/coveragereport
           OutFile: ADM1658A10_lanes_4444_sorted_md_rreal_brecal.alignment_summary_metrics
       FastQC:
         4_160729_HW32KCCXX-11-Undetermined_ADM1658A10_TCCGGAGA_1.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-11-Undetermined_ADM1658A10_TCCGGAGA_1_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-11-Undetermined_ADM1658A10_TCCGGAGA_1_fastqc
           OutFile: fastqc_data.txt
         4_160729_HW32KCCXX-11-Undetermined_ADM1658A10_TCCGGAGA_2.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-11-Undetermined_ADM1658A10_TCCGGAGA_2_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-11-Undetermined_ADM1658A10_TCCGGAGA_2_fastqc
           OutFile: fastqc_data.txt
         4_160729_HW32KCCXX-11_ADM1658A10_TCCGGAGA_1.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-11_ADM1658A10_TCCGGAGA_1_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-11_ADM1658A10_TCCGGAGA_1_fastqc
           OutFile: fastqc_data.txt
         4_160729_HW32KCCXX-11_ADM1658A10_TCCGGAGA_2.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-11_ADM1658A10_TCCGGAGA_2_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-11_ADM1658A10_TCCGGAGA_2_fastqc
           OutFile: fastqc_data.txt
         4_160729_HW32KCCXX-21-Undetermined_ADM1658A10_TCCGGAGA_1.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-21-Undetermined_ADM1658A10_TCCGGAGA_1_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-21-Undetermined_ADM1658A10_TCCGGAGA_1_fastqc
           OutFile: fastqc_data.txt
         4_160729_HW32KCCXX-21-Undetermined_ADM1658A10_TCCGGAGA_2.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-21-Undetermined_ADM1658A10_TCCGGAGA_2_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-21-Undetermined_ADM1658A10_TCCGGAGA_2_fastqc
           OutFile: fastqc_data.txt
         4_160729_HW32KCCXX-21_ADM1658A10_TCCGGAGA_1.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-21_ADM1658A10_TCCGGAGA_1_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-21_ADM1658A10_TCCGGAGA_1_fastqc
           OutFile: fastqc_data.txt
         4_160729_HW32KCCXX-21_ADM1658A10_TCCGGAGA_2.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-21_ADM1658A10_TCCGGAGA_2_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/fastqc/4_160729_HW32KCCXX-21_ADM1658A10_TCCGGAGA_2_fastqc
           OutFile: fastqc_data.txt
       MarkDuplicates:
         ADM1658A10_lanes_4444:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa
           OutFile: ADM1658A10_lanes_4444_sorted_md_metric
       SambambaDepth:
         ADM1658A10_lanes_4444:
           Bed:
-            Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/coveragereport/ADM1658A10_lanes_4444_sorted_md_rreal_brecal_coverage.bed
+            Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/coveragereport/ADM1658A10_lanes_4444_sorted_md_rreal_brecal_coverage.bed
       VariantEval_All:
         ADM1658A10_lanes_4444:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/gatk/varianteval
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/gatk/varianteval
           OutFile: ADM1658A10_lanes_4444_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.vcf.varianteval
       VariantEval_Exome:
         ADM1658A10_lanes_4444:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A10/bwa/gatk/varianteval
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A10/bwa/gatk/varianteval
           OutFile: ADM1658A10_lanes_4444_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH_exome.vcf.varianteval
     Sex: 1
   ADM1658A7:
     File:
       ADM1658A7.160729_HW3M3CCXX-11-Undetermined_CTGAAGCT.lane7:
-        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-11-Undetermined_CTGAAGCT.lane7_sorted.cram
+        CramFile: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-11-Undetermined_CTGAAGCT.lane7_sorted.cram
         ReadDirectionFile:
           ADM1658A7.160729_HW3M3CCXX-11-Undetermined_CTGAAGCT.lane7_1:
             Date: 2016-07-29
@@ -522,7 +522,7 @@
         SequenceLength: '151'
         SequenceRunType: Paired-end
       ADM1658A7.160729_HW3M3CCXX-11_CTGAAGCT.lane7:
-        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-11_CTGAAGCT.lane7_sorted.cram
+        CramFile: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-11_CTGAAGCT.lane7_sorted.cram
         ReadDirectionFile:
           ADM1658A7.160729_HW3M3CCXX-11_CTGAAGCT.lane7_1:
             Date: 2016-07-29
@@ -545,7 +545,7 @@
         SequenceLength: '151'
         SequenceRunType: Paired-end
       ADM1658A7.160729_HW3M3CCXX-21-Undetermined_CTGAAGCT.lane7:
-        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-21-Undetermined_CTGAAGCT.lane7_sorted.cram
+        CramFile: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-21-Undetermined_CTGAAGCT.lane7_sorted.cram
         ReadDirectionFile:
           ADM1658A7.160729_HW3M3CCXX-21-Undetermined_CTGAAGCT.lane7_1:
             Date: 2016-07-29
@@ -568,7 +568,7 @@
         SequenceLength: '151'
         SequenceRunType: Paired-end
       ADM1658A7.160729_HW3M3CCXX-21_CTGAAGCT.lane7:
-        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-21_CTGAAGCT.lane7_sorted.cram
+        CramFile: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-21_CTGAAGCT.lane7_sorted.cram
         ReadDirectionFile:
           ADM1658A7.160729_HW3M3CCXX-21_CTGAAGCT.lane7_1:
             Date: 2016-07-29
@@ -591,95 +591,95 @@
         SequenceLength: '151'
         SequenceRunType: Paired-end
     MostCompleteBAM:
-      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/gatk/ADM1658A7_lanes_7777_sorted_md_rreal_brecal.bam
+      Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/gatk/ADM1658A7_lanes_7777_sorted_md_rreal_brecal.bam
     Phenotype: '2'
     Program:
       BamStats:
         ADM1658A7.160729_HW3M3CCXX-11_CTGAAGCT.lane7:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa
           OutFile: ADM1658A7.160729_HW3M3CCXX-11_CTGAAGCT.lane7_sorted.stats
         ADM1658A7.160729_HW3M3CCXX-21_CTGAAGCT.lane7:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa
           OutFile: ADM1658A7.160729_HW3M3CCXX-21_CTGAAGCT.lane7_sorted.stats
       Bwa:
         ADM1658A7.160729_HW3M3CCXX-11-Undetermined_CTGAAGCT.lane7:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/info/
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/info/
           OutFile: BwaMem_ADM1658A7.0.stderr.txt
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-11-Undetermined_CTGAAGCT.lane7_sorted.cram
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-11-Undetermined_CTGAAGCT.lane7_sorted.cram
         ADM1658A7.160729_HW3M3CCXX-11_CTGAAGCT.lane7:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/info/
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/info/
           OutFile: BwaMem_ADM1658A7.1.stderr.txt
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-11_CTGAAGCT.lane7_sorted.cram
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-11_CTGAAGCT.lane7_sorted.cram
         ADM1658A7.160729_HW3M3CCXX-21-Undetermined_CTGAAGCT.lane7:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/info/
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/info/
           OutFile: BwaMem_ADM1658A7.2.stderr.txt
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-21-Undetermined_CTGAAGCT.lane7_sorted.cram
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-21-Undetermined_CTGAAGCT.lane7_sorted.cram
         ADM1658A7.160729_HW3M3CCXX-21_CTGAAGCT.lane7:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/info/
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/info/
           OutFile: BwaMem_ADM1658A7.3.stderr.txt
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-21_CTGAAGCT.lane7_sorted.cram
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/ADM1658A7.160729_HW3M3CCXX-21_CTGAAGCT.lane7_sorted.cram
       CalculateHsMetrics:
         ADM1658A7_lanes_7777:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/coveragereport
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/coveragereport
           OutFile: ADM1658A7_lanes_7777_sorted_md_rreal_brecal_CalculateHsMetrics
       Chanjo:
         ADM1658A7_lanes_7777:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/coveragereport
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/coveragereport
           OutFile: ADM1658A7_lanes_7777_sorted_md_rreal_brecal_chanjoSexCheck.log
       ChanjoSexCheck:
         ADM1658A7_lanes_7777:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/coveragereport
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/coveragereport
           OutFile: ADM1658A7_lanes_7777_sorted_md_rreal_brecal.sexcheck
       CollectMultipleMetrics:
         ADM1658A7_lanes_7777:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/coveragereport
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/coveragereport
           OutFile: ADM1658A7_lanes_7777_sorted_md_rreal_brecal.alignment_summary_metrics
       FastQC:
         7_160729_HW3M3CCXX-11-Undetermined_ADM1658A7_CTGAAGCT_1.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-11-Undetermined_ADM1658A7_CTGAAGCT_1_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-11-Undetermined_ADM1658A7_CTGAAGCT_1_fastqc
           OutFile: fastqc_data.txt
         7_160729_HW3M3CCXX-11-Undetermined_ADM1658A7_CTGAAGCT_2.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-11-Undetermined_ADM1658A7_CTGAAGCT_2_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-11-Undetermined_ADM1658A7_CTGAAGCT_2_fastqc
           OutFile: fastqc_data.txt
         7_160729_HW3M3CCXX-11_ADM1658A7_CTGAAGCT_1.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-11_ADM1658A7_CTGAAGCT_1_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-11_ADM1658A7_CTGAAGCT_1_fastqc
           OutFile: fastqc_data.txt
         7_160729_HW3M3CCXX-11_ADM1658A7_CTGAAGCT_2.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-11_ADM1658A7_CTGAAGCT_2_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-11_ADM1658A7_CTGAAGCT_2_fastqc
           OutFile: fastqc_data.txt
         7_160729_HW3M3CCXX-21-Undetermined_ADM1658A7_CTGAAGCT_1.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-21-Undetermined_ADM1658A7_CTGAAGCT_1_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-21-Undetermined_ADM1658A7_CTGAAGCT_1_fastqc
           OutFile: fastqc_data.txt
         7_160729_HW3M3CCXX-21-Undetermined_ADM1658A7_CTGAAGCT_2.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-21-Undetermined_ADM1658A7_CTGAAGCT_2_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-21-Undetermined_ADM1658A7_CTGAAGCT_2_fastqc
           OutFile: fastqc_data.txt
         7_160729_HW3M3CCXX-21_ADM1658A7_CTGAAGCT_1.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-21_ADM1658A7_CTGAAGCT_1_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-21_ADM1658A7_CTGAAGCT_1_fastqc
           OutFile: fastqc_data.txt
         7_160729_HW3M3CCXX-21_ADM1658A7_CTGAAGCT_2.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-21_ADM1658A7_CTGAAGCT_2_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/fastqc/7_160729_HW3M3CCXX-21_ADM1658A7_CTGAAGCT_2_fastqc
           OutFile: fastqc_data.txt
       MarkDuplicates:
         ADM1658A7_lanes_7777:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa
           OutFile: ADM1658A7_lanes_7777_sorted_md_metric
       SambambaDepth:
         ADM1658A7_lanes_7777:
           Bed:
-            Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/coveragereport/ADM1658A7_lanes_7777_sorted_md_rreal_brecal_coverage.bed
+            Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/coveragereport/ADM1658A7_lanes_7777_sorted_md_rreal_brecal_coverage.bed
       VariantEval_All:
         ADM1658A7_lanes_7777:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/gatk/varianteval
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/gatk/varianteval
           OutFile: ADM1658A7_lanes_7777_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.vcf.varianteval
       VariantEval_Exome:
         ADM1658A7_lanes_7777:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A7/bwa/gatk/varianteval
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A7/bwa/gatk/varianteval
           OutFile: ADM1658A7_lanes_7777_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH_exome.vcf.varianteval
     Sex: 1
   ADM1658A9:
     File:
       ADM1658A9.160729_HW32KCCXX-11-Undetermined_ATTACTCG.lane3:
-        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-11-Undetermined_ATTACTCG.lane3_sorted.cram
+        CramFile: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-11-Undetermined_ATTACTCG.lane3_sorted.cram
         ReadDirectionFile:
           ADM1658A9.160729_HW32KCCXX-11-Undetermined_ATTACTCG.lane3_1:
             Date: 2016-07-29
@@ -702,7 +702,7 @@
         SequenceLength: '151'
         SequenceRunType: Paired-end
       ADM1658A9.160729_HW32KCCXX-11_ATTACTCG.lane3:
-        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-11_ATTACTCG.lane3_sorted.cram
+        CramFile: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-11_ATTACTCG.lane3_sorted.cram
         ReadDirectionFile:
           ADM1658A9.160729_HW32KCCXX-11_ATTACTCG.lane3_1:
             Date: 2016-07-29
@@ -725,7 +725,7 @@
         SequenceLength: '151'
         SequenceRunType: Paired-end
       ADM1658A9.160729_HW32KCCXX-21-Undetermined_ATTACTCG.lane3:
-        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-21-Undetermined_ATTACTCG.lane3_sorted.cram
+        CramFile: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-21-Undetermined_ATTACTCG.lane3_sorted.cram
         ReadDirectionFile:
           ADM1658A9.160729_HW32KCCXX-21-Undetermined_ATTACTCG.lane3_1:
             Date: 2016-07-29
@@ -748,7 +748,7 @@
         SequenceLength: '151'
         SequenceRunType: Paired-end
       ADM1658A9.160729_HW32KCCXX-21_ATTACTCG.lane3:
-        CramFile: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-21_ATTACTCG.lane3_sorted.cram
+        CramFile: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-21_ATTACTCG.lane3_sorted.cram
         ReadDirectionFile:
           ADM1658A9.160729_HW32KCCXX-21_ATTACTCG.lane3_1:
             Date: 2016-07-29
@@ -771,88 +771,88 @@
         SequenceLength: '151'
         SequenceRunType: Paired-end
     MostCompleteBAM:
-      Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/gatk/ADM1658A9_lanes_3333_sorted_md_rreal_brecal.bam
+      Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/gatk/ADM1658A9_lanes_3333_sorted_md_rreal_brecal.bam
     Phenotype: '1'
     Program:
       BamStats:
         ADM1658A9.160729_HW32KCCXX-11_ATTACTCG.lane3:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa
           OutFile: ADM1658A9.160729_HW32KCCXX-11_ATTACTCG.lane3_sorted.stats
         ADM1658A9.160729_HW32KCCXX-21_ATTACTCG.lane3:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa
           OutFile: ADM1658A9.160729_HW32KCCXX-21_ATTACTCG.lane3_sorted.stats
       Bwa:
         ADM1658A9.160729_HW32KCCXX-11-Undetermined_ATTACTCG.lane3:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/info/
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/info/
           OutFile: BwaMem_ADM1658A9.0.stderr.txt
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-11-Undetermined_ATTACTCG.lane3_sorted.cram
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-11-Undetermined_ATTACTCG.lane3_sorted.cram
         ADM1658A9.160729_HW32KCCXX-11_ATTACTCG.lane3:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/info/
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/info/
           OutFile: BwaMem_ADM1658A9.1.stderr.txt
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-11_ATTACTCG.lane3_sorted.cram
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-11_ATTACTCG.lane3_sorted.cram
         ADM1658A9.160729_HW32KCCXX-21-Undetermined_ATTACTCG.lane3:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/info/
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/info/
           OutFile: BwaMem_ADM1658A9.2.stderr.txt
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-21-Undetermined_ATTACTCG.lane3_sorted.cram
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-21-Undetermined_ATTACTCG.lane3_sorted.cram
         ADM1658A9.160729_HW32KCCXX-21_ATTACTCG.lane3:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/info/
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/info/
           OutFile: BwaMem_ADM1658A9.3.stderr.txt
-          Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-21_ATTACTCG.lane3_sorted.cram
+          Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/ADM1658A9.160729_HW32KCCXX-21_ATTACTCG.lane3_sorted.cram
       CalculateHsMetrics:
         ADM1658A9_lanes_3333:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/coveragereport
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/coveragereport
           OutFile: ADM1658A9_lanes_3333_sorted_md_rreal_brecal_CalculateHsMetrics
       Chanjo:
         ADM1658A9_lanes_3333:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/coveragereport
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/coveragereport
           OutFile: ADM1658A9_lanes_3333_sorted_md_rreal_brecal_chanjoSexCheck.log
       ChanjoSexCheck:
         ADM1658A9_lanes_3333:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/coveragereport
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/coveragereport
           OutFile: ADM1658A9_lanes_3333_sorted_md_rreal_brecal.sexcheck
       CollectMultipleMetrics:
         ADM1658A9_lanes_3333:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/coveragereport
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/coveragereport
           OutFile: ADM1658A9_lanes_3333_sorted_md_rreal_brecal.alignment_summary_metrics
       FastQC:
         3_160729_HW32KCCXX-11-Undetermined_ADM1658A9_ATTACTCG_1.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-11-Undetermined_ADM1658A9_ATTACTCG_1_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-11-Undetermined_ADM1658A9_ATTACTCG_1_fastqc
           OutFile: fastqc_data.txt
         3_160729_HW32KCCXX-11-Undetermined_ADM1658A9_ATTACTCG_2.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-11-Undetermined_ADM1658A9_ATTACTCG_2_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-11-Undetermined_ADM1658A9_ATTACTCG_2_fastqc
           OutFile: fastqc_data.txt
         3_160729_HW32KCCXX-11_ADM1658A9_ATTACTCG_1.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-11_ADM1658A9_ATTACTCG_1_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-11_ADM1658A9_ATTACTCG_1_fastqc
           OutFile: fastqc_data.txt
         3_160729_HW32KCCXX-11_ADM1658A9_ATTACTCG_2.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-11_ADM1658A9_ATTACTCG_2_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-11_ADM1658A9_ATTACTCG_2_fastqc
           OutFile: fastqc_data.txt
         3_160729_HW32KCCXX-21-Undetermined_ADM1658A9_ATTACTCG_1.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-21-Undetermined_ADM1658A9_ATTACTCG_1_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-21-Undetermined_ADM1658A9_ATTACTCG_1_fastqc
           OutFile: fastqc_data.txt
         3_160729_HW32KCCXX-21-Undetermined_ADM1658A9_ATTACTCG_2.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-21-Undetermined_ADM1658A9_ATTACTCG_2_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-21-Undetermined_ADM1658A9_ATTACTCG_2_fastqc
           OutFile: fastqc_data.txt
         3_160729_HW32KCCXX-21_ADM1658A9_ATTACTCG_1.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-21_ADM1658A9_ATTACTCG_1_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-21_ADM1658A9_ATTACTCG_1_fastqc
           OutFile: fastqc_data.txt
         3_160729_HW32KCCXX-21_ADM1658A9_ATTACTCG_2.fastq.gz:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-21_ADM1658A9_ATTACTCG_2_fastqc
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/fastqc/3_160729_HW32KCCXX-21_ADM1658A9_ATTACTCG_2_fastqc
           OutFile: fastqc_data.txt
       MarkDuplicates:
         ADM1658A9_lanes_3333:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa
           OutFile: ADM1658A9_lanes_3333_sorted_md_metric
       SambambaDepth:
         ADM1658A9_lanes_3333:
           Bed:
-            Path: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/coveragereport/ADM1658A9_lanes_3333_sorted_md_rreal_brecal_coverage.bed
+            Path: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/coveragereport/ADM1658A9_lanes_3333_sorted_md_rreal_brecal_coverage.bed
       VariantEval_All:
         ADM1658A9_lanes_3333:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/gatk/varianteval
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/gatk/varianteval
           OutFile: ADM1658A9_lanes_3333_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH.vcf.varianteval
       VariantEval_Exome:
         ADM1658A9_lanes_3333:
-          OutDirectory: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/cust003/famStarted/analysis/genomes/ADM1658A9/bwa/gatk/varianteval
+          OutDirectory: tests/fixtures/mip/cust001/famStarted/analysis/genomes/ADM1658A9/bwa/gatk/varianteval
           OutFile: ADM1658A9_lanes_3333_sorted_md_rreal_brecal_gvcf_vrecal_comb_BOTH_exome.vcf.varianteval
     Sex: 2
