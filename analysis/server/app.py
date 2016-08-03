@@ -11,7 +11,7 @@ app = Flask(__name__)
 DEBUG = False
 SECRET_KEY = os.environ.get('ANALYSIS_SECRET_KEY') or 'thisIsNotSecret!'
 BOOTSTRAP_SERVE_LOCAL = True
-SQLSQLALCHEMY_DATABASE_URI = os.environ.get('SQLSQLALCHEMY_DATABASE_URI')
+SQLALCHEMY_DATABASE_URI = os.environ['SQLALCHEMY_DATABASE_URI']
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 TEMPLATES_AUTO_RELOAD = True
 app.config.from_object(__name__)
