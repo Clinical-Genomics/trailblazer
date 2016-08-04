@@ -24,8 +24,10 @@
         Active query: <i>{{ query_str }}</i>
       </div>
     {% endif %}
-
-    {{ utils.analyses_table(analyses.items, colored=True) }}
+  
+    <div class="table-responsive">
+      {{ utils.analyses_table(analyses.items, colored=True) }}
+    </div>
 
     <div class="panel-footer">
       <div class="row">

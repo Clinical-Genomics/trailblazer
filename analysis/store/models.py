@@ -44,6 +44,7 @@ class Analysis(Model):
     failed_step = Column(types.String(128))
     failed_at = Column(types.DateTime)
     comment = Column(types.Text)
+    is_deleted = Column(types.Boolean)
     _samples = Column(types.Text)
 
     @property

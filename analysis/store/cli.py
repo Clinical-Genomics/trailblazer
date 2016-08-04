@@ -26,12 +26,15 @@ def delete(context, case_id):
     """Delete an analysis and files."""
     manager = context.obj['manager']
     analysis_obj = Analysis.query.filter_by(case_id=case_id).one()
-    click.echo("you are about to delete: {}".format(analysis_obj.root_dir))
-    if click.confirm('are you sure?'):
-        path(analysis_obj.root_dir).rmtree_p()
-        analysis_obj.delete()
-        manager.commit()
-        click.echo("removed: {}".format(analysis_obj.root_dir))
+    if analysis_obj.is_deleted:
+        click.echo("this analysis is already deleted")
+    else:
+        click.echo("you are about to delete: {}".format(analysis_obj.root_dir))
+        if click.confirm('are you sure?'):
+            path(analysis_obj.root_dir).rmtree_p()
+            analysis_obj.is_deleted = True
+            manager.commit()
+            click.echo("removed: {}".format(analysis_obj.root_dir))
 
 
 @click.command('list')

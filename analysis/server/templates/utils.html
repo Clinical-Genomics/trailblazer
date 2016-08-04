@@ -4,7 +4,9 @@
             {{ title }}
         </div>
 
-        {{ analyses_table(analyses, comments=comments) }}
+        <div class="table-responsive">
+            {{ analyses_table(analyses, comments=comments) }}
+        </div>
     </div>
 {% endmacro %}
 
@@ -44,6 +46,12 @@
                                 {% endfor %}
                             </ul>
                         </div>
+
+                        {% if analysis.is_deleted %}
+                            <span class="badge pull-right">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </span>
+                        {% endif %}
                     </td>
                     <td class="col-xs-1">{{ analysis.started_at.date() }}</td>
                     <td class="col-xs-1">{{ analysis.pipeline_version }}</td>
