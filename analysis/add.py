@@ -52,9 +52,11 @@ def build_analysis(data):
         values['status'] = 'completed'
     else:
         sacct_out = utils.get_sacctout(analysis_out)
+        long_since_start = (datetime.now() - analysis_start).seconds > 86400
         if sacct_out is None:
-            # check if the analysis has been running more than 24 hours
-            if (datetime.now() - analysis_start).seconds > 86400:
+            if long_since_start:
+                # if the analysis should've finished but hasn't
+                # pending possible errors
                 values['status'] = 'failed'
                 values['failed_step'] = 'time'
             else:
@@ -66,8 +68,13 @@ def build_analysis(data):
             if len(error_jobs) > 0:
                 first_fail = error_jobs[0]
                 if analysis_start > first_fail['start']:
-                    # the analysis has been restarted and is running!
-                    values['status'] = 'running'
+                    # the analysis has been restarted
+                    # the Sacct errors don't belong to this analysis!
+                    if long_since_start:
+                        values['status'] = 'failed'
+                        values['failed_step'] = 'time'
+                    else:
+                        values['status'] = 'running'
                 else:
                     values['status'] = 'failed'
                     values['failed_step'] = first_fail['name']
