@@ -50,7 +50,7 @@ def build_analysis(data):
         sacct_out = utils.get_sacctout(famanalysis_out)
         if sacct_out is None:
             # check if the analysis has been running more than 24 hours
-            if (datetime.now() - analysis_start).second > 86400:
+            if (datetime.now() - analysis_start).seconds > 86400:
                 values['status'] = 'failed'
                 values['failed_step'] = 'time'
             else:
