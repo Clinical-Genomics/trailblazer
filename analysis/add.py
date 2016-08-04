@@ -32,22 +32,26 @@ def build_analysis(data):
     sample_ids = data[fam_key].keys()
     sample_ids.remove(fam_key)
     analysis_start = fam_data['AnalysisDate']
-    famanalysis_out = path(fam_data['Program']['QCCollect']['OutDirectory'])
+    analysis_type = data[fam_key][fam_key]['AnalysisType']
+    analysis_out = path(fam_data['Program']['QCCollect']['OutDirectory'])
     customer = fam_data['InstanceTag'][0]
     case_id = "{}-{}".format(customer, fam_key)
+    config_path = analysis_out.parent.joinpath(analysis_type, fam_key,
+                                               "{}_config.yaml".format(fam_key))
     values = {
         'case_id': case_id,
         'pipeline': 'mip',
         'pipeline_version': data[fam_key][fam_key]['MIPVersion'],
-        'type': data[fam_key][fam_key]['AnalysisType'],
-        'root_dir': famanalysis_out.parent.parent,
+        'type': analysis_type,
+        'root_dir': analysis_out.parent.parent,
         'started_at': analysis_start,
+        'config_path': config_path,
     }
 
     if fam_data['AnalysisRunStatus'] == 'Finished':
         values['status'] = 'completed'
     else:
-        sacct_out = utils.get_sacctout(famanalysis_out)
+        sacct_out = utils.get_sacctout(analysis_out)
         if sacct_out is None:
             # check if the analysis has been running more than 24 hours
             if (datetime.now() - analysis_start).seconds > 86400:

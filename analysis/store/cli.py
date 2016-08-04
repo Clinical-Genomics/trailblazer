@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import date
 import logging
 
 import click
@@ -34,20 +35,31 @@ def delete(context, case_id):
 
 
 @click.command('list')
-@click.option('-c', '--compressed', is_flag=True)
+@click.option('-p', '--pretty', is_flag=True)
 @click.option('-l', '--limit', default=10)
+@click.option('-s', '--since', nargs=3, type=int)
+@click.option('-c', '--config', is_flag=True)
 @click.argument('analysis_id', required=False)
 @click.pass_context
-def list_cmd(context, analysis_id, compressed, limit):
+def list_cmd(context, pretty, limit, since, config, analysis_id):
     """List added analyses."""
     query = Analysis.query.order_by(Analysis.started_at)
 
+    if since:
+        since_date = date(*since)
+        log.debug("filter analyses on date: %s", since_date)
+        query = query.filter(Analysis.started_at > since_date)
+
     if analysis_id:
-        log.debug("filter analyses on id pattern: ", analysis_id)
+        log.debug("filter analyses on id pattern: %s", analysis_id)
         query = query.filter(Analysis.case_id.contains(analysis_id))
 
     if query.first() is None:
         log.warn('sorry, no analyses found')
     else:
-        for analysis in query.limit(limit):
-            click.echo(analysis.to_json(pretty=not compressed))
+        if config:
+            paths = (analysis.config_path for analysis in query.limit(limit))
+            click.echo(' '.join(paths))
+        else:
+            for analysis in query.limit(limit):
+                click.echo(analysis.to_json(pretty=pretty))
