@@ -38,12 +38,13 @@ def index():
 @app.route('/analyses')
 def analyses():
     """Show all analyses."""
-    query = Analysis.query.order_by(Analysis.started_at.desc())
+    page_num = int(request.args.get('page', 1))
     query_str = request.args.get('query_str')
+    query = Analysis.query.order_by(Analysis.started_at.desc())
     if query_str:
         query = query.filter(sqa.or_(Analysis.case_id.contains(query_str),
                                      Analysis.status == query_str))
-    page = query.paginate(page=request.args.get('page', 1), per_page=30)
+    page = query.paginate(page=page_num, per_page=30)
     return render_template('analyses.html', analyses=page, query_str=query_str)
 
 
