@@ -3,8 +3,6 @@ from datetime import datetime
 
 from path import path
 
-from analysis.exc import MultipleFilesError
-
 
 def scan(root_dir):
     """Scan root for MIP analyses.
@@ -19,7 +17,8 @@ def get_sacctout(analysis_root):
     """Return the path to the sacct STDOUT file."""
     files = path(analysis_root).glob('bwa/info/Sacct_*.stdout.txt')
     if len(files) > 1:
-        raise MultipleFilesError(files)
+        # pick the "latest" file - increments with number in the filename
+        return files[-1]
     try:
         return files[0]
     except IndexError:
