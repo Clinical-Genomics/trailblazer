@@ -37,7 +37,7 @@ class Analysis(Model):
     pipeline_version = Column(types.String(32))
     started_at = Column(types.DateTime)
     completed_at = Column(types.DateTime)
-    status = Column(types.Enum('running', 'completed', 'errored'))
+    status = Column(types.Enum('running', 'completed', 'failed'))
     root_dir = Column(types.String(128))
     type = Column(types.Enum('exomes', 'genomes'))
     failed_step = Column(types.String(128))

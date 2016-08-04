@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 import logging
 
 import click
@@ -7,45 +8,69 @@ import yaml
 
 from analysis.store import Analysis
 from analysis import utils
-from analysis.exc import MissingFileError
+from analysis.exc import MissingFileError, UnknownError
 
 log = logging.getLogger(__name__)
 
 
 def build_analysis(data):
-    """Build database record from analysis output."""
+    """Build database record from analysis output.
+
+    Is the analysis running or errored?
+    - 0. Can we find a Sacct output?
+        - no: was it started > 24 hours ago?
+            - yes: error/time
+            - no: running
+        - yes: do we find errors in the log?
+            - yes: are the time points after start of analysis?
+                - yes: error/[reason]
+                - no: running
+            - no: uhm, no idea ;)
+    """
     fam_key = data.keys()[0]
     fam_data = data[fam_key][fam_key]
     sample_ids = data[fam_key].keys()
     sample_ids.remove(fam_key)
-    started_at = fam_data['AnalysisDate']
+    analysis_start = fam_data['AnalysisDate']
     famanalysis_out = path(fam_data['Program']['QCCollect']['OutDirectory'])
     customer = fam_data['InstanceTag'][0]
+    case_id = "{}-{}".format(customer, fam_key)
     values = {
-        'case_id': "{}-{}".format(customer, fam_key),
+        'case_id': case_id,
         'pipeline': 'mip',
         'pipeline_version': data[fam_key][fam_key]['MIPVersion'],
         'type': data[fam_key][fam_key]['AnalysisType'],
         'root_dir': famanalysis_out.parent.parent,
-        'started_at': started_at,
+        'started_at': analysis_start,
     }
 
     if fam_data['AnalysisRunStatus'] == 'Finished':
         values['status'] = 'completed'
     else:
-        sacct_out = "{}.status".format(fam_data['lastLogFilePath'])
-        try:
+        sacct_out = utils.get_sacctout(famanalysis_out)
+        if sacct_out is None:
+            # check if the analysis has been running more than 24 hours
+            if (datetime.now() - analysis_start).hours > 24:
+                values['status'] = 'failed'
+                values['failed_step'] = 'time'
+            else:
+                # assume the analysis is still running without fails
+                values['status'] = 'running'
+        else:
             with open(sacct_out, 'r') as stream:
                 error_jobs = utils.inspect_error(stream)
-        except IOError:
-            raise MissingFileError(sacct_out)
-        if len(error_jobs) > 0:
-            values['status'] = 'errored'
-            values['failed_step'] = error_jobs[0]['name']
-            values['failed_at'] = error_jobs[0]['start']
-        else:
-            # assume the analysis is still running without fails
-            values['status'] = 'running'
+            if len(error_jobs) > 0:
+                first_fail = error_jobs[0]
+                if analysis_start > first_fail['start']:
+                    # the analysis has been restarted and is running!
+                    values['status'] = 'running'
+                else:
+                    values['status'] = 'failed'
+                    values['failed_step'] = first_fail['name']
+                    values['failed_at'] = first_fail['start']
+            else:
+                # the status in QC sample info should be "Finished"...
+                raise UnknownError(case_id)
 
     new_analysis = Analysis(**values)
     new_analysis.samples = sample_ids
@@ -97,4 +122,4 @@ def add_cmd(context, qcsampleinfo):
         except MissingFileError:
             log.error("missing status file for: %s", family_id)
     else:
-        log.warn("analysis version not supported: %s", family_id)
+        log.debug("analysis version not supported: %s", family_id)

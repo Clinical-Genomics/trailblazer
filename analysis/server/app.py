@@ -25,12 +25,12 @@ def index():
     recent_query = (Analysis.query.filter_by(status='completed')
                                   .order_by(Analysis.started_at.desc())
                                   .limit(10))
-    error_query = (Analysis.query.filter_by(status='errored')
-                                 .order_by(Analysis.started_at.desc())
-                                 .limit(20))
+    fail_query = (Analysis.query.filter_by(status='failed')
+                                .order_by(Analysis.started_at.desc())
+                                .limit(20))
     running_query = (Analysis.query.filter_by(status='running')
                                    .order_by(Analysis.started_at.desc()))
-    return render_template('index.html', errors=error_query,
+    return render_template('index.html', fails=fail_query,
                            runnings=running_query, recents=recent_query)
 
 

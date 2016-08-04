@@ -30,7 +30,7 @@
         </div>
     </nav>
 
-    {{ utils.analyses_panel('Error', errors, category='danger') }}
+    {{ utils.analyses_panel('Failed', fails, category='danger') }}
     {{ utils.analyses_panel('Running', runnings, category='info', comments=False) }}
     {{ utils.analyses_panel('Recently completed', recents, category='success') }}
 </div>

@@ -41,7 +41,7 @@
                     <td class="col-xs-1">{{ analysis.type }}</td>
                     <td class="col-xs-1">{{ analysis.status }}</td>
                     <td class="col-xs-2">
-                        {% if analysis.status == 'errored' %}
+                        {% if analysis.status == 'failed' %}
                             {{ analysis.failed_step }}
                         {% endif %}
                     </td>

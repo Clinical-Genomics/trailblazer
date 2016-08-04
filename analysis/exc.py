@@ -7,3 +7,7 @@ class MultipleFilesError(Exception):
 
 class MissingFileError(Exception):
     pass
+
+
+class UnknownError(Exception):
+    pass
