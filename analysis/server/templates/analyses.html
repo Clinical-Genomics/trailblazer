@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% import "utils.html" as utils %}
+
+{% block content %}
+<div class="container">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <form action="{{ url_for('analyses') }}" method="GET">
+        <div class="row">
+          <div class="col-xs-8">
+            <input type="search" class="form-control" name="query_str" placeholder="Customer, family, status..." value="{{ query_str if query_str }}" autofocus>
+          </div>
+          <div class="col-xs-4">
+            <button type="submit" class="form-control btn btn-default">Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    {% if query_str %}
+      <div class="panel-heading">
+        Active query: <i>{{ query_str }}</i>
+      </div>
+    {% endif %}
+
+    {{ utils.analyses_table(analyses.items, colored=True) }}
+
+    <div class="panel-footer">
+      <div class="row">
+        <div class="col-xs-4">
+          {% if analyses.has_prev %}
+            <a href="{{ url_for('analyses', page=analyses.prev_num, query_str=query_str) }}">Prev</a>
+          {% endif %}
+        </div>
+
+        <div class="col-xs-4 text-center">
+          Page {{ analyses.page }} <small class="text-muted">({{ analyses.total }} analyses)</small>
+        </div>
+
+        <div class="col-xs-4 text-right">
+          {% if analyses.has_next %}
+            <a href="{{ url_for('analyses', page=analyses.next_num, query_str=query_str) }}">Next</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

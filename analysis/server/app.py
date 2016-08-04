@@ -4,6 +4,7 @@ import os
 from flask import abort, Flask, render_template, request, redirect
 from flask_alchy import Alchy
 from flask_bootstrap import Bootstrap
+import sqlalchemy as sqa
 
 from analysis.store import Analysis, Model
 
@@ -32,6 +33,18 @@ def index():
                                    .order_by(Analysis.started_at.desc()))
     return render_template('index.html', fails=fail_query,
                            runnings=running_query, recents=recent_query)
+
+
+@app.route('/analyses')
+def analyses():
+    """Show all analyses."""
+    query = Analysis.query.order_by(Analysis.started_at.desc())
+    query_str = request.args.get('query_str')
+    if query_str:
+        query = query.filter(sqa.or_(Analysis.case_id.contains(query_str),
+                                     Analysis.status == query_str))
+    page = query.paginate(page=request.args.get('page', 1), per_page=30)
+    return render_template('analyses.html', analyses=page, query_str=query_str)
 
 
 @app.route('/comments/<analysis_id>', methods=['POST'])

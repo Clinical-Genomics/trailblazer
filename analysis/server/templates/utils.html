@@ -8,8 +8,8 @@
     </div>
 {% endmacro %}
 
-{% macro analyses_table(analyses, comments=True) %}
-    <table class="table table-bordered">
+{% macro analyses_table(analyses, comments=True, colored=True) %}
+    <table class="table table-bordered table-hover">
         <thead>
             <tr>
                 <th>Case</th>
@@ -23,7 +23,16 @@
         </thead>
         <tbody>
             {% for analysis in analyses %}
-                <tr>
+                {% if colored %}
+                    {% if analysis.status == 'running' %}
+                        {% set context_class = 'info' %}
+                    {% elif analysis.status == 'failed' %}
+                        {% set context_class = 'danger' %}
+                    {% elif analysis.status == 'completed' %}
+                        {% set context_class = 'success' %}
+                    {% endif %}
+                {% endif %}
+                <tr class="{{ context_class }}">
                     <td class="col-xs-3">
                         <div class="btn-group">
                             <button type="button" class="btn btn-link btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
