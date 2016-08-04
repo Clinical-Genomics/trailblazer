@@ -118,7 +118,8 @@ def add_cmd(context, qcsampleinfo):
                     old_analysis.delete()
                     manager.commit()
                 manager.add_commit(new_analysis)
-                log.info("added new analysis: %s", new_analysis.case_id)
+                log.info("added new analysis: %s - %s", new_analysis.case_id,
+                         new_analysis.status)
         except MissingFileError:
             log.error("missing status file for: %s", family_id)
     else:
