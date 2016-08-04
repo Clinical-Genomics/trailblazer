@@ -61,7 +61,7 @@ def list_cmd(context, pretty, limit, since, config, analysis_id):
         log.warn('sorry, no analyses found')
     else:
         if config:
-            query = query.filter_by(status='completed')
+            query = query.filter_by(status='completed', is_deleted=False)
             paths = (analysis.config_path for analysis in query)
             click.echo(' '.join(paths))
         else:
