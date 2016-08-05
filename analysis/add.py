@@ -48,7 +48,7 @@ def build_analysis(data):
         'config_path': config_path,
     }
 
-    if fam_data['AnalysisRunStatus'] == 'Finished':
+    if fam_data['AnalysisRunStatus'] in ('Finished', 'Archived', 'Archiving'):
         values['status'] = 'completed'
     else:
         sacct_out = utils.get_sacctout(analysis_out)
