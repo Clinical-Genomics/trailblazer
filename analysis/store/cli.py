@@ -10,15 +10,6 @@ from .models import Analysis
 log = logging.getLogger(__name__)
 
 
-def delete_analysis(manager, case_id, started_at):
-    """Delete an analysis."""
-    analysis_obj = (Analysis.query
-                            .filter_by(case_id=case_id, started_at=started_at)
-                            .one())
-    analysis_obj.delete()
-    manager.commit()
-
-
 @click.command()
 @click.argument('case_id')
 @click.pass_context
