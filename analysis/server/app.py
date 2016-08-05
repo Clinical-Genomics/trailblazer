@@ -13,6 +13,8 @@ DEBUG = False
 SECRET_KEY = os.environ.get('ANALYSIS_SECRET_KEY') or 'thisIsNotSecret!'
 BOOTSTRAP_SERVE_LOCAL = True
 SQLALCHEMY_DATABASE_URI = os.environ['SQLALCHEMY_DATABASE_URI']
+if 'mysql' in SQLALCHEMY_DATABASE_URI:  # pragma: no cover
+    SQLALCHEMY_POOL_RECYCLE = 3600
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 TEMPLATES_AUTO_RELOAD = True
 app.config.from_object(__name__)
