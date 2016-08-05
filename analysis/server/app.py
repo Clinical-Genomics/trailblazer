@@ -48,6 +48,14 @@ def analyses():
     return render_template('analyses.html', analyses=page, query_str=query_str)
 
 
+@app.route('/analyses/<case_id>')
+def analysis(case_id):
+    """Show history for an analysis."""
+    analyses = (Analysis.query.filter_by(case_id=case_id)
+                              .order_by(Analysis.started_at.desc()))
+    return render_template('analysis.html', analyses=analyses, case_id=case_id)
+
+
 @app.route('/comments/<analysis_id>', methods=['POST'])
 def comments(analysis_id):
     """Interact with comments."""

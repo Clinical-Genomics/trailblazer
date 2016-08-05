@@ -1,11 +1,11 @@
-{% macro analyses_panel(title, analyses, category='default', comments=True) %}
+{% macro analyses_panel(title, analyses, category='default', comments=True, colored=False) %}
     <div class="panel panel-{{ category }}">
         <div class="panel-heading">
             {{ title }}
         </div>
 
         <div class="table-responsive">
-            {{ analyses_table(analyses, comments=comments) }}
+            {{ analyses_table(analyses, comments=comments, colored=colored) }}
         </div>
     </div>
 {% endmacro %}
@@ -36,9 +36,14 @@
                 {% endif %}
                 <tr class="{{ context_class }}">
                     <td class="col-xs-3">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-link btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ analysis.case_id }} <span class="caret"></span>
+                        <a href="{{ url_for('analysis', case_id=analysis.case_id) }}">
+                            {{ analysis.case_id }}
+                        </a>
+
+                        <div class="btn-group pull-right">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="glyphicon glyphicon-user"></span>
+                                <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
                                 {% for sample in analysis.samples %}
