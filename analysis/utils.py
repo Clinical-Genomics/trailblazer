@@ -26,15 +26,6 @@ def get_sacctout(analysis_root):
         return None
 
 
-def analysis_status(sampleinfo_stream):
-    """Check the QC sampleinfo file for the status of the analysis."""
-    for line in sampleinfo_stream:
-        clean_line = line.strip()
-        if clean_line.startswith('AnalysisRunStatus'):
-            status = clean_line.split(': ')[-1]
-            return status
-
-
 def inspect_error(sacct_stream):
     """Check STDOUT of the sacct command for failiures."""
     rows = (line.split() for line in sacct_stream)
