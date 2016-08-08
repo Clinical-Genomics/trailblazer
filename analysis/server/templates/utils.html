@@ -14,13 +14,13 @@
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th>Case</th>
-                <th>Started at</th>
-                <th>Version</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Failed step</th>
-                <th>Comment</th>
+                <th class="col-xs-3">Case</th>
+                <th class="col-xs-1">Started at</th>
+                <th class="col-xs-1">Version</th>
+                <th class="col-xs-1">Type</th>
+                <th class="col-xs-1">Status</th>
+                <th class="col-xs-2">Failed step</th>
+                <th class="col-xs-3">Comment</th>
             </tr>
         </thead>
         <tbody>
@@ -35,7 +35,7 @@
                     {% endif %}
                 {% endif %}
                 <tr class="{{ context_class }}">
-                    <td class="col-xs-3">
+                    <td>
                         <a href="{{ url_for('analysis', case_id=analysis.case_id) }}">
                             {{ analysis.case_id }}
                         </a>
@@ -58,16 +58,16 @@
                             </span>
                         {% endif %}
                     </td>
-                    <td class="col-xs-1">{{ analysis.started_at.date() }}</td>
-                    <td class="col-xs-1">{{ analysis.pipeline_version }}</td>
-                    <td class="col-xs-1">{{ analysis.type }}</td>
-                    <td class="col-xs-1">{{ analysis.status }}</td>
-                    <td class="col-xs-2">
+                    <td>{{ analysis.started_at.date() }}</td>
+                    <td>{{ analysis.pipeline_version }}</td>
+                    <td>{{ analysis.type }}</td>
+                    <td>{{ analysis.status }}</td>
+                    <td>
                         {% if analysis.status == 'failed' %}
                             {{ analysis.failed_step }}
                         {% endif %}
                     </td>
-                    <td class="col-xs-3">
+                    <td>
                         {% if analysis.comment %}
                             {{ analysis.comment }}
                         {% endif %}
