@@ -3,7 +3,7 @@ import logging
 
 import click
 
-from analysis.store import api
+from trailblazer.store import api
 
 log = logging.getLogger(__name__)
 

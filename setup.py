@@ -58,7 +58,7 @@ with codecs.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 
 
 setup(
-    name='analysis',
+    name='trailblazer',
 
     # Versions should comply with PEP440. For a discussion on
     # single-sourcing the version across setup.py and the project code,
@@ -109,14 +109,14 @@ setup(
     # target platform.
     entry_points={
         'console_scripts': [
-            'analysis = analysis.cli:root',
+            'trailblazer = trailblazer.cli:root',
         ],
-        'analysis.subcommands.1': [
-            'init = analysis.init:init',
-            'add = analysis.add:add_cmd',
-            'scan = analysis.scan:scan',
-            'delete = analysis.store.cli:delete',
-            'list = analysis.store.cli:list_cmd',
+        'trailblazer.subcommands.1': [
+            'init = trailblazer.init:init',
+            'add = trailblazer.add:add_cmd',
+            'scan = trailblazer.scan:scan',
+            'delete = trailblazer.store.cli:delete',
+            'list = trailblazer.store.cli:list_cmd',
         ],
     },
 

@@ -1,6 +1,6 @@
-# Analysis [![Build Status][travis-image]][travis-url] [![Coverage Status][coveralls-image]][coveralls-url]
+# Trailblazer [![Build Status][travis-image]][travis-url] [![Coverage Status][coveralls-image]][coveralls-url]
 
-_Analysis_ is a tool to keep track of analyses.
+_Trailblazer_ is a tool to keep track of analyses.
 
 ## Concerns
 
@@ -17,7 +17,7 @@ Future concerns will include **starting up analyses** as well as **automatically
 The first thing is setting up a database. It will simply setup the tables.
 
 ```bash
-$ analysis init sqlite:///path/to/store.sqlite3
+$ trailblazer init sqlite:///path/to/store.sqlite3
 ```
 
 ### Adding new analyses
@@ -25,8 +25,8 @@ $ analysis init sqlite:///path/to/store.sqlite3
 You can add individual analyses by pointing to the "qc sample info" file or scan for analyses under customer directories.
 
 ```bash
-$ analysis add /path/to/familyId_qc_sampleInfo.yaml
-$ analysis scan /path/to/cust003
+$ trailblazer add /path/to/familyId_qc_sampleInfo.yaml
+$ trailblazer scan /path/to/cust003
 ```
 
 ### Deleting an existing analysis
@@ -34,7 +34,7 @@ $ analysis scan /path/to/cust003
 When you are sure you no longer need the analysis output or would like to clean up before a rerun you can remove the reference to said analysis and the actual files.
 
 ```bash
-$ analysis delete [customer]-[family]
+$ trailblazer delete [customer]-[family]
 Are you sure? [Y/n]
 ```
 

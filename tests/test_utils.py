@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from analysis import utils
+from trailblazer import utils
 
 
 def test_convert_job():

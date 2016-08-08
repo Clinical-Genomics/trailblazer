@@ -6,11 +6,11 @@ from flask_alchy import Alchy
 from flask_bootstrap import Bootstrap
 import sqlalchemy as sqa
 
-from analysis.store import Analysis, Model
+from trailblazer.store import Analysis, Model
 
 app = Flask(__name__)
 DEBUG = False
-SECRET_KEY = os.environ.get('ANALYSIS_SECRET_KEY') or 'thisIsNotSecret!'
+SECRET_KEY = os.environ.get('TRAILBLAZER_SECRET_KEY') or 'thisIsNotSecret!'
 BOOTSTRAP_SERVE_LOCAL = True
 SQLALCHEMY_DATABASE_URI = os.environ['SQLALCHEMY_DATABASE_URI']
 if 'mysql' in SQLALCHEMY_DATABASE_URI:  # pragma: no cover

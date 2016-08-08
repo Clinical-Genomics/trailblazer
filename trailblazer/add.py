@@ -6,9 +6,9 @@ import click
 from path import path
 import yaml
 
-from analysis.store import Analysis
-from analysis import utils
-from analysis.exc import MissingFileError, UnknownError
+from trailblazer.store import Analysis
+from trailblazer import utils
+from trailblazer.exc import MissingFileError, UnknownError
 
 log = logging.getLogger(__name__)
 

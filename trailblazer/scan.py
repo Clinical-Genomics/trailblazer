@@ -3,8 +3,8 @@ import logging
 
 import click
 
-from analysis.add import add_cmd
-from analysis import utils
+from trailblazer.add import add_cmd
+from trailblazer import utils
 
 log = logging.getLogger(__name__)
 

@@ -5,8 +5,8 @@ from alchy import Manager
 from click.testing import CliRunner
 import pytest
 
-from analysis.cli import root
-from analysis.store import Model
+from trailblazer.cli import root
+from trailblazer.store import Model
 
 
 @pytest.fixture
