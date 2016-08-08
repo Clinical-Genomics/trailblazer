@@ -8,7 +8,7 @@ import click
 import yaml
 
 from .log import init_log
-from analysis.store import get_manager
+from analysis.store import api
 
 log = logging.getLogger(__name__)
 
@@ -63,6 +63,6 @@ def build_cli(title, Model):
         if database:
             context.obj['database'] = database
         if context.obj.get('database'):
-            context.obj['manager'] = get_manager(context.obj['database'])
+            context.obj['manager'] = api.connect(context.obj['database'])
 
     return root
