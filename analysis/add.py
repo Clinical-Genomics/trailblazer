@@ -39,7 +39,7 @@ def parse_sampleinfo(sampleinfo):
         'started_at': analysis_start,
         'config_path': config_path,
         'samples': sample_ids,
-        'analysis_status': fam_data['AnalysisStatus'],
+        'analysis_status': fam_data['AnalysisRunStatus'],
     }
     return values
 
