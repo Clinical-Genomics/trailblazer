@@ -28,8 +28,9 @@ def parse_sampleinfo(sampleinfo):
     analysis_out = path(fam_data['Program']['QCCollect']['OutDirectory'])
     customer = fam_data['InstanceTag'][0]
     case_id = "{}-{}".format(customer, fam_key)
-    config_path = analysis_out.parent.joinpath(analysis_type, fam_key,
-                                               "{}_config.yaml".format(fam_key))
+    cluster_const = analysis_out.parent.parent.parent
+    config_path = cluster_const.joinpath(analysis_type, fam_key,
+                                         "{}_config.yaml".format(fam_key))
     values = {
         'case_id': case_id,
         'pipeline': 'mip',
@@ -49,11 +50,12 @@ def parse_status(analysis_status, analysis_start, sacct_out=None):
     if analysis_status in ('Finished', 'Archived', 'Archiving'):
         return dict(status='completed')
     else:
+        # analysis status is "notFinished" - find out why!
         long_since_start = (datetime.now() - analysis_start).seconds > 86400
         if sacct_out is None:
+            # we can't really tell if something went wrong
             if long_since_start:
                 # if the analysis should've finished but hasn't
-                # pending possible errors
                 return dict(status='failed', failed_step='time')
             else:
                 # assume the analysis is still running without fails
@@ -61,15 +63,18 @@ def parse_status(analysis_status, analysis_start, sacct_out=None):
         else:
             error_jobs = utils.inspect_error(sacct_out)
             if len(error_jobs) > 0:
+                # we found some failed jobs!
                 first_fail = error_jobs[0]
                 if analysis_start > first_fail['start']:
                     # the analysis has been restarted
                     # the Sacct errors don't belong to this analysis!
                     if long_since_start:
+                        # long since start, still not completed
                         return dict(status='failed', failed_step='time')
                     else:
                         return dict(status='running')
                 else:
+                    # Sacct output belongs to this analysis
                     return dict(status='failed',
                                 failed_step=first_fail['name'],
                                 failed_at=first_fail['start'])
