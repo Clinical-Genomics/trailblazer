@@ -51,7 +51,8 @@ def parse_status(analysis_status, analysis_start, sacct_out=None):
         return dict(status='completed')
     else:
         # analysis status is "notFinished" - find out why!
-        long_since_start = (datetime.now() - analysis_start).seconds > 86400
+        since_start = (datetime.now() - analysis_start).total_seconds()
+        long_since_start = (since_start > 86400)
         if sacct_out is None:
             # we can't really tell if something went wrong
             if long_since_start:
