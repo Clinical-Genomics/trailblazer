@@ -41,6 +41,9 @@ def list_cmd(context, pretty, limit, since, config, analysis_id):
         since = date(*since)
     query = api.analyses(analysis_id=analysis_id, since=since, is_ready=config)
 
+    if limit:
+        query = query.limit(limit)
+
     if query.first() is None:
         log.warn('sorry, no analyses found')
     else:
@@ -48,5 +51,5 @@ def list_cmd(context, pretty, limit, since, config, analysis_id):
             paths = (analysis.config_path for analysis in query)
             click.echo(' '.join(paths))
         else:
-            for analysis in query.limit(limit):
+            for analysis in query:
                 click.echo(analysis.to_json(pretty=pretty))
