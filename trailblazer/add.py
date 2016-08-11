@@ -143,6 +143,16 @@ def add_cmd(context, qcsampleinfo):
                               new_analysis.case_id)
                     old_analysis.delete()
                     manager.commit()
+
+                # go over entries for running analyses
+                query = Analysis.query.filter_by(status='running',
+                                                 case_id=new_analysis.case_id)
+                for running_analysis in query:
+                    if running_analysis.started_at < new_analysis.started_at:
+                        # this is an old entry - remove it
+                        running_analysis.delete()
+                        manager.commit()
+
                 manager.add_commit(new_analysis)
                 log.info("added new analysis: %s - %s", new_analysis.case_id,
                          new_analysis.status)

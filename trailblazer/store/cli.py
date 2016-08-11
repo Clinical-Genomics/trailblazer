@@ -39,10 +39,9 @@ def list_cmd(context, pretty, limit, since, config, analysis_id):
     """List added analyses."""
     if since:
         since = date(*since)
-    query = api.analyses(analysis_id=analysis_id, since=since, is_ready=config)
-
-    if limit:
-        query = query.limit(limit)
+    query = (api.analyses(analysis_id=analysis_id, since=since,
+                          is_ready=config)
+                .limit(limit))
 
     if query.first() is None:
         log.warn('sorry, no analyses found')
