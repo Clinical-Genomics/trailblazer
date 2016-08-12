@@ -9,6 +9,7 @@ import sqlalchemy as sqa
 from trailblazer.store import Analysis, Model
 
 app = Flask(__name__)
+application = app
 DEBUG = False
 SECRET_KEY = os.environ.get('TRAILBLAZER_SECRET_KEY') or 'thisIsNotSecret!'
 BOOTSTRAP_SERVE_LOCAL = True
