@@ -51,7 +51,7 @@ def build_cli(title, Model):
     def root(context, config, database, log_level, log_file):
         """Interact with CLI."""
         init_log(logging.getLogger(), loglevel=log_level, filename=log_file)
-        log.info("{}: version {}".format(title, version))
+        log.debug("{}: version {}".format(title, version))
 
         # read in config file if it exists
         if os.path.exists(config):
