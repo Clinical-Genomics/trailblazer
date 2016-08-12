@@ -10,9 +10,7 @@ from trailblazer.store import Analysis, Model
 
 app = Flask(__name__)
 application = app
-DEBUG = False
 SECRET_KEY = os.environ.get('TRAILBLAZER_SECRET_KEY') or 'thisIsNotSecret!'
-BOOTSTRAP_SERVE_LOCAL = True
 SQLALCHEMY_DATABASE_URI = os.environ['SQLALCHEMY_DATABASE_URI']
 if 'mysql' in SQLALCHEMY_DATABASE_URI:  # pragma: no cover
     SQLALCHEMY_POOL_RECYCLE = 3600
