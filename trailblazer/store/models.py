@@ -3,7 +3,7 @@ from datetime import datetime
 import json
 
 import alchy
-from sqlalchemy import Column, types
+from sqlalchemy import Column, types, UniqueConstraint
 
 
 def json_serial(obj):
@@ -29,6 +29,10 @@ class Analysis(Model):
 
     """Analysis record."""
 
+    __table_args__ = (UniqueConstraint('case_id', 'started_at', 'status',
+                                       'failed_step',
+                                       name='_uc_case_start_status_step'),)
+
     id = Column(types.Integer, primary_key=True)
     case_id = Column(types.String(128))
 
@@ -37,6 +41,8 @@ class Analysis(Model):
     pipeline_version = Column(types.String(32))
     started_at = Column(types.DateTime)
     completed_at = Column(types.DateTime)
+    runtime = Column(types.Integer)
+    cputime = Column(types.Integer)
     status = Column(types.Enum('running', 'completed', 'failed'))
     root_dir = Column(types.Text)
     config_path = Column(types.Text)
@@ -49,7 +55,7 @@ class Analysis(Model):
 
     @property
     def samples(self):
-        return self._samples.split(',')
+        return self._samples.split(',') if self._samples else []
 
     @samples.setter
     def samples(self, sample_list):
