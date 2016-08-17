@@ -50,6 +50,6 @@ def parse_sacct(sacct_stream):
 def get_analysistime(sacct_jobs):
     """Calculate the total/overall time of the analysis."""
     completed_at = sacct_jobs[-1]['end']
-    delta = int(completed_at - sacct_jobs[0]['start'])
+    delta = completed_at - sacct_jobs[0]['start']
     total_cpu = sum(job['cpu'] for job in sacct_jobs)
-    return delta.total_seconds(), total_cpu, completed_at
+    return int(delta.total_seconds()), total_cpu, completed_at

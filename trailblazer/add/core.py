@@ -2,6 +2,7 @@
 from path import path
 
 from trailblazer.store import Analysis
+from trailblazer.exc import MissingFileError
 from .sacct import parse_sacct, get_analysistime, filter_failed
 from .utils import FINISHED_STATUSES
 
@@ -16,7 +17,10 @@ def build_entry(sampleinfo, sacct_stream=None):
         sacct_jobs = parse_sacct(sacct_stream)
     else:
         # try with automatically detected file
-        with open(metadata['sacct_path'], 'r') as sacct_stream:
+        sacct_path = path(metadata['sacct_path'])
+        if not sacct_path.exists():
+            raise MissingFileError(sacct_path)
+        with sacct_path.open('r') as sacct_stream:
             sacct_jobs = parse_sacct(sacct_stream)
     status = determine_status(metadata['analysis_status'], sacct_jobs)
     metadata.update(status)

@@ -30,7 +30,6 @@ class Analysis(Model):
     """Analysis record."""
 
     __table_args__ = (UniqueConstraint('case_id', 'started_at', 'status',
-                                       'failed_step',
                                        name='_uc_case_start_status_step'),)
 
     id = Column(types.Integer, primary_key=True)

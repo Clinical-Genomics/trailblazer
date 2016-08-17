@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 def commit_analysis(manager, new_entry):
     """Store new analysis in the database."""
     # look up previous analyses for the same case
-    old_entry = api.analyses(analysis_id=new_entry.case_id).first()
+    old_entry = api.case(case_id=new_entry.case_id).first()
     if old_entry is None or not same_entry(old_entry, new_entry):
         # save the new entry to the database
         if old_entry and old_entry.status == 'running':

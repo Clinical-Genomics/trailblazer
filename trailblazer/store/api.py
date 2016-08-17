@@ -14,6 +14,13 @@ def connect(uri):
     return manager
 
 
+def case(case_id):
+    """Return analysis entries with for a case."""
+    query = (Analysis.query.filter_by(case_id=case_id)
+                           .order_by(Analysis.started_at.desc()))
+    return query
+
+
 def analyses(analysis_id=None, since=None, is_ready=False):
     """List added analyses."""
     query = Analysis.query.order_by(Analysis.started_at.desc())
