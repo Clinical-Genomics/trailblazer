@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% import "utils.html" as utils %}
 
+{% block navbar_left %}
+<p class="navbar-text">
+    {% if metadata.updated_at %}
+        Last update: {{ metadata.updated_at }}
+    {% endif %}
+</p>
+{% endblock %}
+
 {% block content %}
 <div class="container">
   {{ utils.analyses_panel('Recently failed', fails, category='primary') }}

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 import logging
 
 from alchy import Manager
 
-from .models import Analysis, Model
+from .models import Analysis, Model, Metadata
 
 log = logging.getLogger(__name__)
 
@@ -37,3 +38,10 @@ def analyses(analysis_id=None, since=None, is_ready=False):
         query = query.filter_by(status='completed', is_deleted=False)
 
     return query
+
+
+def track_update():
+    """Update metadata record with new updated date."""
+    metadata = Metadata.query.first()
+    if metadata:
+        metadata.updated_at = datetime.now()

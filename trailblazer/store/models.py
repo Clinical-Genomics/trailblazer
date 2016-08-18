@@ -26,6 +26,15 @@ class JsonModel(alchy.ModelBase):
 Model = alchy.make_declarative_base(Base=JsonModel)
 
 
+class Metadata(Model):
+
+    """Keep track of meta data."""
+
+    id = Column(types.Integer, primary_key=True)
+    created_at = Column(types.DateTime, default=datetime.datetime.now)
+    updated_at = Column(types.DateTime)
+
+
 class Analysis(Model):
 
     """Analysis record."""

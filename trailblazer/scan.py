@@ -5,6 +5,7 @@ import click
 from path import path
 
 from trailblazer.add import add_cmd
+from trailblazer.store import api
 
 log = logging.getLogger(__name__)
 
@@ -21,6 +22,9 @@ def scan(context, cust_dirs):
             log.debug("adding analysis: %s", sampleinfo)
             with open(sampleinfo, 'r') as stream:
                 context.invoke(add_cmd, qcsampleinfo=stream)
+
+    api.track_update()
+    context.obj['manager'].commit()
 
 
 def scan_dir(root_dir):

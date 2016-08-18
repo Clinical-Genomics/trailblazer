@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-from .models import Analysis, Model
+from .models import Analysis, Model, Metadata

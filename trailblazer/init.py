@@ -3,7 +3,7 @@ import logging
 
 import click
 
-from trailblazer.store import api
+from trailblazer.store import api, Metadata
 
 log = logging.getLogger(__name__)
 
@@ -20,3 +20,6 @@ def init(context, database, reset):
     if reset:
         manager.drop_all()
     manager.create_all()
+    # add inital metadata record
+    new_metadata = Metadata()
+    manager.add_commit(new_metadata)

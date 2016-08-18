@@ -6,7 +6,7 @@ from flask_alchy import Alchy
 from flask_bootstrap import Bootstrap
 import sqlalchemy as sqa
 
-from trailblazer.store import Analysis, Model
+from trailblazer.store import Analysis, Model, Metadata
 
 app = Flask(__name__)
 application = app
@@ -24,6 +24,7 @@ db = Alchy(app, Model=Model)
 
 @app.route('/')
 def index():
+    metadata = Metadata.query.first()
     recent_query = (Analysis.query.filter_by(status='completed')
                                   .order_by(Analysis.started_at.desc())
                                   .limit(10))
@@ -33,7 +34,8 @@ def index():
     running_query = (Analysis.query.filter_by(status='running')
                                    .order_by(Analysis.started_at.desc()))
     return render_template('index.html', fails=fail_query,
-                           runnings=running_query, recents=recent_query)
+                           runnings=running_query, recents=recent_query,
+                           metadata=metadata)
 
 
 @app.route('/analyses')
