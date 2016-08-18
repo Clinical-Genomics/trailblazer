@@ -30,6 +30,7 @@ class Analysis(Model):
     """Analysis record."""
 
     __table_args__ = (UniqueConstraint('case_id', 'started_at', 'status',
+                                       'failed_step',
                                        name='_uc_case_start_status_step'),)
 
     id = Column(types.Integer, primary_key=True)
@@ -46,7 +47,7 @@ class Analysis(Model):
     root_dir = Column(types.Text)
     config_path = Column(types.Text)
     type = Column(types.Enum('exomes', 'genomes'))
-    failed_step = Column(types.String(128))
+    failed_step = Column(types.String(128), default='na')
     failed_at = Column(types.DateTime)
     comment = Column(types.Text)
     is_deleted = Column(types.Boolean, default=False)
