@@ -6,7 +6,7 @@ from flask_alchy import Alchy
 from flask_bootstrap import Bootstrap
 import sqlalchemy as sqa
 
-from trailblazer.store import Analysis, Model, Metadata
+from trailblazer.store import Analysis, Model, Metadata, api
 
 app = Flask(__name__)
 application = app
@@ -25,14 +25,9 @@ db = Alchy(app, Model=Model)
 @app.route('/')
 def index():
     metadata = Metadata.query.first()
-    recent_query = (Analysis.query.filter_by(status='completed')
-                                  .order_by(Analysis.started_at.desc())
-                                  .limit(10))
-    fail_query = (Analysis.query.filter_by(status='failed')
-                                .order_by(Analysis.started_at.desc())
-                                .limit(20))
-    running_query = (Analysis.query.filter_by(status='running')
-                                   .order_by(Analysis.started_at.desc()))
+    recent_query = api.analyses(status='completed').limit(10)
+    fail_query = api.analyses(status='failed').limit(20)
+    running_query = api.analyses(status='running')
     return render_template('index.html', fails=fail_query,
                            runnings=running_query, recents=recent_query,
                            metadata=metadata)
@@ -43,7 +38,7 @@ def analyses():
     """Show all analyses."""
     page_num = int(request.args.get('page', 1))
     query_str = request.args.get('query_str')
-    query = Analysis.query.order_by(Analysis.started_at.desc())
+    query = api.analyses()
     if query_str:
         query = query.filter(sqa.or_(Analysis.case_id.contains(query_str),
                                      Analysis.status == query_str))
@@ -54,8 +49,7 @@ def analyses():
 @app.route('/analyses/<case_id>')
 def analysis(case_id):
     """Show history for an analysis."""
-    analyses = (Analysis.query.filter_by(case_id=case_id)
-                              .order_by(Analysis.started_at.desc()))
+    analyses = api.analyses(analysis_id=case_id)
     return render_template('analysis.html', analyses=analyses, case_id=case_id)
 
 

@@ -18,21 +18,25 @@ def connect(uri):
 def case(case_id):
     """Return analysis entries with for a case."""
     query = (Analysis.query.filter_by(case_id=case_id)
-                           .order_by(Analysis.started_at.desc()))
+                           .order_by(Analysis.logged_at.desc()))
     return query
 
 
-def analyses(analysis_id=None, since=None, is_ready=False):
+def analyses(analysis_id=None, since=None, is_ready=False, status=None):
     """List added analyses."""
-    query = Analysis.query.order_by(Analysis.started_at.desc())
+    query = Analysis.query.order_by(Analysis.logged_at.desc())
 
     if since:
-        log.debug("filter analyses on date: %s", since)
+        log.debug("filter entries on date: %s", since)
         query = query.filter(Analysis.started_at > since)
 
     if analysis_id:
-        log.debug("filter analyses on id pattern: %s", analysis_id)
+        log.debug("filter entries on id pattern: %s", analysis_id)
         query = query.filter(Analysis.case_id.contains(analysis_id))
+
+    if status:
+        log.debug("filter entries on status category: %s", status)
+        query = query.filter_by(status=status)
 
     if is_ready:
         query = query.filter_by(status='completed', is_deleted=False)

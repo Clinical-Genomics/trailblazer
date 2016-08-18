@@ -49,6 +49,7 @@ class Analysis(Model):
     # metadata
     pipeline = Column(types.Enum('mip'))
     pipeline_version = Column(types.String(32))
+    logged_at = Column(types.DateTime, default=datetime.datetime.now)
     started_at = Column(types.DateTime)
     completed_at = Column(types.DateTime)
     runtime = Column(types.Integer)
