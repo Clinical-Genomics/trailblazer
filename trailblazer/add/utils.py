@@ -4,6 +4,10 @@ FINISHED_STATUSES = ('Finished', 'Archived', 'Archiving')
 
 def same_entry(entry, other_entry):
     """Compare two analysis entries if they are the same."""
+    for aentry in [entry, other_entry]:
+        if aentry.failed_step is None:
+            aentry.failed_step = 'na'
+
     if entry.case_id != other_entry.case_id:
         return False
     elif entry.started_at != other_entry.started_at:
