@@ -1,16 +1,16 @@
-{% macro analyses_panel(title, analyses, category='default', comments=True, colored=False) %}
+{% macro analyses_panel(title, analyses, category='default') %}
     <div class="panel panel-{{ category }}">
         <div class="panel-heading">
             {{ title }}
         </div>
 
         <div class="table-responsive">
-            {{ analyses_table(analyses, comments=comments, colored=colored) }}
+            {{ analyses_table(analyses, **kwargs) }}
         </div>
     </div>
 {% endmacro %}
 
-{% macro analyses_table(analyses, comments=True, colored=False) %}
+{% macro analyses_table(analyses, comments=True, colored=False, only_complete=False) %}
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
@@ -19,7 +19,13 @@
                 <th class="col-xs-1">Version</th>
                 <th class="col-xs-1">Type</th>
                 <th class="col-xs-1">Status</th>
-                <th class="col-xs-2">Failed step</th>
+                <th class="col-xs-2">
+                    {% if only_complete %}
+                        Runtime (h)
+                    {% else %}
+                        Failed step
+                    {% endif %}
+                </th>
                 <th class="col-xs-3">Comment</th>
             </tr>
         </thead>
@@ -63,8 +69,12 @@
                     <td>{{ analysis.type }}</td>
                     <td>{{ analysis.status }}</td>
                     <td>
-                        {% if analysis.status == 'failed' %}
-                            {{ analysis.failed_step }}
+                        {% if only_complete %}
+                            {{ (analysis.runtime / 60 / 60) | round(1) }}
+                        {% else %}
+                            {% if analysis.status == 'failed' %}
+                                {{ analysis.failed_step }}
+                            {% endif %}
                         {% endif %}
                     </td>
                     <td>

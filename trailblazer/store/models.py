@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+from __future__ import division
+import datetime
 import json
 
 import alchy
@@ -8,7 +9,7 @@ from sqlalchemy import Column, types, UniqueConstraint
 
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
-    if isinstance(obj, datetime):
+    if isinstance(obj, datetime.datetime):
         serial = obj.isoformat()
         return serial
     raise TypeError('Type not serializable')
@@ -61,3 +62,8 @@ class Analysis(Model):
     def samples(self, sample_list):
         """Serialize a list of sample ids."""
         self._samples = ','.join(sample_list)
+
+    @property
+    def runtime_obj(self):
+        """Format runtime as datetime object."""
+        return datetime.timedelta(seconds=self.runtime)

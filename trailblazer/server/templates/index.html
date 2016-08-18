@@ -5,6 +5,6 @@
 <div class="container">
   {{ utils.analyses_panel('Recently failed', fails, category='primary') }}
   {{ utils.analyses_panel('Currently running', runnings, category='info', comments=False) }}
-  {{ utils.analyses_panel('Recently completed', recents, category='success') }}
+  {{ utils.analyses_panel('Recently completed', recents, category='success', only_complete=True) }}
 </div>
 {% endblock %}
