@@ -2,11 +2,14 @@
 from datetime import datetime
 
 
-def filter_failed(sacct_jobs):
+def filter_jobs(sacct_jobs, failed=True):
     """Filter jobs that have a FAILED etc. status."""
-    nonsuccess_jobs = [job for job in sacct_jobs if
-                       job['state'] not in ('COMPLETED', 'RUNNING')]
-    return nonsuccess_jobs
+    if failed:
+        categories = ('FAILED', 'CANCELLED')
+    else:
+        categories = ('COMPLETED', 'RUNNING', 'PENDING')
+    filtered_jobs = [job for job in sacct_jobs if job['state'] in categories]
+    return filtered_jobs
 
 
 def time_to_sec(time_str):

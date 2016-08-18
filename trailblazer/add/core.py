@@ -3,7 +3,7 @@ from path import path
 
 from trailblazer.store import Analysis
 from trailblazer.exc import MissingFileError
-from .sacct import parse_sacct, get_analysistime, filter_failed
+from .sacct import parse_sacct, get_analysistime, filter_jobs
 from .utils import FINISHED_STATUSES
 
 
@@ -32,11 +32,14 @@ def determine_status(analysis_status, sacct_jobs):
     """Determine the status of an analysis."""
     if analysis_status in FINISHED_STATUSES:
         # calculate the total runtime
-        runtime, cputime, completed_at = get_analysistime(sacct_jobs)
+        # finished status should override all else;
+        # do our best to figure out runtime etc.
+        success_jobs = filter_jobs(sacct_jobs, failed=False)
+        runtime, cputime, completed_at = get_analysistime(success_jobs)
         status = dict(status='completed', runtime=runtime, cputime=cputime,
                       completed_at=completed_at)
     else:
-        non_success = filter_failed(sacct_jobs)
+        non_success = filter_jobs(sacct_jobs, failed=True)
         if len(non_success) == 0:
             status = dict(status='running')
         else:
