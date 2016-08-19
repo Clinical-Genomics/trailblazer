@@ -96,7 +96,7 @@
 {% endmacro %}
 
 {% macro comment_modal(analysis) %}
-    {% set modalId = "comment-" + analysis.id %}
+    {% set modalId = "comment-%s"|format(analysis.id) %}
 
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#{{modalId}}"><span class="glyphicon glyphicon-pencil"></span></button>
