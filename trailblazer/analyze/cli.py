@@ -19,7 +19,7 @@ def restart(context):
 @restart.command('max-gaussian')
 @click.argument('config_path', type=click.Path(exists=True))
 @click.pass_context
-def max_gaussian(config_path):
+def max_gaussian(context, config_path):
     """Update config file to restart with Max Gaussian for SNV enabled."""
     update_maxgaussian(config_path)
     click.echo("updated: {}".format(config_path))
