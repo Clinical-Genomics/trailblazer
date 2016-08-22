@@ -25,5 +25,5 @@ def update_maxgaussian(config_path):
 
     with open(config_path, 'w') as out_stream:
         yaml_out = yaml.dump(values, default_flow_style=False)
-        yaml_out_correct = yaml_out.replace('\n- ', '\n\n- ')
+        yaml_out_correct = yaml_out.replace('\n- ', '\n    - ')
         out_stream.write(yaml_out_correct)
