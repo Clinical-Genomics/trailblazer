@@ -117,6 +117,7 @@ setup(
             'scan = trailblazer.scan:scan',
             'delete = trailblazer.store.cli:delete',
             'list = trailblazer.store.cli:list_cmd',
+            'analyze = trailblazer.analyze.cli:analyze',
         ],
     },
 
