@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import click
+from path import path
 
 from .restart import update_maxgaussian
 from .start import start_mip
@@ -31,12 +32,13 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
     executable = executable or context.obj['mip_exe']
     gene_list = gene_list or context.obj['mip_genelist']
     conda_env = conda_env or context.obj.get('conda_env')
+    ccp_abs = path(ccp).abspath()
 
     script = start_mip(
         analysis_type,
         family,
         config,
-        ccp,
+        ccp_abs,
         executable=executable,
         customer=customer,
         gene_list=gene_list,
