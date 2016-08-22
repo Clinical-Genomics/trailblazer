@@ -17,9 +17,9 @@ from jinja2 import Template
 log = logging.getLogger(__name__)
 
 
-def start_mip(analysis_type, family_id, config, ccp, customer=None,
-              gene_list=None, dryrun=False, executable=None, conda_env=None,
-              email=None):
+def start_mip(analysis_type=None, family_id=None, config=None, ccp=None,
+              customer=None, gene_list=None, dryrun=False, executable=None,
+              conda_env=None, email=None, analysis_config=None):
     """Start a new analysis for a family.
 
     Args:
@@ -36,31 +36,43 @@ def start_mip(analysis_type, family_id, config, ccp, customer=None,
         int: return code from the executed process
     """
     assert analysis_type in ('exomes', 'genomes'), 'invalid analysis type'
+    if analysis_config is None:
+        assert all([analysis_type, family_id, config, ccp])
     command = []
 
     # configure executable
     command.append('perl')
     command.append(executable or 'mip.pl')
 
-    # add YAML config path
-    command.append('--configFile')
-    command.append(config)
+    if analysis_config:
+        # optionally add analysis config
+        command.append('--config')
+        command.append(analysis_config)
 
-    # type of analysis
-    command.append('--analysisType')
-    command.append(analysis_type)
+    if config:
+        # add YAML config path
+        command.append('--configFile')
+        command.append(config)
 
-    # configure the "cluster constant path"
-    command.append('--clusterConstantPath')
-    command.append(ccp)
+    if analysis_type:
+        # type of analysis
+        command.append('--analysisType')
+        command.append(analysis_type)
 
-    # customer (optional)
-    command.append('--instanceTag')
-    command.append(customer)
+    if ccp:
+        # configure the "cluster constant path"
+        command.append('--clusterConstantPath')
+        command.append(ccp)
 
-    # add family option
-    command.append('--familyID')
-    command.append(family_id)
+    if customer:
+        # customer (optional)
+        command.append('--instanceTag')
+        command.append(customer)
+
+    if family_id:
+        # add family option
+        command.append('--familyID')
+        command.append(family_id)
 
     if gene_list:
         command.append('--vcfParserSelectFile')

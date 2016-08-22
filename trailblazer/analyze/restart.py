@@ -1,5 +1,21 @@
 # -*- coding: utf-8 -*-
+from path import path
 import yaml
+
+from .start import start_mip
+
+
+def restart_mip(script_dir, config_path):
+    """Restart a MIP run."""
+    with open(config_path, 'r') as stream:
+        values = yaml.load(stream)
+    script_content = start_mip(analysis_config=config_path)
+    customer = values['instanceTag'][0]
+    family = values['familyID']
+    out_filename = "{}-{}.sh".format(customer, family)
+    out_path = path(script_dir).joinpath(out_filename)
+    with out_path.open('wb') as out_stream:
+        out_stream.write(script_content)
 
 
 def update_maxgaussian(config_path):

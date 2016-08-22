@@ -54,7 +54,7 @@ class Analysis(Model):
     completed_at = Column(types.DateTime)
     runtime = Column(types.Integer)
     cputime = Column(types.Integer)
-    status = Column(types.Enum('running', 'completed', 'failed'))
+    status = Column(types.Enum('pending', 'running', 'completed', 'failed'))
     root_dir = Column(types.Text)
     config_path = Column(types.Text)
     type = Column(types.Enum('exomes', 'genomes'))
@@ -77,3 +77,8 @@ class Analysis(Model):
     def runtime_obj(self):
         """Format runtime as datetime object."""
         return datetime.timedelta(seconds=self.runtime)
+
+    def failed_variantrecal(self):
+        """Check if analysis failed on variat recalibration."""
+        return (self.failed_step and
+                'GATKVariantRecalibration' in self.failed_step)

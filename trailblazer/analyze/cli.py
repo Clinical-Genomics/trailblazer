@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
+import logging
+
 import click
 from path import path
 
-from .restart import update_maxgaussian
+from .restart import update_maxgaussian, restart_mip
 from .start import start_mip
+from trailblazer.store import api
+
+log = logging.getLogger(__name__)
 
 
 @click.group()
@@ -49,8 +54,8 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
         email=email)
 
     if script_dir:
-        out_filename = "{}-{}".format(customer or 'NA', family)
-        out_path = path(script_dir).joinpath("{}.sh".format(out_filename))
+        out_filename = "{}-{}.sh".format(customer or 'NA', family)
+        out_path = path(script_dir).joinpath(out_filename)
         click.echo(script, file=out_path.open('w'))
     else:
         click.echo(script, file=out)
@@ -63,9 +68,18 @@ def restart(context):
 
 
 @restart.command('max-gaussian')
+@click.option('--restart/--no-restart', default=True)
 @click.argument('config_path', type=click.Path(exists=True))
+@click.argument('case_id', required=False)
 @click.pass_context
-def max_gaussian(context, config_path):
+def max_gaussian(context, restart, config_path, case_id):
     """Update config file to restart with Max Gaussian for SNV enabled."""
+    if case_id:
+        most_recent = api.case(case_id).first()
+        config_path = most_recent.config_path
+
     update_maxgaussian(config_path)
-    click.echo("updated: {}".format(config_path))
+    log.info("updated config: {}".format(config_path))
+    script_dir = context.obj.get('script_dir')
+    if restart and script_dir:
+        restart_mip(script_dir, config_path)
