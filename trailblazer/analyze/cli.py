@@ -24,16 +24,18 @@ def analyze(context):
 @click.option('--dryrun', is_flag=True)
 @click.option('-o', '--out', type=click.File('w'), default='-')
 @click.option('--conda-env')
+@click.option('--script-dir', type=click.Path(exists=True))
 @click.pass_context
 def start(context, ccp, analysis_type, family, config, customer, gene_list,
-          dryrun, executable, out, conda_env, email):
+          dryrun, executable, out, conda_env, email, script_dir):
     """Start a new analysis."""
     config = config or context.obj['mip_config']
     executable = executable or context.obj['mip_exe']
     gene_list = gene_list or context.obj['mip_genelist']
     conda_env = conda_env or context.obj.get('conda_env')
-    ccp_abs = path(ccp).abspath()
+    script_dir = script_dir or context.obj.get('script_dir')
 
+    ccp_abs = path(ccp).abspath()
     script = start_mip(
         analysis_type,
         family,
@@ -46,7 +48,12 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
         conda_env=conda_env,
         email=email)
 
-    click.echo(script, file=out)
+    if script_dir:
+        out_filename = "{}-{}".format(customer or 'NA', family)
+        out_path = path(script_dir).joinpath(out_filename)
+        click.echo(script, file=out_path.open('w'))
+    else:
+        click.echo(script, file=out)
 
 
 @analyze.group()
