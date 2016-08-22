@@ -19,12 +19,13 @@ def analyze(context):
 @click.option('-x', '--executable', type=click.Path(exists=True))
 @click.option('-i', '--customer')
 @click.option('-g', '--gene-list')
+@click.option('-e', '--email', help='email to send errors to')
 @click.option('--dryrun', is_flag=True)
 @click.option('-o', '--out', type=click.File('w'), default='-')
-@click.option('-e', '--conda-env')
+@click.option('--conda-env')
 @click.pass_context
 def start(context, ccp, analysis_type, family, config, customer, gene_list,
-          dryrun, executable, out, conda_env):
+          dryrun, executable, out, conda_env, email):
     """Start a new analysis."""
     config = config or context.obj['mip_config']
     executable = executable or context.obj['mip_exe']
@@ -40,7 +41,8 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
         customer=customer,
         gene_list=gene_list,
         dryrun=dryrun,
-        conda_env=conda_env)
+        conda_env=conda_env,
+        email=email)
 
     click.echo(script, file=out)
 
