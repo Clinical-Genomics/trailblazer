@@ -50,7 +50,7 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
 
     if script_dir:
         out_filename = "{}-{}".format(customer or 'NA', family)
-        out_path = path(script_dir).joinpath(out_filename)
+        out_path = path(script_dir).joinpath("{}.sh".format(out_filename))
         click.echo(script, file=out_path.open('w'))
     else:
         click.echo(script, file=out)
