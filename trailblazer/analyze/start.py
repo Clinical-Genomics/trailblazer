@@ -10,11 +10,27 @@ source activate {{ conda_env }}
 
 {{ command }}
 """
+from datetime import datetime
 import logging
 
 from jinja2 import Template
 
+from trailblazer.store import Analysis
+
 log = logging.getLogger(__name__)
+
+
+def build_pending(case_id, root_dir, seq_type):
+    """Create an entry for an analysis which is pending."""
+    new_entry = Analysis(
+        case_id=case_id,
+        pipeline='mip',
+        started_at=datetime.now(),
+        status='pending',
+        root_dir=root_dir,
+        type=seq_type,
+    )
+    return new_entry
 
 
 def start_mip(analysis_type=None, family_id=None, config=None, ccp=None,

@@ -23,7 +23,7 @@ def analyze(context):
 @click.option('-f', '--family', required=True)
 @click.option('-c', '--config', type=click.Path(exists=True))
 @click.option('-x', '--executable', type=click.Path(exists=True))
-@click.option('-i', '--customer')
+@click.option('-i', '--customer', required=True)
 @click.option('-g', '--gene-list')
 @click.option('-e', '--email', help='email to send errors to')
 @click.option('--dryrun', is_flag=True)
@@ -54,7 +54,8 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
         email=email)
 
     if script_dir:
-        out_filename = "{}-{}.sh".format(customer or 'NA', family)
+        case_id = "{}-{}".format(customer, family)
+        out_filename = "{}.sh".format(case_id)
         out_path = path(script_dir).joinpath(out_filename)
         click.echo(script, file=out_path.open('w'))
     else:
