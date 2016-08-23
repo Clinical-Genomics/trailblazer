@@ -1,8 +1,8 @@
 #!/bin/bash -l
 
 display_usage() {
-    echo "Start all analysis scripts in a given folder."
-    echo -e "\nUsage:\n$0 [list of files] \n"
+    echo "Start Bash scripts one-by-one."
+    echo -e "\nUsage:\n$0 [list of scripts] \n"
 }
 
 exe_script() {
@@ -19,7 +19,7 @@ fi
 
 for script in "$@"
 do
-    echo "starting script: ${script}"
+    echo "executing script: ${script}"
     exe_script $script
 done
 
