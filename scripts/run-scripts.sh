@@ -23,7 +23,7 @@ do
     extension="${filename##*.}"
     if [ "$extension" == "sh" ]; then
         echo "executing script: ${script}"
-        #exe_script $script
+        exe_script $script
     fi
 done
 
