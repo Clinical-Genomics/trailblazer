@@ -70,10 +70,11 @@ def restart(context):
 
 @restart.command('max-gaussian')
 @click.option('--restart/--no-restart', default=True)
+@click.option('-e', '--email', help='email to send errors to')
 @click.option('-c', '--case', help='restart analysis in database')
 @click.argument('config_path', type=click.Path(exists=True), required=False)
 @click.pass_context
-def max_gaussian(context, restart, case, config_path):
+def max_gaussian(context, restart, case, email, config_path):
     """Update config file to restart with Max Gaussian for SNV enabled."""
     if case:
         most_recent = api.case(case).first()
@@ -83,4 +84,5 @@ def max_gaussian(context, restart, case, config_path):
     log.info("updated config: {}".format(config_path))
     script_dir = context.obj.get('script_dir')
     if restart and script_dir:
-        restart_mip(script_dir, config_path)
+        kwargs = dict(executable=context.obj.get('mip_exe'), email=email)
+        restart_mip(script_dir, config_path, **kwargs)

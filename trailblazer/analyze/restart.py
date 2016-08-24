@@ -5,11 +5,11 @@ import yaml
 from .start import start_mip
 
 
-def restart_mip(script_dir, config_path):
+def restart_mip(script_dir, config_path, **start_kwargs):
     """Restart a MIP run."""
     with open(config_path, 'r') as stream:
         values = yaml.load(stream)
-    script_content = start_mip(analysis_config=config_path)
+    script_content = start_mip(analysis_config=config_path, **start_kwargs)
     customer = values['instanceTag'][0]
     family = values['familyID']
     out_filename = "{}-{}.sh".format(customer, family)
