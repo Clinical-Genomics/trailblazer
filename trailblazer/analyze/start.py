@@ -51,7 +51,8 @@ def start_mip(analysis_type=None, family_id=None, config=None, ccp=None,
     Returns:
         int: return code from the executed process
     """
-    assert analysis_type in ('exomes', 'genomes'), 'invalid analysis type'
+    if analysis_type:
+        assert analysis_type in ('exomes', 'genomes'), 'invalid analysis type'
     if analysis_config is None:
         assert all([analysis_type, family_id, config, ccp])
     command = []
