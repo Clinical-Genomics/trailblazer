@@ -16,3 +16,9 @@
   {{ utils.analyses_panel('Recently completed', recents, category='success', only_complete=True) }}
 </div>
 {% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+
+    <script src="{{url_for('static', filename='app.js')}}"></script>
+{% endblock %}
