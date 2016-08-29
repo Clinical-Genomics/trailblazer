@@ -9,4 +9,4 @@ function tick() {
     }
 }
 
-setInterval(tick, 1000 * 60);
+setInterval(tick, 1000 * 31);
