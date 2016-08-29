@@ -45,24 +45,6 @@
                         <a href="{{ url_for('analysis', case_id=analysis.case_id) }}">
                             {{ analysis.case_id }}
                         </a>
-
-                        <div class="btn-group pull-right">
-                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="glyphicon glyphicon-user"></span>
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                {% for sample in analysis.samples %}
-                                    <li><a>{{ sample }}</a></li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-
-                        {% if analysis.is_deleted %}
-                            <span class="badge pull-right">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </span>
-                        {% endif %}
                     </td>
                     <td>{{ analysis.started_at.date() }}</td>
                     <td>{{ analysis.pipeline_version }}</td>
@@ -78,12 +60,18 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if analysis.comment %}
-                            {{ analysis.comment }}
-                        {% endif %}
-                        {% if comments %}
-                            <div class="pull-right">{{ comment_modal(analysis) }}</div>
-                        {% endif %}
+                        <div class="row">
+                            <div class="col-xs-10">
+                                {% if analysis.comment %}
+                                    {{ analysis.comment }}
+                                {% endif %}
+                            </div>
+                            <div class="col-xs-2">
+                                {% if comments %}
+                                    <div class="pull-right">{{ comment_modal(analysis) }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
                     </td>
                 </tr>
             {% else %}
