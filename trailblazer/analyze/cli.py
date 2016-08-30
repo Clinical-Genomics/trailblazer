@@ -84,5 +84,7 @@ def max_gaussian(context, restart, case, email, config_path):
     log.info("updated config: {}".format(config_path))
     script_dir = context.obj.get('script_dir')
     if restart and script_dir:
-        kwargs = dict(executable=context.obj.get('mip_exe'), email=email)
+        conda_env = context.obj.get('conda_env')
+        kwargs = dict(executable=context.obj.get('mip_exe'), email=email,
+                      conda_env=conda_env)
         restart_mip(script_dir, config_path, **kwargs)
