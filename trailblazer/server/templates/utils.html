@@ -39,6 +39,8 @@
                         {% set context_class = 'danger' %}
                     {% elif analysis.status == 'completed' %}
                         {% set context_class = 'success' %}
+                    {% elif analysis.status == 'error' %}
+                        {% set context_class 'warning' %}
                     {% endif %}
                 {% endif %}
                 <tr class="{{ context_class }}">
