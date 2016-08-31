@@ -3,6 +3,7 @@ from functools import partial
 
 from alchy import Manager
 from click.testing import CliRunner
+from path import path
 import pytest
 
 from trailblazer.cli import root
@@ -62,8 +63,8 @@ def analysis_multi():
 @pytest.yield_fixture(scope='function')
 def sacct_failed(analysis_failed):
     filename = "Sacct_{}.0.stdout.txt".format(analysis_failed['family_id'])
-    path = "{}/bwa/info/{}".format(analysis_failed['root'], filename)
-    with open(path, 'r') as stream:
+    sacct_path = "{}/bwa/info/{}".format(analysis_failed['root'], filename)
+    with open(sacct_path, 'r') as stream:
         yield stream
 
 
@@ -74,3 +75,12 @@ def manager():
     _manager.create_all()
     yield _manager
     _manager.drop_all()
+
+
+@pytest.yield_fixture(scope='function')
+def tmp_config(tmpdir):
+    config = path('tests/fixtures/analysis-config/family_config.yaml')
+    # copy the file to the tmpdir
+    new_config = tmpdir.join(config.basename())
+    config.copy(str(new_config))
+    yield new_config
