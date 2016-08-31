@@ -6,6 +6,8 @@ import json
 import alchy
 from sqlalchemy import Column, types, UniqueConstraint
 
+STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error')
+
 
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""

@@ -11,7 +11,7 @@
 {% endmacro %}
 
 {% macro analyses_table(analyses, editable=True, colored=False, only_complete=False) %}
-    {% set status_options = ['pending', 'running', 'completed', 'failed'] %}
+    {% set status_options = ['pending', 'running', 'completed', 'failed', 'error'] %}
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
