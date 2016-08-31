@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import os
 
 from flask import abort, Flask, render_template, request, redirect
@@ -7,6 +8,8 @@ from flask_bootstrap import Bootstrap
 import sqlalchemy as sqa
 
 from trailblazer.store import Analysis, Model, Metadata, api
+
+log = logging.getLogger(__name__)
 
 app = Flask(__name__)
 application = app
@@ -26,7 +29,8 @@ db = Alchy(app, Model=Model)
 def index():
     metadata = Metadata.query.first()
     recent_query = api.analyses(status='completed').limit(10)
-    fail_query = api.analyses(status='failed').limit(20)
+    fail_query = (api.analyses(status='failed')
+                     .filter(Analysis.comment == None).limit(20))
     running_query = api.analyses(status='running')
     return render_template('index.html', fails=fail_query,
                            runnings=running_query, recents=recent_query,
@@ -61,5 +65,17 @@ def comments(analysis_id):
         return abort(404)
     new_comment = request.form['comment']
     analysis_obj.comment = new_comment
+    db.commit()
+    return redirect(request.referrer)
+
+
+@app.route('/analyses/<analysis_id>/status', methods=['POST'])
+def update_status(analysis_id):
+    """Update the status of an analysis."""
+    new_status = request.form['status']
+    analysis_obj = Analysis.query.get(analysis_id)
+    log.info("updating '%s' status: %s -> %s", analysis_obj.id,
+             analysis_obj.status, new_status)
+    analysis_obj.status = new_status
     db.commit()
     return redirect(request.referrer)

@@ -10,7 +10,8 @@
     </div>
 {% endmacro %}
 
-{% macro analyses_table(analyses, comments=True, colored=False, only_complete=False) %}
+{% macro analyses_table(analyses, editable=True, colored=False, only_complete=False) %}
+    {% set status_options = ['pending', 'running', 'completed', 'failed'] %}
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
@@ -49,7 +50,21 @@
                     <td>{{ analysis.started_at.date() }}</td>
                     <td>{{ analysis.pipeline_version }}</td>
                     <td>{{ analysis.type }}</td>
-                    <td>{{ analysis.status }}</td>
+                    <td>
+                        {% if editable %}
+                            <form action="{{ url_for('update_status', analysis_id=analysis.id) }}" method="POST">
+                                <select class="form-control input-sm" name="status" onchange="this.form.submit()">
+                                    {% for status in status_options %}
+                                        <option value="{{ status }}" {% if status == analysis.status %}selected{% endif %}>
+                                            {{ status }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        {% else %}
+                            {{ analysis.status }}
+                        {% endif %}
+                    </td>
                     <td>
                         {% if only_complete %}
                             {{ (analysis.runtime / 60 / 60) | round(1) }}
@@ -67,7 +82,7 @@
                                 {% endif %}
                             </div>
                             <div class="col-xs-2">
-                                {% if comments %}
+                                {% if editable %}
                                     <div class="pull-right">{{ comment_modal(analysis) }}</div>
                                 {% endif %}
                             </div>
