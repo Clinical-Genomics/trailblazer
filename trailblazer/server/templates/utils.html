@@ -40,7 +40,9 @@
                     {% elif analysis.status == 'completed' %}
                         {% set context_class = 'success' %}
                     {% elif analysis.status == 'error' %}
-                        {% set context_class 'warning' %}
+                        {% set context_class = 'warning' %}
+                    {% else %}
+                        {% set context_class = 'default' %}
                     {% endif %}
                 {% endif %}
                 <tr class="{{ context_class }}">
@@ -56,6 +58,7 @@
                         {% if editable %}
                             <form action="{{ url_for('update_status', analysis_id=analysis.id) }}" method="POST">
                                 <select class="form-control input-sm" name="status" onchange="this.form.submit()">
+                                    <option></option>
                                     {% for status in status_options %}
                                         <option value="{{ status }}" {% if status == analysis.status %}selected{% endif %}>
                                             {{ status }}
