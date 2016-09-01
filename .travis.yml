@@ -1,7 +1,6 @@
 ---
 # config file for automatic testing at travis-ci.org
 language: python
-sudo: false
 
 python:
   - "2.7"
