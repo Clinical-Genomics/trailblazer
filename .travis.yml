@@ -16,11 +16,26 @@ notifications:
   email: false
 
 deploy:
-  provider: pypi
-  user: robinandeer
-  password:
-    secure: SXvkMHpg5sXUDIqje6mwoZ2j5I6m1NtXMcRRhPu+u0UfnELt3YePsjkFK05VlMyI+6OHU6OzGQTmSprRbB5OUcWhj+6HMh/svlVUePxOfLJW3VBm/eQF/zUwre5TlwdvzGAcjU43lP/KzGzM7ZL9xaLC1SW3zS+UMtUqBNuHypMlr8IOodxca7QdBiHn8JCcX01MkiufsH3seKql6ljA2sK0tD8+4ZmVSYYi7Ce2DkqI0Ar9ggFWJmcUYFqeiyL+UNZDpZQdytPzJykG1oE0ys+EzlkAlZHLLY3TQVdEyQo6BWwNg5jwKHHFKaowfDXp1TGxLHqTC4PNKh8mrfqLKyUGFxyqFP+YyhDfch0fsovZDFd4r9VuLCanRl9fufqHFJFFWCkabJA8q45sVRm9NBWSxUvOs8pmezxel90p8FGU1nzVjlo+N5uoScWCI1qN1jnCKByCV6fhjsHXbdoVQg05VrVt/zFq75LRn3WKQiQy/qfQ9hMhoQsBdxfvpegjzgd/sueEW1MHeds6jL+6+RuFnlvmc6M2ZpO1JGFEHarAXFMpZQWOaO6Ha4R4U1oDJHOFMwiFLXh4NjtpOPSZdXqu4Hbxyi18pfrPVM/GDJJ6fWBZaXkCX5lZPVecW0ISKd0YA/5qui4OytkXlYK89WCs9R3xUi/6QtbdhM1hFnI=
-  on:
-    tags: true
-    distributions: sdist bdist_wheel
-    repo: Clinical-Genomics/trailblazer
+  - provider: pypi
+    user: robinandeer
+    password:
+      secure: SXvkMHpg5sXUDIqje6mwoZ2j5I6m1NtXMcRRhPu+u0UfnELt3YePsjkFK05VlMyI+6OHU6OzGQTmSprRbB5OUcWhj+6HMh/svlVUePxOfLJW3VBm/eQF/zUwre5TlwdvzGAcjU43lP/KzGzM7ZL9xaLC1SW3zS+UMtUqBNuHypMlr8IOodxca7QdBiHn8JCcX01MkiufsH3seKql6ljA2sK0tD8+4ZmVSYYi7Ce2DkqI0Ar9ggFWJmcUYFqeiyL+UNZDpZQdytPzJykG1oE0ys+EzlkAlZHLLY3TQVdEyQo6BWwNg5jwKHHFKaowfDXp1TGxLHqTC4PNKh8mrfqLKyUGFxyqFP+YyhDfch0fsovZDFd4r9VuLCanRl9fufqHFJFFWCkabJA8q45sVRm9NBWSxUvOs8pmezxel90p8FGU1nzVjlo+N5uoScWCI1qN1jnCKByCV6fhjsHXbdoVQg05VrVt/zFq75LRn3WKQiQy/qfQ9hMhoQsBdxfvpegjzgd/sueEW1MHeds6jL+6+RuFnlvmc6M2ZpO1JGFEHarAXFMpZQWOaO6Ha4R4U1oDJHOFMwiFLXh4NjtpOPSZdXqu4Hbxyi18pfrPVM/GDJJ6fWBZaXkCX5lZPVecW0ISKd0YA/5qui4OytkXlYK89WCs9R3xUi/6QtbdhM1hFnI=
+    on:
+      tags: true
+      distributions: sdist bdist_wheel
+      repo: Clinical-Genomics/trailblazer
+
+  - provider: elasticbeanstalk
+    edge: true
+    app: trailblazer
+    env: trailblazer
+    skip_cleanup: true
+    bucket_name: elasticbeanstalk-eu-central-1-003617657366
+    region: eu-central-1
+    access-key-id:
+      secure: lLu6nMgCC8gwHyqEaRwtkJ67TfTKIu2pV8dGebsLc9nhpG1twX5fvhF4njKIx4HWFfOUWsn+DwGQpDFDQTIoZW/bD/RdqHN25jM1bDKtAH6guJQVS87qeiyMMfwPvsBTeeZpYoHorULocHqcvqm1/yawvBBgwXeSh8UC93tY2qAuZXml23sJybwfhlkAojHDeaYrxmtXMvftAGxFEo5YV6jXlSWHcfMa3EiuI72G0F926chuyZEmRZsug84nT1c8rQ8/+KfxilavyTMjZ+yOgfxK7i5VpPukrOl+hX8STxTkiZH959gbmT0jv42WykfTAj+IFl3DuAPF+ujSaAbbZyKJwWIfj0pg6izt/nU/oHiKZqnM/y7Q6MDk5PNjg97xLbnaGcJK89LLsh/epJLa5u+p/zai5omdr7e4e/xPKXdug1msJWQr5WRgeaWtbq6Sjec59QYp1myRYNduldl3gO8CcIwU0wZD6r3S6Ccer8tdaeLlXjtbgq2FNTNeS4vkWs7JHxVhXRQ4FSYvyMsrAWLvdDK4X9GBog30ajElZwTuQpaLh7jisN39MqkJP0eiGruvACO3VclQLe+dIgq9FBVf6JScEgSbIkYMS8cTltBOu936oVI2uDa6hQ6OeXeNIf/SwsOkQZ5UiHfrL2/nOWGv/KJ5Y7UAeFu7lbIggL8=
+    secret-access-key:
+      secure: XNZi/M046FizIuB8OrFW2zR3rulxXKrBXPYWfPF6j/Eq0JNZdvhtW8USMY2VopgTEqDf38rWfD78eRwA7ZNuloguRiT7/JWMhm0sXcr5e1x73BNFWxTWYVCMPI7pvlMbp3Ep/rXfJwynm9FwjZ7yF5Et6vKgNbIscpzImvY+dwIllu6eqckzR2HDzNUBxCS1GFvREQso+VCz8tZtog0aSU+GHuPL2lFe7bltv4OfaPGDVQUlBfg5x3ZkAHu77dcbOfj/o0/4VVqmaWDybfjr027rlcYXL6GFskzEKF+OI5//sHDUh2JiqVW5YRknW8Igk8bBRZ7pxmZq7Eya6zWOjKu1bhvEeNnBKX4h5/WbvZxsQgUVYrE/8I51ZApK8usOckQ/MjRZvy+K0EQINU/jsT0SqHntMdyTz3Pujy7Gu/pnXw3pQVGMWDD9VsNCqYoOzjjkfmkaz+eYNJg6dgzqD8p78u+gkM6zaql1XBvQ/1SZ1YJeTOxFeiO9teYqGNXyhGOvEcR+bztPQ79SCHebgXyBY6UUHnsImvPE3UnGi8IT4yWRnHJfIXxCdJ9kyvJTZ1nq4CFFjppPR+SKmKf3qvB41D8zSvfCFNQfLzrTnL2oM+5hU73fmPKohjw3/+jUtITFK4NQ7yfbUOd5DOPAbWGZBho5pbNpyat9XDfbZkU=
+    on:
+      repo: Clinical-Genomics/trailblazer
+      branch: master
