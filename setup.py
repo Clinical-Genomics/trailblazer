@@ -1,6 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Based on https://github.com/pypa/sampleproject/blob/master/setup.py."""
+"""
+Trailblazer is a tool to manage and track state of analyses.
+
+You can install it from PyPI as follows::
+    pip install trailblazer
+
+For more detailed instructions, run :code:`trailblazer --help`
+
+See the GitHub repo for documentation:
+`Clinical-Genomics/analysis <https://github.com/Clinical-Genomics/analysis>`_
+"""
 # To use a consistent encoding
 import codecs
 import os
@@ -51,11 +61,6 @@ class PyTest(TestCommand):
         import pytest
         sys.exit(pytest.main(self.test_args))
 
-# Get the long description from the relevant file
-here = os.path.abspath(os.path.dirname(__file__))
-with codecs.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
-
 
 setup(
     name='trailblazer',
@@ -63,10 +68,10 @@ setup(
     # Versions should comply with PEP440. For a discussion on
     # single-sourcing the version across setup.py and the project code,
     # see http://packaging.python.org/en/latest/tutorial.html#version
-    version='1.0.0-beta4',
+    version='1.0.0-beta5',
 
     description=('Track analyses.'),
-    long_description=long_description,
+    long_description=__doc__,
     # What does your project relate to? Separate with spaces.
     keywords='analysis development',
     author='Robin Andeer',
