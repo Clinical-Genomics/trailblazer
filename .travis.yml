@@ -1,26 +1,27 @@
----
 language: python
 
 python:
-  - '2.7'
+    - '2.7'
 
 install:
-  - pip install -q -r requirements-dev.txt .
+    - pip install -q -r requirements-dev.txt .
 
 script:
-  - coverage run --source "$(basename "$PWD")" setup.py test
+    - coverage run --source "$(basename "$PWD")" setup.py test
 
 after_success: coveralls
 
 notifications:
   email: false
+  slack:
+    secure: KWvQqTqRUzo4IaDZs2XJtqvFeDXx1CQsDVaguNkaFuhCupGS+gbVA6MgxPJbF2BdIK2iAIxKG4n2FSAqWv10PdTVqvBnPFIG0yRJ7nciTveXRIwas7vGlE08AVJX/tnBJrsTZih5IbBZPzWtv4ahwU9TIDqpHRE1wFCCc4PUVsXOsDRnLg772BNTSfMnqpXutdIDhhQFybR/jGARC3LpJxctP3ELH7CZyEf6jN0EviKlcNgdRORG6Jw6mRI7rYCvkSm+CVyQYrkcHrfnkZfZjYxCceQL20tlFSBO4AAYIRGu7B9xHOEPKxXNZq4rMr5B2AmA3RE9F04FVsre3vTNzTm1SIZ9lI4AiDwoWrv8y7jV4k9VQhasfzH182ob0nEnd3ELb/LDn1mCVuo4R41DcegeGy/OxE0LUq62LPPMtiuFoQIzidSPq3LY7stwQnhMSidTPOl4wKj9OhhC4hG9e02djm3YEEX7efg8vBWq26tGuu2WPZ0mccQFSDnfnVkc6I74+lB2GYp8SETouirnrJKqjcYSrUhTZ0HNqbPG6+Qr4974Rb5m3sz+I6Y5EAqymesbenZdBJ2mUNydkqBuSvr+4TNteylHe0GNoxwreWvv4Phq3GBVSPItQGcUqdcdOi4ux+eoNT0IVi5+ytFRNXgBlo3BJ0+WkcozhalWykI=
 
 deploy:
-  - provider: pypi
-    user: robinandeer
-    password:
-      secure: SXvkMHpg5sXUDIqje6mwoZ2j5I6m1NtXMcRRhPu+u0UfnELt3YePsjkFK05VlMyI+6OHU6OzGQTmSprRbB5OUcWhj+6HMh/svlVUePxOfLJW3VBm/eQF/zUwre5TlwdvzGAcjU43lP/KzGzM7ZL9xaLC1SW3zS+UMtUqBNuHypMlr8IOodxca7QdBiHn8JCcX01MkiufsH3seKql6ljA2sK0tD8+4ZmVSYYi7Ce2DkqI0Ar9ggFWJmcUYFqeiyL+UNZDpZQdytPzJykG1oE0ys+EzlkAlZHLLY3TQVdEyQo6BWwNg5jwKHHFKaowfDXp1TGxLHqTC4PNKh8mrfqLKyUGFxyqFP+YyhDfch0fsovZDFd4r9VuLCanRl9fufqHFJFFWCkabJA8q45sVRm9NBWSxUvOs8pmezxel90p8FGU1nzVjlo+N5uoScWCI1qN1jnCKByCV6fhjsHXbdoVQg05VrVt/zFq75LRn3WKQiQy/qfQ9hMhoQsBdxfvpegjzgd/sueEW1MHeds6jL+6+RuFnlvmc6M2ZpO1JGFEHarAXFMpZQWOaO6Ha4R4U1oDJHOFMwiFLXh4NjtpOPSZdXqu4Hbxyi18pfrPVM/GDJJ6fWBZaXkCX5lZPVecW0ISKd0YA/5qui4OytkXlYK89WCs9R3xUi/6QtbdhM1hFnI=
-    on:
-      tags: true
-      distributions: sdist bdist_wheel
-      repo: Clinical-Genomics/trailblazer
+- provider: pypi
+  user: robinandeer
+  password:
+    secure: SXvkMHpg5sXUDIqje6mwoZ2j5I6m1NtXMcRRhPu+u0UfnELt3YePsjkFK05VlMyI+6OHU6OzGQTmSprRbB5OUcWhj+6HMh/svlVUePxOfLJW3VBm/eQF/zUwre5TlwdvzGAcjU43lP/KzGzM7ZL9xaLC1SW3zS+UMtUqBNuHypMlr8IOodxca7QdBiHn8JCcX01MkiufsH3seKql6ljA2sK0tD8+4ZmVSYYi7Ce2DkqI0Ar9ggFWJmcUYFqeiyL+UNZDpZQdytPzJykG1oE0ys+EzlkAlZHLLY3TQVdEyQo6BWwNg5jwKHHFKaowfDXp1TGxLHqTC4PNKh8mrfqLKyUGFxyqFP+YyhDfch0fsovZDFd4r9VuLCanRl9fufqHFJFFWCkabJA8q45sVRm9NBWSxUvOs8pmezxel90p8FGU1nzVjlo+N5uoScWCI1qN1jnCKByCV6fhjsHXbdoVQg05VrVt/zFq75LRn3WKQiQy/qfQ9hMhoQsBdxfvpegjzgd/sueEW1MHeds6jL+6+RuFnlvmc6M2ZpO1JGFEHarAXFMpZQWOaO6Ha4R4U1oDJHOFMwiFLXh4NjtpOPSZdXqu4Hbxyi18pfrPVM/GDJJ6fWBZaXkCX5lZPVecW0ISKd0YA/5qui4OytkXlYK89WCs9R3xUi/6QtbdhM1hFnI=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: Clinical-Genomics/trailblazer
