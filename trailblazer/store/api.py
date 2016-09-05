@@ -37,7 +37,7 @@ def analyses(analysis_id=None, since=None, is_ready=False, status=None):
     if status:
         if isinstance(status, list):
             status_str = ', '.join(status)
-            query.filter(Analysis.status.in_(status))
+            query = query.filter(Analysis.status.in_(status))
         else:
             status_str = status
             query = query.filter_by(status=status)
