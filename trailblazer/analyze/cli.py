@@ -5,8 +5,9 @@ import click
 from path import path
 
 from .restart import update_maxgaussian, restart_mip
-from .start import start_mip
+from .start import start_mip, build_pending
 from trailblazer.store import api
+from trailblazer.add.commit import commit_analysis
 
 log = logging.getLogger(__name__)
 
@@ -51,7 +52,8 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
         gene_list=gene_list,
         dryrun=dryrun,
         conda_env=conda_env,
-        email=email)
+        email=email
+    )
 
     if script_dir:
         case_id = "{}-{}".format(customer, family)
@@ -60,6 +62,10 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
         click.echo(script, file=out_path.open('w'))
     else:
         click.echo(script, file=out)
+
+    case_id = "{}-{}".format(customer, family)
+    new_entry = build_pending(case_id, ccp_abs, analysis_type)
+    commit_analysis(api, new_entry)
 
 
 @analyze.group()
@@ -88,3 +94,9 @@ def max_gaussian(context, restart, case, email, config_path):
         kwargs = dict(executable=context.obj.get('mip_exe'), email=email,
                       conda_env=conda_env)
         restart_mip(script_dir, config_path, **kwargs)
+
+        if case:
+            new_entry = build_pending(most_recent.case_id,
+                                      most_recent.root_dir,
+                                      most_recent.type)
+            commit_analysis(api, new_entry)

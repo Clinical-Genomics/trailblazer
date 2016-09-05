@@ -13,8 +13,8 @@ def commit_analysis(manager, new_entry):
     old_entry = api.case(case_id=new_entry.case_id).first()
     if old_entry is None or not same_entry(old_entry, new_entry):
         # save the new entry to the database
-        if old_entry and old_entry.status == 'running':
-            # replace if status was 'running'
+        if old_entry and old_entry.status in ('running', 'pending'):
+            # replace old temporary entries
             log.debug("deleting existing entry: %s", new_entry.case_id)
             old_entry.delete()
             manager.commit()

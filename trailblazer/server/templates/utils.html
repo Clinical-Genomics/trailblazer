@@ -33,7 +33,7 @@
         <tbody>
             {% for analysis in analyses %}
                 {% if colored %}
-                    {% if analysis.status == 'running' %}
+                    {% if analysis.status in ('running', 'pending') %}
                         {% set context_class = 'info' %}
                     {% elif analysis.status == 'failed' %}
                         {% set context_class = 'danger' %}

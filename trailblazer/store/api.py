@@ -35,8 +35,13 @@ def analyses(analysis_id=None, since=None, is_ready=False, status=None):
         query = query.filter(Analysis.case_id.contains(analysis_id))
 
     if status:
-        log.debug("filter entries on status category: %s", status)
-        query = query.filter_by(status=status)
+        if isinstance(status, list):
+            status_str = ', '.join(status)
+            query.filter(Analysis.status.in_(status))
+        else:
+            status_str = status
+            query = query.filter_by(status=status)
+        log.debug("filter entries on status category: %s", status_str)
 
     if is_ready:
         query = query.filter_by(status='completed', is_deleted=False)
