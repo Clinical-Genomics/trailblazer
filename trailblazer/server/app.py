@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Flask app module."""
 import logging
 import os
 
@@ -27,6 +28,7 @@ db = Alchy(app, Model=Model)
 
 @app.route('/')
 def index():
+    """Dashboard view."""
     metadata = Metadata.query.first()
     recent_query = api.analyses(status='completed').limit(10)
     fail_query = (api.analyses(status='failed')

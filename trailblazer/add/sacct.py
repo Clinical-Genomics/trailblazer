@@ -5,7 +5,7 @@ from datetime import datetime
 def filter_jobs(sacct_jobs, failed=True):
     """Filter jobs that have a FAILED etc. status."""
     if failed:
-        categories = ('FAILED', 'CANCELLED')
+        categories = ('FAILED', 'CANCELLED', 'TIMEOUT')
     else:
         categories = ('COMPLETED', 'RUNNING', 'PENDING')
     filtered_jobs = [job for job in sacct_jobs if job['state'] in categories]
