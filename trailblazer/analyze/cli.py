@@ -65,7 +65,7 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
 
     case_id = "{}-{}".format(customer, family)
     new_entry = build_pending(case_id, ccp_abs, analysis_type)
-    commit_analysis(api, new_entry)
+    commit_analysis(context.obj['manager'], new_entry)
 
 
 @analyze.group()
@@ -99,4 +99,4 @@ def max_gaussian(context, restart, case, email, config_path):
             new_entry = build_pending(most_recent.case_id,
                                       most_recent.root_dir,
                                       most_recent.type)
-            commit_analysis(api, new_entry)
+            commit_analysis(context.obj['manager'], new_entry)
