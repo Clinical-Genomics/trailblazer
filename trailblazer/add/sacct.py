@@ -13,14 +13,20 @@ def filter_jobs(sacct_jobs, failed=True):
 
 
 def time_to_sec(time_str):
-    """Convert time in string format to seconds."""
+    """Convert time in string format to seconds.
+
+    Skipping seconds since sometimes the last column is truncated
+    for entries where >10 days.
+    """
     total_sec = 0
     if '-' in time_str:
         # parse out days
         days, time_str = time_str.split('-')
         total_sec += (int(days) * 60 * 60 * 24)
 
-    time_parts = map(lambda val: int(round(float(val))), time_str.split(':'))
+    # parse out the hours and mins (skip seconds)
+    hours_min_str = time_str.split(':')[:-1]
+    time_parts = map(lambda val: int(round(float(val))), hours_min_str)
     total_sec += time_parts[-1]               # seconds
     total_sec += time_parts[-2] * 60          # minutes
     if len(time_parts) == 3:
