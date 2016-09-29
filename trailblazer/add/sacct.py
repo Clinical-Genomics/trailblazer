@@ -28,7 +28,8 @@ def time_to_sec(time_str):
     hours_min_str = time_str.split(':')[:-1]
     time_parts = map(lambda val: int(round(float(val))), hours_min_str)
     total_sec += time_parts[-1] * 60          # minutes
-    total_sec += time_parts[-2] * 60 * 60     # hours
+    if len(time_parts) > 1:
+        total_sec += time_parts[-2] * 60 * 60     # hours
     return total_sec
 
 
