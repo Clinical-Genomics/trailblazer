@@ -31,8 +31,7 @@ def index():
     """Dashboard view."""
     metadata = Metadata.query.first()
     recent_query = api.analyses(status='completed').limit(10)
-    fail_query = (api.analyses(status='failed')
-                     .filter(Analysis.comment == None).limit(20))
+    fail_query = api.analyses(status='failed').filter_by(is_visible=True)
     running_query = api.analyses(status=['running', 'pending'])
     return render_template('index.html', fails=fail_query,
                            runnings=running_query, recents=recent_query,

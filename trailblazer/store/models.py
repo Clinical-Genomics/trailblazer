@@ -6,7 +6,10 @@ import json
 import alchy
 from sqlalchemy import Column, types, UniqueConstraint
 
-STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error')
+STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error',
+                  'canceled')
+ANALYSIS_TYPES = ('exomes', 'genomes')
+PIPELINES = ('mip',)
 
 
 def json_serial(obj):
@@ -49,7 +52,7 @@ class Analysis(Model):
     case_id = Column(types.String(128))
 
     # metadata
-    pipeline = Column(types.Enum('mip'))
+    pipeline = Column(types.Enum(*PIPELINES))
     pipeline_version = Column(types.String(32))
     logged_at = Column(types.DateTime, default=datetime.datetime.now)
     started_at = Column(types.DateTime)
@@ -59,11 +62,12 @@ class Analysis(Model):
     status = Column(types.Enum(*STATUS_OPTIONS))
     root_dir = Column(types.Text)
     config_path = Column(types.Text)
-    type = Column(types.Enum('exomes', 'genomes'))
+    type = Column(types.Enum(*ANALYSIS_TYPES))
     failed_step = Column(types.String(128), default='na')
     failed_at = Column(types.DateTime)
     comment = Column(types.Text)
     is_deleted = Column(types.Boolean, default=False)
+    is_visible = Column(types.Boolean, default=True)
     _samples = Column(types.Text)
 
     @property
