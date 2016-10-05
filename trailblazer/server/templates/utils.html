@@ -72,7 +72,11 @@
                     </td>
                     <td>
                         {% if only_complete %}
-                            {{ (analysis.runtime / 60 / 60) | round(1) }}
+                            {% if analysis.runtime %}
+                                {{ (analysis.runtime / 60 / 60) | round(1) }}
+                            {% else %}
+                                <small>unknown</small>
+                            {% endif %}
                         {% else %}
                             {% if analysis.status == 'failed' %}
                                 {{ analysis.failed_step }}
