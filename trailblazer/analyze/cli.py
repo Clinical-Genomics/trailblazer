@@ -18,6 +18,7 @@ log = logging.getLogger(__name__)
 @click.group()
 @click.pass_context
 def analyze(context):
+    """Interact with MIP command line interface."""
     pass
 
 
@@ -73,9 +74,9 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
 
 @analyze.command()
 @click.option('--max-gaussian')
-@click.option('-d', '--disable', type=click.Choice(*BRANCH_OPTIONS),
+@click.option('-d', '--disable', type=click.Choice(BRANCH_OPTIONS),
               multiple=True)
-@click.option('-s', '--start-from', type=click.Choice(*restart_api.PROGRAMS))
+@click.option('-s', '--start-from', type=click.Choice(restart_api.PROGRAMS))
 @click.option('-e', '--extras', multiple=True, type=(unicode, unicode))
 @click.option('--restart/--no-restart', default=True)
 @click.option('-e', '--email', help='email to send errors to')
@@ -85,6 +86,10 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
 def restart(context, max_gaussian, restart, email, case, extras, disable,
             start_from, config_path):
     """Restart MIP with modifications to the config file."""
+    if not case and not config_path:
+        log.error("you must provide either case of config path")
+        context.abort()
+
     if case:
         most_recent = api.case(case).first()
         config_path = most_recent.config_path
