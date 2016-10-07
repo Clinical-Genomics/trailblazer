@@ -108,6 +108,7 @@ def restart(context, max_gaussian, restart, email, case, extras, disable,
 
     script_dir = context.obj.get('script_dir')
     if restart and script_dir:
+        email = email or new_values.get('email')
         conda_env = context.obj.get('conda_env')
         kwargs = dict(executable=context.obj.get('mip_exe'), email=email,
                       conda_env=conda_env)
