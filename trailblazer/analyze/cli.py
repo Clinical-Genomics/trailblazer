@@ -4,10 +4,13 @@ import logging
 import click
 from path import path
 
-from .restart import update_maxgaussian, restart_mip
+from . import restart as restart_api
 from .start import start_mip, build_pending
 from trailblazer.store import api
 from trailblazer.add.commit import commit_analysis
+
+BRANCH_OPTIONS = restart_api.BRANCHES.keys()
+
 
 log = logging.getLogger(__name__)
 
@@ -68,32 +71,42 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
     commit_analysis(context.obj['manager'], new_entry)
 
 
-@analyze.group()
-@click.pass_context
-def restart(context):
-    pass
-
-
-@restart.command('max-gaussian')
+@analyze.command()
+@click.option('--max-gaussian')
+@click.option('-d', '--disable', type=click.Choice(*BRANCH_OPTIONS),
+              multiple=True)
+@click.option('-s', '--start-from', type=click.Choice(*restart_api.PROGRAMS))
+@click.option('-e', '--extras', multiple=True, type=(unicode, unicode))
 @click.option('--restart/--no-restart', default=True)
 @click.option('-e', '--email', help='email to send errors to')
-@click.option('-c', '--case', help='restart analysis in database')
+@click.option('-c', '--case', help='lookup analysis in database')
 @click.argument('config_path', type=click.Path(exists=True), required=False)
 @click.pass_context
-def max_gaussian(context, restart, case, email, config_path):
-    """Update config file to restart with Max Gaussian for SNV enabled."""
+def restart(context, max_gaussian, restart, email, case, extras, disable,
+            start_from, config_path):
+    """Restart MIP with modifications to the config file."""
     if case:
         most_recent = api.case(case).first()
         config_path = most_recent.config_path
 
-    update_maxgaussian(config_path)
-    log.info("updated config: {}".format(config_path))
+    if max_gaussian:
+        new_values = restart_api.update_maxgaussian(config_path)
+    else:
+        extras = dict(extras)
+        new_values = restart_api.update_config(config_path,
+                                               start_step=start_from,
+                                               disable_branches=disable,
+                                               **extras)
+
+    log.info("update config: {}".format(config_path))
+    restart_api.write_config(config_path, new_values)
+
     script_dir = context.obj.get('script_dir')
     if restart and script_dir:
         conda_env = context.obj.get('conda_env')
         kwargs = dict(executable=context.obj.get('mip_exe'), email=email,
                       conda_env=conda_env)
-        restart_mip(script_dir, config_path, **kwargs)
+        restart_api.restart(script_dir, config_path, **kwargs)
 
         if case:
             new_entry = build_pending(most_recent.case_id,
