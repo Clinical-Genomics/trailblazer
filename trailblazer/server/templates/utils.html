@@ -52,7 +52,7 @@
                         </a>
                     </td>
                     <td>{{ analysis.started_at.date() }}</td>
-                    <td>{{ analysis.pipeline_version }}</td>
+                    <td>{{ analysis.pipeline_version if analysis.pipeline_version }}</td>
                     <td>{{ analysis.type }}</td>
                     <td>
                         {% if editable %}
