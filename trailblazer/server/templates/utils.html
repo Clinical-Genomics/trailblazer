@@ -39,7 +39,7 @@
                         {% set context_class = 'danger' %}
                     {% elif analysis.status == 'completed' %}
                         {% set context_class = 'success' %}
-                    {% elif analysis.status == 'error' %}
+                    {% elif analysis.status in ('error', 'canceled') %}
                         {% set context_class = 'warning' %}
                     {% else %}
                         {% set context_class = 'default' %}
