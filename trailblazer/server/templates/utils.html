@@ -58,7 +58,6 @@
                         {% if editable %}
                             <form action="{{ url_for('update_status', analysis_id=analysis.id) }}" method="POST">
                                 <select class="form-control input-sm" name="status" onchange="this.form.submit()">
-                                    <option></option>
                                     {% for status in status_options %}
                                         <option value="{{ status }}" {% if status == analysis.status %}selected{% endif %}>
                                             {{ status }}
@@ -78,7 +77,7 @@
                                 <small>unknown</small>
                             {% endif %}
                         {% else %}
-                            {% if analysis.status == 'failed' %}
+                            {% if analysis.status in ('failed', 'error', 'canceled') %}
                                 {{ analysis.failed_step }}
                             {% endif %}
                         {% endif %}
