@@ -7,8 +7,7 @@ def same_entry(entry, other_entry):
     statuses = set()
     steps = set()
     for aentry in [entry, other_entry]:
-        steps.append('na' if aentry.failed_step is None else
-                     aentry.failed_step)
+        steps.add('na' if aentry.failed_step is None else aentry.failed_step)
         # collapse into "failed" status
         statuses.add('failed' if aentry.status in ('error', 'canceled') else
                      aentry.status)
