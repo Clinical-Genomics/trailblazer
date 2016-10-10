@@ -4,17 +4,22 @@ FINISHED_STATUSES = ('Finished', 'Archived', 'Archiving')
 
 def same_entry(entry, other_entry):
     """Compare two analysis entries if they are the same."""
+    statuses = set()
+    steps = set()
     for aentry in [entry, other_entry]:
-        if aentry.failed_step is None:
-            aentry.failed_step = 'na'
+        steps.append('na' if aentry.failed_step is None else
+                     aentry.failed_step)
+        # collapse into "failed" status
+        statuses.add('failed' if aentry.status in ('error', 'canceled') else
+                     aentry.status)
 
     if entry.case_id != other_entry.case_id:
         return False
     elif entry.started_at != other_entry.started_at:
         return False
-    elif entry.status != other_entry.status:
+    elif len(statuses) > 1:
         return False
-    elif entry.failed_step != other_entry.failed_step:
+    elif len(steps) > 1:
         return False
     elif entry.failed_at != other_entry.failed_at:
         return False
