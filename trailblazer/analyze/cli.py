@@ -73,7 +73,7 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
 
 
 @analyze.command()
-@click.option('--max-gaussian')
+@click.option('--max-gaussian', is_flag=True)
 @click.option('-d', '--disable', type=click.Choice(BRANCH_OPTIONS),
               multiple=True)
 @click.option('-s', '--start-from', type=click.Choice(restart_api.PROGRAMS))
