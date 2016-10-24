@@ -22,13 +22,20 @@ def case(case_id):
     return query
 
 
-def analyses(analysis_id=None, since=None, is_ready=False, status=None):
+def analyses(analysis_id=None, since=None, is_ready=False, status=None,
+             older=False):
     """List added analyses."""
-    query = Analysis.query.order_by(Analysis.logged_at.desc())
+    if older:
+        query = Analysis.query.order_by(Analysis.started_at)
+    else:
+        query = Analysis.query.order_by(Analysis.logged_at.desc())
 
     if since:
         log.debug("filter entries on date: %s", since)
-        query = query.filter(Analysis.started_at > since)
+        if older:
+            query = query.filter(Analysis.started_at < since)
+        else:
+            query = query.filter(Analysis.started_at > since)
 
     if analysis_id:
         log.debug("filter entries on id pattern: %s", analysis_id)

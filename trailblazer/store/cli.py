@@ -33,14 +33,15 @@ def delete(context, case_id):
 @click.option('-l', '--limit', default=10)
 @click.option('-s', '--since', nargs=3, type=int)
 @click.option('-c', '--config', is_flag=True)
+@click.option('-o', '--older', is_flag=True)
 @click.argument('analysis_id', required=False)
 @click.pass_context
-def list_cmd(context, pretty, limit, since, config, analysis_id):
+def list_cmd(context, pretty, limit, since, older, config, analysis_id):
     """List added analyses."""
     if since:
         since = date(*since)
     query = (api.analyses(analysis_id=analysis_id, since=since,
-                          is_ready=config)
+                          is_ready=config, older=older)
                 .limit(limit))
 
     if query.first() is None:
