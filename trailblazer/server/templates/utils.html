@@ -10,7 +10,7 @@
     </div>
 {% endmacro %}
 
-{% macro analyses_table(analyses, editable=True, colored=False, only_complete=False) %}
+{% macro analyses_table(analyses, editable=True, colored=False, only_complete=False, add_hide=False) %}
     {% set status_options = ['pending', 'running', 'completed', 'failed', 'error', 'canceled'] %}
     <table class="table table-bordered table-hover">
         <thead>
@@ -20,6 +20,9 @@
                 <th class="col-xs-1">Version</th>
                 <th class="col-xs-1">Type</th>
                 <th class="col-xs-1">Status</th>
+                {% if add_hide %}
+                    <th class="col-xs-1">Hide</th>
+                {% endif %}
                 <th class="col-xs-2">
                     {% if only_complete %}
                         Runtime (h)
@@ -69,6 +72,13 @@
                             {{ analysis.status }}
                         {% endif %}
                     </td>
+                    {% if add_hide %}
+                        <td>
+                            <form action="{{ url_for('update_status', analysis_id=analysis.id) }}" method="POST">
+                                <button class="btn btn-default btn-xs" name="status" value="hidden" type="submit">Hide</button>
+                            </form>
+                        </td>
+                    {% endif %}
                     <td>
                         {% if only_complete %}
                             {% if analysis.runtime %}

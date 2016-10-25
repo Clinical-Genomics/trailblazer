@@ -9,11 +9,15 @@ from flask_bootstrap import Bootstrap
 import sqlalchemy as sqa
 
 from trailblazer.store import Analysis, Model, Metadata, api
+from trailblazer.cli.log import init_log
 
 log = logging.getLogger(__name__)
 
 app = Flask(__name__)
 application = app
+
+init_log(logging.getLogger(), loglevel='INFO')
+
 SECRET_KEY = os.environ.get('TRAILBLAZER_SECRET_KEY') or 'thisIsNotSecret!'
 SQLALCHEMY_DATABASE_URI = os.environ['SQLALCHEMY_DATABASE_URI']
 if 'mysql' in SQLALCHEMY_DATABASE_URI:  # pragma: no cover
@@ -75,8 +79,12 @@ def update_status(analysis_id):
     """Update the status of an analysis."""
     new_status = request.form['status']
     analysis_obj = Analysis.query.get(analysis_id)
-    log.info("updating '%s' status: %s -> %s", analysis_obj.id,
-             analysis_obj.status, new_status)
-    analysis_obj.status = new_status
+    if new_status == 'hidden':
+        log.info("hiding analysis run: %s", analysis_obj.id)
+        analysis_obj.is_visible = False
+    else:
+        log.info("updating '%s' status: %s -> %s", analysis_obj.id,
+                 analysis_obj.status, new_status)
+        analysis_obj.status = new_status
     db.commit()
     return redirect(request.referrer)
