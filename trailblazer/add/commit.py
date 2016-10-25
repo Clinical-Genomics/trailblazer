@@ -17,6 +17,7 @@ def commit_analysis(manager, new_entry):
             # set failed runs to not be visible in dashboard
             for old_run in old_runs:
                 old_runs.is_visible = False
+            manager.commit()
 
         # save the new entry to the database
         if latest_run and latest_run.status in ('running', 'pending'):
