@@ -30,7 +30,9 @@
                         Failed step
                     {% endif %}
                 </th>
-                <th {% if editable %}colspan="2"{% endif %} class="col-xs-3">Comment</th>
+                <th {% if editable %}colspan="2"{% endif %} class="col-xs-3">
+                    Comment
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -98,7 +100,7 @@
                     <td>
                         <p style="max-width: 55rem">
                             {% if analysis.comment %}
-                                {{ analysis.comment }}
+                                {{ analysis.comment|replace('\n', '<br />')|safe }}
                             {% endif %}
                         </p>
                     </td>
