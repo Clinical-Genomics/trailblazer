@@ -30,7 +30,7 @@
                         Failed step
                     {% endif %}
                 </th>
-                <th class="col-xs-3">Comment</th>
+                <th {% if editable %}colspan="2"{% endif %} class="col-xs-3">Comment</th>
             </tr>
         </thead>
         <tbody>
@@ -92,21 +92,15 @@
                             {% endif %}
                         {% endif %}
                     </td>
+                    {% if editable %}
+                        <td>{{ comment_modal(analysis) }}</td>
+                    {% endif %}
                     <td>
-                        <div class="row">
-                            <div class="col-xs-10">
-                                {% if analysis.comment %}
-                                    {{ analysis.comment }}
-                                {% endif %}
-                            </div>
-                            <div class="col-xs-2">
-                                {% if editable %}
-                                    <div class="pull-right hidden-sm">
-                                        {{ comment_modal(analysis) }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
+                        <p style="max-width: 55rem">
+                            {% if analysis.comment %}
+                                {{ analysis.comment }}
+                            {% endif %}
+                        </p>
                     </td>
                 </tr>
             {% else %}

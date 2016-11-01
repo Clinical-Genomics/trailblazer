@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container-fluid">
   {{ utils.analyses_panel('Recently failed', fails, category='primary', add_hide=True) }}
   {{ utils.analyses_panel('Currently running', runnings, category='info', editable=False) }}
   {{ utils.analyses_panel('Recently completed', recents, category='success', only_complete=True) }}
