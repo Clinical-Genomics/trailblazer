@@ -39,6 +39,12 @@ def analyze(context):
 def start(context, ccp, analysis_type, family, config, customer, gene_list,
           dryrun, executable, out, conda_env, email, script_dir):
     """Start a new analysis."""
+    # check if case is already running
+    case_id = "{}-{}".format(customer, family)
+    if api.is_running(case_id):
+        log.error("case already running!")
+        context.abort()
+
     config = config or context.obj['mip_config']
     executable = executable or context.obj['mip_exe']
     gene_list = gene_list or context.obj['mip_genelist']
@@ -60,7 +66,6 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
     )
 
     if script_dir:
-        case_id = "{}-{}".format(customer, family)
         out_filename = "{}.sh".format(case_id)
         out_path = path(script_dir).joinpath(out_filename)
         click.echo(script, file=out_path.open('w'))

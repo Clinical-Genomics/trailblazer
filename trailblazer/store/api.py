@@ -61,3 +61,12 @@ def track_update():
     metadata = Metadata.query.first()
     if metadata:
         metadata.updated_at = datetime.now()
+
+
+def is_running(case_id):
+    """Check if a case is currently running/pending."""
+    latest_analysis = case(case_id).first()
+    if latest_analysis and latest_analysis.status in ('pending', 'running'):
+        return True
+    else:
+        return False
