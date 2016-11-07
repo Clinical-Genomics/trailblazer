@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from path import path
+import yaml
 
 from trailblazer.store import Analysis
 from trailblazer.exc import MissingFileError
@@ -59,29 +60,29 @@ def parse_sampleinfo(sampleinfo):
     Returns:
         dict: extracted and transformed values from sampleinfo
     """
-    fam_key = sampleinfo.keys()[0]
-    fam_data = sampleinfo[fam_key][fam_key]
-    sample_ids = sampleinfo[fam_key].keys()
-    sample_ids.remove(fam_key)
-    analysis_start = fam_data['AnalysisDate']
-    analysis_type = fam_data['AnalysisType']
-    analysis_out = path(fam_data['Program']['QCCollect']['OutDirectory'])
-    customer = fam_data['InstanceTag'][0]
+    with open(sampleinfo['PedigreeFile']['path'], 'r') as in_handle:
+        ped_data = yaml.load(in_handle)
+    fam_key = ped_data['family']
+    sample_ids = sampleinfo['sample'].keys()
+    analysis_types = set(sampleinfo['AnalysisType'].values())
+    # choose collapsed analysis type unless multiple - then assume wgs!
+    analysis_type = analysis_types.pop() if len(analysis_types) == 1 else 'wgs'
+    analysis_start = sampleinfo['AnalysisDate']
+    analysis_out = path(sampleinfo['logFileDir']).parent
+    customer = ped_data['customer']
     case_id = "{}-{}".format(customer, fam_key)
-    cluster_const = analysis_out.parent.parent.parent
-    config_path = cluster_const.joinpath(analysis_type, fam_key,
-                                         "{}_config.yaml".format(fam_key))
-    sacct_path = "{}.status".format(fam_data['lastLogFilePath'])
+    config_path = analysis_out.joinpath("{}_config.yaml".format(fam_key))
+    sacct_path = "{}.status".format(sampleinfo['lastLogFilePath'])
     values = {
         'case_id': case_id,
         'pipeline': 'mip',
-        'pipeline_version': fam_data['MIPVersion'],
-        'type': analysis_type,
-        'root_dir': analysis_out.parent.parent,
+        'pipeline_version': sampleinfo['MIPVersion'],
+        'root_dir': analysis_out,
         'started_at': analysis_start,
         'config_path': config_path,
         'samples': sample_ids,
-        'analysis_status': fam_data['AnalysisRunStatus'],
+        'type': analysis_type,
+        'analysis_status': sampleinfo['AnalysisRunStatus'],
         'sacct_path': sacct_path,
     }
     return values
