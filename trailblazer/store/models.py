@@ -4,6 +4,7 @@ import datetime
 import json
 
 import alchy
+from housekeeper.server.admin import UserManagementMixin
 from sqlalchemy import Column, types, UniqueConstraint
 
 STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error',
@@ -88,3 +89,7 @@ class Analysis(Model):
         """Check if analysis failed on variat recalibration."""
         return (self.failed_step and
                 'GATKVariantRecalibration' in self.failed_step)
+
+
+class User(UserManagementMixin):
+    pass

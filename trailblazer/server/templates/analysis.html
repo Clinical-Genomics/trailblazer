@@ -5,8 +5,7 @@
   <p class="navbar-text">{{ case_id }}</p>
 {% endblock %}
 
-{% block content %}
-<div class="container-fluid">
+{% block main_content %}
+  {{ super() }}
   {{ utils.analyses_panel('History', analyses, colored=True) }}
-</div>
 {% endblock %}
