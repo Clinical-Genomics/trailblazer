@@ -91,5 +91,5 @@ class Analysis(Model):
                 'GATKVariantRecalibration' in self.failed_step)
 
 
-class User(UserManagementMixin):
+class User(Model, UserManagementMixin):
     pass
