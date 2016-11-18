@@ -3,6 +3,7 @@
 https://blog.nelhage.com/2010/02/a-very-subtle-bug/
 """
 import logging
+import os
 
 import click
 from path import path
@@ -50,6 +51,7 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
     executable = executable or context.obj['mip_exe']
     gene_list = gene_list or context.obj['mip_genelist']
     conda_env = conda_env or context.obj.get('conda_env')
+    email = email or environ_email()
 
     ccp_abs = path(ccp).abspath()
     process = start_mip(
@@ -108,7 +110,7 @@ def restart(context, max_gaussian, restart, email, case, extras, disable,
     restart_api.write_config(config_path, new_values)
 
     if restart:
-        email = email or new_values.get('email')
+        email = email or environ_email() or new_values.get('email')
         conda_env = context.obj.get('conda_env')
         kwargs = dict(executable=context.obj.get('mip_exe'), email=email,
                       conda_env=conda_env)
@@ -122,3 +124,10 @@ def restart(context, max_gaussian, restart, email, case, extras, disable,
                                       most_recent.root_dir,
                                       most_recent.type)
             commit_analysis(context.obj['manager'], new_entry)
+
+
+def environ_email():
+    """Guess email from sudo user environment variable."""
+    username = os.environ.get('SUDO_USER')
+    if username:
+        return "{}@scilifelab.se".format(username)
