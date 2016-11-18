@@ -30,14 +30,14 @@ def analyze(context):
 @analyze.command()
 @click.option('-p', '--ccp', type=click.Path(exists=True))
 @click.option('-a', '--analysis-type')
-@click.option('-f', '--family', required=True)
 @click.option('-c', '--config', type=click.Path(exists=True))
 @click.option('-x', '--executable', type=click.Path(exists=True))
-@click.option('-i', '--customer', required=True)
 @click.option('-g', '--gene-list')
 @click.option('-e', '--email', help='email to send errors to')
 @click.option('--dryrun', is_flag=True)
 @click.option('--conda-env')
+@click.argument('customer')
+@click.argument('family')
 @click.pass_context
 def start(context, ccp, analysis_type, family, config, customer, gene_list,
           dryrun, executable, out, conda_env, email):
