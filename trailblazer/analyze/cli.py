@@ -10,6 +10,7 @@ from path import Path
 
 from . import restart as restart_api
 from .start import start_mip, build_pending
+from trailblazer.exc import AnalysisStartError
 from trailblazer.store import api
 from trailblazer.add.commit import commit_analysis
 
@@ -28,7 +29,7 @@ def analyze(context):
 
 @analyze.command()
 @click.option('-p', '--ccp', type=click.Path(exists=True))
-@click.option('-a', '--analysis-type', default='genomes')
+@click.option('-a', '--analysis-type')
 @click.option('-f', '--family', required=True)
 @click.option('-c', '--config', type=click.Path(exists=True))
 @click.option('-x', '--executable', type=click.Path(exists=True))
@@ -54,6 +55,7 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
     email = email or environ_email()
     ccp_abs = (Path(ccp).abspath() if ccp else
                Path(context.obj['analysis_root']).joinpath(customer, family))
+    analysis_type = analysis_type or guess_analysis_type(ccp_abs)
 
     process = start_mip(
         analysis_type,
@@ -132,3 +134,16 @@ def environ_email():
     username = os.environ.get('SUDO_USER')
     if username:
         return "{}@scilifelab.se".format(username)
+
+
+def guess_analysis_type(family_root):
+    """Guess analysis type based on folders."""
+    input_folders = [directory.basename() for directory in
+                     Path(family_root).listdir() if
+                     directory.basename() in ('exomes', 'genomes')]
+    if len(input_folders) > 1:
+        return 'mixed'
+    elif len(input_folders) == 1:
+        return input_folders[0]
+    else:
+        raise AnalysisStartError("can't determine analysis type")
