@@ -6,7 +6,7 @@ import logging
 import os
 
 import click
-from path import path
+from path import Path
 
 from . import restart as restart_api
 from .start import start_mip, build_pending
@@ -27,7 +27,7 @@ def analyze(context):
 
 
 @analyze.command()
-@click.option('-p', '--ccp', type=click.Path(exists=True), required=True)
+@click.option('-p', '--ccp', type=click.Path(exists=True))
 @click.option('-a', '--analysis-type', default='genomes')
 @click.option('-f', '--family', required=True)
 @click.option('-c', '--config', type=click.Path(exists=True))
@@ -52,8 +52,9 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
     gene_list = gene_list or context.obj['mip_genelist']
     conda_env = conda_env or context.obj.get('conda_env')
     email = email or environ_email()
+    ccp_abs = (Path(ccp).abspath() if ccp else
+               Path(context.obj['analysis_root']).joinpath(customer, family))
 
-    ccp_abs = path(ccp).abspath()
     process = start_mip(
         analysis_type,
         family,
