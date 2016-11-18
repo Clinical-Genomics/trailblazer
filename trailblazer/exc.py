@@ -11,3 +11,7 @@ class MissingFileError(Exception):
 
 class UnknownError(Exception):
     pass
+
+
+class AnalysisStartError(Exception):
+    pass

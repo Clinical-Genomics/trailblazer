@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-from path import path
 import yaml
-
-from .start import start_mip
 
 ALIGN = ['pGZipFastq', 'pFastQC', 'pBwaMem', 'pPicardToolsMergeSamFiles',
          'pPicardToolsMarkduplicates', 'pGATKRealigner',
@@ -23,19 +20,6 @@ PROGRAMS = ALIGN + COVERAGE + SV + SNV + STATS
 
 BRANCHES = {'align': ALIGN, 'coverage': COVERAGE, 'sv': SV, 'snv': SNV,
             'stats': STATS}
-
-
-def restart(script_dir, config_path, **start_kwargs):
-    """Restart a MIP run."""
-    with open(config_path, 'r') as stream:
-        values = yaml.load(stream)
-    script_content = start_mip(analysis_config=config_path, **start_kwargs)
-    customer = values['instanceTag'][0]
-    family = values['familyID']
-    out_filename = "{}-{}.sh".format(customer, family)
-    out_path = path(script_dir).joinpath(out_filename)
-    with out_path.open('wb') as out_stream:
-        out_stream.write(script_content)
 
 
 def update_config(config_path, start_step=None, disable_branches=None,

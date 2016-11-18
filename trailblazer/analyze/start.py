@@ -1,19 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-#!/bin/bash -l
-
-set -e
-
-{% if conda_env %}
-source activate {{ conda_env }}
-{% endif %}
-
-{{ command }}
-"""
 from datetime import datetime
 import logging
-
-from jinja2 import Template
+import signal
+import subprocess
 
 from trailblazer.store import Analysis
 
@@ -104,6 +93,8 @@ def start_mip(analysis_type=None, family_id=None, config=None, ccp=None,
         command.append(email)
 
     log.info("command: %s", ' '.join(command))
-    template = Template(__doc__)
-    script = template.render(command=' '.join(command), conda_env=conda_env)
-    return script
+    process = subprocess.Popen(
+        command,
+        preexec_fn=lambda: signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+    )
+    return process

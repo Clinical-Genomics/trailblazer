@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+https://blog.nelhage.com/2010/02/a-very-subtle-bug/
+"""
 import logging
 
 import click
@@ -32,12 +35,10 @@ def analyze(context):
 @click.option('-g', '--gene-list')
 @click.option('-e', '--email', help='email to send errors to')
 @click.option('--dryrun', is_flag=True)
-@click.option('-o', '--out', type=click.File('w'), default='-')
 @click.option('--conda-env')
-@click.option('--script-dir', type=click.Path(exists=True))
 @click.pass_context
 def start(context, ccp, analysis_type, family, config, customer, gene_list,
-          dryrun, executable, out, conda_env, email, script_dir):
+          dryrun, executable, out, conda_env, email):
     """Start a new analysis."""
     # check if case is already running
     case_id = "{}-{}".format(customer, family)
@@ -49,10 +50,9 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
     executable = executable or context.obj['mip_exe']
     gene_list = gene_list or context.obj['mip_genelist']
     conda_env = conda_env or context.obj.get('conda_env')
-    script_dir = script_dir or context.obj.get('script_dir')
 
     ccp_abs = path(ccp).abspath()
-    script = start_mip(
+    process = start_mip(
         analysis_type,
         family,
         config,
@@ -64,13 +64,9 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
         conda_env=conda_env,
         email=email
     )
-
-    if script_dir:
-        out_filename = "{}.sh".format(case_id)
-        out_path = path(script_dir).joinpath(out_filename)
-        click.echo(script, file=out_path.open('w'))
-    else:
-        click.echo(script, file=out)
+    process.wait()
+    if process.returncode != 0:
+        log.error("error starting analysis, check the output")
 
     case_id = "{}-{}".format(customer, family)
     new_entry = build_pending(case_id, ccp_abs, analysis_type)
@@ -111,13 +107,15 @@ def restart(context, max_gaussian, restart, email, case, extras, disable,
     log.info("update config: {}".format(config_path))
     restart_api.write_config(config_path, new_values)
 
-    script_dir = context.obj.get('script_dir')
-    if restart and script_dir:
+    if restart:
         email = email or new_values.get('email')
         conda_env = context.obj.get('conda_env')
         kwargs = dict(executable=context.obj.get('mip_exe'), email=email,
                       conda_env=conda_env)
-        restart_api.restart(script_dir, config_path, **kwargs)
+        process = start_mip(analysis_config=config_path, **kwargs)
+        process.wait()
+        if process.returncode != 0:
+            log.error("error starting analysis, check the output")
 
         if case:
             new_entry = build_pending(most_recent.case_id,
