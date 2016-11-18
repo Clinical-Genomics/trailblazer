@@ -42,7 +42,10 @@ class Metadata(Model):
 
 
 class User(Model, UserManagementMixin):
-    pass
+
+    def first_name(self):
+        """First part of name."""
+        return self.name.split(' ')[0]
 
 
 class Analysis(Model):
