@@ -4,7 +4,7 @@ import logging
 
 from alchy import Manager
 
-from .models import Analysis, Model, Metadata
+from .models import Analysis, Model, Metadata, User
 
 log = logging.getLogger(__name__)
 
@@ -20,6 +20,11 @@ def case(case_id):
     query = (Analysis.query.filter_by(case_id=case_id)
                            .order_by(Analysis.logged_at.desc()))
     return query
+
+
+def user(email):
+    """Return a user based on an email."""
+    return User.query.filter_by(email=email).first()
 
 
 def analyses(analysis_id=None, since=None, is_ready=False, status=None,

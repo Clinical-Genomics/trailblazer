@@ -5,7 +5,7 @@ import json
 
 import alchy
 from housekeeper.server.admin import UserManagementMixin
-from sqlalchemy import Column, types, UniqueConstraint
+from sqlalchemy import Column, ForeignKey, orm, types, UniqueConstraint
 
 STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error',
                   'canceled')
@@ -41,6 +41,10 @@ class Metadata(Model):
     updated_at = Column(types.DateTime)
 
 
+class User(Model, UserManagementMixin):
+    pass
+
+
 class Analysis(Model):
 
     """Analysis record."""
@@ -71,6 +75,9 @@ class Analysis(Model):
     is_visible = Column(types.Boolean, default=True)
     _samples = Column(types.Text)
 
+    user = orm.relationship(User, backref='runs')
+    user_id = Column(ForeignKey(User.id))
+
     @property
     def samples(self):
         return self._samples.split(',') if self._samples else []
@@ -89,7 +96,3 @@ class Analysis(Model):
         """Check if analysis failed on variat recalibration."""
         return (self.failed_step and
                 'GATKVariantRecalibration' in self.failed_step)
-
-
-class User(Model, UserManagementMixin):
-    pass

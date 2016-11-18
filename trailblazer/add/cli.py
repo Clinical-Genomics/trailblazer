@@ -5,6 +5,7 @@ import click
 import yaml
 
 from trailblazer.exc import MissingFileError
+from trailblazer.store import api
 from .commit import commit_analysis
 from .core import build_entry
 from .utils import is_latest_mip
@@ -24,6 +25,10 @@ def add_cmd(context, sacct, qcsampleinfo):
         try:
             new_entry = build_entry(sampleinfo_data, sacct_stream=sacct)
             log.debug("entry: %s - %s", new_entry.case_id, new_entry.status)
+            with open(new_entry.config_path, 'r') as in_handle:
+                config_data = yaml.load(in_handle)
+                email = config_data.get('email')
+                new_entry.user = api.user(email) if email else None
             commit_analysis(manager, new_entry)
         except MissingFileError as error:
             log.error("missing file: %s", error.message)

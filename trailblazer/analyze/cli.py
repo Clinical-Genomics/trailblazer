@@ -75,6 +75,9 @@ def start(context, ccp, analysis_type, family, config, customer, gene_list,
 
     case_id = "{}-{}".format(customer, family)
     new_entry = build_pending(case_id, ccp_abs, analysis_type)
+    if email:
+        user = api.user(email)
+        new_entry.user = user
     commit_analysis(context.obj['manager'], new_entry)
 
 
