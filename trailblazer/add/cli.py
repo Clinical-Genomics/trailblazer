@@ -32,11 +32,9 @@ def add_cmd(context, sacct, qcsampleinfo):
             commit_analysis(manager, new_entry, email=email)
         except MissingFileError as error:
             log.error("missing file: %s", error.message)
-            context.abort()
         except IntegrityError as error:
             log.error(error.message)
             manager.session.rollback()
-            context.abort()
     else:
         family_id = sampleinfo_data.keys()[0]
         log.debug("analysis version not supported: %s", family_id)
