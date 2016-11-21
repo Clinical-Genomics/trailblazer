@@ -36,8 +36,8 @@ def time_to_sec(time_str):
 def convert_job(row):
     """Convert sacct row to dict."""
     state = row[-2]
-    start_time_raw = row[-3]
-    end_time_raw = row[-4]
+    start_time_raw = row[-4]
+    end_time_raw = row[-3]
     if state not in ('PENDING', 'CANCELLED'):
         start_time = datetime.strptime(start_time_raw, '%Y-%m-%dT%H:%M:%S')
         if state != 'RUNNING':

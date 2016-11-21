@@ -6,7 +6,6 @@ import yaml
 from sqlalchemy.exc import IntegrityError
 
 from trailblazer.exc import MissingFileError
-from trailblazer.store import api
 from .commit import commit_analysis
 from .core import build_entry
 from .utils import is_latest_mip
