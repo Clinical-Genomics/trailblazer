@@ -72,6 +72,7 @@ def start(context, ccp, analysis_type, config, executable, gene_list, email,
     process.wait()
     if process.returncode != 0:
         log.error("error starting analysis, check the output")
+        context.abort()
 
     case_id = "{}-{}".format(customer, family)
     new_entry = build_pending(case_id, ccp_abs, analysis_type)
