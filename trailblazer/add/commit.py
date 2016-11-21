@@ -7,7 +7,7 @@ from .utils import same_entry
 log = logging.getLogger(__name__)
 
 
-def commit_analysis(manager, new_entry):
+def commit_analysis(manager, new_entry, email=None):
     """Store new analysis in the database."""
     # look up previous runs for the same case
     old_runs = api.case(case_id=new_entry.case_id)
@@ -26,6 +26,8 @@ def commit_analysis(manager, new_entry):
             latest_run.delete()
             manager.commit()
 
+        if email:
+            new_entry.user = api.user(email)
         manager.add_commit(new_entry)
         log.info("added new entry: {entry.case_id} - {entry.status}"
                  .format(entry=new_entry))

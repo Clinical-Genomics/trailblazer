@@ -29,9 +29,7 @@ def add_cmd(context, sacct, qcsampleinfo):
             with open(new_entry.config_path, 'r') as in_handle:
                 config_data = yaml.load(in_handle)
                 email = config_data.get('email')
-                if email:
-                    new_entry.user = api.user(email)
-            commit_analysis(manager, new_entry)
+            commit_analysis(manager, new_entry, email=email)
         except MissingFileError as error:
             log.error("missing file: %s", error.message)
             context.abort()
