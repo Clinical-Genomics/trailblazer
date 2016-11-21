@@ -3,6 +3,7 @@ import logging
 
 import click
 import yaml
+from sqlalchemy.exc import IntegrityError
 
 from trailblazer.exc import MissingFileError
 from trailblazer.store import api
@@ -28,10 +29,16 @@ def add_cmd(context, sacct, qcsampleinfo):
             with open(new_entry.config_path, 'r') as in_handle:
                 config_data = yaml.load(in_handle)
                 email = config_data.get('email')
-                new_entry.user = api.user(email) if email else None
+                if email:
+                    new_entry.user = api.user(email)
             commit_analysis(manager, new_entry)
         except MissingFileError as error:
             log.error("missing file: %s", error.message)
+            context.abort()
+        except IntegrityError as error:
+            log.error(error.message)
+            manager.session.rollback()
+            context.abort()
     else:
         family_id = sampleinfo_data.keys()[0]
         log.debug("analysis version not supported: %s", family_id)
