@@ -39,8 +39,8 @@ def analyze(context):
 @click.argument('customer')
 @click.argument('family')
 @click.pass_context
-def start(context, ccp, analysis_type, family, config, customer, gene_list,
-          dryrun, executable, out, conda_env, email):
+def start(context, ccp, analysis_type, config, executable, gene_list, email,
+          dryrun, conda_env, customer, family):
     """Start a new analysis."""
     # check if case is already running
     case_id = "{}-{}".format(customer, family)
