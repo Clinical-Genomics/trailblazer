@@ -1,6 +1,6 @@
 # Trailblazer [![Build Status][travis-image]][travis-url] [![Coverage Status][coveralls-image]][coveralls-url]
 
-_Trailblazer_ is a tool to manage and keep track of analyses.
+_Trailblazer_ is a tool to keep track of analyses.
 
 ## Background
 
@@ -61,6 +61,18 @@ The tool will pick up in what state an analysis is in:
 3. if a run is complete and will then calculate the runtime
 
 Whenever a run updates from "running" to either "completed" or "failed", the previous entry for the "running" analysis will be deleted. This is also why in the web interface you are not allowed to change anything about these entries since this information would be lost once the analysis ends.
+
+### Running analyses
+
+Trailblazer simplifies starting a new analysis. When a run has started it is tracked in the database with a "pending" status tag until the first Sacct output is generated.
+
+```bash
+trailblazer analyze start [customer] [family]
+```
+
+The command will pick up email from the environment if you have have sudo:ed to "hiseq.clinical" from your user. It will determine the correct cluster constant path automatically. It can guess the analysis type based on existing folder structure.
+
+> Before starting a run you need to generate a pedigree or YAML pedigree and place it in the correct location! 
 
 ### Web interface
 
