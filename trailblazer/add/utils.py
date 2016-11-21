@@ -20,8 +20,6 @@ def same_entry(entry, other_entry):
         return False
     elif len(steps) > 1:
         return False
-    elif entry.failed_at != other_entry.failed_at:
-        return False
     else:
         return True
 
