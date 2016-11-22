@@ -89,7 +89,11 @@
                             {% endif %}
                         {% else %}
                             {% if analysis.status in ('failed', 'error', 'canceled') %}
-                                {{ analysis.failed_step }}
+                                {% if analysis.failed_step == 'na' %}
+                                    {{ analysis.errors|map(attribute='job')|join(', ') }}
+                                {% else %}
+                                    {{ analysis.failed_step }}
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     </td>
@@ -100,13 +104,15 @@
                         <p style="max-width: 55rem">
                             {% if analysis.comment %}
                                 {{ analysis.comment|replace('\n', '<br />')|safe }}
+                            {% else %}
+                                <small>No comment yet.</small>
                             {% endif %}
                         </p>
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="7">No analyses</td>
+                    <td colspan="8">No analyses</td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -47,9 +47,15 @@ def convert_job(row):
     else:
         start_time = end_time = None
 
+    job_name = row[1]
+    # assume job name doesn't include '_' (underscores)
+    job_step, identifier = job_name.split('_', 1)
+
     return {
         'id': row[0],
-        'name': row[1],
+        'name': job_name,
+        'job': job_step,
+        'identifier': identifier,
         'state': state,
         'start': start_time,
         'end': end_time,

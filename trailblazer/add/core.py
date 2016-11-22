@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from path import path
 
-from trailblazer.store import Analysis
+from trailblazer.store import Analysis, Step
 from trailblazer.exc import MissingFileError
 from .sacct import parse_sacct, get_analysistime, filter_jobs
 from .utils import FINISHED_STATUSES
@@ -24,6 +24,8 @@ def build_entry(sampleinfo, sacct_stream=None):
             sacct_jobs = parse_sacct(sacct_stream)
     status = determine_status(metadata['analysis_status'], sacct_jobs)
     metadata.update(status)
+    if 'errors' in metadata:
+        metadata['errors'] = [Step(**error) for error in status['errors']]
     new_entry = Analysis(**metadata)
     return new_entry
 
@@ -43,10 +45,14 @@ def determine_status(analysis_status, sacct_jobs):
         if len(non_success) == 0:
             status = dict(status='running')
         else:
-            failed_step = non_success[0]['name']
-            failed_at = non_success[0]['end']
-            status = dict(status='failed', failed_step=failed_step,
-                          failed_at=failed_at)
+            errors = [{
+                'job': step['job'],
+                'identifier': step['identifier'],
+                'elapsed': step['elapsed'],
+                'started_at': step['start'],
+                'state': step['state'].lower(),
+            } for step in non_success if step['state'] in ('FAILED', 'TIMEOUT')]
+            status = dict(status='failed', errors=errors)
     return status
 
 

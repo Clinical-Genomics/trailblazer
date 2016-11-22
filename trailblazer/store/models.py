@@ -82,6 +82,8 @@ class Analysis(Model):
     user = orm.relationship(User, backref='runs')
     user_id = Column(ForeignKey(User.id))
 
+    errors = orm.relationship('Step', backref='run', cascade='all,delete')
+
     @property
     def samples(self):
         return self._samples.split(',') if self._samples else []
@@ -100,3 +102,18 @@ class Analysis(Model):
         """Check if analysis failed on variat recalibration."""
         return (self.failed_step and
                 'GATKVariantRecalibration' in self.failed_step)
+
+
+class Step(Model):
+
+    """Analysis step to record what has failed in a run."""
+
+    id = Column(types.Integer, primary_key=True)
+
+    job = Column(types.String(128), nullable=False)
+    identifier = Column(types.String(128), nullable=False)
+    elapsed = Column(types.Integer)
+    started_at = Column(types.DateTime)
+    state = Column(types.Enum('failed', 'cancelled', 'timeout'))
+
+    run_id = Column(ForeignKey(Analysis.id), nullable=False)
