@@ -21,6 +21,7 @@ def delete(context, pending, case_id):
     for analysis_obj in analysis_runs:
         if pending:
             if analysis_obj.status == 'pending':
+                click.echo("removing: {}".format(analysis_obj.id))
                 analysis_obj.delete()
                 manager.commit()
         else:
