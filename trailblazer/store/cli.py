@@ -11,21 +11,29 @@ log = logging.getLogger(__name__)
 
 
 @click.command()
+@click.option('-p', '--pending', is_flag=True, help='remove pending runs only')
 @click.argument('case_id')
 @click.pass_context
-def delete(context, case_id):
+def delete(context, pending, case_id):
     """Delete an analysis and files."""
     manager = context.obj['manager']
-    analysis_obj = api.analyses(analysis_id=case_id).one()
-    if analysis_obj.is_deleted:
-        click.echo("this analysis is already deleted")
-    else:
-        click.echo("you are about to delete: {}".format(analysis_obj.root_dir))
-        if click.confirm('are you sure?'):
-            path(analysis_obj.root_dir).rmtree_p()
-            analysis_obj.is_deleted = True
-            manager.commit()
-            click.echo("removed: {}".format(analysis_obj.root_dir))
+    analysis_runs = api.analyses(analysis_id=case_id)
+    for analysis_obj in analysis_runs:
+        if pending:
+            if analysis_obj.status == 'pending':
+                analysis_obj.delete()
+                manager.commit()
+        else:
+            if analysis_obj.is_deleted:
+                click.echo("this analysis is already deleted")
+            else:
+                click.echo("you are about to delete: {}"
+                           .format(analysis_obj.root_dir))
+                if click.confirm('are you sure?'):
+                    path(analysis_obj.root_dir).rmtree_p()
+                    analysis_obj.is_deleted = True
+                    manager.commit()
+                    click.echo("removed: {}".format(analysis_obj.root_dir))
 
 
 @click.command('list')
