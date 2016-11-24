@@ -52,8 +52,7 @@ def list_cmd(context, pretty, limit, since, older, config, complete,
     if since:
         since = date(*since)
     query = (api.analyses(analysis_id=analysis_id, since=since,
-                          is_ready=config, older=older)
-                .limit(limit))
+                          is_ready=config, older=older))
 
     if query.first() is None:
         log.warn('sorry, no analyses found')
@@ -67,9 +66,11 @@ def list_cmd(context, pretty, limit, since, older, config, complete,
             else:
                 dates = sorted(analysis.completed_at for analysis in query)
                 click.echo(dates[0])
-        if config:
-            paths = (analysis.config_path for analysis in query)
-            click.echo(' '.join(paths))
         else:
-            for analysis in query:
-                click.echo(analysis.to_json(pretty=pretty))
+            query = query.limit(limit)
+            if config:
+                paths = (analysis.config_path for analysis in query)
+                click.echo(' '.join(paths))
+            else:
+                for analysis in query:
+                    click.echo(analysis.to_json(pretty=pretty))
