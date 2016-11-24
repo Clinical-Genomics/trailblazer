@@ -43,9 +43,11 @@ def delete(context, pending, case_id):
 @click.option('-s', '--since', nargs=3, type=int)
 @click.option('-c', '--config', is_flag=True)
 @click.option('-o', '--older', is_flag=True)
+@click.option('-d', '--complete', is_flag=True, help='check if complete')
 @click.argument('analysis_id', required=False)
 @click.pass_context
-def list_cmd(context, pretty, limit, since, older, config, analysis_id):
+def list_cmd(context, pretty, limit, since, older, config, complete,
+             analysis_id):
     """List added analyses."""
     if since:
         since = date(*since)
@@ -56,6 +58,15 @@ def list_cmd(context, pretty, limit, since, older, config, analysis_id):
     if query.first() is None:
         log.warn('sorry, no analyses found')
     else:
+        if analysis_id and complete:
+            # return the earliest date for a completed run
+            query = query.filter_by(status='completed')
+            if query.count() == 0:
+                log.error("case not analyzed successfully")
+                context.abort()
+            else:
+                dates = sorted(analysis.completed_at for analysis in query)
+                click.echo(dates[0])
         if config:
             paths = (analysis.config_path for analysis in query)
             click.echo(' '.join(paths))
