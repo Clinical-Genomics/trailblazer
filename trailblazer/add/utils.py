@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-FINISHED_STATUSES = ('Finished', 'Archived', 'Archiving')
+FINISHED_STATUSES = ('finished', 'archived', 'archiving')
 
 
 def same_entry(entry, other_entry):
@@ -26,6 +26,5 @@ def same_entry(entry, other_entry):
 
 def is_latest_mip(sampleinfo):
     """Check if the analysis is up to date."""
-    fam_key = sampleinfo.keys()[0]
-    version = sampleinfo[fam_key][fam_key].get('MIPVersion')
-    return version is not None and version.startswith('v3.')
+    version = sampleinfo.get('mip_version')
+    return version is not None and version.startswith('v4.')

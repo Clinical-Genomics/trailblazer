@@ -60,29 +60,31 @@ def parse_sampleinfo(sampleinfo):
     Returns:
         dict: extracted and transformed values from sampleinfo
     """
-    with open(sampleinfo['PedigreeFile']['path'], 'r') as in_handle:
+    with open(sampleinfo['pedigree_file']['path'], 'r') as in_handle:
         ped_data = yaml.load(in_handle)
     fam_key = ped_data['family']
     sample_ids = sampleinfo['sample'].keys()
-    analysis_types = set(sampleinfo['AnalysisType'].values())
+    analysis_types = set(sampleinfo['analysis_type'].values())
     # choose collapsed analysis type unless multiple - then assume wgs!
-    analysis_type = analysis_types.pop() if len(analysis_types) == 1 else 'wgs'
-    analysis_start = sampleinfo['AnalysisDate']
-    analysis_out = path(sampleinfo['logFileDir']).parent
+    analysis_type_raw = (analysis_types.pop() if len(analysis_types) == 1 else
+                         'wgs')
+    analysis_type = 'exomes' if analysis_type_raw == 'wes' else 'genomes'
+    analysis_start = sampleinfo['analysis_date']
+    analysis_out = path(sampleinfo['log_file_dir']).parent
     customer = ped_data['customer']
     case_id = "{}-{}".format(customer, fam_key)
     config_path = analysis_out.joinpath("{}_config.yaml".format(fam_key))
-    sacct_path = "{}.status".format(sampleinfo['lastLogFilePath'])
+    sacct_path = "{}.status".format(sampleinfo['last_log_file_path'])
     values = {
         'case_id': case_id,
         'pipeline': 'mip',
-        'pipeline_version': sampleinfo['MIPVersion'],
+        'pipeline_version': sampleinfo['mip_version'],
         'root_dir': analysis_out,
         'started_at': analysis_start,
         'config_path': config_path,
         'samples': sample_ids,
         'type': analysis_type,
-        'analysis_status': sampleinfo['AnalysisRunStatus'],
+        'analysis_status': sampleinfo['analysisrunstatus'],
         'sacct_path': sacct_path,
     }
     return values

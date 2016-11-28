@@ -1,0 +1,846 @@
+---
+analysis_date: 2016-11-25T14:47:08
+analysis_type:
+  118-1-2A: wes
+  118-2-1U: wes
+  118-2-2U: wes
+analysisrunstatus: finished
+bcf_file:
+  path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_gvcf_vrecal_comb_BOTH.bcf
+default_gene_panels:
+  - IEM
+expected_coverage:
+  118-1-2A: '150'
+  118-2-1U: '150'
+  118-2-2U: '150'
+family: '118'
+gbcf_file:
+  path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/gatk/118_sorted_md_brecal_gvcf_BOTH.bcf
+human_genome_build:
+  path: /mnt/hds/proj/cust003/develop/references/Homo_sapiens.GRCh37.d5.fasta
+  source: GRCh
+  version: '37'
+last_log_file_path: tests/fixtures/mip4/cust000/118/analysis/mip_log/2016-11-25/mip.pl_2016-11-25T14:47:08.log
+log_file_dir: tests/fixtures/mip4/cust000/118/analysis/mip_log
+mip_version: v4.0.0
+pedigree_file:
+  path: tests/fixtures/mip4/cust000/118/118_pedigree.yaml
+pedigree_file_analysis:
+  path: tests/fixtures/mip4/cust000/118/analysis/118/qc_pedigree.yaml
+program:
+  bcftools:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/freebayes
+    outfile: 118_sorted_md_brecal_freebayes_BOTH.vcf
+  freebayes:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/freebayes
+    outfile: 118_sorted_md_brecal_freebayes_BOTH.vcf
+  gatk:
+    version: '3.6'
+  genmod:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa
+    outfile: 118_sorted_md_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
+  inbreeding_factor:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/samplecheck
+    outfile: 118.het
+  manta:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/manta
+    outfile: 118_sorted_md_brecal_manta_SV.vcf
+  pedigree_check:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/gatk
+    outfile: 118_sorted_md_brecal_gvcf_vrecal_BOTH.vcf
+  picardtools:
+    version: 2.5.0(2c370988aefe41f579920c8a6a678a201c5261c1_1466708365)
+  plink2:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/samplecheck/info/
+    outfile: samplecheck_118_BOTH.0.stdout.txt
+  plink_sexcheck:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/samplecheck
+    outfile: 118.sexcheck
+  qccollect:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118
+    outfile: 118_qc_metrics.yaml
+    qccollect_metrics_file:
+      path: tests/fixtures/mip4/cust000/118/analysis/118/118_qc_metrics.yaml
+  rankvariant:
+    clinical:
+      path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
+    rank_model:
+      file: rank_model_cmms_v1.18.ini
+      path: /mnt/hds/proj/cust003/develop/references/rank_model_cmms_v1.18.ini
+      version: '1.18'
+    research:
+      path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.vcf
+  relation_check:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/samplecheck
+    outfile: 118.mibs
+  sambamba:
+    version: 0.6.3
+  samtools:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/samtools
+    outfile: 118_sorted_md_brecal_mpileup_BOTH.vcf
+  samtools_mpileup:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/samtools
+    outfile: 118_sorted_md_brecal_mpileup_BOTH.vcf
+  snpeff:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa
+    outfile: 118_sorted_md_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_BOTH_1.selected.vcf
+  sv_combinevariantcallsets:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/info/
+    outfile: sv_combinevariantcallsets_118_SV.0.stderr.txt
+  sv_genmod:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa
+    outfile: 118_sorted_md_brecal_comb_vep_parsed_ranked_SV.selected.vcf
+  sv_rankvariant:
+    clinical:
+      path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_comb_vep_parsed_ranked_SV.selected.vcf
+    rank_model:
+      file: svrank_model_cmms_v1.0.ini
+      path: /mnt/hds/proj/cust003/develop/references/svrank_model_cmms_v1.0.ini
+      version: '1.0'
+    research:
+      path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_comb_vep_parsed_ranked_SV.vcf
+  sv_varianteffectpredictor:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa
+    outfile: 118_sorted_md_brecal_comb_vep_SV.vcf
+  sv_varianteffectpredictorsummary:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa
+    outfile: 118_sorted_md_brecal_comb_vep_SV.vcf_summary.html
+  sv_vcfparser:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa
+    outfile: 118_sorted_md_brecal_comb_vep_parsed_SV.vcf
+  variant_integrity_father:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/samplecheck
+    outfile: 118_father.txt
+  variant_integrity_mendel:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/samplecheck
+    outfile: 118_mendel.txt
+  variantannotationblock:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/info/
+    outfile: variantannotationblock_118.0.stderr.txt
+  varianteffectpredictor:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa
+    outfile: 118_sorted_md_brecal_gvcf_vrecal_comb_vt_vep_BOTH_1.vcf
+  varianteffectpredictorsummary:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa
+    outfile: 118_sorted_md_brecal_gvcf_vrecal_comb_vt_vep_BOTH_1.vcf_summary.html
+  vcfparser:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa
+    outfile: 118_sorted_md_brecal_gvcf_vrecal_comb_vt_vep_parsed_BOTH_1.vcf
+  vcftools:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/samplecheck/info/
+    outfile: samplecheck_118_BOTH.0.stderr.txt
+  vt:
+    outdirectory: tests/fixtures/mip4/cust000/118/analysis/118/bwa/info/
+    outfile: variantannotationblock_118.0.1.1.stderr.txt
+sample:
+  118-1-2A:
+    analysis_type: wes
+    capture_kit: Agilent_SureSelect.V5
+    expected_coverage: '150'
+    father: 118-2-1U
+    file:
+      118-1-2A.140113_H82C9ADXX_GATCAG.lane1:
+        interleaved: ~
+        read_direction_file:
+          118-1-2A.140113_H82C9ADXX_GATCAG.lane1_1:
+            date: 2014-01-13
+            flowcell: H82C9ADXX
+            lane: '1'
+            original_file_name: 1_140113_H82C9ADXX_118-1-2A_GATCAG_1.fastq.gz
+            original_file_name_noending: 1_140113_H82C9ADXX_118-1-2A_GATCAG_1
+            read_direction: 1
+            run_barcode: 140113_H82C9ADXX_1_GATCAG
+            sample_barcode: GATCAG
+          118-1-2A.140113_H82C9ADXX_GATCAG.lane1_2:
+            date: 2014-01-13
+            flowcell: H82C9ADXX
+            lane: '1'
+            original_file_name: 1_140113_H82C9ADXX_118-1-2A_GATCAG_2.fastq.gz
+            original_file_name_noending: 1_140113_H82C9ADXX_118-1-2A_GATCAG_2
+            read_direction: 2
+            run_barcode: 140113_H82C9ADXX_1_GATCAG
+            sample_barcode: GATCAG
+        sequence_length: '101'
+        sequence_run_type: paired_end
+      118-1-2A.140113_H82C9ADXX_GATCAG.lane2:
+        interleaved: ~
+        read_direction_file:
+          118-1-2A.140113_H82C9ADXX_GATCAG.lane2_1:
+            date: 2014-01-13
+            flowcell: H82C9ADXX
+            lane: '2'
+            original_file_name: 2_140113_H82C9ADXX_118-1-2A_GATCAG_1.fastq.gz
+            original_file_name_noending: 2_140113_H82C9ADXX_118-1-2A_GATCAG_1
+            read_direction: 1
+            run_barcode: 140113_H82C9ADXX_2_GATCAG
+            sample_barcode: GATCAG
+          118-1-2A.140113_H82C9ADXX_GATCAG.lane2_2:
+            date: 2014-01-13
+            flowcell: H82C9ADXX
+            lane: '2'
+            original_file_name: 2_140113_H82C9ADXX_118-1-2A_GATCAG_2.fastq.gz
+            original_file_name_noending: 2_140113_H82C9ADXX_118-1-2A_GATCAG_2
+            read_direction: 2
+            run_barcode: 140113_H82C9ADXX_2_GATCAG
+            sample_barcode: GATCAG
+        sequence_length: '101'
+        sequence_run_type: paired_end
+      118-1-2A.140128_H8AHNADXX_GATCAG.lane1:
+        interleaved: ~
+        read_direction_file:
+          118-1-2A.140128_H8AHNADXX_GATCAG.lane1_1:
+            date: 2014-01-28
+            flowcell: H8AHNADXX
+            lane: '1'
+            original_file_name: 1_140128_H8AHNADXX_118-1-2A_GATCAG_1.fastq.gz
+            original_file_name_noending: 1_140128_H8AHNADXX_118-1-2A_GATCAG_1
+            read_direction: 1
+            run_barcode: 140128_H8AHNADXX_1_GATCAG
+            sample_barcode: GATCAG
+          118-1-2A.140128_H8AHNADXX_GATCAG.lane1_2:
+            date: 2014-01-28
+            flowcell: H8AHNADXX
+            lane: '1'
+            original_file_name: 1_140128_H8AHNADXX_118-1-2A_GATCAG_2.fastq.gz
+            original_file_name_noending: 1_140128_H8AHNADXX_118-1-2A_GATCAG_2
+            read_direction: 2
+            run_barcode: 140128_H8AHNADXX_1_GATCAG
+            sample_barcode: GATCAG
+        sequence_length: '101'
+        sequence_run_type: paired_end
+      118-1-2A.140128_H8AHNADXX_GATCAG.lane2:
+        interleaved: ~
+        read_direction_file:
+          118-1-2A.140128_H8AHNADXX_GATCAG.lane2_1:
+            date: 2014-01-28
+            flowcell: H8AHNADXX
+            lane: '2'
+            original_file_name: 2_140128_H8AHNADXX_118-1-2A_GATCAG_1.fastq.gz
+            original_file_name_noending: 2_140128_H8AHNADXX_118-1-2A_GATCAG_1
+            read_direction: 1
+            run_barcode: 140128_H8AHNADXX_2_GATCAG
+            sample_barcode: GATCAG
+          118-1-2A.140128_H8AHNADXX_GATCAG.lane2_2:
+            date: 2014-01-28
+            flowcell: H8AHNADXX
+            lane: '2'
+            original_file_name: 2_140128_H8AHNADXX_118-1-2A_GATCAG_2.fastq.gz
+            original_file_name_noending: 2_140128_H8AHNADXX_118-1-2A_GATCAG_2
+            read_direction: 2
+            run_barcode: 140128_H8AHNADXX_2_GATCAG
+            sample_barcode: GATCAG
+        sequence_length: '101'
+        sequence_run_type: paired_end
+    most_complete_bam:
+      path: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa/118-1-2A_lanes_1122_sorted_md_brecal.bam
+    mother: 118-2-2U
+    phenotype: affected
+    program:
+      bamstats:
+        118-1-2A.140113_H82C9ADXX_GATCAG.lane1:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa
+          outfile: 118-1-2A.140113_H82C9ADXX_GATCAG.lane1_sorted.stats
+        118-1-2A.140113_H82C9ADXX_GATCAG.lane2:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa
+          outfile: 118-1-2A.140113_H82C9ADXX_GATCAG.lane2_sorted.stats
+        118-1-2A.140128_H8AHNADXX_GATCAG.lane1:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa
+          outfile: 118-1-2A.140128_H8AHNADXX_GATCAG.lane1_sorted.stats
+        118-1-2A.140128_H8AHNADXX_GATCAG.lane2:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa
+          outfile: 118-1-2A.140128_H8AHNADXX_GATCAG.lane2_sorted.stats
+      bwa:
+        118-1-2A.140113_H82C9ADXX_GATCAG.lane1:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa/info/
+          outfile: bwa_mem_118-1-2A.0.stderr.txt
+        118-1-2A.140113_H82C9ADXX_GATCAG.lane2:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa/info/
+          outfile: bwa_mem_118-1-2A.2.stderr.txt
+        118-1-2A.140128_H8AHNADXX_GATCAG.lane1:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa/info/
+          outfile: bwa_mem_118-1-2A.1.stderr.txt
+        118-1-2A.140128_H8AHNADXX_GATCAG.lane2:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa/info/
+          outfile: bwa_mem_118-1-2A.3.stderr.txt
+      calculatehsmetrics:
+        118-1-2A_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa/coveragereport
+          outfile: 118-1-2A_lanes_1122_sorted_md_brecal_CalculateHsMetrics
+      chanjo:
+        118-1-2A_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa/coveragereport
+          outfile: 118-1-2A_lanes_1122_sorted_md_brecal_chanjo_sexcheck.log
+      chanjo_sexcheck:
+        118-1-2A_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa/coveragereport
+          outfile: 118-1-2A_lanes_1122_sorted_md_brecal.sexcheck
+      collectmultiplemetrics:
+        118-1-2A_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa/coveragereport
+          outfile: 118-1-2A_lanes_1122_sorted_md_brecal.alignment_summary_metrics
+      collectmultiplemetricsinsertsize:
+        118-1-2A_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa/coveragereport
+          outfile: 118-1-2A_lanes_1122_sorted_md_brecal.insert_size_metrics
+      fastqc:
+        1_140113_H82C9ADXX_118-1-2A_GATCAG_1.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/fastqc/1_140113_H82C9ADXX_118-1-2A_GATCAG_1_fastqc
+          outfile: fastqc_data.txt
+        1_140113_H82C9ADXX_118-1-2A_GATCAG_2.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/fastqc/1_140113_H82C9ADXX_118-1-2A_GATCAG_2_fastqc
+          outfile: fastqc_data.txt
+        1_140128_H8AHNADXX_118-1-2A_GATCAG_1.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/fastqc/1_140128_H8AHNADXX_118-1-2A_GATCAG_1_fastqc
+          outfile: fastqc_data.txt
+        1_140128_H8AHNADXX_118-1-2A_GATCAG_2.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/fastqc/1_140128_H8AHNADXX_118-1-2A_GATCAG_2_fastqc
+          outfile: fastqc_data.txt
+        2_140113_H82C9ADXX_118-1-2A_GATCAG_1.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/fastqc/2_140113_H82C9ADXX_118-1-2A_GATCAG_1_fastqc
+          outfile: fastqc_data.txt
+        2_140113_H82C9ADXX_118-1-2A_GATCAG_2.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/fastqc/2_140113_H82C9ADXX_118-1-2A_GATCAG_2_fastqc
+          outfile: fastqc_data.txt
+        2_140128_H8AHNADXX_118-1-2A_GATCAG_1.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/fastqc/2_140128_H8AHNADXX_118-1-2A_GATCAG_1_fastqc
+          outfile: fastqc_data.txt
+        2_140128_H8AHNADXX_118-1-2A_GATCAG_2.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/fastqc/2_140128_H8AHNADXX_118-1-2A_GATCAG_2_fastqc
+          outfile: fastqc_data.txt
+      markduplicates:
+        118-1-2A_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa
+          outfile: 118-1-2A_lanes_1122_sorted_md_metric
+          processed_by: picardtools_markduplicates
+      sambamba_depth:
+        118-1-2A_lanes_1122:
+          bed:
+            path: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa/coveragereport/118-1-2A_lanes_1122_sorted_md_brecal_coverage.bed
+      variantevalall:
+        118-1-2A_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa/gatk_variantevalall
+          outfile: 118-1-2A_lanes_1122_sorted_md_brecal_gvcf_vrecal_comb_BOTH.vcf.varianteval
+      variantevalexome:
+        118-1-2A_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-1-2A/bwa/gatk_variantevalexome
+          outfile: 118-1-2A_lanes_1122_sorted_md_brecal_gvcf_vrecal_comb_BOTH_exome.vcf.varianteval
+    sample_id: 118-1-2A
+    sample_name: 118-1-2A
+    sex: female
+  118-2-1U:
+    analysis_type: wes
+    capture_kit: Agilent_SureSelect.V5
+    expected_coverage: '150'
+    father: '0'
+    file:
+      118-2-1U.140113_H82C9ADXX_AAAGCA.lane1:
+        interleaved: ~
+        read_direction_file:
+          118-2-1U.140113_H82C9ADXX_AAAGCA.lane1_1:
+            date: 2014-01-13
+            flowcell: H82C9ADXX
+            lane: '1'
+            original_file_name: 1_140113_H82C9ADXX_118-2-1U_AAAGCA_1.fastq.gz
+            original_file_name_noending: 1_140113_H82C9ADXX_118-2-1U_AAAGCA_1
+            read_direction: 1
+            run_barcode: 140113_H82C9ADXX_1_AAAGCA
+            sample_barcode: AAAGCA
+          118-2-1U.140113_H82C9ADXX_AAAGCA.lane1_2:
+            date: 2014-01-13
+            flowcell: H82C9ADXX
+            lane: '1'
+            original_file_name: 1_140113_H82C9ADXX_118-2-1U_AAAGCA_2.fastq.gz
+            original_file_name_noending: 1_140113_H82C9ADXX_118-2-1U_AAAGCA_2
+            read_direction: 2
+            run_barcode: 140113_H82C9ADXX_1_AAAGCA
+            sample_barcode: AAAGCA
+        sequence_length: '101'
+        sequence_run_type: paired_end
+      118-2-1U.140113_H82C9ADXX_AAAGCA.lane2:
+        interleaved: ~
+        read_direction_file:
+          118-2-1U.140113_H82C9ADXX_AAAGCA.lane2_1:
+            date: 2014-01-13
+            flowcell: H82C9ADXX
+            lane: '2'
+            original_file_name: 2_140113_H82C9ADXX_118-2-1U_AAAGCA_1.fastq.gz
+            original_file_name_noending: 2_140113_H82C9ADXX_118-2-1U_AAAGCA_1
+            read_direction: 1
+            run_barcode: 140113_H82C9ADXX_2_AAAGCA
+            sample_barcode: AAAGCA
+          118-2-1U.140113_H82C9ADXX_AAAGCA.lane2_2:
+            date: 2014-01-13
+            flowcell: H82C9ADXX
+            lane: '2'
+            original_file_name: 2_140113_H82C9ADXX_118-2-1U_AAAGCA_2.fastq.gz
+            original_file_name_noending: 2_140113_H82C9ADXX_118-2-1U_AAAGCA_2
+            read_direction: 2
+            run_barcode: 140113_H82C9ADXX_2_AAAGCA
+            sample_barcode: AAAGCA
+        sequence_length: '101'
+        sequence_run_type: paired_end
+      118-2-1U.140127_H8A6DADXX_AAAGCA.lane1:
+        interleaved: ~
+        read_direction_file:
+          118-2-1U.140127_H8A6DADXX_AAAGCA.lane1_1:
+            date: 2014-01-27
+            flowcell: H8A6DADXX
+            lane: '1'
+            original_file_name: 1_140127_H8A6DADXX_118-2-1U_AAAGCA_1.fastq.gz
+            original_file_name_noending: 1_140127_H8A6DADXX_118-2-1U_AAAGCA_1
+            read_direction: 1
+            run_barcode: 140127_H8A6DADXX_1_AAAGCA
+            sample_barcode: AAAGCA
+          118-2-1U.140127_H8A6DADXX_AAAGCA.lane1_2:
+            date: 2014-01-27
+            flowcell: H8A6DADXX
+            lane: '1'
+            original_file_name: 1_140127_H8A6DADXX_118-2-1U_AAAGCA_2.fastq.gz
+            original_file_name_noending: 1_140127_H8A6DADXX_118-2-1U_AAAGCA_2
+            read_direction: 2
+            run_barcode: 140127_H8A6DADXX_1_AAAGCA
+            sample_barcode: AAAGCA
+        sequence_length: '101'
+        sequence_run_type: paired_end
+      118-2-1U.140127_H8A6DADXX_AAAGCA.lane2:
+        interleaved: ~
+        read_direction_file:
+          118-2-1U.140127_H8A6DADXX_AAAGCA.lane2_1:
+            date: 2014-01-27
+            flowcell: H8A6DADXX
+            lane: '2'
+            original_file_name: 2_140127_H8A6DADXX_118-2-1U_AAAGCA_1.fastq.gz
+            original_file_name_noending: 2_140127_H8A6DADXX_118-2-1U_AAAGCA_1
+            read_direction: 1
+            run_barcode: 140127_H8A6DADXX_2_AAAGCA
+            sample_barcode: AAAGCA
+          118-2-1U.140127_H8A6DADXX_AAAGCA.lane2_2:
+            date: 2014-01-27
+            flowcell: H8A6DADXX
+            lane: '2'
+            original_file_name: 2_140127_H8A6DADXX_118-2-1U_AAAGCA_2.fastq.gz
+            original_file_name_noending: 2_140127_H8A6DADXX_118-2-1U_AAAGCA_2
+            read_direction: 2
+            run_barcode: 140127_H8A6DADXX_2_AAAGCA
+            sample_barcode: AAAGCA
+        sequence_length: '101'
+        sequence_run_type: paired_end
+    most_complete_bam:
+      path: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa/118-2-1U_lanes_1122_sorted_md_brecal.bam
+    mother: '0'
+    phenotype: unaffected
+    program:
+      bamstats:
+        118-2-1U.140113_H82C9ADXX_AAAGCA.lane1:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa
+          outfile: 118-2-1U.140113_H82C9ADXX_AAAGCA.lane1_sorted.stats
+        118-2-1U.140113_H82C9ADXX_AAAGCA.lane2:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa
+          outfile: 118-2-1U.140113_H82C9ADXX_AAAGCA.lane2_sorted.stats
+        118-2-1U.140127_H8A6DADXX_AAAGCA.lane1:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa
+          outfile: 118-2-1U.140127_H8A6DADXX_AAAGCA.lane1_sorted.stats
+        118-2-1U.140127_H8A6DADXX_AAAGCA.lane2:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa
+          outfile: 118-2-1U.140127_H8A6DADXX_AAAGCA.lane2_sorted.stats
+      bwa:
+        118-2-1U.140113_H82C9ADXX_AAAGCA.lane1:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa/info/
+          outfile: bwa_mem_118-2-1U.0.stderr.txt
+        118-2-1U.140113_H82C9ADXX_AAAGCA.lane2:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa/info/
+          outfile: bwa_mem_118-2-1U.2.stderr.txt
+        118-2-1U.140127_H8A6DADXX_AAAGCA.lane1:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa/info/
+          outfile: bwa_mem_118-2-1U.1.stderr.txt
+        118-2-1U.140127_H8A6DADXX_AAAGCA.lane2:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa/info/
+          outfile: bwa_mem_118-2-1U.3.stderr.txt
+      calculatehsmetrics:
+        118-2-1U_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa/coveragereport
+          outfile: 118-2-1U_lanes_1122_sorted_md_brecal_CalculateHsMetrics
+      chanjo:
+        118-2-1U_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa/coveragereport
+          outfile: 118-2-1U_lanes_1122_sorted_md_brecal_chanjo_sexcheck.log
+      chanjo_sexcheck:
+        118-2-1U_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa/coveragereport
+          outfile: 118-2-1U_lanes_1122_sorted_md_brecal.sexcheck
+      collectmultiplemetrics:
+        118-2-1U_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa/coveragereport
+          outfile: 118-2-1U_lanes_1122_sorted_md_brecal.alignment_summary_metrics
+      collectmultiplemetricsinsertsize:
+        118-2-1U_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa/coveragereport
+          outfile: 118-2-1U_lanes_1122_sorted_md_brecal.insert_size_metrics
+      fastqc:
+        1_140113_H82C9ADXX_118-2-1U_AAAGCA_1.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/fastqc/1_140113_H82C9ADXX_118-2-1U_AAAGCA_1_fastqc
+          outfile: fastqc_data.txt
+        1_140113_H82C9ADXX_118-2-1U_AAAGCA_2.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/fastqc/1_140113_H82C9ADXX_118-2-1U_AAAGCA_2_fastqc
+          outfile: fastqc_data.txt
+        1_140127_H8A6DADXX_118-2-1U_AAAGCA_1.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/fastqc/1_140127_H8A6DADXX_118-2-1U_AAAGCA_1_fastqc
+          outfile: fastqc_data.txt
+        1_140127_H8A6DADXX_118-2-1U_AAAGCA_2.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/fastqc/1_140127_H8A6DADXX_118-2-1U_AAAGCA_2_fastqc
+          outfile: fastqc_data.txt
+        2_140113_H82C9ADXX_118-2-1U_AAAGCA_1.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/fastqc/2_140113_H82C9ADXX_118-2-1U_AAAGCA_1_fastqc
+          outfile: fastqc_data.txt
+        2_140113_H82C9ADXX_118-2-1U_AAAGCA_2.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/fastqc/2_140113_H82C9ADXX_118-2-1U_AAAGCA_2_fastqc
+          outfile: fastqc_data.txt
+        2_140127_H8A6DADXX_118-2-1U_AAAGCA_1.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/fastqc/2_140127_H8A6DADXX_118-2-1U_AAAGCA_1_fastqc
+          outfile: fastqc_data.txt
+        2_140127_H8A6DADXX_118-2-1U_AAAGCA_2.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/fastqc/2_140127_H8A6DADXX_118-2-1U_AAAGCA_2_fastqc
+          outfile: fastqc_data.txt
+      markduplicates:
+        118-2-1U_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa
+          outfile: 118-2-1U_lanes_1122_sorted_md_metric
+          processed_by: picardtools_markduplicates
+      sambamba_depth:
+        118-2-1U_lanes_1122:
+          bed:
+            path: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa/coveragereport/118-2-1U_lanes_1122_sorted_md_brecal_coverage.bed
+      variantevalall:
+        118-2-1U_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa/gatk_variantevalall
+          outfile: 118-2-1U_lanes_1122_sorted_md_brecal_gvcf_vrecal_comb_BOTH.vcf.varianteval
+      variantevalexome:
+        118-2-1U_lanes_1122:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-1U/bwa/gatk_variantevalexome
+          outfile: 118-2-1U_lanes_1122_sorted_md_brecal_gvcf_vrecal_comb_BOTH_exome.vcf.varianteval
+    sample_id: 118-2-1U
+    sample_name: 118-2-1U
+    sex: male
+  118-2-2U:
+    analysis_type: wes
+    capture_kit: Agilent_SureSelect.V5
+    expected_coverage: '150'
+    father: '0'
+    file:
+      118-2-2U.140113_H82C9ADXX_CTTGTA.lane1:
+        interleaved: ~
+        read_direction_file:
+          118-2-2U.140113_H82C9ADXX_CTTGTA.lane1_1:
+            date: 2014-01-13
+            flowcell: H82C9ADXX
+            lane: '1'
+            original_file_name: 1_140113_H82C9ADXX_118-2-2U_CTTGTA_1.fastq.gz
+            original_file_name_noending: 1_140113_H82C9ADXX_118-2-2U_CTTGTA_1
+            read_direction: 1
+            run_barcode: 140113_H82C9ADXX_1_CTTGTA
+            sample_barcode: CTTGTA
+          118-2-2U.140113_H82C9ADXX_CTTGTA.lane1_2:
+            date: 2014-01-13
+            flowcell: H82C9ADXX
+            lane: '1'
+            original_file_name: 1_140113_H82C9ADXX_118-2-2U_CTTGTA_2.fastq.gz
+            original_file_name_noending: 1_140113_H82C9ADXX_118-2-2U_CTTGTA_2
+            read_direction: 2
+            run_barcode: 140113_H82C9ADXX_1_CTTGTA
+            sample_barcode: CTTGTA
+        sequence_length: '101'
+        sequence_run_type: paired_end
+      118-2-2U.140113_H82C9ADXX_CTTGTA.lane2:
+        interleaved: ~
+        read_direction_file:
+          118-2-2U.140113_H82C9ADXX_CTTGTA.lane2_1:
+            date: 2014-01-13
+            flowcell: H82C9ADXX
+            lane: '2'
+            original_file_name: 2_140113_H82C9ADXX_118-2-2U_CTTGTA_1.fastq.gz
+            original_file_name_noending: 2_140113_H82C9ADXX_118-2-2U_CTTGTA_1
+            read_direction: 1
+            run_barcode: 140113_H82C9ADXX_2_CTTGTA
+            sample_barcode: CTTGTA
+          118-2-2U.140113_H82C9ADXX_CTTGTA.lane2_2:
+            date: 2014-01-13
+            flowcell: H82C9ADXX
+            lane: '2'
+            original_file_name: 2_140113_H82C9ADXX_118-2-2U_CTTGTA_2.fastq.gz
+            original_file_name_noending: 2_140113_H82C9ADXX_118-2-2U_CTTGTA_2
+            read_direction: 2
+            run_barcode: 140113_H82C9ADXX_2_CTTGTA
+            sample_barcode: CTTGTA
+        sequence_length: '101'
+        sequence_run_type: paired_end
+    most_complete_bam:
+      path: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa/118-2-2U_lanes_12_sorted_md_brecal.bam
+    mother: '0'
+    phenotype: unaffected
+    program:
+      bamstats:
+        118-2-2U.140113_H82C9ADXX_CTTGTA.lane1:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa
+          outfile: 118-2-2U.140113_H82C9ADXX_CTTGTA.lane1_sorted.stats
+        118-2-2U.140113_H82C9ADXX_CTTGTA.lane2:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa
+          outfile: 118-2-2U.140113_H82C9ADXX_CTTGTA.lane2_sorted.stats
+      bwa:
+        118-2-2U.140113_H82C9ADXX_CTTGTA.lane1:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa/info/
+          outfile: bwa_mem_118-2-2U.0.stderr.txt
+        118-2-2U.140113_H82C9ADXX_CTTGTA.lane2:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa/info/
+          outfile: bwa_mem_118-2-2U.1.stderr.txt
+      calculatehsmetrics:
+        118-2-2U_lanes_12:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa/coveragereport
+          outfile: 118-2-2U_lanes_12_sorted_md_brecal_CalculateHsMetrics
+      chanjo:
+        118-2-2U_lanes_12:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa/coveragereport
+          outfile: 118-2-2U_lanes_12_sorted_md_brecal_chanjo_sexcheck.log
+      chanjo_sexcheck:
+        118-2-2U_lanes_12:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa/coveragereport
+          outfile: 118-2-2U_lanes_12_sorted_md_brecal.sexcheck
+      collectmultiplemetrics:
+        118-2-2U_lanes_12:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa/coveragereport
+          outfile: 118-2-2U_lanes_12_sorted_md_brecal.alignment_summary_metrics
+      collectmultiplemetricsinsertsize:
+        118-2-2U_lanes_12:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa/coveragereport
+          outfile: 118-2-2U_lanes_12_sorted_md_brecal.insert_size_metrics
+      fastqc:
+        1_140113_H82C9ADXX_118-2-2U_CTTGTA_1.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/fastqc/1_140113_H82C9ADXX_118-2-2U_CTTGTA_1_fastqc
+          outfile: fastqc_data.txt
+        1_140113_H82C9ADXX_118-2-2U_CTTGTA_2.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/fastqc/1_140113_H82C9ADXX_118-2-2U_CTTGTA_2_fastqc
+          outfile: fastqc_data.txt
+        2_140113_H82C9ADXX_118-2-2U_CTTGTA_1.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/fastqc/2_140113_H82C9ADXX_118-2-2U_CTTGTA_1_fastqc
+          outfile: fastqc_data.txt
+        2_140113_H82C9ADXX_118-2-2U_CTTGTA_2.fastq.gz:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/fastqc/2_140113_H82C9ADXX_118-2-2U_CTTGTA_2_fastqc
+          outfile: fastqc_data.txt
+      markduplicates:
+        118-2-2U_lanes_12:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa
+          outfile: 118-2-2U_lanes_12_sorted_md_metric
+          processed_by: picardtools_markduplicates
+      sambamba_depth:
+        118-2-2U_lanes_12:
+          bed:
+            path: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa/coveragereport/118-2-2U_lanes_12_sorted_md_brecal_coverage.bed
+      variantevalall:
+        118-2-2U_lanes_12:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa/gatk_variantevalall
+          outfile: 118-2-2U_lanes_12_sorted_md_brecal_gvcf_vrecal_comb_BOTH.vcf.varianteval
+      variantevalexome:
+        118-2-2U_lanes_12:
+          outdirectory: tests/fixtures/mip4/cust000/118/analysis/118-2-2U/bwa/gatk_variantevalexome
+          outfile: 118-2-2U_lanes_12_sorted_md_brecal_gvcf_vrecal_comb_BOTH_exome.vcf.varianteval
+    sample_id: 118-2-2U
+    sample_name: 118-2-2U
+    sex: female
+sv_bcf_file:
+  path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_comb_SV.bcf
+sv_vcf_binary_file:
+  clinical:
+    path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_comb_vep_parsed_ranked_SV.selected.vcf.gz
+  research:
+    path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_comb_vep_parsed_ranked_SV.vcf.gz
+sv_vcf_file:
+  clinical:
+    path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_comb_vep_parsed_ranked_SV.selected.vcf
+  ready_vcf:
+    path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_comb_SV.vcf
+  research:
+    path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_comb_vep_parsed_ranked_SV.vcf
+sv_vcfparser:
+  RangeFile:
+    database:
+      cust000-Research.txt_Research:
+        Acronym: Research
+        CompleteName: Research
+        Date: 2015-03-01
+        FileName: cust000-Research.txt
+        GenomeBuild: GRCh37.p13
+        Version: '6.8'
+  SelectFile:
+    database:
+      cust000-Clinical_master_list.txt_FullList:
+        Acronym: FullList
+        CompleteName: Clinical master list
+        Date: 2015-12-02
+        FileName: cust000-Clinical_master_list.txt
+        GenomeBuild: GRCh37.p13
+        Version: '14.0'
+      cust002-OMIM.txt_OMIM:
+        Acronym: OMIM
+        CompleteName: OMIM of 2015-09-30
+        Date: 2015-10-13
+        FileName: cust002-OMIM.txt
+        GenomeBuild: GRCh37.p13
+        Version: '51.1'
+      cust002-SKD.txt_SKD:
+        Acronym: SKD
+        CompleteName: Skeletal dysplasia
+        Date: 2015-10-07
+        FileName: cust002-SKD.txt
+        GenomeBuild: GRCh37.p13
+        Version: '50.21'
+      cust003-CMMS.txt_ENDO:
+        Acronym: ENDO
+        CompleteName: Endocrinology
+        Date: 2015-11-19
+        FileName: cust003-CMMS.txt
+        GenomeBuild: GRCh37.p13
+        Version: '7.1'
+      cust003-CMMS.txt_EP:
+        Acronym: EP
+        CompleteName: Epilepsy
+        Date: 2015-11-19
+        FileName: cust003-CMMS.txt
+        GenomeBuild: GRCh37.p13
+        Version: '7.1'
+      cust003-CMMS.txt_IEM:
+        Acronym: IEM
+        CompleteName: Inborn Errors of Metabolism
+        Date: 2015-11-19
+        FileName: cust003-CMMS.txt
+        GenomeBuild: GRCh37.p13
+        Version: '7.1'
+      cust003-CMMS.txt_MIT:
+        Acronym: MIT
+        CompleteName: Mitochondrial nuclear
+        Date: 2015-11-19
+        FileName: cust003-CMMS.txt
+        GenomeBuild: GRCh37.p13
+        Version: '7.1'
+      cust003-mtDNA.txt_mtDNA:
+        Acronym: mtDNA
+        CompleteName: Mitochondrial DNA
+        Date: 2015-11-30
+        FileName: cust003-mtDNA.txt
+        GenomeBuild: GRCh37.p13
+        Version: '8.0'
+      cust004-PID.txt_PID:
+        Acronym: PID
+        CompleteName: Primary Immune Deficiency
+        Date: 2015-10-21
+        FileName: cust004-PID.txt
+        GenomeBuild: GRCh37.p13
+        Version: '7.2'
+      cust004-PID.txt_PIDCAD:
+        Acronym: PIDCAD
+        CompleteName: PID Candidates
+        Date: 2015-10-21
+        FileName: cust004-PID.txt
+        GenomeBuild: GRCh37.p13
+        Version: '7.2'
+  range_file:
+    path: /mnt/hds/proj/cust003/develop/references/cust000-Research.txt
+  select_file:
+    path: /mnt/hds/proj/cust003/develop/references/cust000-Clinical_master_list.txt
+vcf_binary_file:
+  clinical:
+    path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf.gz
+  research:
+    path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.vcf.gz
+vcf_file:
+  clinical:
+    path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf
+  ready_vcf:
+    path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_gvcf_vrecal_comb_BOTH.vcf
+  research:
+    path: tests/fixtures/mip4/cust000/118/analysis/118/bwa/118_sorted_md_brecal_gvcf_vrecal_comb_vt_vep_parsed_snpeff_ranked_BOTH.vcf
+vcfparser:
+  RangeFile:
+    database:
+      cust000-Research.txt_Research:
+        Acronym: Research
+        CompleteName: Research
+        Date: 2015-03-01
+        FileName: cust000-Research.txt
+        GenomeBuild: GRCh37.p13
+        Version: '6.8'
+  SelectFile:
+    database:
+      cust000-Clinical_master_list.txt_FullList:
+        Acronym: FullList
+        CompleteName: Clinical master list
+        Date: 2015-12-02
+        FileName: cust000-Clinical_master_list.txt
+        GenomeBuild: GRCh37.p13
+        Version: '14.0'
+      cust002-OMIM.txt_OMIM:
+        Acronym: OMIM
+        CompleteName: OMIM of 2015-09-30
+        Date: 2015-10-13
+        FileName: cust002-OMIM.txt
+        GenomeBuild: GRCh37.p13
+        Version: '51.1'
+      cust002-SKD.txt_SKD:
+        Acronym: SKD
+        CompleteName: Skeletal dysplasia
+        Date: 2015-10-07
+        FileName: cust002-SKD.txt
+        GenomeBuild: GRCh37.p13
+        Version: '50.21'
+      cust003-CMMS.txt_ENDO:
+        Acronym: ENDO
+        CompleteName: Endocrinology
+        Date: 2015-11-19
+        FileName: cust003-CMMS.txt
+        GenomeBuild: GRCh37.p13
+        Version: '7.1'
+      cust003-CMMS.txt_EP:
+        Acronym: EP
+        CompleteName: Epilepsy
+        Date: 2015-11-19
+        FileName: cust003-CMMS.txt
+        GenomeBuild: GRCh37.p13
+        Version: '7.1'
+      cust003-CMMS.txt_IEM:
+        Acronym: IEM
+        CompleteName: Inborn Errors of Metabolism
+        Date: 2015-11-19
+        FileName: cust003-CMMS.txt
+        GenomeBuild: GRCh37.p13
+        Version: '7.1'
+      cust003-CMMS.txt_MIT:
+        Acronym: MIT
+        CompleteName: Mitochondrial nuclear
+        Date: 2015-11-19
+        FileName: cust003-CMMS.txt
+        GenomeBuild: GRCh37.p13
+        Version: '7.1'
+      cust003-mtDNA.txt_mtDNA:
+        Acronym: mtDNA
+        CompleteName: Mitochondrial DNA
+        Date: 2015-11-30
+        FileName: cust003-mtDNA.txt
+        GenomeBuild: GRCh37.p13
+        Version: '8.0'
+      cust004-PID.txt_PID:
+        Acronym: PID
+        CompleteName: Primary Immune Deficiency
+        Date: 2015-10-21
+        FileName: cust004-PID.txt
+        GenomeBuild: GRCh37.p13
+        Version: '7.2'
+      cust004-PID.txt_PIDCAD:
+        Acronym: PIDCAD
+        CompleteName: PID Candidates
+        Date: 2015-10-21
+        FileName: cust004-PID.txt
+        GenomeBuild: GRCh37.p13
+        Version: '7.2'
+  range_file:
+    path: /mnt/hds/proj/cust003/develop/references/cust000-Research.txt
+  select_file:
+    path: /mnt/hds/proj/cust003/develop/references/cust000-Clinical_master_list.txt
+

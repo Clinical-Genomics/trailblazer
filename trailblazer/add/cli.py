@@ -32,7 +32,7 @@ def add_cmd(context, sacct, qcsampleinfo):
         except MissingFileError as error:
             log.error("missing file: %s", error.message)
         except IntegrityError as error:
-            log.error(error.message)
+            log.exception(error.message)
             manager.session.rollback()
     else:
         family_id = sampleinfo_data.keys()[0]
