@@ -80,6 +80,7 @@ def start(context, ccp, analysis_type, config, executable, gene_list, email,
         user = api.user(email)
         new_entry.user = user
     commit_analysis(context.obj['manager'], new_entry)
+    context.obj['manager'].commit()
 
 
 @analyze.command()
