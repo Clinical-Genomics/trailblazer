@@ -88,7 +88,7 @@ def start(context, ccp, analysis_type, config, executable, gene_list, email,
 @click.option('-d', '--disable', type=click.Choice(BRANCH_OPTIONS),
               multiple=True)
 @click.option('-s', '--start-from', type=click.Choice(restart_api.PROGRAMS))
-@click.option('-e', '--extras', multiple=True, type=(unicode, unicode))
+@click.option('-e', '--extras', multiple=True, type=(str, str))
 @click.option('--restart/--no-restart', default=True)
 @click.option('-e', '--email', help='email to send errors to')
 @click.option('-c', '--case', help='lookup analysis in database')
