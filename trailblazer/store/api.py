@@ -28,7 +28,7 @@ def user(email):
 
 
 def analyses(analysis_id=None, since=None, is_ready=False, status=None,
-             older=False):
+             older=False, deleted=None):
     """List added analyses."""
     if older:
         query = Analysis.query.order_by(Analysis.started_at)
@@ -57,6 +57,9 @@ def analyses(analysis_id=None, since=None, is_ready=False, status=None,
 
     if is_ready:
         query = query.filter_by(status='completed', is_deleted=False)
+
+    if deleted is not None:
+        query = query.filter_by(is_deleted=deleted)
 
     return query
 

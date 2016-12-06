@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from datetime import date
+from datetime import date, timedelta
 import logging
 
 import click
-from path import path
+from path import Path
 
 from . import api
 
@@ -12,26 +12,46 @@ log = logging.getLogger(__name__)
 
 @click.command()
 @click.option('-p', '--pending', is_flag=True, help='remove pending runs only')
-@click.argument('case_id')
+@click.option('-y', '--yes', is_flag=True, help='automate check')
+@click.option('-f', '--force', is_flag=True)
+@click.option('-l', '--limit', default=10, help='limit number of runs')
+@click.argument('case_id', required=False)
 @click.pass_context
-def delete(context, pending, case_id):
+def delete(context, pending, yes, force, limit, case_id):
     """Delete an analysis and files."""
     manager = context.obj['manager']
-    analysis_runs = api.analyses(analysis_id=case_id)
-    for analysis_obj in analysis_runs:
+    if case_id:
+        analysis_runs = api.analyses(analysis_id=case_id)
+    else:
+        # check all analyses more than 2 weeks old
+        two_weeks_ago = date.today() - timedelta(days=14)
+        analysis_runs = api.analyses(since=two_weeks_ago, older=True,
+                                     deleted=False)
+
+    for analysis_obj in analysis_runs.limit(limit):
+        log.info("working on case: %s", analysis_obj.case_id)
         if pending:
             if analysis_obj.status == 'pending':
                 click.echo("removing: {}".format(analysis_obj.id))
                 analysis_obj.delete()
                 manager.commit()
         else:
+            # check that no more recent analysis exists
+            more_recent = api.analyses(analysis_obj.case_id).first()
+            not_most_recent = (more_recent and
+                               more_recent.logged_at > analysis_obj.logged_at)
+            if not_most_recent:
+                log.warn("more recent run exists: %s", more_recent.logged_at)
+                if not force:
+                    continue
+
             if analysis_obj.is_deleted:
                 click.echo("this analysis is already deleted")
             else:
                 click.echo("you are about to delete: {}"
                            .format(analysis_obj.root_dir))
-                if click.confirm('are you sure?'):
-                    path(analysis_obj.root_dir).rmtree_p()
+                if yes or click.confirm('are you sure?'):
+                    Path(analysis_obj.root_dir).rmtree_p()
                     analysis_obj.is_deleted = True
                     manager.commit()
                     click.echo("removed: {}".format(analysis_obj.root_dir))
