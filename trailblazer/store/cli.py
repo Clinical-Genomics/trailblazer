@@ -3,6 +3,7 @@ from datetime import date, timedelta
 import logging
 
 import click
+from dateutil.parser import parse as parse_date
 from path import Path
 
 from . import api
@@ -14,21 +15,17 @@ log = logging.getLogger(__name__)
 @click.option('-p', '--pending', is_flag=True, help='remove pending runs only')
 @click.option('-y', '--yes', is_flag=True, help='automate check')
 @click.option('-f', '--force', is_flag=True)
-@click.option('-l', '--limit', default=10, help='limit number of runs')
-@click.argument('case_id', required=False)
+@click.option('-l', '--latest', is_flag=True, help='only delete latest run')
+@click.argument('case_id')
 @click.pass_context
-def delete(context, pending, yes, force, limit, case_id):
+def delete(context, pending, yes, force, limit, latest, case_id):
     """Delete an analysis and files."""
     manager = context.obj['manager']
-    if case_id:
-        analysis_runs = api.analyses(analysis_id=case_id)
-    else:
-        # check all analyses more than 2 weeks old
-        two_weeks_ago = date.today() - timedelta(days=14)
-        analysis_runs = api.analyses(since=two_weeks_ago, older=True,
-                                     deleted=False)
+    analysis_runs = api.analyses(analysis_id=case_id)
+    if latest and analysis_runs.first():
+        analysis_runs = [analysis_runs.first()]
 
-    for analysis_obj in analysis_runs.limit(limit):
+    for analysis_obj in analysis_runs:
         log.info("working on case: %s", analysis_obj.case_id)
         if pending:
             if analysis_obj.status == 'pending':
@@ -36,15 +33,6 @@ def delete(context, pending, yes, force, limit, case_id):
                 analysis_obj.delete()
                 manager.commit()
         else:
-            # check that no more recent analysis exists
-            more_recent = api.analyses(analysis_obj.case_id).first()
-            not_most_recent = (more_recent and
-                               more_recent.logged_at > analysis_obj.logged_at)
-            if not_most_recent:
-                log.warn("more recent run exists: %s", more_recent.logged_at)
-                if not force:
-                    continue
-
             if analysis_obj.is_deleted:
                 click.echo("this analysis is already deleted")
             else:
@@ -58,26 +46,28 @@ def delete(context, pending, yes, force, limit, case_id):
 
 
 @click.command('list')
-@click.option('-p', '--pretty', is_flag=True)
+@click.option('--condensed', is_flag=True, help='condense output')
 @click.option('-l', '--limit', default=10)
-@click.option('-s', '--since', nargs=3, type=int)
-@click.option('-c', '--config', is_flag=True)
+@click.option('-s', '--since', help='return analysis since a date')
+@click.option('-d', '--deleted/--no-deleted', is_flag=True)
+@click.option('-d', '--display', type=click.Choice(['json', 'id', 'config']),
+              default='json')
 @click.option('-o', '--older', is_flag=True)
-@click.option('-d', '--complete', is_flag=True, help='check if complete')
-@click.argument('analysis_id', required=False)
+@click.option('-p', '--complete', is_flag=True, help='check if complete')
+@click.argument('case_id', required=False)
 @click.pass_context
-def list_cmd(context, pretty, limit, since, older, config, complete,
-             analysis_id):
-    """List added analyses."""
+def list_cmd(context, condensed, limit, since, older, display, complete,
+             deleted, case_id):
+    """List added runs."""
     if since:
-        since = date(*since)
-    query = (api.analyses(analysis_id=analysis_id, since=since,
-                          is_ready=config, older=older))
-
+        since = parse_date(since)
+    query = api.analyses(analysis_id=case_id, since=since, older=older,
+                         is_ready=(True if display == 'config' else False),
+                         deleted=(None if deleted is None else deleted))
     if query.first() is None:
         log.warn('sorry, no analyses found')
     else:
-        if analysis_id and complete:
+        if case_id and complete:
             # return the earliest date for a completed run
             query = query.filter_by(status='completed')
             if query.count() == 0:
@@ -87,10 +77,10 @@ def list_cmd(context, pretty, limit, since, older, config, complete,
                 dates = sorted(analysis.completed_at for analysis in query)
                 click.echo(dates[0])
         else:
-            query = query.limit(limit)
-            if config:
-                paths = (analysis.config_path for analysis in query)
-                click.echo(' '.join(paths))
-            else:
-                for analysis in query:
-                    click.echo(analysis.to_json(pretty=pretty))
+            for analysis in query.limit(limit):
+                if display == 'config':
+                    click.echo(analysis.config_path)
+                elif display == 'id':
+                    click.echo(analysis.case_id)
+                else:
+                    click.echo(analysis.to_json(pretty=(not condensed)))
