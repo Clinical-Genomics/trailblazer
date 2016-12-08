@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from datetime import date, timedelta
 import logging
 
 import click
@@ -18,7 +17,7 @@ log = logging.getLogger(__name__)
 @click.option('-l', '--latest', is_flag=True, help='only delete latest run')
 @click.argument('case_id')
 @click.pass_context
-def delete(context, pending, yes, force, limit, latest, case_id):
+def delete(context, pending, yes, force, latest, case_id):
     """Delete an analysis and files."""
     manager = context.obj['manager']
     analysis_runs = api.analyses(analysis_id=case_id)
