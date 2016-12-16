@@ -27,50 +27,55 @@ def analyze(context):
 
 
 @analyze.command()
-@click.option('-p', '--ccp', type=click.Path(exists=True))
+@click.option('--ccp', type=click.Path(exists=True))
 @click.option('-c', '--config', type=click.Path(exists=True))
 @click.option('-x', '--executable', type=click.Path(exists=True))
 @click.option('-g', '--gene-list')
 @click.option('-e', '--email', help='email to send errors to')
+@click.option('-p', '--priority', type=click.Choice(['low', 'normal', 'high']),
+              default='normal')
 @click.option('--dryrun', is_flag=True)
-@click.option('--conda-env')
 @click.argument('customer')
 @click.argument('family')
 @click.pass_context
-def start(context, ccp, config, executable, gene_list, email, dryrun,
-          conda_env, customer, family):
+def start(context, ccp, config, executable, gene_list, email, priority, dryrun,
+          customer, family):
     """Start a new analysis."""
+    ccp_abs = (Path(ccp).abspath() if ccp else
+               Path(context.obj['analysis_root']).joinpath(customer, family))
+    # parse pedigree yaml
+    pedigree_path = ccp_abs.joinpath("{}_pedigree.yaml".format(family))
+    if not pedigree_path.exists():
+        log.error("pedigree YAML doesn't exist")
+        context.abort()
+
     # check if case is already running
     case_id = "{}-{}".format(customer, family)
     if api.is_running(case_id):
         log.error("case already running!")
         context.abort()
 
-    config = config or context.obj['mip_config']
+    global_config = config or context.obj['mip_config']
     executable = executable or context.obj['mip_exe']
     gene_list = gene_list or context.obj.get('mip_genelist')
-    conda_env = conda_env or context.obj.get('conda_env')
     email = email or environ_email()
-    ccp_abs = (Path(ccp).abspath() if ccp else
-               Path(context.obj['analysis_root']).joinpath(customer, family))
 
     process = start_mip(
         family,
-        config,
+        global_config,
         ccp_abs,
         executable=executable,
-        customer=customer,
         gene_list=gene_list,
         dryrun=dryrun,
-        conda_env=conda_env,
-        email=email
+        email=email,
+        priority=priority,
     )
     process.wait()
     if process.returncode != 0:
         log.error("error starting analysis, check the output")
         context.abort()
 
-    case_id = "{}-{}".format(customer, family)
+    # add pending entry to database
     new_entry = build_pending(case_id, ccp_abs)
     if email:
         user = api.user(email)

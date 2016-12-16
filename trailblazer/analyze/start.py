@@ -21,16 +21,14 @@ def build_pending(case_id, root_dir):
     return new_entry
 
 
-def start_mip(family_id=None, config=None, ccp=None, customer=None,
-              gene_list=None, dryrun=False, executable=None, conda_env=None,
-              email=None, analysis_config=None):
+def start_mip(config, family_id=None, ccp=None, gene_list=None,
+              dryrun=False, executable=None, email=None, priority='normal'):
     """Start a new analysis for a family.
 
     Args:
         family_id (str): identifier for the family
         config (path): path to the MIP config file
         ccp (path): cluster constant path to the root of the analysis
-        customer (Optional[str]): customer identifier (instance tag)
         gene_list (Optional[str]): name of gene list in 'references' dir
         conda_env (Optional[str]): conda environment to source
         email (Optional[str]): email to send error mails to
@@ -38,50 +36,39 @@ def start_mip(family_id=None, config=None, ccp=None, customer=None,
     Returns:
         int: return code from the executed process
     """
-    if analysis_config is None:
-        assert all([family_id, config, ccp])
     command = []
 
     # configure executable
     command.append('perl')
     command.append(executable or 'mip.pl')
 
-    if analysis_config:
-        # optionally add analysis config
-        command.append('--config')
-        command.append(analysis_config)
+    # add global config for MIP (could be analysis config)
+    command.append('--config_file')
+    command.append(config)
 
-    if config:
-        # add YAML config path
-        command.append('--configFile')
-        command.append(config)
-
-    if ccp:
-        # configure the "cluster constant path"
-        command.append('--clusterConstantPath')
-        command.append(ccp)
-
-    if customer:
-        # customer (optional)
-        command.append('--instanceTag')
-        command.append(customer)
+    command.append('--slurm_quality_of_service')
+    command.append(priority)
 
     if family_id:
         # add family option
-        command.append('--familyID')
+        command.append('--family_id')
         command.append(family_id)
-
-    if gene_list:
-        command.append('--vcfParserSelectFile')
-        command.append(gene_list)
-
-    if dryrun:
-        command.append('--dryRunAll')
-        command.append('2')
 
     if email:
         command.append('--email')
         command.append(email)
+
+    if ccp:
+        command.append('--cluster_constant_path')
+        command.append(ccp)
+
+    if dryrun:
+        command.append('--dry_run_all')
+        command.append('2')
+
+    if gene_list:
+        command.append('--vcfparser_select_file')
+        command.append(gene_list)
 
     log.info("command: %s", ' '.join(command))
     process = subprocess.Popen(
