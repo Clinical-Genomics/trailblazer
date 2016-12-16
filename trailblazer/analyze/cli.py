@@ -42,9 +42,9 @@ def start(context, ccp, config, executable, gene_list, email, priority, dryrun,
           customer, family):
     """Start a new analysis."""
     ccp_abs = (Path(ccp).abspath() if ccp else
-               Path(context.obj['analysis_root']).joinpath(customer, family))
+               Path(context.obj['analysis_root']).joinpath(customer))
     # parse pedigree yaml
-    pedigree_path = ccp_abs.joinpath("{}_pedigree.yaml".format(family))
+    pedigree_path = ccp_abs.joinpath("{0}/{0}_pedigree.yaml".format(family))
     if not pedigree_path.exists():
         log.error("pedigree YAML doesn't exist")
         context.abort()
