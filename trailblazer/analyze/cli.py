@@ -50,7 +50,7 @@ def start(context, ccp, analysis_type, config, executable, gene_list, email,
 
     config = config or context.obj['mip_config']
     executable = executable or context.obj['mip_exe']
-    gene_list = gene_list or context.obj['mip_genelist']
+    gene_list = gene_list or context.obj.get('mip_genelist')
     conda_env = conda_env or context.obj.get('conda_env')
     email = email or environ_email()
     ccp_abs = (Path(ccp).abspath() if ccp else
