@@ -61,9 +61,9 @@ def start(context, ccp, config, executable, gene_list, email, priority, dryrun,
     email = email or environ_email()
 
     process = start_mip(
-        family,
-        global_config,
-        ccp_abs,
+        config=global_config,
+        family_id=family,
+        ccp=ccp_abs,
         executable=executable,
         gene_list=gene_list,
         dryrun=dryrun,
