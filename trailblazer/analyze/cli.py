@@ -10,7 +10,6 @@ from path import Path
 
 from . import restart as restart_api
 from .start import start_mip, build_pending
-from trailblazer.exc import AnalysisStartError
 from trailblazer.store import api
 from trailblazer.add.commit import commit_analysis
 
@@ -29,7 +28,6 @@ def analyze(context):
 
 @analyze.command()
 @click.option('-p', '--ccp', type=click.Path(exists=True))
-@click.option('-a', '--analysis-type')
 @click.option('-c', '--config', type=click.Path(exists=True))
 @click.option('-x', '--executable', type=click.Path(exists=True))
 @click.option('-g', '--gene-list')
@@ -39,8 +37,8 @@ def analyze(context):
 @click.argument('customer')
 @click.argument('family')
 @click.pass_context
-def start(context, ccp, analysis_type, config, executable, gene_list, email,
-          dryrun, conda_env, customer, family):
+def start(context, ccp, config, executable, gene_list, email, dryrun,
+          conda_env, customer, family):
     """Start a new analysis."""
     # check if case is already running
     case_id = "{}-{}".format(customer, family)
@@ -55,10 +53,8 @@ def start(context, ccp, analysis_type, config, executable, gene_list, email,
     email = email or environ_email()
     ccp_abs = (Path(ccp).abspath() if ccp else
                Path(context.obj['analysis_root']).joinpath(customer, family))
-    analysis_type = analysis_type or guess_analysis_type(ccp_abs)
 
     process = start_mip(
-        analysis_type,
         family,
         config,
         ccp_abs,
@@ -75,7 +71,7 @@ def start(context, ccp, analysis_type, config, executable, gene_list, email,
         context.abort()
 
     case_id = "{}-{}".format(customer, family)
-    new_entry = build_pending(case_id, ccp_abs, analysis_type)
+    new_entry = build_pending(case_id, ccp_abs)
     if email:
         user = api.user(email)
         new_entry.user = user
@@ -139,16 +135,3 @@ def environ_email():
     username = os.environ.get('SUDO_USER')
     if username:
         return "{}@scilifelab.se".format(username)
-
-
-def guess_analysis_type(family_root):
-    """Guess analysis type based on folders."""
-    input_folders = [directory.basename() for directory in
-                     Path(family_root).listdir() if
-                     directory.basename() in ('exomes', 'genomes')]
-    if len(input_folders) > 1:
-        return 'mixed'
-    elif len(input_folders) == 1:
-        return input_folders[0]
-    else:
-        raise AnalysisStartError("can't determine analysis type")

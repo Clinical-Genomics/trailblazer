@@ -9,7 +9,7 @@ from trailblazer.store import Analysis
 log = logging.getLogger(__name__)
 
 
-def build_pending(case_id, root_dir, seq_type):
+def build_pending(case_id, root_dir):
     """Create an entry for an analysis which is pending."""
     new_entry = Analysis(
         case_id=case_id,
@@ -17,18 +17,16 @@ def build_pending(case_id, root_dir, seq_type):
         started_at=datetime.now(),
         status='pending',
         root_dir=root_dir,
-        type=seq_type,
     )
     return new_entry
 
 
-def start_mip(analysis_type=None, family_id=None, config=None, ccp=None,
-              customer=None, gene_list=None, dryrun=False, executable=None,
-              conda_env=None, email=None, analysis_config=None):
+def start_mip(family_id=None, config=None, ccp=None, customer=None,
+              gene_list=None, dryrun=False, executable=None, conda_env=None,
+              email=None, analysis_config=None):
     """Start a new analysis for a family.
 
     Args:
-        analysis_type (str): 'exomes' or 'genomes'
         family_id (str): identifier for the family
         config (path): path to the MIP config file
         ccp (path): cluster constant path to the root of the analysis
@@ -40,10 +38,8 @@ def start_mip(analysis_type=None, family_id=None, config=None, ccp=None,
     Returns:
         int: return code from the executed process
     """
-    if analysis_type:
-        assert analysis_type in ('exomes', 'genomes'), 'invalid analysis type'
     if analysis_config is None:
-        assert all([analysis_type, family_id, config, ccp])
+        assert all([family_id, config, ccp])
     command = []
 
     # configure executable
@@ -59,11 +55,6 @@ def start_mip(analysis_type=None, family_id=None, config=None, ccp=None,
         # add YAML config path
         command.append('--configFile')
         command.append(config)
-
-    if analysis_type:
-        # type of analysis
-        command.append('--analysisType')
-        command.append(analysis_type)
 
     if ccp:
         # configure the "cluster constant path"
