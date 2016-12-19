@@ -33,5 +33,5 @@ def scan_dir(root_dir):
     Will look for qc sample info files.
     """
     # MIP 4: customer: family - analysis - family...
-    mip4_files = path(root_dir).glob('*/analysis/*_qc_sampleInfo.yaml')
+    mip4_files = path(root_dir).glob('*/analysis/*_qc_sample_info.yaml')
     return mip4_files
