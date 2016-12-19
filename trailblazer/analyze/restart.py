@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 import yaml
 
-ALIGN = ['pGZipFastq', 'pFastQC', 'pBwaMem', 'pPicardToolsMergeSamFiles',
-         'pPicardToolsMarkduplicates', 'pGATKRealigner',
-         'pGATKBaseRecalibration']
-COVERAGE = ['pChanjoSexCheck', 'pSambambaDepth',
-            'pPicardToolsCollectMultipleMetrics',
-            'pPicardToolsCalculateHSMetrics']
-SV = ['pManta', 'pSVCombineVariantCallSets', 'pSVVariantEffectPredictor',
-      'pSVVCFParser', 'pSVRankVariants']
-SNV = ['pSamToolsMpileUp', 'pFreebayes', 'pGATKHaploTypeCaller',
-       'pGATKGenoTypeGVCFs', 'pGATKVariantRecalibration',
-       'pGATKCombineVariantCallSets', 'pPrepareForVariantAnnotationBlock',
-       'pVT', 'pGATKVariantEvalAll', 'pGATKVariantEvalExome',
-       'pVariantEffectPredictor', 'pSnpEff', 'pVCFParser', 'pRankVariants']
-STATS = ['pSampleCheck', 'pQCCollect', 'pMultiQC', 'pRemoveRedundantFiles',
-         'pAnalysisRunStatus', 'pSacct']
+ALIGN = ['pgzip_fastq', 'pfastqc', 'pbwa_mem', 'ppicardtools_mergesamfiles',
+         'ppicardtools_markduplicates', 'pgatk_realigner',
+         'pgatk_baserecalibration']
+COVERAGE = ['pchanjo_sexcheck', 'psambamba_depth',
+            'ppicardtools_collectmultiplemetrics',
+            'ppicardtools_calculatehsmetrics']
+SV = ['pmanta', 'psv_combinevariantcallsets', 'psv_varianteffectpredictor',
+      'psv_vcfparser', 'psv_rankvariant']
+SNV = ['psamtools_mpileup', 'pfreebayes', 'pgatk_haplotypecaller',
+       'pgatk_genotypegvcfs', 'pgatk_variantrecalibration',
+       'pgatk_combinevariantcallsets', 'pprepareforvariantannotationblock',
+       'pvt', 'pgatk_variantevalall', 'pgatk_variantevalexome',
+       'pvarianteffectpredictor', 'psnpeff', 'pvcfparser', 'prankvariant']
+STATS = ['psamplecheck', 'pqccollect', 'pmultiqc', 'premoveredundantfiles',
+         'panalysisrunstatus', 'psacct']
 PROGRAMS = ALIGN + COVERAGE + SV + SNV + STATS
 
 BRANCHES = {'align': ALIGN, 'coverage': COVERAGE, 'sv': SV, 'snv': SNV,
