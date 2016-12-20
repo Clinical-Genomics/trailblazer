@@ -128,8 +128,7 @@ def restart(context, max_gaussian, restart, email, case, extras, disable,
 
         if case:
             new_entry = build_pending(most_recent.case_id,
-                                      most_recent.root_dir,
-                                      most_recent.type)
+                                      most_recent.root_dir)
             commit_analysis(context.obj['manager'], new_entry)
 
 
