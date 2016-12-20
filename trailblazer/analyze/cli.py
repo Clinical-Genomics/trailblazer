@@ -120,10 +120,8 @@ def restart(context, max_gaussian, restart, email, case, extras, disable,
 
     if restart:
         email = email or environ_email() or new_values.get('email')
-        conda_env = context.obj.get('conda_env')
-        kwargs = dict(executable=context.obj.get('mip_exe'), email=email,
-                      conda_env=conda_env)
-        process = start_mip(analysis_config=config_path, **kwargs)
+        kwargs = dict(executable=context.obj['mip_exe'], email=email)
+        process = start_mip(config=config_path, **kwargs)
         process.wait()
         if process.returncode != 0:
             log.error("error starting analysis, check the output")
