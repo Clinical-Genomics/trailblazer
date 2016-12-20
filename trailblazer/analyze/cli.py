@@ -125,6 +125,7 @@ def restart(context, max_gaussian, restart, email, case, extras, disable,
         process.wait()
         if process.returncode != 0:
             log.error("error starting analysis, check the output")
+            context.abort()
 
         if case:
             new_entry = build_pending(most_recent.case_id,
