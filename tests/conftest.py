@@ -24,48 +24,9 @@ def invoke_cli(cli_runner):
 @pytest.fixture
 def cust_root():
     return {
-        'path': 'tests/fixtures/mip/cust001',
-        'cases': ['famCompleted', 'famStarted'],
+        'path': 'tests/fixtures/mip4/cust000',
+        'cases': ['118'],
     }
-
-
-@pytest.fixture
-def analysis_started():
-    """Return info about analysis which has only just started."""
-    return {
-        'root': ("tests/fixtures/mip/cust001/famStarted/analysis/genomes/"
-                 "famStarted"),
-        'family_id': 'famStarted',
-    }
-
-
-@pytest.fixture
-def analysis_failed():
-    """Return info about analysis which has only just started."""
-    return {
-        'root': ("tests/fixtures/mip/cust003/famErrored/analysis/exomes/"
-                 "famErrored"),
-        'family_id': 'famErrored',
-    }
-
-
-@pytest.fixture
-def analysis_multi():
-    """Return info about analysis which has been started twice."""
-    return {
-        'root': ("tests/fixtures/mip-shell/cust002/famMulti/analysis/"
-                 "genomes/famMulti"),
-        'family_id': 'famMulti',
-        'latest_sacct': 'Sacct_famMulti.1.stdout.txt',
-    }
-
-
-@pytest.yield_fixture(scope='function')
-def sacct_failed(analysis_failed):
-    filename = "Sacct_{}.0.stdout.txt".format(analysis_failed['family_id'])
-    sacct_path = "{}/bwa/info/{}".format(analysis_failed['root'], filename)
-    with open(sacct_path, 'r') as stream:
-        yield stream
 
 
 @pytest.yield_fixture(scope='function')
@@ -75,12 +36,3 @@ def manager():
     _manager.create_all()
     yield _manager
     _manager.drop_all()
-
-
-@pytest.yield_fixture(scope='function')
-def tmp_config(tmpdir):
-    config = path('tests/fixtures/analysis-config/family_config.yaml')
-    # copy the file to the tmpdir
-    new_config = tmpdir.join(config.basename())
-    config.copy(str(new_config))
-    yield new_config
