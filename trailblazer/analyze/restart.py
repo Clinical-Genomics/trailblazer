@@ -51,7 +51,7 @@ def update_maxgaussian(config_path):
     """Update MIP config to prepare for restart after max gaussian error."""
     new_conf = update_config(config_path,
                              start_step='pgatk_variantrecalibration',
-                             gatk_variantrecalibration_indel_max_gaussians=1)
+                             gatk_variantrecalibration_snv_max_gaussians=1)
     return new_conf
 
 
