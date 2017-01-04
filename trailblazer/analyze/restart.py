@@ -2,8 +2,7 @@
 import yaml
 
 ALIGN = ['pgzip_fastq', 'pfastqc', 'pbwa_mem', 'ppicardtools_mergesamfiles',
-         'ppicardtools_markduplicates', 'pgatk_realigner',
-         'pgatk_baserecalibration']
+         'ppicardtools_markduplicates', 'pgatk_baserecalibration']
 COVERAGE = ['pchanjo_sexcheck', 'psambamba_depth',
             'ppicardtools_collectmultiplemetrics',
             'ppicardtools_calculatehsmetrics']
