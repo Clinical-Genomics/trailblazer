@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from path import path
+from path import Path
 import yaml
 
 from trailblazer.store import Analysis
@@ -18,7 +18,7 @@ def build_entry(sampleinfo, sacct_stream=None):
         sacct_jobs = parse_sacct(sacct_stream)
     else:
         # try with automatically detected file
-        sacct_path = path(metadata['sacct_path'])
+        sacct_path = Path(metadata['sacct_path'])
         if not sacct_path.exists():
             raise MissingFileError(sacct_path)
         with sacct_path.open('r') as sacct_stream:
@@ -70,7 +70,7 @@ def parse_sampleinfo(sampleinfo):
                          'wgs')
     analysis_type = 'exomes' if analysis_type_raw == 'wes' else 'genomes'
     analysis_start = sampleinfo['analysis_date']
-    analysis_out = path(sampleinfo['log_file_dir']).parent
+    analysis_out = Path(sampleinfo['log_file_dir']).parent
     customer = ped_data['owner']
     case_id = "{}-{}".format(customer, fam_key)
     config_path = analysis_out.joinpath("{}_config.yaml".format(fam_key))

@@ -3,7 +3,6 @@ from functools import partial
 
 from alchy import Manager
 from click.testing import CliRunner
-from path import path
 import pytest
 
 from trailblazer.cli import root

@@ -2,7 +2,7 @@
 import logging
 
 import click
-from path import path
+from path import Path
 
 from trailblazer.add import add_cmd
 from trailblazer.store import api
@@ -33,5 +33,5 @@ def scan_dir(root_dir):
     Will look for qc sample info files.
     """
     # MIP 4: customer: family - analysis - family...
-    mip4_files = path(root_dir).glob('*/analysis/*_qc_sample_info.yaml')
+    mip4_files = Path(root_dir).glob('*/analysis/*_qc_sample_info.yaml')
     return mip4_files
