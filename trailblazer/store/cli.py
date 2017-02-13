@@ -41,7 +41,17 @@ def delete(context, pending, yes, force, latest, case_id):
                 click.echo("you are about to delete: {}"
                            .format(analysis_obj.root_dir))
                 if yes or click.confirm('are you sure?'):
-                    Path(analysis_obj.root_dir).rmtree_p()
+                    analysis_root_path = Path(analysis_obj.root_dir)
+                    analysis_files = analysis_root_path.listdir()
+                    if analysis_obj.config_path is None:
+                        click.echo("ERROR - missing analysis information! ({})"
+                                   .format(analysis_obj.case_id))
+                        context.abort()
+                    elif analysis_obj.config_path not in analysis_files:
+                        click.echo("ERROR - review analysis output path: ({})"
+                                   .format(analysis_obj.analysis_root))
+                        context.abort()
+                    analysis_root_path.rmtree_p()
                     # MIP only stores the latest analysis
                     # if one is deleted - they all should count as deleted!
                     for analysis_obj in api.analyses(analysis_id=case_id):

@@ -70,10 +70,10 @@ def parse_sampleinfo(sampleinfo):
                          'wgs')
     analysis_type = 'exomes' if analysis_type_raw == 'wes' else 'genomes'
     analysis_start = sampleinfo['analysis_date']
-    analysis_out = Path(sampleinfo['log_file_dir']).parent
+    config_path = Path(sampleinfo['config_file_analysis'])
+    analysis_out = config_path.dirname()
     customer = ped_data['owner']
     case_id = "{}-{}".format(customer, fam_key)
-    config_path = analysis_out.joinpath("{}_config.yaml".format(fam_key))
     sacct_path = "{}.status".format(sampleinfo['last_log_file_path'])
     values = {
         'case_id': case_id,
