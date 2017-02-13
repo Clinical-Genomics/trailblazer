@@ -28,7 +28,7 @@ def user(email):
 
 
 def analyses(analysis_id=None, since=None, is_ready=False, status=None,
-             older=False, deleted=None):
+             older=False, deleted=None, version=None):
     """List added analyses."""
     if older:
         query = Analysis.query.order_by(Analysis.started_at)
@@ -60,6 +60,10 @@ def analyses(analysis_id=None, since=None, is_ready=False, status=None,
 
     if deleted is not None:
         query = query.filter_by(is_deleted=deleted)
+
+    if version:
+        like_str = "{}%".format(version)
+        query = (query.filter(Analysis.pipeline_version.like(like_str)))
 
     return query
 

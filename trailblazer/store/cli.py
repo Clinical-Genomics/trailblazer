@@ -53,16 +53,18 @@ def delete(context, pending, yes, force, latest, case_id):
               default='json')
 @click.option('-o', '--older', is_flag=True)
 @click.option('-p', '--complete', is_flag=True, help='check if complete')
+@click.option('-v', '--version', help='filter on pipeline version')
 @click.argument('case_id', required=False)
 @click.pass_context
 def list_cmd(context, condensed, limit, since, older, display, complete,
-             deleted, case_id):
+             deleted, case_id, version):
     """List added runs."""
     if since:
         since = parse_date(since)
     query = api.analyses(analysis_id=case_id, since=since, older=older,
                          is_ready=(True if display == 'config' else False),
-                         deleted=(None if deleted is None else deleted))
+                         deleted=(None if deleted is None else deleted),
+                         version=version)
     if query.first() is None:
         log.warn('sorry, no analyses found')
     else:
