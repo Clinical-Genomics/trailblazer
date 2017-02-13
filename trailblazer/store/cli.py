@@ -47,7 +47,8 @@ def delete(context, pending, yes, force, latest, case_id):
                         click.echo("ERROR - missing analysis information! ({})"
                                    .format(analysis_obj.case_id))
                         context.abort()
-                    elif analysis_obj.config_path not in analysis_files:
+                    elif (not analysis_root_path.endswith('analysis') or
+                          (analysis_obj.config_path not in analysis_files)):
                         click.echo("ERROR - review analysis output path: ({})"
                                    .format(analysis_obj.analysis_root))
                         context.abort()
