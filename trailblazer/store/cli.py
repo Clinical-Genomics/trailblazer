@@ -34,12 +34,18 @@ def delete(context, pending, yes, force, latest, case_id):
         else:
             if analysis_obj.is_deleted:
                 click.echo("this analysis is already deleted")
+                for analysis_obj in api.analyses(analysis_id=case_id):
+                    analysis_obj.is_deleted = True
+                manager.commit()
             else:
                 click.echo("you are about to delete: {}"
                            .format(analysis_obj.root_dir))
                 if yes or click.confirm('are you sure?'):
                     Path(analysis_obj.root_dir).rmtree_p()
-                    analysis_obj.is_deleted = True
+                    # MIP only stores the latest analysis
+                    # if one is deleted - they all should count as deleted!
+                    for analysis_obj in api.analyses(analysis_id=case_id):
+                        analysis_obj.is_deleted = True
                     manager.commit()
                     click.echo("removed: {}".format(analysis_obj.root_dir))
 
