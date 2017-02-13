@@ -20,7 +20,8 @@ log = logging.getLogger(__name__)
 def delete(context, pending, yes, force, latest, case_id):
     """Delete an analysis and files."""
     manager = context.obj['manager']
-    analysis_runs = api.analyses(analysis_id=case_id)
+    statuses = ['running', 'pending'] if pending else 'completed'
+    analysis_runs = api.analyses(analysis_id=case_id, status=statuses)
     if latest and analysis_runs.first():
         analysis_runs = [analysis_runs.first()]
 
@@ -37,21 +38,29 @@ def delete(context, pending, yes, force, latest, case_id):
                 for analysis_obj in api.analyses(analysis_id=case_id):
                     analysis_obj.is_deleted = True
                 manager.commit()
+            elif analysis_obj.config_path is None:
+                click.echo("ERROR - missing analysis information! ({})"
+                           .format(analysis_obj.case_id))
+                continue
             else:
+                analysis_root_path = Path(analysis_obj.root_dir)
+                if not analysis_root_path.exists():
+                    # the analysis is already deleted
+                    click.echo("analysis already deleted: {}"
+                               .format(analysis_obj.case_id))
+                    for analysis_obj in api.analyses(analysis_id=case_id):
+                        analysis_obj.is_deleted = True
+                    manager.commit()
+                    continue
+                elif (not analysis_root_path.endswith('analysis') or
+                      (analysis_obj.config_path not in analysis_root_path.listdir())):
+                    click.echo("ERROR - review analysis output path: ({})"
+                               .format(analysis_obj.analysis_root))
+                    continue
+
                 click.echo("you are about to delete: {}"
                            .format(analysis_obj.root_dir))
                 if yes or click.confirm('are you sure?'):
-                    analysis_root_path = Path(analysis_obj.root_dir)
-                    analysis_files = analysis_root_path.listdir()
-                    if analysis_obj.config_path is None:
-                        click.echo("ERROR - missing analysis information! ({})"
-                                   .format(analysis_obj.case_id))
-                        context.abort()
-                    elif (not analysis_root_path.endswith('analysis') or
-                          (analysis_obj.config_path not in analysis_files)):
-                        click.echo("ERROR - review analysis output path: ({})"
-                                   .format(analysis_obj.analysis_root))
-                        context.abort()
                     analysis_root_path.rmtree_p()
                     # MIP only stores the latest analysis
                     # if one is deleted - they all should count as deleted!
