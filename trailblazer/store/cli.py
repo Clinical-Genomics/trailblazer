@@ -4,6 +4,7 @@ import logging
 import click
 from dateutil.parser import parse as parse_date
 from path import Path
+import yaml
 
 from . import api
 
@@ -35,9 +36,7 @@ def delete(context, pending, yes, force, latest, case_id):
         else:
             if analysis_obj.is_deleted:
                 click.echo("this analysis is already deleted")
-                for analysis_obj in api.analyses(analysis_id=case_id):
-                    analysis_obj.is_deleted = True
-                manager.commit()
+                continue
             elif analysis_obj.config_path is None:
                 click.echo("ERROR - missing analysis information! ({})"
                            .format(analysis_obj.case_id))
@@ -56,6 +55,15 @@ def delete(context, pending, yes, force, latest, case_id):
                       (analysis_obj.config_path not in analysis_root_path.listdir())):
                     click.echo("ERROR - review analysis output path: ({})"
                                .format(analysis_obj.analysis_root))
+                    continue
+
+                # make sure this is the current analysis on disk
+                qcsample_path = analysis_obj.config_path.replace('_config.yaml',
+                                                                 '_qc_sample_info.yaml')
+                with open(qcsample_path, 'r') as handle:
+                    qcsample_data = yaml.load(handle)
+                if qcsample_data['analysis_date'] != analysis_obj.started_at:
+                    click.echo("analysis record doesn't match current run")
                     continue
 
                 click.echo("you are about to delete: {}"
