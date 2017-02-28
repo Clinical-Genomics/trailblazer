@@ -38,6 +38,9 @@ GOOGLE_OAUTH_CLIENT_ID = os.environ['GOOGLE_OAUTH_CLIENT_ID']
 GOOGLE_OAUTH_CLIENT_SECRET = os.environ['GOOGLE_OAUTH_CLIENT_SECRET']
 USER_DATABASE_PATH = os.environ['USER_DATABASE_PATH']
 
+# app links
+HOUSEKEEPER_URL = os.environ.get('HOUSEKEEPER_URL')
+
 app.config.from_object(__name__)
 
 db = Alchy(Model=Model)

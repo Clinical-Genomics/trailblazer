@@ -53,6 +53,11 @@
                         <a href="{{ url_for('analysis', case_id=analysis.case_id) }}">
                             {{ analysis.case_id }}
                         </a>
+                        {% if config.HOUSEKEEPER_URL %}
+                            <a href="{{ config.HOUSEKEEPER_URL }}/cases/{{ analysis.case_id }}" target="_blank">
+                                <span class="glyphicon glyphicon-home pull-right"></span>
+                            </a>
+                        {% endif %}
                     </td>
                     <td>{{ analysis.started_at.date() }}</td>
                     <td>{{ analysis.pipeline_version if analysis.pipeline_version }}</td>
