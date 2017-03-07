@@ -22,7 +22,8 @@ def build_pending(case_id, root_dir):
 
 
 def start_mip(config, family_id=None, ccp=None, gene_list=None,
-              dryrun=False, executable=None, email=None, priority='normal'):
+              dryrun=False, executable=None, email=None, priority='normal',
+              max_gaussian=False):
     """Start a new analysis for a family.
 
     Args:
@@ -32,6 +33,7 @@ def start_mip(config, family_id=None, ccp=None, gene_list=None,
         gene_list (Optional[str]): name of gene list in 'references' dir
         conda_env (Optional[str]): conda environment to source
         email (Optional[str]): email to send error mails to
+        max_gaussian (Optional[bool]): start with max gaussian for SNVs
 
     Returns:
         int: return code from the executed process
@@ -69,6 +71,10 @@ def start_mip(config, family_id=None, ccp=None, gene_list=None,
     if gene_list:
         command.append('--vcfparser_select_file')
         command.append(gene_list)
+
+    if max_gaussian:
+        command.append('--gatk_variantrecalibration_snv_max_gaussians')
+        command.append('1')
 
     log.info("command: %s", ' '.join(command))
     process = subprocess.Popen(

@@ -35,11 +35,12 @@ def analyze(context):
 @click.option('-p', '--priority', type=click.Choice(['low', 'normal', 'high']),
               default='normal')
 @click.option('--dryrun', is_flag=True)
+@click.option('--max-gaussian', is_flag=True, help='enable max gaussian for SNV')
 @click.argument('customer')
 @click.argument('family')
 @click.pass_context
 def start(context, ccp, config, executable, gene_list, email, priority, dryrun,
-          customer, family):
+          max_gaussian, customer, family):
     """Start a new analysis."""
     ccp_abs = (Path(ccp).abspath() if ccp else
                Path(context.obj['analysis_root']).joinpath(customer))
@@ -69,6 +70,7 @@ def start(context, ccp, config, executable, gene_list, email, priority, dryrun,
         dryrun=dryrun,
         email=email,
         priority=priority,
+        max_gaussian=max_gaussian,
     )
     process.wait()
     if process.returncode != 0:
@@ -87,7 +89,7 @@ def start(context, ccp, config, executable, gene_list, email, priority, dryrun,
 
 
 @analyze.command()
-@click.option('--max-gaussian', is_flag=True)
+@click.option('--max-gaussian', is_flag=True, help='enable max gaussian for SNV')
 @click.option('-d', '--disable', type=click.Choice(BRANCH_OPTIONS),
               multiple=True)
 @click.option('-s', '--start-from', type=click.Choice(restart_api.PROGRAMS))
