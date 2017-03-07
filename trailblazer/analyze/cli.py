@@ -80,8 +80,10 @@ def start(context, ccp, config, executable, gene_list, email, priority, dryrun,
     if email:
         user = api.user(email)
         new_entry.user = user
-    commit_analysis(context.obj['manager'], new_entry)
-    context.obj['manager'].commit()
+
+    if not dryrun:
+        commit_analysis(context.obj['manager'], new_entry)
+        context.obj['manager'].commit()
 
 
 @analyze.command()
