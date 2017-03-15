@@ -23,7 +23,7 @@ def build_pending(case_id, root_dir):
 
 def start_mip(config, family_id=None, ccp=None, gene_list=None,
               dryrun=False, executable=None, email=None, priority='normal',
-              max_gaussian=False):
+              max_gaussian=False, execute=True):
     """Start a new analysis for a family.
 
     Args:
@@ -77,8 +77,11 @@ def start_mip(config, family_id=None, ccp=None, gene_list=None,
         command.append('1')
 
     log.info("command: %s", ' '.join(command))
-    process = subprocess.Popen(
-        command,
-        preexec_fn=lambda: signal.signal(signal.SIGPIPE, signal.SIG_DFL)
-    )
-    return process
+    if execute:
+        process = subprocess.Popen(
+            command,
+            preexec_fn=lambda: signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+        )
+        return process
+    else:
+        return None

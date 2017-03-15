@@ -34,13 +34,14 @@ def analyze(context):
 @click.option('-e', '--email', help='email to send errors to')
 @click.option('-p', '--priority', type=click.Choice(['low', 'normal', 'high']),
               default='normal')
-@click.option('--dryrun', is_flag=True)
+@click.option('--dryrun', is_flag=True, help='run MIP in dry run mode')
 @click.option('--max-gaussian', is_flag=True, help='enable max gaussian for SNV')
+@click.option('--execute/--no-execute', default=True, help='skip executing MIP command')
 @click.argument('customer')
 @click.argument('family')
 @click.pass_context
 def start(context, ccp, config, executable, gene_list, email, priority, dryrun,
-          max_gaussian, customer, family):
+          max_gaussian, execute, customer, family):
     """Start a new analysis."""
     ccp_abs = (Path(ccp).abspath() if ccp else
                Path(context.obj['analysis_root']).joinpath(customer))
@@ -71,21 +72,22 @@ def start(context, ccp, config, executable, gene_list, email, priority, dryrun,
         email=email,
         priority=priority,
         max_gaussian=max_gaussian,
+        execute=execute,
     )
-    process.wait()
-    if process.returncode != 0:
-        log.error("error starting analysis, check the output")
-        context.abort()
+    if execute:
+        process.wait()
+        if process.returncode != 0:
+            log.error("error starting analysis, check the output")
+            context.abort()
 
-    # add pending entry to database
-    new_entry = build_pending(case_id, ccp_abs)
-    if email:
-        user = api.user(email)
-        new_entry.user = user
-
-    if not dryrun:
-        commit_analysis(context.obj['manager'], new_entry)
-        context.obj['manager'].commit()
+        if not dryrun:
+            # add pending entry to database
+            new_entry = build_pending(case_id, ccp_abs)
+            if email:
+                user = api.user(email)
+                new_entry.user = user
+            commit_analysis(context.obj['manager'], new_entry)
+            context.obj['manager'].commit()
 
 
 @analyze.command()
