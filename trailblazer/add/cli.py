@@ -14,8 +14,8 @@ log = logging.getLogger(__name__)
 
 
 @click.command('add')
-@click.option('-s', '--sacct', type=click.File('r'))
-@click.argument('qcsampleinfo', type=click.File('r'))
+@click.option('-s', '--sacct', type=click.File('r'), help='Custom Sacct output file')
+@click.argument('qcsampleinfo', type=click.File('r'), help='QC sample info file')
 @click.pass_context
 def add_cmd(context, sacct, qcsampleinfo):
     """Add an analysis to the database."""

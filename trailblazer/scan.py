@@ -11,10 +11,11 @@ log = logging.getLogger(__name__)
 
 
 @click.command()
-@click.argument('cust_dirs', type=click.Path(exists=True), nargs=-1)
+@click.argument('cust_dirs', type=click.Path(exists=True), nargs=-1,
+                help='customer root directories')
 @click.pass_context
 def scan(context, cust_dirs):
-    """Scan directory(ies) for analyses."""
+    """Scan directories for analyses."""
     for cust_dir in cust_dirs:
         log.debug("scanning customer dir: %s", cust_dir)
         sampleinfo_files = scan_dir(cust_dir)
@@ -32,6 +33,5 @@ def scan_dir(root_dir):
 
     Will look for qc sample info files.
     """
-    # MIP 4: customer: family - analysis - family...
     mip4_files = Path(root_dir).glob('*/analysis/*_qc_sample_info.yaml')
     return mip4_files

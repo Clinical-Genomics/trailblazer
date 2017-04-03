@@ -62,10 +62,5 @@ output/*/index.html
 docs/_build
 _book/
 
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
-
 # Secrets
 alembic.ini
