@@ -11,8 +11,7 @@ log = logging.getLogger(__name__)
 
 
 @click.command()
-@click.argument('cust_dirs', type=click.Path(exists=True), nargs=-1,
-                help='customer root directories')
+@click.argument('cust_dirs', type=click.Path(exists=True), nargs=-1)
 @click.pass_context
 def scan(context, cust_dirs):
     """Scan directories for analyses."""
