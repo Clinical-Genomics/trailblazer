@@ -23,7 +23,7 @@ def build_pending(case_id, root_dir):
 
 def start_mip(config, family_id=None, ccp=None, gene_list=None,
               dryrun=False, executable=None, email=None, priority='normal',
-              max_gaussian=False, execute=True):
+              max_gaussian=False, execute=True, flags=None):
     """Start a new analysis for a family.
 
     Args:
@@ -75,6 +75,11 @@ def start_mip(config, family_id=None, ccp=None, gene_list=None,
     if max_gaussian:
         command.append('--gatk_variantrecalibration_snv_max_gaussians')
         command.append('1')
+
+    if flags:
+        for flag, value in flags:
+            command.append(flag)
+            command.append(value)
 
     log.info("command: %s", ' '.join(command))
     if execute:
