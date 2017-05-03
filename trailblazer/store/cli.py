@@ -7,6 +7,7 @@ from path import Path
 import yaml
 
 from . import api
+from .models import STATUS_OPTIONS
 
 log = logging.getLogger(__name__)
 
@@ -83,22 +84,25 @@ def delete(context, pending, yes, force, latest, case_id):
 @click.option('-l', '--limit', default=10)
 @click.option('-s', '--since', help='return analysis since a date')
 @click.option('-d', '--deleted/--no-deleted', is_flag=True)
-@click.option('-d', '--display', type=click.Choice(['json', 'id', 'config']),
+@click.option('-d', '--display', type=click.Choice(['json', 'id', 'config', 'count']),
               default='json')
 @click.option('-o', '--older', is_flag=True)
 @click.option('-p', '--complete', is_flag=True, help='check if complete')
 @click.option('-v', '--version', help='filter on pipeline version')
+@click.option('-t', '--status', type=click.Choice(STATUS_OPTIONS))
 @click.argument('case_id', required=False)
 @click.pass_context
 def list_cmd(context, condensed, limit, since, older, display, complete,
-             deleted, case_id, version):
+             deleted, case_id, version, status):
     """List added runs."""
     if since:
         since = parse_date(since)
     query = api.analyses(analysis_id=case_id, since=since, older=older,
                          is_ready=(True if display == 'config' else False),
                          deleted=(None if deleted is None else deleted),
-                         version=version)
+                         version=version, status=status)
+    if display == 'count':
+        log.info("number of runs: %s", query.count())
     if query.first() is None:
         log.warn('sorry, no analyses found')
     else:
