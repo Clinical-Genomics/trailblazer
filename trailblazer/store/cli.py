@@ -103,7 +103,7 @@ def list_cmd(context, condensed, limit, since, older, display, complete,
                          version=version, status=status)
     if display == 'count':
         log.info("number of runs: %s", query.count())
-    if query.first() is None:
+    elif query.first() is None:
         log.warn('sorry, no analyses found')
     else:
         if case_id and complete:
