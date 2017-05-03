@@ -30,7 +30,7 @@
           title: {
             text: "Week"
           },
-          categories: {{ weeks|tojson|safe }}
+          categories: {{ weeks|list|tojson|safe }}
         },
         yAxis: {
           title: {
@@ -46,15 +46,15 @@
         series: [{
           name: 'Started',
           color: '#B0BEC5',
-          data: {{ started|tojson|safe }}
+          data: {{ started|list|tojson|safe }}
         }, {
           name: 'Completed',
           color: '#4CAF50',
-          data: {{ completed|tojson|safe }}
+          data: {{ completed|list|tojson|safe }}
         }, {
           name: 'Failed',
           color: '#FF5722',
-          data: {{ failed|tojson|safe }}
+          data: {{ failed|list|tojson|safe }}
         }]
       })
     })
