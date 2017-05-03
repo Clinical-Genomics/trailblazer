@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Flask app module."""
+from collections import Counter
+import datetime
 import logging
 import os
 
@@ -112,6 +114,26 @@ def update_status(analysis_id):
         analysis_obj.status = new_status
     db.commit()
     return redirect(request.referrer)
+
+
+@app.route('/stats')
+@login_required
+def stats():
+    """Show stats for last years analyses."""
+    since_2017 = Analysis.started_at > datetime.date(2017, 1, 1)
+    started_per_week = Counter(run.started_at.isocalendar()[1] for run in
+                               Analysis.query.filter(since_2017))
+    completed_per_week = Counter(run.started_at.isocalendar()[1] for run in
+                                 Analysis.query.filter(since_2017, Analysis.status == 'completed'))
+    failed_per_week = Counter(run.started_at.isocalendar()[1] for run in
+                              Analysis.query.filter(since_2017, Analysis.status == 'failed'))
+    return render_template(
+        'stats.html',
+        weeks=started_per_week.keys(),
+        started=started_per_week.values(),
+        completed=completed_per_week.values(),
+        failed=failed_per_week.values(),
+    )
 
 
 # hookup extensions to app

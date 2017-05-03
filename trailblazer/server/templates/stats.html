@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+  {{ super() }}
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div id="numberOfStarts"></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="http://code.highcharts.com/highcharts.js"></script>
+
+  <script type="text/javascript" charset="utf-8" async defer>
+    $(function() {
+      $("#numberOfStarts").highcharts({
+        chart: {
+          type: "spline",
+          zoomType: "x"
+        },
+        title: {
+          text: "Analyses per week"
+        },
+        xAxis: {
+          title: {
+            text: "Week"
+          },
+          categories: {{ weeks|tojson|safe }}
+        },
+        yAxis: {
+          title: {
+            text: "Number of starts"
+          }
+        },
+        legend: {
+          layout: 'vertical',
+          align: 'right',
+          verticalAlign: 'middle',
+          borderWidth: 0
+        },
+        series: [{
+          name: 'Started',
+          color: '#B0BEC5',
+          data: {{ started|tojson|safe }}
+        }, {
+          name: 'Completed',
+          color: '#4CAF50',
+          data: {{ completed|tojson|safe }}
+        }, {
+          name: 'Failed',
+          color: '#FF5722',
+          data: {{ failed|tojson|safe }}
+        }]
+      })
+    })
+  </script>
+{% endblock %}

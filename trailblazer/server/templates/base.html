@@ -37,6 +37,7 @@
 
       <ul class="nav navbar-nav navbar-right">
         {% block right_nav %}
+          <li><a href="{{ url_for('stats') }}">Stats</a></li>
           <li><a href="{{ url_for('analyses') }}">View all</a></li>
         {% endblock %}
       </ul>
