@@ -55,7 +55,7 @@ def delete(context, pending, yes, force, latest, case_id):
                 elif (not analysis_root_path.endswith('analysis') or
                       (analysis_obj.config_path not in analysis_root_path.listdir())):
                     click.echo("ERROR - review analysis output path: ({})"
-                               .format(analysis_obj.analysis_root))
+                               .format(analysis_root_path))
                     continue
 
                 # make sure this is the current analysis on disk
