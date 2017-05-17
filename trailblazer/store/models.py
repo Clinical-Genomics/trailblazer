@@ -7,8 +7,8 @@ import alchy
 from housekeeper.server.admin import UserManagementMixin
 from sqlalchemy import Column, ForeignKey, orm, types, UniqueConstraint
 
-STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error',
-                  'canceled')
+STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error', 'canceled')
+PRIORITY_OPTIONS = ('low', 'normal', 'high')
 ANALYSIS_TYPES = ('exomes', 'genomes')
 PIPELINES = ('mip',)
 
@@ -53,8 +53,7 @@ class Analysis(Model):
 
     """Analysis record."""
 
-    __table_args__ = (UniqueConstraint('case_id', 'started_at', 'status',
-                                       'failed_step',
+    __table_args__ = (UniqueConstraint('case_id', 'started_at', 'status', 'failed_step',
                                        name='_uc_case_start_status_step'),)
 
     id = Column(types.Integer, primary_key=True)
@@ -69,6 +68,7 @@ class Analysis(Model):
     runtime = Column(types.Integer)
     cputime = Column(types.Integer)
     status = Column(types.Enum(*STATUS_OPTIONS))
+    priority = Column(types.Enum(*PRIORITY_OPTIONS))
     root_dir = Column(types.Text)
     config_path = Column(types.Text)
     type = Column(types.Enum(*ANALYSIS_TYPES))
@@ -98,5 +98,4 @@ class Analysis(Model):
 
     def failed_variantrecal(self):
         """Check if analysis failed on variat recalibration."""
-        return (self.failed_step and
-                'GATKVariantRecalibration' in self.failed_step)
+        return (self.failed_step and 'GATKVariantRecalibration' in self.failed_step)

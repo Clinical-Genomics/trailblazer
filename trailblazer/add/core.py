@@ -23,6 +23,15 @@ def build_entry(sampleinfo, sacct_stream=None):
             raise MissingFileError(sacct_path)
         with sacct_path.open('r') as sacct_stream:
             sacct_jobs = parse_sacct(sacct_stream)
+
+    config_path = Path(metadata['config_path'])
+    if not config_path.exists():
+        raise MissingFileError(config_path)
+    else:
+        with config_path.open() as config_stream:
+            config_data = yaml.load(config_stream)
+        priority = config_data['slurm_quality_of_service']
+        metadata['priority'] = priority
     status = determine_status(metadata['analysis_status'], sacct_jobs)
     metadata.update(status)
     new_entry = Analysis(**metadata)

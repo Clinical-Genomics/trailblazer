@@ -47,6 +47,10 @@
                     {% else %}
                         {% set context_class = 'default' %}
                     {% endif %}
+                {% else %}
+                    {% if analysis.priority == 'high' %}
+                        {% set context_class = 'info' %}
+                    {% endif %}
                 {% endif %}
                 <tr class="{{ context_class }}">
                     <td>
