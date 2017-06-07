@@ -5,7 +5,7 @@ import datetime
 import logging
 import os
 
-from flask import abort, Flask, render_template, request, redirect
+from flask import abort, Flask, render_template, request, redirect, jsonify
 from flask_alchy import Alchy
 from flask_bootstrap import Bootstrap
 from flask_login import current_user, login_required
@@ -134,6 +134,13 @@ def stats():
         completed=completed_per_week.values(),
         failed=failed_per_week.values(),
     )
+
+
+@app.route('/api/v1/analyses/<analysis_id>')
+def analysis_api(analysis_id):
+    """Fetch data about an analysis."""
+    analysis_obj = Analysis.query.get(analysis_id)
+    return jsonify(**analysis_obj.to_dict())
 
 
 # hookup extensions to app
