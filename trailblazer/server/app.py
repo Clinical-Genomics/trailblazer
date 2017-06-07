@@ -143,6 +143,15 @@ def analysis_api(analysis_id):
     return jsonify(**analysis_obj.to_dict())
 
 
+@app.route('/api/v1/analyses')
+def analyses_api():
+    """Fetch analyses from the database."""
+    if request.args.get('case'):
+        query = api.case(request.args.get('case'))
+    analyses = [analysis_obj.to_dict() for analysis_obj in query]
+    return jsonify(analyses=analyses)
+
+
 # hookup extensions to app
 Bootstrap(app)
 db.init_app(app)
