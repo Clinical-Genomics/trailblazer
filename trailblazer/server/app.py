@@ -138,6 +138,7 @@ def stats():
 
 
 @app.route('/api/v1/analyses/<analysis_id>')
+@login_required
 def analysis_api(analysis_id):
     """Fetch data about an analysis."""
     analysis_obj = Analysis.query.get(analysis_id)
@@ -145,6 +146,7 @@ def analysis_api(analysis_id):
 
 
 @app.route('/api/v1/analyses')
+@login_required
 def analyses_api():
     """Fetch analyses from the database."""
     if request.args.get('case'):
