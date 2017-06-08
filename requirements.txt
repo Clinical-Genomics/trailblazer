@@ -7,4 +7,5 @@ Flask-Alchy
 Flask
 Flask-Bootstrap
 Flask-Login
+Flask-CORS
 Housekeeper>=1.0.0

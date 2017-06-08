@@ -8,6 +8,7 @@ import os
 from flask import abort, Flask, render_template, request, redirect, jsonify
 from flask_alchy import Alchy
 from flask_bootstrap import Bootstrap
+from flask_cors import CORS, cross_origin
 from flask_login import current_user, login_required
 from housekeeper.server.admin import UserManagement
 import sqlalchemy as sqa
@@ -156,3 +157,4 @@ def analyses_api():
 Bootstrap(app)
 db.init_app(app)
 user.init_app(app)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
