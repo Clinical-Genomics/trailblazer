@@ -6,7 +6,8 @@ SQLAlchemy
 
 # server
 Flask
-Flask-Alchy==2.1
+Flask-Alchy
+Flask-SQLAlchemy==2.1
 Flask-CORS
 
 # misc
