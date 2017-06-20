@@ -52,6 +52,13 @@ def files_data(files_raw):
     }
 
 
+@pytest.fixture(scope='session')
+def allfailed_sacct_jobs():
+    with open('tests/fixtures/sacct/allfailed.log.status') as stream:
+        sacct_jobs = sacct.parse_sacct(stream)
+    return sacct_jobs
+
+
 @pytest.yield_fixture(scope='function')
 def store():
     _store = Store(uri='sqlite://')

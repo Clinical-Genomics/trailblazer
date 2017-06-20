@@ -2,6 +2,7 @@
 import datetime
 
 import alchy
+import sqlalchemy as sqa
 
 from . import models
 
@@ -30,18 +31,23 @@ class BaseHandler:
         query = self.Analysis.query.filter_by(family=family, started_at=started_at, status=status)
         return query.first()
 
-    def analyses(self, family=None, status=None, deleted=None, temp=False):
+    def analyses(self, *, family=None, query=None, status=None, deleted=None, temp=False):
         """Fetch analyses form the database."""
-        query = self.Analysis.query.order_by(self.Analysis.started_at.desc())
+        analysis_query = self.Analysis.query.order_by(self.Analysis.started_at.desc())
         if family:
-            query = query.filter_by(family=family)
+            analysis_query = analysis_query.filter_by(family=family)
+        elif query:
+            analysis_query = analysis_query.filter(sqa.or_(
+                self.Analysis.family.like(f"%{query}%"),
+                self.Analysis.status.like(f"%{query}%"),
+            ))
         if status:
-            query = query.filter_by(status=status)
+            analysis_query = analysis_query.filter_by(status=status)
         if isinstance(deleted, bool):
-            query = query.filter_by(is_deleted=deleted)
+            analysis_query = analysis_query.filter_by(is_deleted=deleted)
         if temp:
-            query = query.filter(self.Analysis.status.in_(TEMP_STATUSES))
-        return query
+            analysis_query = analysis_query.filter(self.Analysis.status.in_(TEMP_STATUSES))
+        return analysis_query
 
     def analysis(self, analysis_id):
         """Get a single analysis."""

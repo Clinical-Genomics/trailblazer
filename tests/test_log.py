@@ -67,3 +67,11 @@ def test_parse_sacct(files_data):
     assert sacct_data['completed_jobs'] == len(sacct_jobs)
     # ... and correctly determine the end of the last job
     assert last_job_end == analysis_end
+
+
+def test_parse_sacct_all_fails(allfailed_sacct_jobs):
+    # GIVEN sacct jobs from analysis with all failed jobs
+    # WHEN parsing out info
+    sacct_data, last_job_end = log.LogAnalysis._parse_sacct(allfailed_sacct_jobs)
+    # THEN the "analysis end" time should be unknown
+    assert last_job_end is None
