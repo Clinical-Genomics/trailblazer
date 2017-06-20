@@ -1,11 +1,13 @@
-alchy
+Alchy
 Click
-path.py
-pyyaml
-pymysql
-Flask-Alchy
+coloredlogs
+ruamel.yaml
+SQLAlchemy
+
+# server
 Flask
-Flask-Bootstrap
-Flask-Login
+Flask-Alchy==2.1
 Flask-CORS
-Housekeeper>=1.0.0
+
+# misc
+pymysql
