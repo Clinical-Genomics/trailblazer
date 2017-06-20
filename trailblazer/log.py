@@ -42,7 +42,7 @@ class LogAnalysis(object):
             'started_at': sampleinfo_data['date'],
             'version': sampleinfo_data['version'],
             'out_dir': config_data['out_dir'],
-            'type': analysis_types.pop() if len(analysis_types) == 1 else 'genome',
+            'type': analysis_types.pop() if len(analysis_types) == 1 else 'wgs',
         }
 
         sacct_data, last_job_end = cls._parse_sacct(sacct_jobs)

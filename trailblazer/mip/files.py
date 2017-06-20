@@ -16,7 +16,7 @@ def parse_config(data: dict) -> dict:
         'family': data['family_id'],
         'samples': [{
             'id': sample_id,
-            'type': 'genome' if analysis_type == 'genomes' else 'exome',
+            'type': analysis_type,
         } for sample_id, analysis_type in data['analysis_type'].items()],
         'is_dryrun': True if data['dry_run_all'] == '2' else False,
         'log': data['log_file'],
