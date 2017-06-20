@@ -9,6 +9,7 @@ from trailblazer.mip import sacct
 STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error', 'canceled')
 JOB_STATUS_OPTIONS = [category.lower() for category in sacct.CATEGORIES]
 PRIORITY_OPTIONS = ('low', 'normal', 'high')
+TYPES = ('exome', 'genome', 'rna')
 
 Model = alchy.make_declarative_base(Base=alchy.ModelBase)
 
@@ -64,6 +65,7 @@ class Analysis(Model):
     comment = Column(types.Text)
     is_deleted = Column(types.Boolean, default=False)
     is_visible = Column(types.Boolean, default=True)
+    type = Column(types.Enum(*TYPES))
     user_id = Column(ForeignKey(User.id))
 
     failed_jobs = orm.relationship('Job', backref='analysis')

@@ -22,7 +22,7 @@ class LogAnalysis(object):
         with open(sampleinfo or config_data['sample_info']) as stream:
             sampleinfo_raw = ruamel.yaml.safe_load(stream)
         sampleinfo_data = files_api.parse_sampleinfo(sampleinfo_raw)
-        sacct_path = Path(sacct) if sacct else Path(config_data['log']) / '.status'
+        sacct_path = Path(sacct if sacct else f"{config_data['log']}.status")
         with sacct_path.open() as stream:
             sacct_jobs = sacct_api.parse_sacct(stream)
         run_data = self.parse(config_data, sampleinfo_data, sacct_jobs)
@@ -34,6 +34,7 @@ class LogAnalysis(object):
     @classmethod
     def parse(cls, config_data, sampleinfo_data, sacct_jobs):
         """Parse information about a run."""
+        analysis_types = set(sample['type'] for sample in config_data['samples'])
         run_data = {
             'user': config_data['email'],
             'family': config_data['family'],
@@ -41,6 +42,7 @@ class LogAnalysis(object):
             'started_at': sampleinfo_data['date'],
             'version': sampleinfo_data['version'],
             'out_dir': config_data['out_dir'],
+            'type': analysis_types.pop() if len(analysis_types) == 1 else 'genome',
         }
 
         sacct_data, last_job_end = cls._parse_sacct(sacct_jobs)
@@ -58,7 +60,7 @@ class LogAnalysis(object):
         """Parse out info from Sacct log."""
         failed_jobs = sacct_api.filter_jobs(sacct_jobs)
         completed_jobs = [job for job in sacct_jobs if job['is_completed']]
-        last_job_end = completed_jobs[-1]['end']
+        last_job_end = completed_jobs[-1]['end'] if len(completed_jobs) > 0 else None
         data = {
             'jobs': len(sacct_jobs),
             'completed_jobs': len(completed_jobs),

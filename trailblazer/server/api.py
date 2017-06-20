@@ -11,10 +11,12 @@ def analyses():
     """Display analyses."""
     per_page = int(request.args.get('per_page', 30))
     page = int(request.args.get('page', 1))
-    query = store.analyses(status=request.args.get('status')).paginate(page, per_page=per_page)
+    query = store.analyses(status=request.args.get('status'),
+                           query=request.args.get('query'))
 
+    query_page = query.paginate(page, per_page=per_page)
     data = []
-    for analysis_obj in query.items:
+    for analysis_obj in query_page.items:
         analysis_data = analysis_obj.to_dict()
         analysis_data['user'] = analysis_obj.user.to_dict() if analysis_obj.user else None
         data.append(analysis_data)

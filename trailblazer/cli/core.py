@@ -115,7 +115,7 @@ def init(context, reset):
 @click.argument('root_dir', type=click.Path(exists=True))
 @click.pass_context
 def scan(context, root_dir):
-    """Scan directories for analyses."""
+    """Scan a directory for analyses."""
     store = Store(context.obj['database'])
     config_files = Path(root_dir).glob('*/analysis/*_config.yaml')
     for config_file in config_files:
