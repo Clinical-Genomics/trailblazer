@@ -67,6 +67,7 @@ class Analysis(Model):
     is_visible = Column(types.Boolean, default=True)
     type = Column(types.Enum(*TYPES))
     user_id = Column(ForeignKey(User.id))
+    progress = Column(types.Float)
 
     failed_jobs = orm.relationship('Job', backref='analysis')
 

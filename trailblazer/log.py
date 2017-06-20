@@ -64,6 +64,7 @@ class LogAnalysis(object):
         data = {
             'jobs': len(sacct_jobs),
             'completed_jobs': len(completed_jobs),
+            'progress': len(completed_jobs) / len(sacct_jobs),
             'failed_jobs': [{
                 'slurm_id': job['id'],
                 'started_at': job['start'],
