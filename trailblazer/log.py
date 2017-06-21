@@ -58,7 +58,7 @@ class LogAnalysis(object):
     @staticmethod
     def _parse_sacct(sacct_jobs):
         """Parse out info from Sacct log."""
-        failed_jobs = sacct_api.filter_jobs(sacct_jobs)
+        failed_jobs = sacct_api.filter_jobs(sacct_jobs, failed=True)
         completed_jobs = [job for job in sacct_jobs if job['is_completed']]
         last_job_end = completed_jobs[-1]['end'] if len(completed_jobs) > 0 else None
         data = {
@@ -88,8 +88,11 @@ class LogAnalysis(object):
 
     def build(self, run_data):
         """Build a new Analysis object."""
-        if self.store.find_analysis(family=run_data['family'], started_at=run_data['started_at'],
-                                    status=run_data['status']):
+        existing_run = self.store.find_analysis(family=run_data['family'],
+                                                started_at=run_data['started_at'],
+                                                status=run_data['status'],
+                                                progress=run_data['progress'])
+        if existing_run:
             return None
 
         run_data['user'] = self.store.user(run_data['user'])

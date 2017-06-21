@@ -3,6 +3,7 @@ import datetime
 
 import alchy
 from sqlalchemy import Column, ForeignKey, orm, types, UniqueConstraint
+from flask_login import UserMixin
 
 from trailblazer.mip import sacct
 
@@ -25,7 +26,7 @@ class Info(Model):
     updated_at = Column(types.DateTime)
 
 
-class User(Model):
+class User(Model, UserMixin):
 
     __tablename__ = 'user'
 
@@ -34,8 +35,12 @@ class User(Model):
     email = Column(types.String(128), unique=True)
     name = Column(types.String(128))
     avatar = Column(types.Text)
+    created_at = Column(types.DateTime, default=datetime.datetime.now)
 
     runs = orm.relationship('Analysis', backref='user')
+
+    # Flask-Login
+    is_active = True
 
     @property
     def first_name(self):
@@ -48,8 +53,8 @@ class Analysis(Model):
     """Analysis record."""
 
     __tablename__ = 'analysis'
-    __table_args__ = (UniqueConstraint('family', 'started_at', 'status',
-                                       name='_uc_family_start_status'),)
+    __table_args__ = (UniqueConstraint('family', 'started_at', 'status', 'progress',
+                                       name='_uc_family_start_status_progress'),)
 
     id = Column(types.Integer, primary_key=True)
     family = Column(types.String(128), nullable=False)
@@ -67,7 +72,7 @@ class Analysis(Model):
     is_visible = Column(types.Boolean, default=True)
     type = Column(types.Enum(*TYPES))
     user_id = Column(ForeignKey(User.id))
-    progress = Column(types.Float)
+    progress = Column(types.Float, default=0.)
 
     failed_jobs = orm.relationship('Job', backref='analysis')
 

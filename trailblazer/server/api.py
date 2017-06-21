@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 from flask import abort, Blueprint, jsonify, request
+from flask_login import login_required
 
 from trailblazer.server.ext import store
 
 blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
+
+
+@blueprint.before_request
+@login_required
+def before_request():
+    pass
 
 
 @blueprint.route('/analyses')
@@ -19,6 +26,7 @@ def analyses():
     for analysis_obj in query_page.items:
         analysis_data = analysis_obj.to_dict()
         analysis_data['user'] = analysis_obj.user.to_dict() if analysis_obj.user else None
+        analysis_data['failed_jobs'] = [job_obj.to_dict() for job_obj in analysis_obj.failed_jobs]
         data.append(analysis_data)
 
     return jsonify(analyses=data)
