@@ -46,7 +46,8 @@ def log_cmd(context, sampleinfo, sacct, config):
     try:
         new_run = log_analysis(config, sampleinfo=sampleinfo, sacct=sacct)
     except MissingFileError as error:
-        click.echo(click.style(f"Skipping, missing Sacct file: error.message", fg='yellow'))
+        click.echo(click.style(f"Skipping, missing Sacct file: {error.message}", fg='yellow'))
+        return
     if new_run is None:
         click.echo(click.style('Analysis already logged', fg='yellow'))
     else:
