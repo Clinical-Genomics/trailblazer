@@ -4,6 +4,7 @@ import os
 import coloredlogs
 from flask import Flask, send_from_directory
 from flask_cors import CORS
+from flask_login import login_required
 
 from trailblazer.server import api, ext
 
@@ -30,5 +31,6 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
 @app.route('/')
+@login_required
 def index():
     return send_from_directory('static', 'index.html')
