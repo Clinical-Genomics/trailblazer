@@ -6,6 +6,7 @@ import ruamel.yaml
 
 from trailblazer.mip import sacct as sacct_api, files as files_api
 from trailblazer.store import Store
+from trailblazer.exc import MissingFileError
 
 log = logging.getLogger(__name__)
 
@@ -23,6 +24,8 @@ class LogAnalysis(object):
             sampleinfo_raw = ruamel.yaml.safe_load(stream)
         sampleinfo_data = files_api.parse_sampleinfo(sampleinfo_raw)
         sacct_path = Path(sacct if sacct else f"{config_data['log']}.status")
+        if not sacct_path.exists():
+            raise MissingFileError(sacct_path)
         with sacct_path.open() as stream:
             sacct_jobs = sacct_api.parse_sacct(stream)
         run_data = self.parse(config_data, sampleinfo_data, sacct_jobs)

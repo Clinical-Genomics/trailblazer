@@ -10,6 +10,7 @@ import trailblazer
 from trailblazer.store import Store
 from trailblazer.log import LogAnalysis
 from trailblazer.mip.start import MipCli
+from trailblazer.exc import MissingFileError
 from .utils import environ_email
 
 log = logging.getLogger(__name__)
@@ -42,7 +43,10 @@ def log_cmd(context, sampleinfo, sacct, config):
     """
     store = Store(context.obj['database'])
     log_analysis = LogAnalysis(store)
-    new_run = log_analysis(config, sampleinfo=sampleinfo, sacct=sacct)
+    try:
+        new_run = log_analysis(config, sampleinfo=sampleinfo, sacct=sacct)
+    except MissingFileError as error:
+        click.echo(click.style(f"Skipping, missing Sacct file: error.message", fg='yellow'))
     if new_run is None:
         click.echo(click.style('Analysis already logged', fg='yellow'))
     else:
