@@ -3,6 +3,8 @@ import logging
 import signal
 import subprocess
 
+from trailblazer.exc import MipStartError
+
 log = logging.getLogger(__name__)
 
 CLI_OPTIONS = {
@@ -37,18 +39,20 @@ class MipCli(object):
         process = self.execute(command)
         process.wait()
         if process.returncode != 0:
-            log.error("error starting analysis, check the output")
+            raise MipStartError('error starting analysis, check the output')
         return process
 
     def build_command(self, config, **kwargs):
         """Builds the command to execute MIP."""
         command = ['perl', self.script, CLI_OPTIONS['config']['option'], config]
         for key, value in kwargs:
-            command.append(CLI_OPTIONS[key]['option'])
-            if value is True:
-                command.append(CLI_OPTIONS[key]['default'])
-            else:
-                command.append(value)
+            # enable passing in flags as "False" - shouldn't add command
+            if value:
+                command.append(CLI_OPTIONS[key]['option'])
+                if value is True:
+                    command.append(CLI_OPTIONS[key]['default'])
+                else:
+                    command.append(value)
         return command
 
     def execute(self, command):

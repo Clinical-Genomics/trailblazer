@@ -9,3 +9,7 @@ class TrailblazerError(Exception):
 
 class MissingFileError(TrailblazerError):
     pass
+
+
+class MipStartError(TrailblazerError):
+    pass

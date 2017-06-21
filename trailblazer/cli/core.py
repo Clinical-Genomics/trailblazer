@@ -10,7 +10,7 @@ import trailblazer
 from trailblazer.store import Store
 from trailblazer.log import LogAnalysis
 from trailblazer.mip.start import MipCli
-from trailblazer.exc import MissingFileError
+from trailblazer.exc import MissingFileError, MipStartError
 from .utils import environ_email
 
 log = logging.getLogger(__name__)
@@ -34,9 +34,10 @@ def base(context, config, database, log_level):
 @base.command('log')
 @click.option('-s', '--sampleinfo', type=click.Path(exists=True), help='sample info file')
 @click.option('-a', '--sacct', type=click.Path(exists=True), help='sacct job info file')
+@click.option('-q', '--quite', is_flag=True, help='supress outputs')
 @click.argument('config', type=click.File())
 @click.pass_context
-def log_cmd(context, sampleinfo, sacct, config):
+def log_cmd(context, sampleinfo, sacct, quiet, config):
     """Log an analysis.
 
     CONFIG: MIP config file for an analysis
@@ -49,7 +50,8 @@ def log_cmd(context, sampleinfo, sacct, config):
         click.echo(click.style(f"Skipping, missing Sacct file: {error.message}", fg='yellow'))
         return
     if new_run is None:
-        click.echo(click.style('Analysis already logged', fg='yellow'))
+        if not quiet:
+            click.echo(click.style('Analysis already logged', fg='yellow'))
     else:
         message = f"New log added: {new_run.family} ({new_run.id}) - {new_run.status}"
         click.echo(click.style(message, fg='green'))
@@ -58,16 +60,27 @@ def log_cmd(context, sampleinfo, sacct, config):
 @base.command()
 @click.option('-c', '--config', type=click.Path(exists=True), help='MIP config')
 @click.option('-e', '--email', help='email for logging user')
+@click.option('-p', '--priority', type=click.Choice(['low', 'normal', 'high']), default='normal')
+@click.option('-d', '--dryrun', is_flag=True, help='only generate SBATCH scripts')
 @click.option('--command', is_flag=True, help='only show the MIP command')
 @click.argument('family', required=False)
 @click.pass_context
-def start(context, config, email, command, family):
+def start(context, config, email, priority, dryrun, command, family):
     """Start a new analysis."""
     store = Store(context.obj['database'])
     mip_cli = MipCli(context.obj['script'])
     config = config or context.obj['config']
-    mip_cli(config, family)
-    store.add_pending(family, email=(email or environ_email()))
+    kwargs = dict(config=config, family=family, priority=priority, email=email, dryrun=dryrun)
+    if command:
+        mip_command = mip_cli.build_command(**kwargs)
+        click.echo(' '.join(mip_command))
+    else:
+        try:
+            mip_cli(**kwargs)
+            if not dryrun:
+                store.add_pending(family, email=(email or environ_email()))
+        except MipStartError as error:
+            click.echo(click.style(error.message, fg='red'))
 
 
 @base.command()
@@ -124,9 +137,9 @@ def scan(context, root_dir):
     store = Store(context.obj['database'])
     config_files = Path(root_dir).glob('*/analysis/*_config.yaml')
     for config_file in config_files:
-        log.debug("adding analysis: %s", config_file)
+        log.debug("found analysis config: %s", config_file)
         with config_file.open() as stream:
-            context.invoke(log_cmd, config=stream)
+            context.invoke(log_cmd, config=stream, quiet=True)
 
     store.track_update()
 
