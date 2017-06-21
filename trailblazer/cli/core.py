@@ -124,3 +124,20 @@ def scan(context, root_dir):
             context.invoke(log_cmd, config=stream)
 
     store.track_update()
+
+
+@base.command()
+@click.option('--name', help='Name of new user to add')
+@click.argument('email')
+@click.pass_context
+def user(context, name, email):
+    """Add a new or display information about an existing user."""
+    store = Store(context.obj['database'])
+    existing_user = store.user(email)
+    if existing_user:
+        click.echo(existing_user.to_dict())
+    elif name:
+        new_user = store.add_user(name, email)
+        click.echo(click.style(f"New user added: {email} ({new_user.id})", fg='green'))
+    else:
+        click.echo(click.style('User not found', fg='yellow'))

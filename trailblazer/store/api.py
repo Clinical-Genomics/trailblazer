@@ -26,9 +26,14 @@ class BaseHandler:
         """Fetch a user from the database."""
         return self.User.query.filter_by(email=email).first()
 
-    def find_analysis(self, family, started_at, status):
+    def find_analysis(self, family, started_at, status, progress):
         """Find a single analysis."""
-        query = self.Analysis.query.filter_by(family=family, started_at=started_at, status=status)
+        query = self.Analysis.query.filter_by(
+            family=family,
+            started_at=started_at,
+            status=status,
+            progress=progress,
+        )
         return query.first()
 
     def analyses(self, *, family=None, query=None, status=None, deleted=None, temp=False):
@@ -75,6 +80,12 @@ class BaseHandler:
         new_log.user = self.user(email) if email else None
         self.add_commit(new_log)
         return new_log
+
+    def add_user(self, name, email):
+        """Add a new user to the database."""
+        new_user = self.User(name=name, email=email)
+        self.add_commit(new_user)
+        return new_user
 
 
 class Store(alchy.Manager, BaseHandler):
