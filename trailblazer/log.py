@@ -23,7 +23,7 @@ class LogAnalysis(object):
         sampleinfo_path = Path(sampleinfo or config_data['sample_info'])
         if not sampleinfo_path.exists():
             raise MissingFileError(sampleinfo_path)
-        with open() as stream:
+        with sampleinfo_path.open() as stream:
             sampleinfo_raw = ruamel.yaml.safe_load(stream)
         sampleinfo_data = files_api.parse_sampleinfo(sampleinfo_raw)
         sacct_path = Path(sacct if sacct else f"{config_data['log']}.status")
