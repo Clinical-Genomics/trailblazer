@@ -40,7 +40,7 @@ class LogAnalysis(object):
     @classmethod
     def parse(cls, config_data, sampleinfo_data, sacct_jobs):
         """Parse information about a run."""
-        analysis_types = set(sample['type'] for sample in config_data['samples'])
+        analysis_types = [sample['type'] for sample in config_data['samples']]
         run_data = {
             'user': config_data['email'],
             'family': config_data['family'],
@@ -48,7 +48,8 @@ class LogAnalysis(object):
             'started_at': sampleinfo_data['date'],
             'version': sampleinfo_data['version'],
             'out_dir': config_data['out_dir'],
-            'type': analysis_types.pop() if len(analysis_types) == 1 else 'wgs',
+            'config_path': config_data['config_path'],
+            'type': cls._get_analysis_type(analysis_types),
         }
 
         sacct_data, last_job_end = cls._parse_sacct(sacct_jobs)
@@ -91,6 +92,12 @@ class LogAnalysis(object):
             return 'failed'
         else:
             return 'running'
+
+    @staticmethod
+    def _get_analysis_type(analysis_types):
+        """Determine the overall analysis type."""
+        types_set = set(analysis_types)
+        return types_set.pop() if len(types_set) == 1 else 'wgs'
 
     def build(self, run_data):
         """Build a new Analysis object."""
