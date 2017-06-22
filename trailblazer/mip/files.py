@@ -23,6 +23,7 @@ def parse_config(data: dict) -> dict:
         'sample_info': data['sample_info_file'],
         'priority': data['slurm_quality_of_service'],
         'out_dir': data['outdata_dir'],
+        'config_path': data['config_file_analysis'],
     }
 
 

@@ -22,10 +22,6 @@ class BaseHandler:
         new_info = self.Info()
         self.add_commit(new_info)
 
-    def user(self, email):
-        """Fetch a user from the database."""
-        return self.User.query.filter_by(email=email).first()
-
     def find_analysis(self, family, started_at, status, progress):
         """Find a single analysis."""
         query = self.Analysis.query.filter_by(
@@ -86,6 +82,10 @@ class BaseHandler:
         new_user = self.User(name=name, email=email)
         self.add_commit(new_user)
         return new_user
+
+    def user(self, email):
+        """Fetch a user from the database."""
+        return self.User.query.filter_by(email=email).first()
 
 
 class Store(alchy.Manager, BaseHandler):
