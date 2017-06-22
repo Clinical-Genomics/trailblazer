@@ -1,106 +1,137 @@
 # Trailblazer [![Build Status][travis-image]][travis-url] [![Coverage Status][coveralls-image]][coveralls-url]
 
-_Trailblazer_ is a tool to keep track of analyses.
+### Automate, monitor, and simplify running the [MIP][mip] analysis pipeline
 
-## Background
+Trailblazer is a tool that aims to provide:
 
-We are running a pipeline ([MIP][mip]) and needed:
+- a Python interface to interact with MIP in an automated fashion
+- a monitoring web UI to help you keep track of the status of multiple runs
+- a limited command line interface to simplify running MIP using an opinionated setup
 
-1. a way to overview currently running jobs
-2. a way to be notified about failures in an intuitive way
-3. a way to track runs of the same samples across time
+### Todo
 
-For this we built a tool that will read information from the file system and determine which state any given analysis run i in (running, completed, failed, etc.). We are also providing a web interface to overview the information and add further annotations.
+- [ ] fetch all job ids from sacct status log and offer to kill all jobs
+- [ ] display statistics like which steps most analyses fail at
 
-The tool is also an entry point to manage analyses and e.g. start and restart them in a simple way.
+## Installation
 
-We are currently only focusing on supporting MIP but the plan is to expand to additional pipelines once we take them into production.
+Trailblazer written in Python 3.6+ and is available on the [Python Package Index][pypi] (PyPI).
+
+```bash
+pip install trailblazer
+```
+
+If you would like to install the latest development version:
+
+```bash
+git clone https://github.com/Clinical-Genomics/trailblazer
+cd trailblazer
+pip install --editable .
+```
 
 ## Documentation
 
-A brief documentation of intended usage. You will find some additional features and I will document them as they mature.
+Here's a brief documentation. Trailblazer functionality can be accessed from the command line interface (CLI), the monitoring web interface, the supporting REST API, as well as using the Python API.
 
-### Installation
+### Command line interface
 
-You can install Trailblazer from source:
+#### Config file
 
-```bash
-$ git clone https://github.com/Clinical-Genomics/trailblazer && cd trailblazer
-$ pip install --editable .
+Trailblazer supports a simple config file written in YAML. You can always provide the same option on the command line, however, it's recommended to store some commonly used values in the config.
+
+The following options are supported:
+
+```yaml
+---
+database: mysql+pymysql://userName:passWord@domain.com/database
+script: /path/to/MIP/mip.pl
+mip_config: /path/to/global/MIP_config.yaml
 ```
 
-If you need to connect to a MySQL database you also need a connector package:
+> Tip: setup a Bash alias in your `~/.bashrc` to always point to your config automatically:
+> ```bash
+> alias trailblazer="trailblazer --config /path/to/trailblazer/config.yaml"
+
+#### Command: `trailblazer init`
+
+Setup (or reset) a Trailblazer database. It will simply setup all the tables in the database. You can reset an existing database by using the `--reset` option.
 
 ```bash
-$ pip install pymysql
+trailblazer --database "sqlite:///tb.sqlite3" init --reset
+Delete existing tables? [analysis, info, job, user] [y/N]: y
+Success! New tables: analysis, info, job, user
 ```
 
-### Setup
+#### Command: `trailblazer user`
 
-The first thing is setting up a database. It will create the database tables.
+This command can be used both to add a new user to the database (and give them access to the web interface) and view information about an existing user.
 
 ```bash
-$ trailblazer init sqlite:///path/to/store.sqlite3
+# add a new user
+trailblazer user --name "Paul Anderson" paul.anderson@magnolia.com
+New user added: paul.anderson@magnolia.com (2)
+
+# check an existing user
+trailblazer user paul.anderson@magnolia.com
+{'created_at': datetime.datetime(2017, 6, 22, 8, 49, 44, 685977), 'google_id': None, 'name': 'Paul Anderson', 'email': 'paul.anderson@magnolia.com', 'avatar': None, 'id': 2}
 ```
 
-### Adding new analyses
+#### Command: `trailblazer log`
 
-You can add individual analyses by pointing to the "QC sample info" file or scan for analyses under customer directories. The `scan` command can be run in a crontab e.g. every hour to keep the database up-to-date.
-
-> The web interface will display the date when the database was last updated so you can tell if you are looking at fresh information!
+Logs the status of a run to the supporting database. You need to point to the analysis config of a specific run.
 
 ```bash
-$ trailblazer add /path/to/familyId_qc_sampleInfo.yaml
-$ trailblazer scan /path/to/cust003
+trailblazer log path/to/family/analysis/family_config.yaml
 ```
 
-The tool will pick up in what state an analysis is in:
+You can point to the same analysis multiple times, Trailblazer will detect if the same analysis has been added before and skip it if no information has been updated. If an analysis has been added previously as "running" or "pending", those entries will automatically be removed as soon as the same analysis is logged as either "completed" or "failed".
 
-1. if an analysis is currently running
-2. if a run has failed and will then report which step FIRST was not successful
-3. if a run is complete and will then calculate the runtime
+Trailblazer will automatically find additional files used for logging the analysis status (`family_qc_sample_info.yaml` (sampleinfo) and `mip.pl_2017-06-17T12:11:42.log.status` (sacct)) unless you explicitly point to them using the `--sampleinfo` and `--sacct` flags. If either of the files are missing, Trailblazer will simply skip adding a status for that analysis.
 
-Whenever a run updates from "running" to either "completed" or "failed", the previous entry for the "running" analysis will be deleted. This is also why in the web interface you are not allowed to change anything about these entries since this information would be lost once the analysis ends.
+#### Command: `trailblazer scan`
 
-### Running analyses
-
-Trailblazer simplifies starting a new analysis. When a run has started it is tracked in the database with a "pending" status tag until the first Sacct output is generated.
+Convenience command to scan an entire directory structure for all analyses and update their status in one go. Assumes the base directory consists of individual family folders:
 
 ```bash
-trailblazer analyze start [customer] [family]
+trailblazer scan /path/to/analyses/dir/
 ```
 
-The command will pick up email from the environment if you have have sudo:ed to "hiseq.clinical" from your user. It will determine the correct cluster constant path automatically. It can guess the analysis type based on existing folder structure.
+This command can easily be setup in a crontab to run e.g. every hour and keep the analysis statuses up-to-date!
 
-> Before starting a run you need to generate a pedigree or YAML pedigree and place it in the correct location! 
+#### Command: `trailblazer ls`
 
-### Web interface
-
-The web interface is a simple Flask app that can be run locally or deployed to the cloud. We provide some of the necessary settings in the repository to deploy it to AWS Elastic Beanstalk.
-
-#### Starting it up
-
-Since we are talking about a simple service I would use the built-in `flask` CLI to run the server locally for development and production:
+Prints the family id for the most recently completed analyses to the console. This is useful to tie in downstream tools that might want to do something with the data from completed runs.
 
 ```bash
-$ FLASK_APP=trailblazer.server.app SQLALCHEMY_DATABASE_URI=<DATABASE URI> FLASK_DEBUG=1 flask run
+trailblazer ls
+F0013487
+F0013362
+F0006106
+17083
+F0013469
+17085
 ```
 
-This command will start the development server on port 5000. By adding the option `--host 0.0.0.0` you will expose the server to the network.
+#### Command: `trailblazer delete`
 
-#### Description
+Deletes an analysis log from the database. The input is the unique analysis id which is printed ones the analysis is initially logged. It's also displayed in the web interface.
 
-From the web interface you can interact with the data in several ways. First you get an overview of analysis that are grouped by their status. You can then make comments on runs that have failed or completed. When you make a comment on a failed run it will be hidden from the overview dashboard.
+```bash
+trailblazer delete 4
+```
 
-You can also manually edit the status for runs. Say e.g. that you decide that you started an analysis with the wrong input and it completed; you can then manually set the status to "error" and it will no longer be treated as a successful run.
+#### Command: `trailblazer start`
 
-An exhaustive list of all runs is available as well. This view let's just search for analyses and see everything which has been added to the database.
+Start MIP from Trailblazer. It's only a thin wrapper around the MIP command line. It removes some complexity like having to provide the global MIP config if it is already defined in the Trailblazer config. It also logs a started analysis as "pending" until the first job has been completed and the status can be evaluated (creates the sacct status file).
 
+```
+trailblazer start family4 --priority high
+```
+
+[mip]: https://github.com/henrikstranneheim/MIP
+[pypi]: https://pypi.python.org/pypi/trailblazer/
 
 [travis-url]: https://travis-ci.org/Clinical-Genomics/trailblazer
 [travis-image]: https://img.shields.io/travis/Clinical-Genomics/trailblazer.svg?style=flat-square
-
 [coveralls-url]: https://coveralls.io/r/Clinical-Genomics/trailblazer
 [coveralls-image]: https://img.shields.io/coveralls/Clinical-Genomics/trailblazer.svg?style=flat-square
-
-[mip]: https://github.com/henrikstranneheim/MIP
