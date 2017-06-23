@@ -131,16 +131,18 @@ def init(context, reset):
 
 
 @base.command()
-@click.argument('root_dir', type=click.Path(exists=True))
+@click.argument('root_dirs', type=click.Path(exists=True), nargs=-1)
 @click.pass_context
-def scan(context, root_dir):
+def scan(context, root_dirs):
     """Scan a directory for analyses."""
     store = Store(context.obj['database'])
-    config_files = Path(root_dir).glob('*/analysis/*_config.yaml')
-    for config_file in config_files:
-        log.debug("found analysis config: %s", config_file)
-        with config_file.open() as stream:
-            context.invoke(log_cmd, config=stream, quiet=True)
+    for root_dir in root_dirs:
+        log.debug(f"checking directory: {root_dir}")
+        config_files = Path(root_dir).glob('*/analysis/*_config.yaml')
+        for config_file in config_files:
+            log.debug("found analysis config: %s", config_file)
+            with config_file.open() as stream:
+                context.invoke(log_cmd, config=stream, quiet=True)
 
     store.track_update()
 
