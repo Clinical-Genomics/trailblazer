@@ -43,7 +43,7 @@ class User(Model, UserMixin):
     is_active = True
 
     @property
-    def first_name(self):
+    def first_name(self) -> str:
         """First part of name."""
         return self.name.split(' ')[0]
 

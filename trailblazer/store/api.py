@@ -50,7 +50,7 @@ class BaseHandler:
             analysis_query = analysis_query.filter(self.Analysis.status.in_(TEMP_STATUSES))
         return analysis_query
 
-    def analysis(self, analysis_id):
+    def analysis(self, analysis_id: int) -> models.Analysis:
         """Get a single analysis."""
         return self.Analysis.query.get(analysis_id)
 
@@ -60,16 +60,16 @@ class BaseHandler:
         metadata.updated_at = datetime.datetime.now()
         self.commit()
 
-    def is_running(self, family):
+    def is_running(self, family: str) -> bool:
         """Check if an analysis is currently running/pending for a family."""
         latest_analysis = self.analyses(family=family).first()
         return latest_analysis and latest_analysis.status in TEMP_STATUSES
 
-    def info(self):
+    def info(self) -> models.Info:
         """Return metadata entry."""
         return self.Info.query.first()
 
-    def add_pending(self, family, email=None):
+    def add_pending(self, family: str, email: str=None) -> models.Analysis:
         """Add pending entry for an analysis."""
         started_at = datetime.datetime.now()
         new_log = self.Analysis(family=family, status='pending', started_at=started_at)
@@ -77,13 +77,13 @@ class BaseHandler:
         self.add_commit(new_log)
         return new_log
 
-    def add_user(self, name, email):
+    def add_user(self, name: str, email: str) -> models.User:
         """Add a new user to the database."""
         new_user = self.User(name=name, email=email)
         self.add_commit(new_user)
         return new_user
 
-    def user(self, email):
+    def user(self, email: str) -> models.User:
         """Fetch a user from the database."""
         return self.User.query.filter_by(email=email).first()
 

@@ -43,20 +43,20 @@ class AuthManager(object):
     def init_app(self, app):
         app.register_blueprint(self.blueprint, url_prefix='/login')
 
-        @app.route('/login')
+        @app.route('/api/v1/login')
         def login():
             """Redirect to the Google login page."""
             # store potential next param URL in the session
             if 'next' in request.args:
-                session['next_url'] = request.args.get('next')
+                session['next_url'] = request.args['next']
             return redirect(url_for('google.login'))
 
-        @app.route('/logout')
+        @app.route('/api/v1/logout')
         @login_required
         def logout():
             logout_user()
             flash('You have logged out', 'info')
-            return redirect(url_for('index'))
+            return redirect(request.args.get('next') or url_for('index'))
 
         self.login_manager.init_app(app)
 
