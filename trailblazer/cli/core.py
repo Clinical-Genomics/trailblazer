@@ -34,7 +34,7 @@ def base(context, config, database, log_level):
 @base.command('log')
 @click.option('-s', '--sampleinfo', type=click.Path(exists=True), help='sample info file')
 @click.option('-a', '--sacct', type=click.Path(exists=True), help='sacct job info file')
-@click.option('-q', '--quite', is_flag=True, help='supress outputs')
+@click.option('-q', '--quiet', is_flag=True, help='supress outputs')
 @click.argument('config', type=click.File())
 @click.pass_context
 def log_cmd(context, sampleinfo, sacct, quiet, config):
