@@ -2,14 +2,13 @@
 import os
 
 import coloredlogs
-from flask import Flask, send_from_directory
+from flask import Flask
 from flask_cors import CORS
-from flask_login import login_required
 
 from trailblazer.server import api, ext
 
 coloredlogs.install(level='INFO')
-app = Flask(__name__, static_folder='static', static_url_path='')
+app = Flask(__name__)
 
 SECRET_KEY = 'unsafe!!!'
 TEMPLATES_AUTO_RELOAD = True
@@ -31,6 +30,5 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
 @app.route('/')
-@login_required
 def index():
-    return send_from_directory('static', 'index.html')
+    return "Welcome to Trailblazer REST API"
