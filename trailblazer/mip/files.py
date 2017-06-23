@@ -12,7 +12,7 @@ def parse_config(data: dict) -> dict:
         dict: parsed data
     """
     return {
-        'email': data['email'],
+        'email': data.get('email'),
         'family': data['family_id'],
         'samples': [{
             'id': sample_id,
