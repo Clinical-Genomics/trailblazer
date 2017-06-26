@@ -111,13 +111,14 @@ def delete(context, analysis_id):
 
 @base.command()
 @click.option('--reset', is_flag=True, help='reset database before setting up tables')
+@click.option('--force', is_flag=True, help='bypass manual confirmations')
 @click.pass_context
-def init(context, reset):
+def init(context, reset, force):
     """Setup the database."""
     store = Store(context.obj['database'])
     existing_tables = store.engine.table_names()
-    if reset:
-        if existing_tables:
+    if force or reset:
+        if force or existing_tables:
             message = f"Delete existing tables? [{', '.join(existing_tables)}]"
             click.confirm(click.style(message, fg='yellow'), abort=True)
         store.drop_all()
