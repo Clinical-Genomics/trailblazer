@@ -118,7 +118,7 @@ def init(context, reset, force):
     store = Store(context.obj['database'])
     existing_tables = store.engine.table_names()
     if force or reset:
-        if force or existing_tables:
+        if existing_tables and not force:
             message = f"Delete existing tables? [{', '.join(existing_tables)}]"
             click.confirm(click.style(message, fg='yellow'), abort=True)
         store.drop_all()
