@@ -15,8 +15,6 @@ TEMPLATES_AUTO_RELOAD = True
 SQLALCHEMY_DATABASE_URI = os.environ['SQLALCHEMY_DATABASE_URI']
 SQLALCHEMY_POOL_RECYCLE = 7200
 SQLALCHEMY_TRACK_MODIFICATIONS = 'FLASK_DEBUG' in os.environ
-GOOGLE_OAUTH_CLIENT_ID = os.environ['GOOGLE_OAUTH_CLIENT_ID']
-GOOGLE_OAUTH_CLIENT_SECRET = os.environ['GOOGLE_OAUTH_CLIENT_SECRET']
 
 app.config.from_object(__name__)
 
@@ -25,8 +23,7 @@ app.register_blueprint(api.blueprint)
 
 # configure extensions
 ext.store.init_app(app)
-ext.auth.init_app(app)
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/api/*": {'origins': '*'}})
 
 
 @app.route('/')

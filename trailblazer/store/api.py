@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from typing import List
 import datetime
 
 import alchy
@@ -86,6 +87,15 @@ class BaseHandler:
     def user(self, email: str) -> models.User:
         """Fetch a user from the database."""
         return self.User.query.filter_by(email=email).first()
+
+    def aggregate_failed(self) -> List:
+        """Count the number of failed jobs per category (name)."""
+        categories = self.session.query(
+            self.Job.name.label('name'),
+            sqa.func.count(self.Job.id).label('count')
+        ).filter(self.Job.status != 'cancelled').group_by(self.Job.name).all()
+        data = [{'name': category.name, 'count': category.count} for category in categories]
+        return data
 
 
 class Store(alchy.Manager, BaseHandler):
