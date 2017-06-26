@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from flask import abort, Blueprint, jsonify, request
-from flask_login import current_user, login_required
+from flask import abort, g, Blueprint, jsonify, request
+from google.auth import jwt
 
 from trailblazer.server.ext import store
 
@@ -8,9 +8,17 @@ blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
 
 
 @blueprint.before_request
-@login_required
 def before_request():
-    pass
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        jwt_token = auth_header.split('Bearer ')[-1]
+    else:
+        return abort(403, 'no JWT token found on request')
+    user_data = jwt.decode(jwt_token, verify=False)
+    user_obj = store.user(user_data['email'])
+    if user_obj is None:
+        return abort(403, f"{user_data['email']} doesn't have access")
+    g.current_user = user_obj
 
 
 @blueprint.route('/analyses')
@@ -59,4 +67,11 @@ def info():
 @blueprint.route('/me')
 def me():
     """Return information about a logged in user."""
-    return jsonify(**current_user.to_dict())
+    return jsonify(**g.current_user.to_dict())
+
+
+@blueprint.route('/aggregate/jobs')
+def aggregate_jobs():
+    """Return stats about jobs."""
+    data = store.aggregate_failed()
+    return jsonify(jobs=data)
