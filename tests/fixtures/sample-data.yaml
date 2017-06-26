@@ -1,0 +1,48 @@
+---
+users:
+  - name: Paul Anderson
+    email: paul.anderson@magnolia.com
+  - name: Tom Cruise
+    email: tom.cruise@magnolia.com
+
+analyses:
+  - family: crazygoat
+    version: v4.2.0
+    started_at: 2017-06-17T12:11:42
+    status: running
+    priority: high
+    out_dir: fixtures/runs/crazygoat/analysis
+    config_path: fixtures/runs/crazygoat/analysis/crazygoat_config.yaml
+    type: wgs
+    user: paul.anderson@magnolia.com
+    progress: .54
+
+  - family: nicemouse
+    version: v4.0.1
+    started_at: 2017-06-17T12:11:42
+    completed_at: 2017-06-18T12:11:44
+    status: completed
+    out_dir: fixtures/runs/nicemouse/analysis
+    config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
+    type: wgs
+    user: paul.anderson@magnolia.com
+
+  - family: politesnake
+    version: v4.2.0
+    started_at: 2017-06-15T11:00:42
+    status: failed
+    out_dir: fixtures/runs/politesnake/analysis
+    config_path: fixtures/runs/politesnake/analysis/politesnake_config.yaml
+    type: wes
+    user: tom.cruise@magnolia.com
+    failed_jobs:
+      - slurm_id: 453223
+        name: samtools_mpileup
+        context: politesnake
+        started_at: 2017-06-15T13:00:02
+        elapsed: 1560
+        status: failed
+      - slurm_id: 453224
+        name: qccollect
+        context: politesnake
+        status: cancelled

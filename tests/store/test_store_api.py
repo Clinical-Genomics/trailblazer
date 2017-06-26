@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import datetime
 
+import pytest
+
 
 def test_setup_and_info(store):
     # GIVEN a store which is already setup
@@ -43,3 +45,50 @@ def test_user(store):
     user_obj = store.user('this_is_a_made_up_email@fake_example.com')
     # THEN it should return as None
     assert user_obj is None
+
+
+def test_analysis(sample_store):
+    # GIVEN a store with an analysis
+    existing_analysis = sample_store.analyses().first()
+    # WHEN accessing it by ID
+    analysis_obj = sample_store.analysis(existing_analysis.id)
+    # THEN it should return the same analysis
+    assert analysis_obj == existing_analysis
+
+    # GIVEN an id that doesn't exist
+    missing_analysis_id = 12312423534
+    # WHEN accessing the analysis
+    analysis_obj = sample_store.analysis(missing_analysis_id)
+    # THEN it should return None
+    assert analysis_obj is None
+
+
+@pytest.mark.parametrize('family, expected_bool', [
+    ('crazygoat', True),     # running
+    ('nicemouse', False),    # completed
+    ('politesnake', False),  # failed
+    ('gentlebird', True),    # pending
+])
+def test_is_running(sample_store, family, expected_bool):
+    # GIVEN an analysis
+    analysis_objs = sample_store.analyses(family=family).first()
+    assert analysis_objs is not None
+    # WHEN checking if the family has a running analysis
+    is_running = sample_store.is_running(family)
+    # THEN it should return the expected result
+    assert is_running is expected_bool
+
+
+def test_aggregate_jobs(sample_store):
+    # GIVEN a store with some analyses
+    assert sample_store.analyses().count() > 0
+    all_jobs = sample_store.jobs().count()
+    assert all_jobs == 2
+    # WHEN aggregating data on failed jobs
+    jobs_data = sample_store.aggregate_failed()
+    # THEN it should return a list of dicts per job type with count
+    assert isinstance(jobs_data, list)
+    # ... it should exclude "cancelled" jobs
+    assert len(jobs_data) == 1
+    assert jobs_data[0]['name'] == 'samtools_mpileup'
+    assert jobs_data[0]['count'] == 1

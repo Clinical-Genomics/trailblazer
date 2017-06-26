@@ -56,7 +56,6 @@ class BaseHandler:
         return self.Analysis.query.get(analysis_id)
 
     def track_update(self):
-        """Update metadata record with new updated date."""
         metadata = self.info()
         metadata.updated_at = datetime.datetime.now()
         self.commit()
@@ -96,6 +95,10 @@ class BaseHandler:
         ).filter(self.Job.status != 'cancelled').group_by(self.Job.name).all()
         data = [{'name': category.name, 'count': category.count} for category in categories]
         return data
+
+    def jobs(self):
+        """Return all jobs in the database."""
+        return self.Job.query
 
 
 class Store(alchy.Manager, BaseHandler):
