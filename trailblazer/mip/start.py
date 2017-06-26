@@ -45,7 +45,7 @@ class MipCli(object):
     def build_command(self, config, **kwargs):
         """Builds the command to execute MIP."""
         command = ['perl', self.script, CLI_OPTIONS['config']['option'], config]
-        for key, value in kwargs:
+        for key, value in kwargs.items():
             # enable passing in flags as "False" - shouldn't add command
             if value:
                 command.append(CLI_OPTIONS[key]['option'])

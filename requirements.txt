@@ -9,6 +9,7 @@ Flask
 Flask-Alchy
 Flask-SQLAlchemy==2.1
 Flask-CORS
+google-auth
 
 # misc
 pymysql
