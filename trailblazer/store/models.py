@@ -3,7 +3,6 @@ import datetime
 
 import alchy
 from sqlalchemy import Column, ForeignKey, orm, types, UniqueConstraint
-from flask_login import UserMixin
 
 from trailblazer.mip import sacct
 
@@ -26,7 +25,7 @@ class Info(Model):
     updated_at = Column(types.DateTime)
 
 
-class User(Model, UserMixin):
+class User(Model):
 
     __tablename__ = 'user'
 
@@ -38,9 +37,6 @@ class User(Model, UserMixin):
     created_at = Column(types.DateTime, default=datetime.datetime.now)
 
     runs = orm.relationship('Analysis', backref='user')
-
-    # Flask-Login
-    is_active = True
 
     @property
     def first_name(self) -> str:
