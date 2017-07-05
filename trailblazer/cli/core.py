@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from pathlib import Path
+import subprocess
 
 import click
 import coloredlogs
@@ -10,6 +11,7 @@ import trailblazer
 from trailblazer.store import Store
 from trailblazer.log import LogAnalysis
 from trailblazer.mip.start import MipCli
+from trailblazer.mip.sacct import parse_sacct
 from trailblazer.exc import MissingFileError, MipStartError
 from .utils import environ_email
 
@@ -163,3 +165,42 @@ def user(context, name, email):
         click.echo(click.style(f"New user added: {email} ({new_user.id})", fg='green'))
     else:
         click.echo(click.style('User not found', fg='yellow'))
+
+
+@base.command()
+@click.option('-j', '--jobs', is_flag=True, help='only print job ids')
+@click.argument('analysis_id', type=int)
+@click.pass_context
+def cancel(context, jobs, analysis_id):
+    """Cancel all jobs in a run."""
+    store = Store(context.obj['database'])
+    analysis_obj = store.analysis(analysis_id)
+    if analysis_obj is None:
+        click.echo('analysis not found')
+        context.abort()
+    elif analysis_obj.status != 'running':
+        click.echo(f"analysis not running: {analysis_obj.status}")
+        context.abort()
+
+    config_path = Path(analysis_obj.config_path)
+    with config_path.open() as config_stream:
+        config_data = ruamel.yaml.safe_load(config_stream)
+    sacct_path = Path(f"{config_data['log']}.status")
+
+    if not sacct_path.exists():
+        click.echo(f"missing Sacct file: {sacct_path}")
+        context.abort()
+
+    with sacct_path.open() as sacct_stream:
+        jobs = parse_sacct(sacct_stream)
+    job_ids = [job['id'] for job in jobs]
+    if jobs:
+        for job_id in job_ids:
+            click.echo(job_id)
+    else:
+        for job_id in job_ids:
+            log.debug(f"cancelling job: {job_id}")
+            process = subprocess.Popen(['scancel', job_id])
+            process.wait()
+
+    click.echo('cancelled analysis successfully!')
