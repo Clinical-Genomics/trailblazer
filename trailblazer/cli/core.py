@@ -9,6 +9,7 @@ import ruamel.yaml
 
 import trailblazer
 from trailblazer.store import Store
+from trailblazer.store.models import STATUS_OPTIONS
 from trailblazer.log import LogAnalysis
 from trailblazer.mip.start import MipCli
 from trailblazer.mip.sacct import parse_sacct
@@ -87,11 +88,12 @@ def start(context, mip_config, email, priority, dryrun, command, family):
 
 
 @base.command()
+@click.option('-s', '--status', type=click.Choice(STATUS_OPTIONS))
 @click.pass_context
-def ls(context):
-    """Display recent logs for completed analyses."""
+def ls(context, status):
+    """Display recent logs for analyses."""
     store = Store(context.obj['database'])
-    runs = store.analyses(status='completed', deleted=False).limit(30)
+    runs = store.analyses(status=status, deleted=False).limit(30)
     for run_obj in runs:
         click.echo(run_obj.family)
 
