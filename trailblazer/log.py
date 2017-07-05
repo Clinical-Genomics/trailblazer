@@ -21,13 +21,13 @@ class LogAnalysis(object):
         """Add a new analysis log."""
         config_raw = ruamel.yaml.safe_load(config_stream)
         config_data = files_api.parse_config(config_raw)
-        sampleinfo_path = Path(sampleinfo or config_data['sample_info'])
+        sampleinfo_path = Path(sampleinfo or config_data['sampleinfo_path'])
         if not sampleinfo_path.exists():
             raise MissingFileError(sampleinfo_path)
         with sampleinfo_path.open() as stream:
             sampleinfo_raw = ruamel.yaml.safe_load(stream)
         sampleinfo_data = files_api.parse_sampleinfo(sampleinfo_raw)
-        sacct_path = Path(sacct if sacct else f"{config_data['log']}.status")
+        sacct_path = Path(sacct if sacct else f"{config_data['log_path']}.status")
         if not sacct_path.exists():
             raise MissingFileError(sacct_path)
         with sacct_path.open() as stream:
