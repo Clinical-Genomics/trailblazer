@@ -12,6 +12,7 @@ from trailblazer.store import Store
 from trailblazer.store.models import STATUS_OPTIONS
 from trailblazer.log import LogAnalysis
 from trailblazer.mip.start import MipCli
+from trailblazer.mip.files import parse_config
 from trailblazer.mip.sacct import parse_sacct
 from trailblazer.exc import MissingFileError, MipStartError
 from .utils import environ_email
@@ -186,16 +187,19 @@ def cancel(context, jobs, analysis_id):
 
     config_path = Path(analysis_obj.config_path)
     with config_path.open() as config_stream:
-        config_data = ruamel.yaml.safe_load(config_stream)
-    sacct_path = Path(f"{config_data['log']}.status")
+        config_raw = ruamel.yaml.safe_load(config_stream)
+    config_data = parse_config(config_raw)
 
-    if not sacct_path.exists():
-        click.echo(f"missing Sacct file: {sacct_path}")
+    log_path = Path(f"{config_data['log_path']}")
+    if not log_path.exists():
+        click.echo(f"missing MIP log file: {log_path}")
         context.abort()
 
-    with sacct_path.open() as sacct_stream:
-        jobs = parse_sacct(sacct_stream)
-    job_ids = [job['id'] for job in jobs]
+    with log_path.open() as log_stream:
+        # grep out all lines with scancel example
+        id_rows = [line for line in log_stream if 'scancel' in line]
+        job_ids = [id_row.strip()[-7:-1] for id_row in id_rows]
+
     if jobs:
         for job_id in job_ids:
             click.echo(job_id)
@@ -205,4 +209,4 @@ def cancel(context, jobs, analysis_id):
             process = subprocess.Popen(['scancel', job_id])
             process.wait()
 
-    click.echo('cancelled analysis successfully!')
+        click.echo('cancelled analysis successfully!')
