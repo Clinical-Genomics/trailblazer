@@ -51,9 +51,11 @@ def parse_sampleinfo(data: dict) -> dict:
         } for sample_id, sample_data in data['sample'].items()],
         'qcmetrics_path': data['program']['qccollect']['qccollect_metrics_file']['path'],
         'sv': {
-            'clinical_vcf': data['sv_vcf_binary_file']['clinical']['path'],
-            'research_vcf': data['sv_vcf_binary_file']['research']['path'],
-            'bcf': data['sv_bcf_file'],
+            'clinical_vcf': (data['sv_vcf_binary_file']['clinical']['path'] if
+                             'sv_vcf_binary_file' in data else None),
+            'research_vcf': (data['sv_vcf_binary_file']['research']['path'] if
+                             'sv_vcf_binary_file' in data else None),
+            'bcf': data.get('sv_bcf_file'),
         },
         'snv': {
             'bcf': data['bcf_file']['path'],
