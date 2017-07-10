@@ -46,7 +46,7 @@ def parse_sampleinfo(data: dict) -> dict:
         'pedigree_path': data['pedigree_minimal'],
         'samples': [{
             'id': sample_id,
-            'bam': sample_data['most_complete_bam'],
+            'bam': sample_data['most_complete_bam']['path'],
             'sambamba': list(sample_data['program']['sambamba_depth'].values())[0]['bed']['path'],
         } for sample_id, sample_data in data['sample'].items()],
         'qcmetrics_path': data['program']['qccollect']['qccollect_metrics_file']['path'],

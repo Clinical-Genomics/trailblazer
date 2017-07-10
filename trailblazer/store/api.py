@@ -5,6 +5,7 @@ import datetime
 import alchy
 import sqlalchemy as sqa
 
+from trailblazer.mip.config import ConfigHandler
 from . import models
 
 TEMP_STATUSES = ('pending', 'running')
@@ -101,7 +102,7 @@ class BaseHandler:
         return self.Job.query
 
 
-class Store(alchy.Manager, BaseHandler):
+class Store(alchy.Manager, BaseHandler, ConfigHandler):
 
     def __init__(self, uri):
         super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=models.Model)

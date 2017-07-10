@@ -61,7 +61,7 @@ class ConfigHandler:
 
     def save(root_dir: str, data: dict) -> Path:
         """Save a config to the expected location."""
-        out_path = Path(root_dir) / f"{data['family']}_pedigree.yaml"
+        out_path = Path(root_dir) / 'pedigree.yaml'
         dump = ruamel.yaml.safe_dump(data)
         out_path.write_text(dump)
         return out_path
