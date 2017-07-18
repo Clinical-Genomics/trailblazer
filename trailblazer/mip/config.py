@@ -36,7 +36,6 @@ class SampleSchema(Schema):
 
 class ConfigSchema(Schema):
     family = fields.List(fields.Str(), required=True)
-    gene_panels = fields.List(fields.Str(), required=True)
     default_gene_panels = fields.List(fields.Str(), required=True)
     samples = fields.List(fields.Nested(SampleSchema), required=True)
 
