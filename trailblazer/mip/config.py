@@ -6,6 +6,8 @@ from pathlib import Path
 from marshmallow import Schema, fields, validate
 import ruamel.yaml
 
+from trailblazer.exc import ConfigError
+
 log = logging.getLogger(__name__)
 
 
@@ -35,20 +37,35 @@ class SampleSchema(Schema):
 
 
 class ConfigSchema(Schema):
-    family = fields.List(fields.Str(), required=True)
+    family = fields.Str(required=True)
     default_gene_panels = fields.List(fields.Str(), required=True)
     samples = fields.List(fields.Nested(SampleSchema), required=True)
 
 
 class ConfigHandler:
 
-    def validate(data: dict) -> dict:
-        """Convert to MIP config format."""
-        errors = ConfigSchema.validate(data)
-        if errors:
-            return errors
+    def make_config(self, data: dict):
+        """Make a MIP config."""
+        self.validate_config(data)
+        config_data = self.prepare_config(data)
+        return config_data
 
-    def prepare(data: dict) -> dict:
+    @staticmethod
+    def validate_config(data: dict) -> dict:
+        """Convert to MIP config format."""
+        errors = ConfigSchema().validate(data)
+        if errors:
+            for field, messages in errors.items():
+                if isinstance(messages, dict):
+                    for level, sample_errors in messages.items():
+                        sample_id = data['samples'][level]['sample_id']
+                        for sub_field, sub_messages in sample_errors.items():
+                            log.error(f"{sample_id} -> {sub_field}: {', '.join(messages)}")
+                log.error(f"{field}: {', '.join(messages)}")
+            raise ConfigError('invalid config input', errors=errors)
+
+    @staticmethod
+    def prepare_config(data: dict) -> dict:
         """Prepare the config data."""
         data_copy = deepcopy(data)
         # handle single sample cases with 'unknown' phenotype
@@ -58,9 +75,9 @@ class ConfigHandler:
                 data_copy['samples'][0]['phenotype'] = 'unaffected'
         return data_copy
 
-    def save(root_dir: str, data: dict) -> Path:
+    def save_config(self, data: dict) -> Path:
         """Save a config to the expected location."""
-        out_path = Path(root_dir) / 'pedigree.yaml'
+        out_path = self.families_root / data['family'] / 'pedigree.yaml'
         dump = ruamel.yaml.safe_dump(data)
         out_path.write_text(dump)
         return out_path
