@@ -23,16 +23,17 @@ log = logging.getLogger(__name__)
 @click.group()
 @click.option('-c', '--config', type=click.File())
 @click.option('-d', '--database', help='path/URI of the SQL database')
+@click.option('-r', '--root', help='families root directory')
 @click.option('-l', '--log-level', default='INFO')
 @click.version_option(trailblazer.__version__, prog_name=trailblazer.__title__)
 @click.pass_context
-def base(context, config, database, log_level):
+def base(context, config, database, root, log_level):
     """Trailblazer - Simplify running MIP!"""
     coloredlogs.install(level=log_level)
 
     context.obj = ruamel.yaml.safe_load(config) if config else {}
-    if database:
-        context.obj['database'] = database
+    context.obj['database'] = database or context.obj.get('database')
+    context.obj['root'] = root or context.obj.get('root')
 
 
 @base.command('log')
@@ -137,18 +138,17 @@ def init(context, reset, force):
 
 
 @base.command()
-@click.argument('root_dirs', type=click.Path(exists=True), nargs=-1)
+@click.argument('root_dir', type=click.Path(exists=True), required=False)
 @click.pass_context
-def scan(context, root_dirs):
+def scan(context, root_dir):
     """Scan a directory for analyses."""
     store = Store(context.obj['database'])
-    for root_dir in root_dirs:
-        log.debug(f"checking directory: {root_dir}")
-        config_files = Path(root_dir).glob('*/analysis/*_config.yaml')
-        for config_file in config_files:
-            log.debug("found analysis config: %s", config_file)
-            with config_file.open() as stream:
-                context.invoke(log_cmd, config=stream, quiet=True)
+    root_dir = root_dir or context.obj['root']
+    config_files = Path(root_dir).glob('*/analysis/*_config.yaml')
+    for config_file in config_files:
+        log.debug("found analysis config: %s", config_file)
+        with config_file.open() as stream:
+            context.invoke(log_cmd, config=stream, quiet=True)
 
     store.track_update()
 
