@@ -79,7 +79,7 @@ def parse_qcmetrics(metrics: dict) -> dict:
         'versions': {
             'freebayes': metrics['program']['freebayes']['version'],
             'gatk': metrics['program']['gatk']['version'],
-            'manta': metrics['program']['manta']['version'],
+            'manta': metrics['program'].get('manta', {}).get('version'),
             'samtools': metrics['program']['samtools']['version'],
             'vep': metrics['program']['varianteffectpredictor']['version'],
         },
