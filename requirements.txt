@@ -3,6 +3,7 @@ Click
 coloredlogs
 ruamel.yaml
 SQLAlchemy
+marshmallow
 
 # server
 Flask

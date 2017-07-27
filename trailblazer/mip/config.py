@@ -69,10 +69,14 @@ class ConfigHandler:
         """Prepare the config data."""
         data_copy = deepcopy(data)
         # handle single sample cases with 'unknown' phenotype
-        if len(data['samples']) == 1:
-            if data['samples'][0]['phenotype'] == 'unknown':
+        if len(data_copy['samples']) == 1:
+            if data_copy['samples'][0]['phenotype'] == 'unknown':
                 log.info("setting 'unknown' phenotype to 'unaffected'")
                 data_copy['samples'][0]['phenotype'] = 'unaffected'
+        # set the mother/father to '0' if they are not set for a sample
+        for sample_data in data_copy['samples']:
+            sample_data['mother'] = sample_data.get('mother') or '0'
+            sample_data['father'] = sample_data.get('father') or '0'
         return data_copy
 
     def save_config(self, data: dict) -> Path:
@@ -80,6 +84,6 @@ class ConfigHandler:
         out_dir = self.families_dir / data['family']
         out_dir.mkdir(parents=True, exist_ok=True)
         out_path = out_dir / 'pedigree.yaml'
-        dump = ruamel.yaml.safe_dump(data)
+        dump = ruamel.yaml.round_trip_dump(data, indent=4, block_seq_indent=2)
         out_path.write_text(dump)
         return out_path
