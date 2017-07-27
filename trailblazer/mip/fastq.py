@@ -14,7 +14,7 @@ class FastqHandler:
         root_dir.mkdir(parents=True, exist_ok=True)
         for fastq in files:
             fastq_path = Path(fastq)
-            dest_path = root_dir / fastq_path.name0
+            dest_path = root_dir / fastq_path.name
             if not dest_path.exists():
                 log.info(f"linking: {fastq_path} -> {dest_path}")
                 dest_path.symlink_to(fastq_path)
