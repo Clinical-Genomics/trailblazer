@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime as dt
 from pathlib import Path
 import logging
 from typing import List
@@ -10,10 +11,11 @@ class FastqHandler:
 
     @staticmethod
     def name_file(lane: int, flowcell: str, sample: str, read: int,
-                  undetermined: bool=False) -> str:
+                  undetermined: bool=False, date: dt.datetime=None) -> str:
         """Name a FASTQ file following MIP conventions."""
-        sample = f"{sample}-undetermined" if undetermined else sample
-        return f"{lane}_{flowcell}_{sample}_{read}.fastq.gz"
+        flowcell = f"{flowcell}-undetermined" if undetermined else flowcell
+        date = date.strftime("%y%m%d") if date else 'XXXXXX'
+        return f"{lane}_{date}_{flowcell}_{sample}_{read}.fastq.gz"
 
     def link(self, family: str, sample: str, analysis_type: str, files: List[str]):
         """Link FASTQ files for a sample."""
