@@ -11,11 +11,12 @@ class FastqHandler:
 
     @staticmethod
     def name_file(lane: int, flowcell: str, sample: str, read: int,
-                  undetermined: bool=False, date: dt.datetime=None) -> str:
+                  undetermined: bool=False, date: dt.datetime=None, index: str=None) -> str:
         """Name a FASTQ file following MIP conventions."""
         flowcell = f"{flowcell}-undetermined" if undetermined else flowcell
-        date = date.strftime("%y%m%d") if date else 'XXXXXX'
-        return f"{lane}_{date}_{flowcell}_{sample}_{read}.fastq.gz"
+        date = date.strftime("%y%m%d") if date else '000000'
+        index = index if index else 'XXXXXX'
+        return f"{lane}_{date}_{flowcell}_{sample}_{index}_{read}.fastq.gz"
 
     def link(self, family: str, sample: str, analysis_type: str, files: List[str]):
         """Link FASTQ files for a sample."""
