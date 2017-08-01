@@ -14,9 +14,9 @@ class FastqHandler:
                   undetermined: bool=False, date: dt.datetime=None, index: str=None) -> str:
         """Name a FASTQ file following MIP conventions."""
         flowcell = f"{flowcell}-undetermined" if undetermined else flowcell
-        date = date.strftime("%y%m%d") if date else '000000'
+        date_str = (date or dt.datetime.now()).strftime("%y%m%d")
         index = index if index else 'XXXXXX'
-        return f"{lane}_{date}_{flowcell}_{sample}_{index}_{read}.fastq.gz"
+        return f"{lane}_{date_str}_{flowcell}_{sample}_{index}_{read}.fastq.gz"
 
     def link(self, family: str, sample: str, analysis_type: str, files: List[str]):
         """Link FASTQ files for a sample."""
