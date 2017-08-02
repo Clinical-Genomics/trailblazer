@@ -33,10 +33,18 @@ class LogAnalysis(object):
         with sacct_path.open() as stream:
             sacct_jobs = sacct_api.parse_sacct(stream)
         run_data = self.parse(config_data, sampleinfo_data, sacct_jobs)
+        self._delete_temp_logs(run_data['family'])
         new_run = self.build(run_data)
         if new_run:
-            self.commit(new_run)
+            self.store.add_commit(new_run)
             return new_run
+
+    def _delete_temp_logs(self, family_name: str):
+        """Delete temporary logs for the current family."""
+        for temp_log in self.store.analyses(family=family_name, temp=True):
+            log.debug(f"delete temporary log: {temp_log.id} - {temp_log.status}")
+            temp_log.delete()
+        self.store.commit()
 
     @classmethod
     def parse(cls, config_data: dict, sampleinfo_data: dict, sacct_jobs: List[dict]) -> dict:
@@ -104,8 +112,7 @@ class LogAnalysis(object):
         """Build a new Analysis object."""
         existing_run = self.store.find_analysis(family=run_data['family'],
                                                 started_at=run_data['started_at'],
-                                                status=run_data['status'],
-                                                progress=run_data['progress'])
+                                                status=run_data['status'])
         if existing_run:
             return None
 
@@ -115,9 +122,3 @@ class LogAnalysis(object):
         new_run = self.store.Analysis(**run_data)
         new_run.failed_jobs = new_failed_jobs
         return new_run
-
-    def commit(self, new_run: models.Analysis):
-        """Commit a new Analysis run to the store."""
-        for temp_log in self.store.analyses(family=new_run.family, temp=True):
-            temp_log.delete()
-        self.store.add_commit(new_run)
