@@ -24,13 +24,12 @@ class BaseHandler:
         new_info = self.Info()
         self.add_commit(new_info)
 
-    def find_analysis(self, family, started_at, status, progress):
+    def find_analysis(self, family, started_at, status):
         """Find a single analysis."""
         query = self.Analysis.query.filter_by(
             family=family,
             started_at=started_at,
             status=status,
-            progress=progress,
         )
         return query.first()
 

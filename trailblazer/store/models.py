@@ -49,8 +49,8 @@ class Analysis(Model):
     """Analysis record."""
 
     __tablename__ = 'analysis'
-    __table_args__ = (UniqueConstraint('family', 'started_at', 'status', 'progress',
-                                       name='_uc_family_start_status_progress'),)
+    __table_args__ = (UniqueConstraint('family', 'started_at', 'status',
+                                       name='_uc_family_start_status'),)
 
     id = Column(types.Integer, primary_key=True)
     family = Column(types.String(128), nullable=False)
