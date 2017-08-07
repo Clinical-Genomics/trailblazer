@@ -101,18 +101,28 @@ def ls(context, status):
 
 
 @base.command()
-@click.argument('analysis_id', type=int)
+@click.option('-t', '--temporary', is_flag=True, help='delete all temporary logs')
+@click.argument('analysis_id', type=int, required=False)
 @click.pass_context
-def delete(context, analysis_id):
+def delete(context, temporary, analysis_id):
     """Delete an analysis log from the database."""
     store = Store(context.obj['database'])
-    analysis_obj = store.analysis(analysis_id)
-    if analysis_obj is None:
-        click.echo(click.style('analysis log not found', fg='red'))
+    if temporary:
+        analysis_ids = (analysis_obj.id for analysis_obj in store.analyses(temp=True))
+    elif analysis_id:
+        analysis_ids = [analysis_id]
+    else:
+        click.echo(click.style('you need to provide an analysis ID', fg='yellow'))
         context.abort()
-    analysis_obj.delete()
-    store.commit()
-    click.echo(f"analysis log deleted: {analysis_obj.family}")
+
+    for analysis_id in analysis_ids:
+        analysis_obj = store.analysis(analysis_id)
+        if analysis_obj is None:
+            click.echo(click.style('analysis log not found', fg='red'))
+            context.abort()
+        analysis_obj.delete()
+        store.commit()
+        click.echo(f"analysis log deleted: {analysis_obj.family}")
 
 
 @base.command()
