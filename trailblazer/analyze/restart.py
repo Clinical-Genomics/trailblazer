@@ -2,19 +2,21 @@
 import yaml
 
 ALIGN = ['pgzip_fastq', 'pfastqc', 'pbwa_mem', 'ppicardtools_mergesamfiles',
-         'ppicardtools_markduplicates', 'pgatk_baserecalibration']
+         'pmarkduplicates', 'pgatk_baserecalibration']
 COVERAGE = ['pchanjo_sexcheck', 'psambamba_depth',
             'ppicardtools_collectmultiplemetrics',
-            'ppicardtools_calculatehsmetrics']
-SV = ['pmanta', 'psv_combinevariantcallsets', 'psv_varianteffectpredictor',
-      'psv_vcfparser', 'psv_rankvariant']
+            'ppicardtools_collecthsmetrics']
+SV = ['pcnvnator', 'pmanta', 'pdelly_call', 'pdelly_reformat', 'ptiddit', 
+      'psv_combinevariantcallsets', 'psv_varianteffectpredictor', 'psv_vcfparser',
+      'psv_rankvariant', 'psv_reformat']
 SNV = ['psamtools_mpileup', 'pfreebayes', 'pgatk_haplotypecaller',
        'pgatk_genotypegvcfs', 'pgatk_variantrecalibration',
-       'pgatk_combinevariantcallsets', 'pprepareforvariantannotationblock',
-       'pvt', 'pgatk_variantevalall', 'pgatk_variantevalexome',
-       'pvarianteffectpredictor', 'psnpeff', 'pvcfparser', 'prankvariant']
-STATS = ['psamplecheck', 'pqccollect', 'pmultiqc', 'premoveredundantfiles',
-         'panalysisrunstatus', 'psacct']
+       'pgatk_combinevariantcallsets', 'pgatk_variantevalall', 
+       'pprepareforvariantannotationblock', 'prhocall', 'pvt',
+       'pvarianteffectpredictor', 'pvcfparser', 'psnpeff', 'prankvariant',
+       'pendvariantannotationblock', 'pgatk_variantevalexome',]
+STATS = ['ppeddy', 'pplink', 'pvariant_integrity', 'pqccollect', 'pmultiqc',
+         'premoveredundantfiles', 'panalysisrunstatus', 'psacct']
 PROGRAMS = ALIGN + COVERAGE + SV + SNV + STATS
 
 BRANCHES = {'align': ALIGN, 'coverage': COVERAGE, 'sv': SV, 'snv': SNV,
