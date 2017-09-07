@@ -5,13 +5,11 @@
   "author": "Robin Andeer <robin.andeer@gmail.com>",
   "private": true,
   "dependencies": {
-    "@nuxtjs/axios": "^2.1.0",
-    "@nuxtjs/proxy": "^1.1.1",
-    "authom": "^0.4.36",
-    "bootstrap-vue": "^0.16.1",
+    "@nuxtjs/axios": "^4.1.1",
+    "@nuxtjs/bootstrap-vue": "^2.0.2",
     "js-cookie": "^2.1.4",
     "jwt-decode": "^2.2.0",
-    "nuxt": "latest",
+    "nuxt": "^1.0.0-rc9",
     "vue-google-signin-button": "^1.0.2"
   },
   "scripts": {

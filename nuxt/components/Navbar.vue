@@ -1,5 +1,5 @@
 <template>
-  <b-navbar sticky="sticky-top" toggleable>
+  <b-navbar sticky toggleable>
     <b-nav-toggle target="nav_collapse"></b-nav-toggle>
 
     <nuxt-link class="navbar-brand" to="/">Trailblazer</nuxt-link>
@@ -7,10 +7,14 @@
       <b-nav is-nav-bar>
         <b-nav-item v-if="isAuthenticated" to="/dashboard">Dashboard</b-nav-item>
         <b-nav-item v-if="isAuthenticated" to="/stats">Stats</b-nav-item>
-        <g-signin-button v-if="showSignin" class="btn btn-link" :params="googleSignInParams" @success="onSignInSuccess" @error="onSignInError">
+        <g-signin-button v-if="showSignin"
+                         class="btn btn-link"
+                         :params="googleSignInParams"
+                         @success="onSignInSuccess"
+                         @error="onSignInError">
           Sign in with Google
         </g-signin-button>
-        <div v-else class="btn btn-link" @click="onSignOff">Sign out</div>
+        <b-button v-else variant="link" @click="onSignOff">Sign out</b-button>
       </b-nav>
 
       <slot></slot>

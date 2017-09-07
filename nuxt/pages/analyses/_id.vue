@@ -63,9 +63,9 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import Navbar from '~components/Navbar'
-  import AnalysisTable from '~components/AnalysisTable'
-  import CommentBox from '~components/CommentBox'
+  import Navbar from '~/components/Navbar'
+  import AnalysisTable from '~/components/AnalysisTable'
+  import CommentBox from '~/components/CommentBox'
 
   export default {
     async fetch ({ store, params, app }) {

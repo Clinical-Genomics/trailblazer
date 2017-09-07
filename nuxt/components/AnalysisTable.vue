@@ -14,11 +14,14 @@
         <span v-if="field.value">{{ field.value.name }}</span>
       </template>
       <template slot="status" scope="field">
-        <b-progress v-if="field.value === 'running'" :value="field.item.progress" :max="1" show-progress></b-progress>
+        <b-progress v-if="field.value === 'running'"
+                    :value="field.item.progress"
+                    :max="1"
+                    show-progress />
         <b-popover v-else-if="field.value === 'failed'" triggers="hover" placement="right">
           <b-btn variant="danger" size="sm">{{ field.value }}</b-btn>
           <span slot="content">
-            <div v-for="job in field.item.failed_jobs" v-if="job.status === 'failed'">
+            <div v-for="job in field.item.failed_jobs" :key="job.id" v-if="job.status === 'failed'">
               {{ job.name }}
             </div>
           </span>
@@ -39,7 +42,7 @@
 </template>
 
 <script>
-  import CommentBox from '~components/CommentBox'
+  import CommentBox from '~/components/CommentBox'
 
   export default {
     props: ['analyses'],

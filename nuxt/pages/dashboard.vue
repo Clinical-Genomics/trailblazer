@@ -3,13 +3,19 @@
     <Navbar>
       <slot>
         <b-nav is-nav-bar class="ml-auto">
-          <b-nav-item v-for="tab in analysisTabs" key="tab.category" :active="tab.category === selectedCategory" @click="setCategory(tab.category)">
+          <b-nav-item v-for="tab in analysisTabs"
+                      :key="tab.category"
+                      :active="tab.category === selectedCategory"
+                      @click="setCategory(tab.category)">
             {{ tab.title }}
           </b-nav-item>
         </b-nav>
 
         <form class="form-inline ml-3" @submit.prevent="queryAnalyses">
-          <input v-model="query" type="text" class="form-control" placeholder="search family, status">
+          <input v-model="query"
+                 type="text"
+                 class="form-control"
+                 placeholder="search family, status">
         </form>
       </slot>
     </Navbar>
@@ -25,8 +31,8 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import Navbar from '~components/Navbar'
-  import AnalysisTable from '~components/AnalysisTable'
+  import Navbar from '~/components/Navbar'
+  import AnalysisTable from '~/components/AnalysisTable'
 
   export default {
     middleware: ['authenticated'],

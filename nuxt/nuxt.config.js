@@ -28,15 +28,10 @@ module.exports = {
   loading: { color: '#3B8070' },
   css: [ '~static/main.css' ],
   modules: [
-    '@nuxtjs/proxy',
-    '@nuxtjs/axios'
+    [ '@nuxtjs/axios', { redirectError: { 403: '/' } } ],
+    '@nuxtjs/bootstrap-vue'
   ],
-  proxy: [
-    ['/api', { target: process.env.BASE_URL, pathRewrite: { '^/api': '/api/v1' } }]
-  ],
-  env: {
-    GOOGLE_OAUTH_CLIENT_ID: process.env.GOOGLE_OAUTH_CLIENT_ID
-  },
+  env: { GOOGLE_OAUTH_CLIENT_ID: process.env.GOOGLE_OAUTH_CLIENT_ID },
   /*
   ** Build configuration
   */
@@ -44,8 +39,8 @@ module.exports = {
     /*
     ** Run ESLINT on save
     */
-    extend (config, ctx) {
-      if (ctx.isClient) {
+    extend (config, { isClient }) {
+      if (isClient) {
         config.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
@@ -54,10 +49,9 @@ module.exports = {
         })
       }
     },
-    vendor: ['bootstrap-vue', 'vue-google-signin-button']
+    vendor: ['vue-google-signin-button']
   },
   plugins: [
-    '~plugins/bootstrap-vue.js',
     '~plugins/vue-click-outside.js',
     '~plugins/vue-google-signin-button.js',
     '~plugins/filters.js'

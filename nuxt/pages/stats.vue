@@ -6,7 +6,7 @@
       <h4>Top failed job categories</h4>
 
       <div class="list-horizontal">
-        <div v-for="job in failedJobs" class="card mr-3">
+        <div v-for="job in failedJobs" :key="job.id" class="card mr-3">
           <div class="card-block text-center">
             <small class="text-muted">{{ job.name }}</small>
             <h1>{{ job.count }}</h1>
@@ -18,19 +18,19 @@
 </template>
 
 <script>
-  import Navbar from '~components/Navbar'
+  import Navbar from '~/components/Navbar'
   import { mapGetters } from 'vuex'
 
   export default {
     middleware: ['authenticated'],
     async fetch ({ store, app }) {
-      await Promise.all([
-        store.dispatch('fetchJobStats', { $axios: app.$axios })
+      await store.dispatch('fetchJobStats', { $axios: app.$axios })
+    },
+    computed: {
+      ...mapGetters([
+        'failedJobs'
       ])
     },
-    computed: mapGetters([
-      'failedJobs'
-    ]),
     components: {
       Navbar
     }
