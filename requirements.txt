@@ -10,6 +10,7 @@ Flask
 Flask-Alchy
 Flask-SQLAlchemy==2.1
 Flask-CORS
+Flask-Reverse-Proxy
 google-auth
 
 # misc

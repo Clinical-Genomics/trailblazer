@@ -4,6 +4,7 @@ import os
 import coloredlogs
 from flask import Flask
 from flask_cors import CORS
+from flask_reverse_proxy import FlaskReverseProxied
 
 from trailblazer.server import api, ext
 
@@ -22,6 +23,7 @@ app.config.from_object(__name__)
 app.register_blueprint(api.blueprint)
 
 # configure extensions
+FlaskReverseProxied(app)
 ext.store.init_app(app)
 cors = CORS(app, resources={r"/api/*": {'origins': '*'}})
 

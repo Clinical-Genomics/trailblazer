@@ -24,7 +24,7 @@
   export default {
     middleware: ['authenticated'],
     async fetch ({ store, app }) {
-      await store.dispatch('fetchJobStats', { $axios: app.$axios })
+      await store.dispatch('fetchJobStats')
     },
     computed: {
       ...mapGetters([
