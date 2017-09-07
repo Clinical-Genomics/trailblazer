@@ -78,9 +78,9 @@ export const actions = {
       console.log(error)
     }
   },
-  async fetchJobStats ({ commit }, { $axios }) {
+  async fetchJobStats ({ commit }) {
     try {
-      let { data } = await $axios('/aggregate/jobs')
+      let data = await this.$axios.$get('/aggregate/jobs')
       commit('SET_JOB_STATS', data.jobs)
     } catch (error) {
       // statements
@@ -117,7 +117,7 @@ export const getters = {
     return state.analysis
   },
   failedJobs (state) {
-    return state.jobStats.sort((jobA, jobB) => jobB.count - jobA.count)
+    return state.jobStats.concat().sort((jobA, jobB) => jobB.count - jobA.count)
   },
   loggedToken (state) {
     return state.token
