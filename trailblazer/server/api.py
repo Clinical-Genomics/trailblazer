@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import abort, g, Blueprint, jsonify, request
+from flask import abort, g, Blueprint, jsonify, make_response, request
 from google.auth import jwt
 
 from trailblazer.server.ext import store
@@ -9,6 +9,8 @@ blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
 
 @blueprint.before_request
 def before_request():
+    if request.method == 'OPTIONS':
+        return make_response(jsonify(ok=True), 204)
     auth_header = request.headers.get('Authorization')
     if auth_header:
         jwt_token = auth_header.split('Bearer ')[-1]
