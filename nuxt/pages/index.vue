@@ -3,7 +3,7 @@
     <Navbar />
 
     <div class="wrapper">
-      <img src="/trailblazer.png" alt="">
+      <img src="~/static/trailblazer.png" alt="">
       <h1>Welcome to Trailblazer!</h1>
     </div>
   </div>

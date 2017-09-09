@@ -58,8 +58,8 @@
     },
     async fetch ({ store, app }) {
       await Promise.all([
-        store.dispatch('fetchAnalyses', { $axios: app.$axios }),
-        store.dispatch('setLastUpdate', { $axios: app.$axios })
+        store.dispatch('fetchAnalyses', {}),
+        store.dispatch('setLastUpdate')
       ])
     },
     computed: {
@@ -85,7 +85,7 @@
     },
     methods: {
       queryAnalyses () {
-        this.$store.dispatch('fetchAnalyses', { $axios: this.$axios, query: this.query })
+        this.$store.dispatch('fetchAnalyses', { query: this.query })
       },
       setCategory (analysisCategory) {
         this.selectedCategory = analysisCategory

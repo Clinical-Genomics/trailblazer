@@ -3,7 +3,8 @@ module.exports = {
   ** Router config
   */
   router: {
-    middleware: 'check-auth'
+    middleware: 'check-auth',
+    base: process.env.ROUTER_BASE || '/'
   },
   /*
   ** Headers of the page
@@ -17,9 +18,6 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ],
-    script: [
-      { type: 'text/javascript', src: 'https://apis.google.com/js/api:client.js' }
     ]
   },
   /*
@@ -49,11 +47,11 @@ module.exports = {
         })
       }
     },
-    vendor: ['vue-google-signin-button']
+    vendor: [ 'vue-google-auth' ]
   },
   plugins: [
-    '~plugins/vue-click-outside.js',
-    '~plugins/vue-google-signin-button.js',
-    '~plugins/filters.js'
+    '~/plugins/vue-click-outside.js',
+    { src: '~/plugins/vue-google-auth.js', ssr: false },
+    '~/plugins/filters.js'
   ]
 }

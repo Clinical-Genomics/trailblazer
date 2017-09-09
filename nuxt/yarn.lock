@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@nuxtjs/axios@^4.1.1":
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/@nuxtjs/axios/-/axios-4.1.1.tgz#e4b663d35618ed63c6c8d012c8fd35f9bca49f13"
+"@nuxtjs/axios@^4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@nuxtjs/axios/-/axios-4.2.1.tgz#ae5a5cdefab0148a474f85f5347830b772f72287"
   dependencies:
     axios "^0.16.2"
     chalk "^2.1.0"
@@ -3476,9 +3476,9 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
-nuxt@^1.0.0-rc9:
-  version "1.0.0-rc9"
-  resolved "https://registry.yarnpkg.com/nuxt/-/nuxt-1.0.0-rc9.tgz#74bb73f85b1e92a8ad7d7108386fbecccbe7a3d4"
+nuxt@^1.0.0-rc11:
+  version "1.0.0-rc11"
+  resolved "https://registry.yarnpkg.com/nuxt/-/nuxt-1.0.0-rc11.tgz#e30ea7f203cb936b3643527d897501e45eb0965e"
   dependencies:
     "@nuxtjs/youch" "3.0.2"
     ansi-html "^0.0.7"
@@ -5385,9 +5385,9 @@ vue-functional-data-merge@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/vue-functional-data-merge/-/vue-functional-data-merge-1.0.6.tgz#cde4f0cf3f251f7f0196341156d2c936cca63d40"
 
-vue-google-signin-button@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/vue-google-signin-button/-/vue-google-signin-button-1.0.2.tgz#71389a1233ece20c06aace0870acf54794b3af3c"
+vue-google-auth@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/vue-google-auth/-/vue-google-auth-1.0.5.tgz#45a6ee110037e05cc31fc74c15908fac1f594983"
 
 vue-hot-reload-api@^2.1.0:
   version "2.1.0"

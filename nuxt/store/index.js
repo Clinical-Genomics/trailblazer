@@ -1,4 +1,6 @@
 import { timeSince } from '~/utils/misc'
+import jwtDecode from 'jwt-decode'
+import { setToken, unsetToken, getTokenFromCookie } from '~/utils/auth'
 
 export const state = () => ({
   user: null,
@@ -10,7 +12,7 @@ export const state = () => ({
 })
 
 export const mutations = {
-  SET_USER (state, user, token) {
+  SET_USER (state, { user, token }) {
     state.user = user || null
     state.token = token || null
   },
@@ -41,18 +43,40 @@ export const mutations = {
 }
 
 export const actions = {
-  async setLastUpdate ({ commit }, { $axios }) {
+  nuxtServerInit ({ dispatch }, { req }) {
+    // If nuxt generate, pass this middleware
+    if (!req) return
+    const token = getTokenFromCookie(req)
+    if (!token) return
+    dispatch('login', { token })
+  },
+  login ({ commit }, { token }) {
+    this.$axios.setToken(token, 'Bearer')
+    setToken(token)
     try {
-      let { data } = await $axios('/info')
+      const user = jwtDecode(token)
+      commit('SET_USER', { user, token })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  logout ({ commit }) {
+    this.$axios.setToken(false)
+    unsetToken()
+    commit('SET_USER', {})
+  },
+  async setLastUpdate ({ commit }) {
+    try {
+      let data = await this.$axios.$get('/info')
       commit('SET_LAST_UPDATE', data.updated_at)
     } catch (error) {
       // statements
       console.log(error)
     }
   },
-  async updateComment ({ commit }, { $axios, analysisId, text }) {
+  async updateComment ({ commit }, { analysisId, text }) {
     try {
-      let { data } = await $axios.put(`/analyses/${analysisId}`, { comment: text })
+      let data = await this.$axios.$get.put(`/analyses/${analysisId}`, { comment: text })
       commit('UPDATE_COMMENT', {
         analysisId: data.id,
         text: data.comment
@@ -61,18 +85,18 @@ export const actions = {
       console.log(error)
     }
   },
-  async fetchAnalyses ({ commit }, { $axios, query }) {
+  async fetchAnalyses ({ commit }, { query }) {
     let url = (query) ? `/analyses?query=${query}` : '/analyses'
     try {
-      let { data } = await $axios(url)
+      let data = await this.$axios.$get(url)
       commit('UPDATE_ANALYSES', data.analyses)
     } catch (error) {
       console.log(error)
     }
   },
-  async fetchAnalysis ({ commit }, { $axios, analysisId }) {
+  async fetchAnalysis ({ commit }, { analysisId }) {
     try {
-      let { data } = await $axios(`/analyses/${analysisId}`)
+      let data = await this.$axios.$get(`/analyses/${analysisId}`)
       commit('SET_ANALYSIS', data)
     } catch (error) {
       console.log(error)
