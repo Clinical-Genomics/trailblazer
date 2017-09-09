@@ -25,7 +25,7 @@ app.register_blueprint(api.blueprint)
 # configure extensions
 FlaskReverseProxied(app)
 ext.store.init_app(app)
-cors = CORS(app, resources={r"/api/*": {'origins': '*'}})
+cors = CORS(app, resources={r"/api/*": {'origins': '*'}}, supports_credentials=True)
 
 
 @app.route('/')
