@@ -13,7 +13,7 @@ from trailblazer.store.models import STATUS_OPTIONS
 from trailblazer.log import LogAnalysis
 from trailblazer.mip.start import MipCli
 from trailblazer.mip.files import parse_config
-from trailblazer.mip.sacct import parse_sacct
+from trailblazer.mip.miplog import job_ids
 from trailblazer.exc import MissingFileError, MipStartError
 from .utils import environ_email
 
@@ -206,15 +206,13 @@ def cancel(context, jobs, analysis_id):
         context.abort()
 
     with log_path.open() as log_stream:
-        # grep out all lines with scancel example
-        id_rows = [line for line in log_stream if 'scancel' in line]
-        job_ids = [id_row.strip()[-7:-1] for id_row in id_rows]
+        all_jobs = job_ids(log_stream)
 
     if jobs:
-        for job_id in job_ids:
+        for job_id in all_jobs:
             click.echo(job_id)
     else:
-        for job_id in job_ids:
+        for job_id in all_jobs:
             log.debug(f"cancelling job: {job_id}")
             process = subprocess.Popen(['scancel', job_id])
             process.wait()

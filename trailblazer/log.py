@@ -5,7 +5,7 @@ from typing import List
 
 import ruamel.yaml
 
-from trailblazer.mip import sacct as sacct_api, files as files_api
+from trailblazer.mip import sacct as sacct_api, files as files_api, miplog
 from trailblazer.store import models, Store
 from trailblazer.exc import MissingFileError
 
@@ -32,7 +32,9 @@ class LogAnalysis(object):
             raise MissingFileError(sacct_path)
         with sacct_path.open() as stream:
             sacct_jobs = sacct_api.parse_sacct(stream)
-        run_data = self.parse(config_data, sampleinfo_data, sacct_jobs)
+        with Path(config_data['log_path']).open() as stream:
+            jobs = len(miplog.job_ids(stream))
+        run_data = self.parse(config_data, sampleinfo_data, sacct_jobs, jobs=jobs)
         self._delete_temp_logs(run_data['family'])
         new_run = self.build(run_data)
         if new_run:
@@ -47,7 +49,8 @@ class LogAnalysis(object):
         self.store.commit()
 
     @classmethod
-    def parse(cls, config_data: dict, sampleinfo_data: dict, sacct_jobs: List[dict]) -> dict:
+    def parse(cls, config_data: dict, sampleinfo_data: dict, sacct_jobs: List[dict],
+              jobs: int) -> dict:
         """Parse information about a run."""
         analysis_types = [sample['type'] for sample in config_data['samples']]
         run_data = {
@@ -61,7 +64,7 @@ class LogAnalysis(object):
             'type': cls._get_analysis_type(analysis_types),
         }
 
-        sacct_data, last_job_end = cls._parse_sacct(sacct_jobs)
+        sacct_data, last_job_end = cls._parse_sacct(sacct_jobs, jobs_count=jobs)
         run_data.update(sacct_data)
 
         run_data['status'] = cls.get_status(sampleinfo_data['is_finished'],
@@ -72,15 +75,15 @@ class LogAnalysis(object):
         return run_data
 
     @staticmethod
-    def _parse_sacct(sacct_jobs: List[dict]):
+    def _parse_sacct(sacct_jobs: List[dict], jobs_count: int=None):
         """Parse out info from Sacct log."""
         failed_jobs = sacct_api.filter_jobs(sacct_jobs, failed=True)
         completed_jobs = [job for job in sacct_jobs if job['is_completed']]
         last_job_end = completed_jobs[-1]['end'] if len(completed_jobs) > 0 else None
         data = {
-            'jobs': len(sacct_jobs),
+            'jobs': jobs_count,
             'completed_jobs': len(completed_jobs),
-            'progress': len(completed_jobs) / len(sacct_jobs),
+            'progress': (len(completed_jobs) / jobs_count) if jobs_count else None,
             'failed_jobs': [{
                 'slurm_id': job['id'],
                 'started_at': job['start'],
