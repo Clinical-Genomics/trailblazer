@@ -7,14 +7,10 @@
       <b-nav is-nav-bar>
         <b-nav-item v-if="isAuthenticated" to="/dashboard">Dashboard</b-nav-item>
         <b-nav-item v-if="isAuthenticated" to="/stats">Stats</b-nav-item>
-        <g-signin-button v-if="showSignin"
-                         class="btn btn-link"
-                         :params="googleSignInParams"
-                         @success="onSignInSuccess"
-                         @error="onSignInError">
+        <b-button v-if="showSignin" @click="onSignIn" variant="info">
           Sign in with Google
-        </g-signin-button>
-        <b-button v-else variant="link" @click="onSignOff">Sign out</b-button>
+        </b-button>
+        <b-button v-else variant="link" @click="onSignOut">Sign out</b-button>
       </b-nav>
 
       <slot></slot>
@@ -24,42 +20,28 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { setToken, unsetToken } from '~/utils/auth'
 
   export default {
-    data () {
-      return {
-        googleClientId: process.env.GOOGLE_OAUTH_CLIENT_ID
-      }
-    },
     computed: {
       ...mapGetters(['isAuthenticated']),
-      googleSignInParams () {
-        return {
-          client_id: this.googleClientId
-        }
-      },
       showSignin () {
-        return (this.googleClientId && !this.isAuthenticated)
+        return !this.isAuthenticated
       }
     },
     methods: {
-      onSignInSuccess (googleUser) {
-        // `googleUser` is the GoogleUser object that represents the just-signed-in user.
-        // See https://developers.google.com/identity/sign-in/web/reference#users
-        const authRes = googleUser.getAuthResponse()
-        // persist token to localStorage
-        setToken(authRes.id_token)
-        this.$router.replace({ path: 'dashboard' })
+      onSignIn () {
+        this.$googleAuth().directAccess()
+        this.$googleAuth().signIn(googleUser => {
+          const idToken = googleUser.Zi.id_token
+          this.$store.dispatch('login', { token: idToken })
+          this.$router.push('dashboard')
+        }, error => {
+          console.log(error.error)
+        })
       },
-      onSignInError (error) {
-        // `error` contains any error occurred.
-        console.log('OH NOES', error)
-      },
-      onSignOff () {
-        this.$store.commit('SET_USER')
-        unsetToken()
-        this.$router.replace({ path: '/' })
+      onSignOut () {
+        this.$store.dispatch('logout')
+        this.$router.push('/')
       }
     }
   }

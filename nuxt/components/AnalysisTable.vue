@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-table hover responsive :items="analyses" :fields="fields">
+    <b-table hover responsive :items="analyses" :fields="fields" class="w-100">
       <template slot="family" scope="field">
         <nuxt-link :to="{ name: 'analyses-id', params: { id: field.item.id }}">
           {{ field.value }}

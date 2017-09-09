@@ -2,6 +2,12 @@
 
 > Trailblazer web UI
 
+Environment variables:
+
+- `GOOGLE_OAUTH_CLIENT_ID`: setting the OAuth client id for authentication
+- `API_URL`: setting the URL to the API server
+- `ROUTER_BASE`: setting an _optional_ URL prefix
+
 ## Build Setup
 
 ``` bash
