@@ -47,14 +47,15 @@
   }
 </script>
 
-<style scoped>
+<style>
   nav {
-    padding: 1rem 2rem;
     background-color: #fff;
     border-bottom: 1px solid #eee;
     box-shadow: 0 2px 2px -2px rgba(0, 0, 0, .2);
   }
-  .nav-item {
-    color: #000;
+  .navbar-light .navbar-brand,
+  .navbar-light .navbar-brand:hover {
+    font-weight: 500;
+    color: hsla(339, 75%, 55%, 1);
   }
 </style>

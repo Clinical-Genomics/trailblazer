@@ -55,7 +55,7 @@
           <b-list-group-item v-for="job in selectedAnalysis.failed_jobs"
                              :key="job.id"
                              class="justify-content-between">
-            {{ job.name }} ({{ job.context }}) - {{ job.elapsed }}s
+            {{ job.name }} ({{ job.context }}) - {{ job.elapsed / 60 }} min
             <b-badge pill>{{ job.status }}</b-badge>
           </b-list-group-item>
         </b-list-group>

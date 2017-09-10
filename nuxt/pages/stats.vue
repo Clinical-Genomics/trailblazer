@@ -6,12 +6,10 @@
       <h4>Top failed job categories</h4>
 
       <div class="list-horizontal">
-        <div v-for="job in failedJobs" :key="job.id" class="card mr-3">
-          <div class="card-block text-center">
-            <small class="text-muted">{{ job.name }}</small>
-            <h1>{{ job.count }}</h1>
-          </div>
-        </div>
+        <b-card v-for="job in failedJobs" :key="job.id" class="mr-3 text-center">
+          <small class="text-muted">{{ job.name }}</small>
+          <h1>{{ job.count }}</h1>
+        </b-card>
       </div>
     </section>
   </div>
