@@ -18,14 +18,16 @@
                     :value="field.item.progress"
                     :max="1"
                     show-progress />
-        <b-popover v-else-if="field.value === 'failed'" triggers="hover" placement="right">
-          <b-btn variant="danger" size="sm">{{ field.value }}</b-btn>
-          <span slot="content">
+        <span v-else-if="field.value === 'failed'">
+          <b-button :id="`failed-button-${field.item.id}`" variant="danger" size="sm">
+            {{ field.value }}
+          </b-button>
+          <b-popover :target="`failed-button-${field.item.id}`" triggers="hover" placement="right">
             <div v-for="job in field.item.failed_jobs" :key="job.id" v-if="job.status === 'failed'">
               {{ job.name }}
             </div>
-          </span>
-        </b-popover>
+          </b-popover>
+        </span>
         <b-button-group v-else-if="field.value === 'completed'" >
           <b-button variant="success" size="sm">{{ field.value }}</b-button>
           <b-button size="sm">{{ field.item|dateDiff }}</b-button>

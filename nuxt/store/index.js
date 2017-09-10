@@ -76,7 +76,7 @@ export const actions = {
   },
   async updateComment ({ commit }, { analysisId, text }) {
     try {
-      let data = await this.$axios.$get.put(`/analyses/${analysisId}`, { comment: text })
+      let data = await this.$axios.$put(`/analyses/${analysisId}`, { comment: text })
       commit('UPDATE_COMMENT', {
         analysisId: data.id,
         text: data.comment
