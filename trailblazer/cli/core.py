@@ -17,7 +17,7 @@ from trailblazer.mip.miplog import job_ids
 from trailblazer.exc import MissingFileError, MipStartError
 from .utils import environ_email
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 @click.group()
@@ -34,6 +34,7 @@ def base(context, config, database, root, log_level):
     context.obj = ruamel.yaml.safe_load(config) if config else {}
     context.obj['database'] = database or context.obj.get('database')
     context.obj['root'] = root or context.obj.get('root')
+    context.obj['store'] = Store(context.obj['database'])
 
 
 @base.command('log')
@@ -47,8 +48,7 @@ def log_cmd(context, sampleinfo, sacct, quiet, config):
 
     CONFIG: MIP config file for an analysis
     """
-    store = Store(context.obj['database'])
-    log_analysis = LogAnalysis(store)
+    log_analysis = LogAnalysis(context.obj['store'])
     try:
         new_run = log_analysis(config, sampleinfo=sampleinfo, sacct=sacct)
     except MissingFileError as error:
@@ -72,7 +72,6 @@ def log_cmd(context, sampleinfo, sacct, quiet, config):
 @click.pass_context
 def start(context, mip_config, email, priority, dryrun, command, family):
     """Start a new analysis."""
-    store = Store(context.obj['database'])
     mip_cli = MipCli(context.obj['script'])
     mip_config = mip_config or context.obj['mip_config']
     email = email or environ_email()
@@ -84,18 +83,17 @@ def start(context, mip_config, email, priority, dryrun, command, family):
         try:
             mip_cli(**kwargs)
             if not dryrun:
-                store.add_pending(family, email=email)
+                context.obj['store'].add_pending(family, email=email)
         except MipStartError as error:
             click.echo(click.style(error.message, fg='red'))
 
 
-@base.command()
+@base.command('ls')
 @click.option('-s', '--status', type=click.Choice(STATUS_OPTIONS))
 @click.pass_context
-def ls(context, status):
+def ls_cmd(context, status):
     """Display recent logs for analyses."""
-    store = Store(context.obj['database'])
-    runs = store.analyses(status=status, deleted=False).limit(30)
+    runs = context.obj['store'].analyses(status=status, deleted=False).limit(30)
     for run_obj in runs:
         click.echo(run_obj.family)
 
@@ -106,9 +104,8 @@ def ls(context, status):
 @click.pass_context
 def delete(context, temporary, analysis_id):
     """Delete an analysis log from the database."""
-    store = Store(context.obj['database'])
     if temporary:
-        analysis_ids = (analysis_obj.id for analysis_obj in store.analyses(temp=True))
+        analysis_ids = (analysis_obj.id for analysis_obj in context.obj['store'].analyses(temp=True))
     elif analysis_id:
         analysis_ids = [analysis_id]
     else:
@@ -116,12 +113,12 @@ def delete(context, temporary, analysis_id):
         context.abort()
 
     for analysis_id in analysis_ids:
-        analysis_obj = store.analysis(analysis_id)
+        analysis_obj = context.obj['store'].analysis(analysis_id)
         if analysis_obj is None:
             click.echo(click.style('analysis log not found', fg='red'))
             context.abort()
         analysis_obj.delete()
-        store.commit()
+        context.obj['store'].commit()
         click.echo(f"analysis log deleted: {analysis_obj.family}")
 
 
@@ -131,19 +128,18 @@ def delete(context, temporary, analysis_id):
 @click.pass_context
 def init(context, reset, force):
     """Setup the database."""
-    store = Store(context.obj['database'])
-    existing_tables = store.engine.table_names()
+    existing_tables = context.obj['store'].engine.table_names()
     if force or reset:
         if existing_tables and not force:
             message = f"Delete existing tables? [{', '.join(existing_tables)}]"
             click.confirm(click.style(message, fg='yellow'), abort=True)
-        store.drop_all()
+        context.obj['store'].drop_all()
     elif existing_tables:
         click.echo(click.style("Database already exists, use '--reset'", fg='red'))
         context.abort()
 
-    store.setup()
-    message = f"Success! New tables: {', '.join(store.engine.table_names())}"
+    context.obj['store'].setup()
+    message = f"Success! New tables: {', '.join(context.obj['store'].engine.table_names())}"
     click.echo(click.style(message, fg='green'))
 
 
@@ -152,15 +148,14 @@ def init(context, reset, force):
 @click.pass_context
 def scan(context, root_dir):
     """Scan a directory for analyses."""
-    store = Store(context.obj['database'])
     root_dir = root_dir or context.obj['root']
     config_files = Path(root_dir).glob('*/analysis/*_config.yaml')
     for config_file in config_files:
-        log.debug("found analysis config: %s", config_file)
+        LOG.debug("found analysis config: %s", config_file)
         with config_file.open() as stream:
             context.invoke(log_cmd, config=stream, quiet=True)
 
-    store.track_update()
+    context.obj['store'].track_update()
 
 
 @base.command()
@@ -169,12 +164,11 @@ def scan(context, root_dir):
 @click.pass_context
 def user(context, name, email):
     """Add a new or display information about an existing user."""
-    store = Store(context.obj['database'])
-    existing_user = store.user(email)
+    existing_user = context.obj['store'].user(email)
     if existing_user:
         click.echo(existing_user.to_dict())
     elif name:
-        new_user = store.add_user(name, email)
+        new_user = context.obj['store'].add_user(name, email)
         click.echo(click.style(f"New user added: {email} ({new_user.id})", fg='green'))
     else:
         click.echo(click.style('User not found', fg='yellow'))
@@ -186,8 +180,7 @@ def user(context, name, email):
 @click.pass_context
 def cancel(context, jobs, analysis_id):
     """Cancel all jobs in a run."""
-    store = Store(context.obj['database'])
-    analysis_obj = store.analysis(analysis_id)
+    analysis_obj = context.obj['store'].analysis(analysis_id)
     if analysis_obj is None:
         click.echo('analysis not found')
         context.abort()
@@ -213,7 +206,7 @@ def cancel(context, jobs, analysis_id):
             click.echo(job_id)
     else:
         for job_id in all_jobs:
-            log.debug(f"cancelling job: {job_id}")
+            LOG.debug(f"cancelling job: {job_id}")
             process = subprocess.Popen(['scancel', job_id])
             process.wait()
 
