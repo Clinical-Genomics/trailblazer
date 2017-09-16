@@ -14,7 +14,7 @@ class FastqHandler:
                   undetermined: bool=False, date: dt.datetime=None, index: str=None) -> str:
         """Name a FASTQ file following MIP conventions."""
         flowcell = f"{flowcell}-undetermined" if undetermined else flowcell
-        date_str = date or '20171015'
+        date_str = date.strftime('%y%m%d') if date else '171015'
         index = index if index else 'XXXXXX'
         return f"{lane}_{date_str}_{flowcell}_{sample}_{index}_{read}.fastq.gz"
 
