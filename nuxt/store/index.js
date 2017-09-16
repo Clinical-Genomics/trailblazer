@@ -116,8 +116,8 @@ export const actions = {
 export const getters = {
   lastUpdate (state) {
     if (!state.lastUpdate) return null
-    const lastUpdate = new Date(Date.parse(state.lastUpdate))
-    return timeSince(lastUpdate)
+    const date = new Date(Date.parse(state.lastUpdate))
+    return timeSince(date)
   },
   allAnalyses (state) {
     return state.analyses
