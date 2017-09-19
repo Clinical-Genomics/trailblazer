@@ -33,7 +33,8 @@ class BaseHandler:
         )
         return query.first()
 
-    def analyses(self, *, family=None, query=None, status=None, deleted=None, temp=False):
+    def analyses(self, *, family: str=None, query: str=None, status: str=None, deleted: bool=None,
+                 temp: bool=False):
         """Fetch analyses form the database."""
         analysis_query = self.Analysis.query.order_by(self.Analysis.started_at.desc())
         if family:
@@ -56,6 +57,7 @@ class BaseHandler:
         return self.Analysis.query.get(analysis_id)
 
     def track_update(self):
+        """Update the lastest updated date in the database."""
         metadata = self.info()
         metadata.updated_at = datetime.datetime.now()
         self.commit()

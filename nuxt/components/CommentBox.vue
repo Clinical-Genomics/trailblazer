@@ -5,7 +5,7 @@
     </form>
     <span v-else @dblclick="toggleEdit">
       <span v-if="message">{{ message }}</span>
-      <i v-else>Double-click</i>
+      <i v-else class="text-muted">Double-click</i>
     </span>
   </div>
 </template>
