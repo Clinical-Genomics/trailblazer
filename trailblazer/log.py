@@ -46,7 +46,6 @@ class LogAnalysis(object):
         for temp_log in self.store.analyses(family=family_name, temp=True):
             log.debug(f"delete temporary log: {temp_log.id} - {temp_log.status}")
             temp_log.delete()
-        self.store.commit()
 
     @classmethod
     def parse(cls, config_data: dict, sampleinfo_data: dict, sacct_jobs: List[dict],
