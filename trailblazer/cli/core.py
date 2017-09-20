@@ -210,4 +210,6 @@ def cancel(context, jobs, analysis_id):
             process = subprocess.Popen(['scancel', job_id])
             process.wait()
 
+        analysis_obj.status = 'canceled'
+        context.obj['store'].commit()
         click.echo('cancelled analysis successfully!')
