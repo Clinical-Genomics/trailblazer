@@ -5,7 +5,7 @@
         <nuxt-link :to="{ name: 'analyses-id', params: { id: field.item.id }}">
           {{ field.value }}
         </nuxt-link>
-        <span v-if="field.item.priority === 'high'" class="badge badge-danger">prio</span>
+        <span v-if="field.item.priority === 'high'" class="badge badge-info">prio</span>
       </template>
       <template slot="started_at" scope="field">
         {{ field.value | formatDate }}
