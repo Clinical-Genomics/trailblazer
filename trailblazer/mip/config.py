@@ -29,10 +29,10 @@ class SampleSchema(Schema):
     )
     expected_coverage = fields.Float()
     capture_kit = fields.Str(
-        validate=validate.OneOf(choices=['agilent_sureselect_cre.v1',
-                                         'agilent_sureselect.v5',
-                                         'agilent_sureselect_focusedexome.v1']),
-        default='agilent_sureselect_cre.v1',
+        validate=validate.OneOf(choices=['Agilent_SureSelectCRE.V1',
+                                         'Agilent_SureSelect.V5',
+                                         'Agilent_SureSelect_FocusedExome.V1']),
+        default='Agilent_SureSelectCRE.v1',
     )
 
 
