@@ -95,7 +95,14 @@ def ls_cmd(context, status):
     """Display recent logs for analyses."""
     runs = context.obj['store'].analyses(status=status, deleted=False).limit(30)
     for run_obj in runs:
-        click.echo(run_obj.family)
+        message = f"{run_obj.family} [{run_obj.type}/{run_obj.status}]"
+        if run_obj.status == 'running':
+            message = click.style(f"{message} - {run_obj.progress * 100}/100", fg='blue')
+        elif run_obj.status == 'completed':
+            message = click.style(f"{message} - {run_obj.completed_at}", fg='green')
+        elif run_obj.status == 'failed':
+            message = click.style(message, fg='red')
+        click.echo(message)
 
 
 @base.command()
