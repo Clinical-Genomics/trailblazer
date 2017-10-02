@@ -46,6 +46,7 @@ TRASH*
 *.tar.gz
 .vagrant
 _DEVELOP/
+.vscode/
 
 # SublimeText: workspace files are user-specific
 *.sublime-workspace
