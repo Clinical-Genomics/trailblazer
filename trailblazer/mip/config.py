@@ -60,8 +60,9 @@ class ConfigHandler:
                     for level, sample_errors in messages.items():
                         sample_id = data['samples'][level]['sample_id']
                         for sub_field, sub_messages in sample_errors.items():
-                            log.error(f"{sample_id} -> {sub_field}: {', '.join(messages)}")
-                log.error(f"{field}: {', '.join(messages)}")
+                            log.error(f"{sample_id} -> {sub_field}: {', '.join(sub_messages)}")
+                else:
+                    log.error(f"{field}: {', '.join(messages)}")
             raise ConfigError('invalid config input', errors=errors)
 
     @staticmethod
