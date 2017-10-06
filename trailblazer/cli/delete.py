@@ -1,0 +1,34 @@
+from pathlib import Path
+import shutil
+
+import click
+
+
+@click.command()
+@click.option('-y', '--yes', is_flag=True, help='skip manual confirmations')
+@click.argument('analysis_id', type=int)
+@click.pass_context
+def delete(context, yes, analysis_id):
+    """Delete an analysis log from the database."""
+    analysis_obj = context.obj['store'].analysis(analysis_id)
+    if analysis_obj is None:
+        print(click.style('analysis log not found', fg='red'))
+        context.abort()
+
+    print(click.style(f"{analysis_obj.family}: {analysis_obj.status}"))
+
+    if not analysis_obj.is_temp():
+        if yes or click.confirm(f"remove analysis log"):
+            analysis_obj.delete()
+            context.obj['store'].commit()
+            print(click.style(f"analysis deleted: {analysis_obj.family}", fg='blue'))
+    else:
+        if Path(analysis_obj.outdir).exists():
+            if yes or click.confirm(f"remove analysis output: {analysis_obj.out_dir}?"):
+                shutil.rmtree(analysis_obj.out_dir, ignore_errors=True)
+                analysis_obj.delete()
+                context.obj['store'].commit()
+                print(click.style(f"analysis deleted: {analysis_obj.family}", fg='blue'))
+        else:
+            print(click.style(f"analysis output doesn't exist: {analysis_obj.out_dir}", fg='red'))
+            context.abort()

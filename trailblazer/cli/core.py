@@ -16,6 +16,7 @@ from trailblazer.mip.files import parse_config
 from trailblazer.mip.miplog import job_ids
 from trailblazer.exc import MissingFileError, MipStartError
 from .utils import environ_email
+from .delete import delete
 
 LOG = logging.getLogger(__name__)
 
@@ -96,9 +97,9 @@ def ls_cmd(context, status):
     runs = context.obj['store'].analyses(status=status, deleted=False).limit(30)
     for run_obj in runs:
         if run_obj.status == 'pending':
-            message = click.style(f"{run_obj.family} [{run_obj.status.upper()}]", fg='white')
+            message = f"{run_obj.id} | {run_obj.family} [{run_obj.status.upper()}]"
         else:
-            message = (f"{run_obj.family} {run_obj.started_at.date()} "
+            message = (f"{run_obj.id} | {run_obj.family} {run_obj.started_at.date()} "
                        f"[{run_obj.type.upper()}/{run_obj.status.upper()}]")
             if run_obj.status == 'running':
                 message = click.style(f"{message} - {run_obj.progress * 100}/100", fg='blue')
@@ -106,31 +107,7 @@ def ls_cmd(context, status):
                 message = click.style(f"{message} - {run_obj.completed_at}", fg='green')
             elif run_obj.status == 'failed':
                 message = click.style(message, fg='red')
-        click.echo(message)
-
-
-@base.command()
-@click.option('-t', '--temporary', is_flag=True, help='delete all temporary logs')
-@click.argument('analysis_id', type=int, required=False)
-@click.pass_context
-def delete(context, temporary, analysis_id):
-    """Delete an analysis log from the database."""
-    if temporary:
-        analysis_ids = (analysis_obj.id for analysis_obj in context.obj['store'].analyses(temp=True))
-    elif analysis_id:
-        analysis_ids = [analysis_id]
-    else:
-        click.echo(click.style('you need to provide an analysis ID', fg='yellow'))
-        context.abort()
-
-    for analysis_id in analysis_ids:
-        analysis_obj = context.obj['store'].analysis(analysis_id)
-        if analysis_obj is None:
-            click.echo(click.style('analysis log not found', fg='red'))
-            context.abort()
-        analysis_obj.delete()
-        context.obj['store'].commit()
-        click.echo(f"analysis log deleted: {analysis_obj.family}")
+        print(message)
 
 
 @base.command()
@@ -224,3 +201,6 @@ def cancel(context, jobs, analysis_id):
         analysis_obj.status = 'canceled'
         context.obj['store'].commit()
         click.echo('cancelled analysis successfully!')
+
+
+base.add_command(delete)

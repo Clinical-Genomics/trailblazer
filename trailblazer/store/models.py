@@ -5,6 +5,7 @@ import alchy
 from sqlalchemy import Column, ForeignKey, orm, types, UniqueConstraint
 
 from trailblazer.mip import sacct
+from .api import TEMP_STATUSES
 
 STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error', 'canceled')
 JOB_STATUS_OPTIONS = [category.lower() for category in sacct.CATEGORIES]
@@ -71,6 +72,11 @@ class Analysis(Model):
     progress = Column(types.Float, default=0.)
 
     failed_jobs = orm.relationship('Job', backref='analysis')
+
+    @property
+    def is_temp(self):
+        """Check if the log is for a temporary status: running/pending."""
+        return self.status in TEMP_STATUSES
 
 
 class Job(Model):
