@@ -5,7 +5,7 @@ import alchy
 from sqlalchemy import Column, ForeignKey, orm, types, UniqueConstraint
 
 from trailblazer.mip import sacct
-from .api import TEMP_STATUSES
+from trailblazer.constants import TEMP_STATUSES
 
 STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error', 'canceled')
 JOB_STATUS_OPTIONS = [category.lower() for category in sacct.CATEGORIES]

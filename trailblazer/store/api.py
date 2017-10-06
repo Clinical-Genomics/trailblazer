@@ -6,9 +6,8 @@ import alchy
 import sqlalchemy as sqa
 
 from trailblazer.mip.config import ConfigHandler
+from trailblazer.constants import TEMP_STATUSES
 from . import models
-
-TEMP_STATUSES = ('pending', 'running')
 
 
 class BaseHandler:
