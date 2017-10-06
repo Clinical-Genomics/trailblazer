@@ -9,14 +9,15 @@ import ruamel.yaml
 
 import trailblazer
 from trailblazer.store import Store
-from trailblazer.store.models import STATUS_OPTIONS
 from trailblazer.log import LogAnalysis
 from trailblazer.mip.start import MipCli
 from trailblazer.mip.files import parse_config
 from trailblazer.mip.miplog import job_ids
 from trailblazer.exc import MissingFileError, MipStartError
 from .utils import environ_email
+from .clean import clean
 from .delete import delete
+from .ls import ls_cmd
 
 LOG = logging.getLogger(__name__)
 
@@ -87,27 +88,6 @@ def start(context, mip_config, email, priority, dryrun, command, family):
                 context.obj['store'].add_pending(family, email=email)
         except MipStartError as error:
             click.echo(click.style(error.message, fg='red'))
-
-
-@base.command('ls')
-@click.option('-s', '--status', type=click.Choice(STATUS_OPTIONS))
-@click.pass_context
-def ls_cmd(context, status):
-    """Display recent logs for analyses."""
-    runs = context.obj['store'].analyses(status=status, deleted=False).limit(30)
-    for run_obj in runs:
-        if run_obj.status == 'pending':
-            message = f"{run_obj.id} | {run_obj.family} [{run_obj.status.upper()}]"
-        else:
-            message = (f"{run_obj.id} | {run_obj.family} {run_obj.started_at.date()} "
-                       f"[{run_obj.type.upper()}/{run_obj.status.upper()}]")
-            if run_obj.status == 'running':
-                message = click.style(f"{message} - {run_obj.progress * 100}/100", fg='blue')
-            elif run_obj.status == 'completed':
-                message = click.style(f"{message} - {run_obj.completed_at}", fg='green')
-            elif run_obj.status == 'failed':
-                message = click.style(message, fg='red')
-        print(message)
 
 
 @base.command()
@@ -204,3 +184,5 @@ def cancel(context, jobs, analysis_id):
 
 
 base.add_command(delete)
+base.add_command(ls_cmd)
+base.add_command(clean)

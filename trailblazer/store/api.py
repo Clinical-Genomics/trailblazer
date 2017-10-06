@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from typing import List
-import datetime
+import datetime as dt
 
 import alchy
 import sqlalchemy as sqa
@@ -34,9 +34,9 @@ class BaseHandler:
         return query.first()
 
     def analyses(self, *, family: str=None, query: str=None, status: str=None, deleted: bool=None,
-                 temp: bool=False):
+                 temp: bool=False, before: dt.datetime=None):
         """Fetch analyses form the database."""
-        analysis_query = self.Analysis.query.order_by(self.Analysis.started_at.desc())
+        analysis_query = self.Analysis.query
         if family:
             analysis_query = analysis_query.filter_by(family=family)
         elif query:
@@ -50,7 +50,9 @@ class BaseHandler:
             analysis_query = analysis_query.filter_by(is_deleted=deleted)
         if temp:
             analysis_query = analysis_query.filter(self.Analysis.status.in_(TEMP_STATUSES))
-        return analysis_query
+        if before:
+            analysis_query = analysis_query.filter(self.Analysis.started_at < before)
+        return analysis_query.order_by(self.Analysis.started_at.desc())
 
     def analysis(self, analysis_id: int) -> models.Analysis:
         """Get a single analysis."""
@@ -59,7 +61,7 @@ class BaseHandler:
     def track_update(self):
         """Update the lastest updated date in the database."""
         metadata = self.info()
-        metadata.updated_at = datetime.datetime.now()
+        metadata.updated_at = dt.datetime.now()
         self.commit()
 
     def is_running(self, family: str) -> bool:
@@ -73,7 +75,7 @@ class BaseHandler:
 
     def add_pending(self, family: str, email: str=None) -> models.Analysis:
         """Add pending entry for an analysis."""
-        started_at = datetime.datetime.now()
+        started_at = dt.datetime.now()
         new_log = self.Analysis(family=family, status='pending', started_at=started_at)
         new_log.user = self.user(email) if email else None
         self.add_commit(new_log)

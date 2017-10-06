@@ -18,13 +18,17 @@ def delete(context, force, yes, analysis_id):
 
     print(click.style(f"{analysis_obj.family}: {analysis_obj.status}"))
 
-    if not analysis_obj.is_temp():
-        if yes or click.confirm(f"remove analysis log"):
+    if analysis_obj.is_temp():
+        if yes or click.confirm(f"remove analysis log?"):
             analysis_obj.delete()
             context.obj['store'].commit()
             print(click.style(f"analysis deleted: {analysis_obj.family}", fg='blue'))
     else:
-        if Path(analysis_obj.outdir).exists():
+        if analysis_obj.is_deleted:
+            print(click.style(f"{analysis_obj.family}: already deleted", fg='red'))
+            context.abort()
+
+        if Path(analysis_obj.out_dir).exists():
             root_dir = context.obj['store'].families_dir
             family_dir = analysis_obj.out_dir
             if not force and (len(family_dir) > len(root_dir) and root_dir in family_dir):
@@ -34,7 +38,7 @@ def delete(context, force, yes, analysis_id):
 
             if yes or click.confirm(f"remove analysis output: {analysis_obj.out_dir}?"):
                 shutil.rmtree(analysis_obj.out_dir, ignore_errors=True)
-                analysis_obj.delete()
+                analysis_obj.is_deleted = True
                 context.obj['store'].commit()
                 print(click.style(f"analysis deleted: {analysis_obj.family}", fg='blue'))
         else:
