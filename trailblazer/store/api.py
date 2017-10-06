@@ -106,6 +106,6 @@ class BaseHandler:
 
 class Store(alchy.Manager, BaseHandler, ConfigHandler):
 
-    def __init__(self, uri: str, families_dir: str=None):
+    def __init__(self, uri: str, families_dir: str):
         super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=models.Model)
         self.families_dir = families_dir

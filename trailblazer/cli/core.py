@@ -36,7 +36,7 @@ def base(context, config, database, root, log_level):
     context.obj = ruamel.yaml.safe_load(config) if config else {}
     context.obj['database'] = database or context.obj.get('database')
     context.obj['root'] = root or context.obj.get('root')
-    context.obj['store'] = Store(context.obj['database'])
+    context.obj['store'] = Store(context.obj['database'], context.obj['root'])
 
 
 @base.command('log')
