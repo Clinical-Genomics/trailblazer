@@ -5,10 +5,11 @@ import click
 
 
 @click.command()
+@click.option('-f', '--force', is_flag=True, help='skip sanity checks')
 @click.option('-y', '--yes', is_flag=True, help='skip manual confirmations')
 @click.argument('analysis_id', type=int)
 @click.pass_context
-def delete(context, yes, analysis_id):
+def delete(context, force, yes, analysis_id):
     """Delete an analysis log from the database."""
     analysis_obj = context.obj['store'].analysis(analysis_id)
     if analysis_obj is None:
@@ -24,6 +25,13 @@ def delete(context, yes, analysis_id):
             print(click.style(f"analysis deleted: {analysis_obj.family}", fg='blue'))
     else:
         if Path(analysis_obj.outdir).exists():
+            root_dir = context.obj['store'].families_dir
+            family_dir = analysis_obj.out_dir
+            if not force and (len(family_dir) > len(root_dir) and root_dir in family_dir):
+                print(click.style(f"unknown analysis output dir: {analysis_obj.out_dir}", fg='red'))
+                print(click.style("use '--force' to override"))
+                context.abort()
+
             if yes or click.confirm(f"remove analysis output: {analysis_obj.out_dir}?"):
                 shutil.rmtree(analysis_obj.out_dir, ignore_errors=True)
                 analysis_obj.delete()
