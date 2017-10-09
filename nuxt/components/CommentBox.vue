@@ -4,7 +4,7 @@
       <input v-click-outside="toggleEdit" type="text" v-model="text" class="form-control">
     </form>
     <span v-else @dblclick="toggleEdit">
-      <span v-if="message">{{ message }}</span>
+      <span v-if="message" class="comment-box-field">{{ message }}</span>
       <i v-else class="text-muted">Double-click</i>
     </span>
   </div>
@@ -37,3 +37,10 @@
     }
   }
 </script>
+
+<style>
+  .comment-box-field {
+    overflow-wrap: break-word;
+  }
+</style>
+

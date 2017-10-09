@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-container">
     <Navbar>
       <slot>
         <b-nav is-nav-bar class="ml-auto">
@@ -113,5 +113,8 @@
     background-color: #fff;
     border-bottom: 1px solid #eee;
     box-shadow: 0 -2px 2px -1px rgba(0, 0, 0, .2);
+  }
+  .app-container {
+    padding-bottom: 45px;
   }
 </style>

@@ -35,7 +35,9 @@
         <b-btn variant="info" size="sm" v-else>{{ field.value }}</b-btn>
       </template>
       <template slot="comment" scope="field">
-        <CommentBox @saved="saveComment" :message="field.value" :parentId="field.item.id" />
+        <div class="comment-box">
+          <CommentBox @saved="saveComment" :message="field.value" :parentId="field.item.id" />
+        </div>
       </template>
     </b-table>
 
@@ -90,3 +92,11 @@
     }
   }
 </script>
+
+<style>
+  .comment-box {
+    max-width: 350px;
+    font-size: .9rem;
+  }
+</style>
+
