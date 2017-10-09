@@ -86,7 +86,7 @@ export const actions = {
     }
   },
   async fetchAnalyses ({ commit }, { query }) {
-    let url = (query) ? `/analyses?query=${query}` : '/analyses'
+    let url = query ? `/analyses?query=${query}&per_page=200` : '/analyses?per_page=200'
     try {
       let data = await this.$axios.$get(url)
       commit('UPDATE_ANALYSES', data.analyses)
