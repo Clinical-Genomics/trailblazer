@@ -20,7 +20,7 @@ class FastqHandler:
 
     def link(self, family: str, sample: str, analysis_type: str, files: List[str]):
         """Link FASTQ files for a sample."""
-        root_dir = self.families_dir / family / analysis_type / sample / 'fastq'
+        root_dir = Path(self.families_dir) / family / analysis_type / sample / 'fastq'
         root_dir.mkdir(parents=True, exist_ok=True)
         for fastq_data in files:
             fastq_path = Path(fastq_data['path'])

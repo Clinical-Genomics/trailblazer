@@ -82,7 +82,7 @@ class ConfigHandler:
 
     def save_config(self, data: dict) -> Path:
         """Save a config to the expected location."""
-        out_dir = self.families_dir / data['family']
+        out_dir = Path(self.families_dir) / data['family']
         out_dir.mkdir(parents=True, exist_ok=True)
         out_path = out_dir / 'pedigree.yaml'
         dump = ruamel.yaml.round_trip_dump(data, indent=4, block_seq_indent=2)
