@@ -22,6 +22,7 @@ CLI_OPTIONS = {
         'option': '--gatk_variantrecalibration_snv_max_gaussians',
         'default': '1',
     },
+    'skip_evalution': {'option': '--qccollect_skip_evaluation'}
 }
 
 
@@ -50,7 +51,7 @@ class MipCli(object):
             if value:
                 command.append(CLI_OPTIONS[key]['option'])
                 if value is True:
-                    command.append(CLI_OPTIONS[key]['default'])
+                    command.append(CLI_OPTIONS[key].get('default', '1'))
                 else:
                     command.append(value)
         return command
