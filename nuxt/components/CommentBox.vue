@@ -1,10 +1,14 @@
 <template>
-  <div>
+  <div class="comment-box-field">
     <form v-if="isEditing" @submit.prevent="onSubmit">
-      <input v-click-outside="toggleEdit" type="text" v-model="text" class="form-control">
+      <textarea v-click-outside="toggleEdit"
+                type="text"
+                v-model="text"
+                rows="7"
+                class="form-control" />
     </form>
     <span v-else @dblclick="toggleEdit">
-      <span v-if="message" class="comment-box-field">{{ message }}</span>
+      <span v-if="message">{{ message }}</span>
       <i v-else class="text-muted">Double-click</i>
     </span>
   </div>
@@ -41,6 +45,7 @@
 <style>
   .comment-box-field {
     overflow-wrap: break-word;
+    font-size: .9rem;
   }
 </style>
 

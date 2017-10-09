@@ -96,7 +96,6 @@
 <style>
   .comment-box {
     max-width: 350px;
-    font-size: .9rem;
   }
 </style>
 
