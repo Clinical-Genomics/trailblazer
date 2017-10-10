@@ -6,6 +6,7 @@
                 v-model="text"
                 rows="7"
                 class="form-control" />
+      <b-button @click.prevent="onSubmit" class="mt-2 form-control btn-sm">Save</b-button>
     </form>
     <span v-else @dblclick="toggleEdit">
       <span v-if="message">{{ message }}</span>
