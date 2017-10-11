@@ -1,84 +1,111 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-import logging
+from typing import List
+import datetime as dt
 
-from alchy import Manager
+import alchy
+import sqlalchemy as sqa
 
-from .models import Analysis, Model, Metadata, User
-
-log = logging.getLogger(__name__)
-
-
-def connect(uri):
-    log.debug('open connection to database: %s', uri)
-    manager = Manager(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=Model)
-    return manager
+from trailblazer.mip.config import ConfigHandler
+from trailblazer.constants import TEMP_STATUSES
+from . import models
 
 
-def case(case_id):
-    """Return analysis entries with for a case."""
-    query = (Analysis.query.filter_by(case_id=case_id)
-                           .order_by(Analysis.logged_at.desc()))
-    return query
+class BaseHandler:
+
+    User = models.User
+    Analysis = models.Analysis
+    Job = models.Job
+    Info = models.Info
+
+    def setup(self):
+        self.create_all()
+        # add inital metadata record (for web interface)
+        new_info = self.Info()
+        self.add_commit(new_info)
+
+    def find_analysis(self, family, started_at, status):
+        """Find a single analysis."""
+        query = self.Analysis.query.filter_by(
+            family=family,
+            started_at=started_at,
+            status=status,
+        )
+        return query.first()
+
+    def analyses(self, *, family: str=None, query: str=None, status: str=None, deleted: bool=None,
+                 temp: bool=False, before: dt.datetime=None):
+        """Fetch analyses form the database."""
+        analysis_query = self.Analysis.query
+        if family:
+            analysis_query = analysis_query.filter_by(family=family)
+        elif query:
+            analysis_query = analysis_query.filter(sqa.or_(
+                self.Analysis.family.like(f"%{query}%"),
+                self.Analysis.status.like(f"%{query}%"),
+            ))
+        if status:
+            analysis_query = analysis_query.filter_by(status=status)
+        if isinstance(deleted, bool):
+            analysis_query = analysis_query.filter_by(is_deleted=deleted)
+        if temp:
+            analysis_query = analysis_query.filter(self.Analysis.status.in_(TEMP_STATUSES))
+        if before:
+            analysis_query = analysis_query.filter(self.Analysis.started_at < before)
+        return analysis_query.order_by(self.Analysis.started_at.desc())
+
+    def analysis(self, analysis_id: int) -> models.Analysis:
+        """Get a single analysis."""
+        return self.Analysis.query.get(analysis_id)
+
+    def track_update(self):
+        """Update the lastest updated date in the database."""
+        metadata = self.info()
+        metadata.updated_at = dt.datetime.now()
+        self.commit()
+
+    def is_running(self, family: str) -> bool:
+        """Check if an analysis is currently running/pending for a family."""
+        latest_analysis = self.analyses(family=family).first()
+        return latest_analysis and latest_analysis.status in TEMP_STATUSES
+
+    def info(self) -> models.Info:
+        """Return metadata entry."""
+        return self.Info.query.first()
+
+    def add_pending(self, family: str, email: str=None) -> models.Analysis:
+        """Add pending entry for an analysis."""
+        started_at = dt.datetime.now()
+        new_log = self.Analysis(family=family, status='pending', started_at=started_at)
+        new_log.user = self.user(email) if email else None
+        self.add_commit(new_log)
+        return new_log
+
+    def add_user(self, name: str, email: str) -> models.User:
+        """Add a new user to the database."""
+        new_user = self.User(name=name, email=email)
+        self.add_commit(new_user)
+        return new_user
+
+    def user(self, email: str) -> models.User:
+        """Fetch a user from the database."""
+        return self.User.query.filter_by(email=email).first()
+
+    def aggregate_failed(self) -> List:
+        """Count the number of failed jobs per category (name)."""
+        categories = self.session.query(
+            self.Job.name.label('name'),
+            sqa.func.count(self.Job.id).label('count')
+        ).filter(self.Job.status != 'cancelled').group_by(self.Job.name).all()
+        data = [{'name': category.name, 'count': category.count} for category in categories]
+        return data
+
+    def jobs(self):
+        """Return all jobs in the database."""
+        return self.Job.query
 
 
-def user(email):
-    """Return a user based on an email."""
-    return User.query.filter_by(email=email).first()
+class Store(alchy.Manager, BaseHandler, ConfigHandler):
 
-
-def analyses(analysis_id=None, since=None, is_ready=False, status=None,
-             older=False, deleted=None, version=None):
-    """List added analyses."""
-    if older:
-        query = Analysis.query.order_by(Analysis.started_at)
-    else:
-        query = Analysis.query.order_by(Analysis.logged_at.desc())
-
-    if since:
-        log.debug("filter entries on date: %s", since)
-        if older:
-            query = query.filter(Analysis.started_at < since)
-        else:
-            query = query.filter(Analysis.started_at > since)
-
-    if analysis_id:
-        log.debug("filter entries on id pattern: %s", analysis_id)
-        query = query.filter(Analysis.case_id.contains(analysis_id))
-
-    if status:
-        if isinstance(status, list):
-            status_str = ', '.join(status)
-            query = query.filter(Analysis.status.in_(status))
-        else:
-            status_str = status
-            query = query.filter_by(status=status)
-        log.debug("filter entries on status category: %s", status_str)
-
-    if is_ready:
-        query = query.filter_by(status='completed', is_deleted=False)
-
-    if deleted is not None:
-        query = query.filter_by(is_deleted=deleted)
-
-    if version:
-        like_str = "{}%".format(version)
-        query = (query.filter(Analysis.pipeline_version.like(like_str)))
-
-    return query
-
-
-def track_update():
-    """Update metadata record with new updated date."""
-    metadata = Metadata.query.first()
-    if metadata:
-        metadata.updated_at = datetime.now()
-
-
-def is_running(case_id):
-    """Check if a case is currently running/pending."""
-    latest_analysis = case(case_id).first()
-    if latest_analysis and latest_analysis.status in ('pending', 'running'):
-        return True
-    else:
-        return False
+    def __init__(self, uri: str, families_dir: str):
+        super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=models.Model)
+        self.families_dir = families_dir

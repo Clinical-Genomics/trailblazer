@@ -1,17 +1,22 @@
 # -*- coding: utf-8 -*-
 
 
-class MultipleFilesError(Exception):
+class TrailblazerError(Exception):
+
+    def __init__(self, message):
+        self.message = message
+
+
+class MissingFileError(TrailblazerError):
     pass
 
 
-class MissingFileError(Exception):
+class MipStartError(TrailblazerError):
     pass
 
 
-class UnknownError(Exception):
-    pass
+class ConfigError(TrailblazerError):
 
-
-class AnalysisStartError(Exception):
-    pass
+    def __init__(self, message, errors=None):
+        self.message = message
+        self.errors = errors

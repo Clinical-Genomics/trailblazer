@@ -46,6 +46,7 @@ TRASH*
 *.tar.gz
 .vagrant
 _DEVELOP/
+.vscode/
 
 # SublimeText: workspace files are user-specific
 *.sublime-workspace
@@ -64,3 +65,9 @@ _book/
 
 # Secrets
 alembic.ini
+
+# Node.js
+node_modules/
+npm-debug.log
+.nuxt/
+

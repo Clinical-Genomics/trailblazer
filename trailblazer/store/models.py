@@ -1,50 +1,46 @@
 # -*- coding: utf-8 -*-
-from __future__ import division
 import datetime
-import json
 
 import alchy
-from housekeeper.server.admin import UserManagementMixin
 from sqlalchemy import Column, ForeignKey, orm, types, UniqueConstraint
 
+from trailblazer.mip import sacct
+from trailblazer.constants import TEMP_STATUSES
+
 STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error', 'canceled')
+JOB_STATUS_OPTIONS = [category.lower() for category in sacct.CATEGORIES]
 PRIORITY_OPTIONS = ('low', 'normal', 'high')
-ANALYSIS_TYPES = ('exomes', 'genomes')
-PIPELINES = ('mip',)
+TYPES = ('wes', 'wgs', 'rna')
+
+Model = alchy.make_declarative_base(Base=alchy.ModelBase)
 
 
-def json_serial(obj):
-    """JSON serializer for objects not serializable by default json code"""
-    if isinstance(obj, datetime.datetime):
-        serial = obj.isoformat()
-        return serial
-    raise TypeError('Type not serializable')
-
-
-class JsonModel(alchy.ModelBase):
-
-    def to_json(self, pretty=False):
-        """Serialize Model to JSON."""
-        kwargs = dict(indent=4, sort_keys=True) if pretty else dict()
-        return json.dumps(self.to_dict(), default=json_serial, **kwargs)
-
-
-Model = alchy.make_declarative_base(Base=JsonModel)
-
-
-class Metadata(Model):
+class Info(Model):
 
     """Keep track of meta data."""
+
+    __tablename__ = 'info'
 
     id = Column(types.Integer, primary_key=True)
     created_at = Column(types.DateTime, default=datetime.datetime.now)
     updated_at = Column(types.DateTime)
 
 
-class User(Model, UserManagementMixin):
+class User(Model):
+
+    __tablename__ = 'user'
+
+    id = Column(types.Integer, primary_key=True)
+    google_id = Column(types.String(128), unique=True)
+    email = Column(types.String(128), unique=True)
+    name = Column(types.String(128))
+    avatar = Column(types.Text)
+    created_at = Column(types.DateTime, default=datetime.datetime.now)
+
+    runs = orm.relationship('Analysis', backref='user')
 
     @property
-    def first_name(self):
+    def first_name(self) -> str:
         """First part of name."""
         return self.name.split(' ')[0]
 
@@ -53,49 +49,47 @@ class Analysis(Model):
 
     """Analysis record."""
 
-    __table_args__ = (UniqueConstraint('case_id', 'started_at', 'status', 'failed_step',
-                                       name='_uc_case_start_status_step'),)
+    __tablename__ = 'analysis'
+    __table_args__ = (UniqueConstraint('family', 'started_at', 'status',
+                                       name='_uc_family_start_status'),)
 
     id = Column(types.Integer, primary_key=True)
-    case_id = Column(types.String(128))
+    family = Column(types.String(128), nullable=False)
 
-    # metadata
-    pipeline = Column(types.Enum(*PIPELINES))
-    pipeline_version = Column(types.String(32))
+    version = Column(types.String(32))
     logged_at = Column(types.DateTime, default=datetime.datetime.now)
     started_at = Column(types.DateTime)
     completed_at = Column(types.DateTime)
-    runtime = Column(types.Integer)
-    cputime = Column(types.Integer)
     status = Column(types.Enum(*STATUS_OPTIONS))
     priority = Column(types.Enum(*PRIORITY_OPTIONS))
-    root_dir = Column(types.Text)
+    out_dir = Column(types.Text)
     config_path = Column(types.Text)
-    type = Column(types.Enum(*ANALYSIS_TYPES))
-    failed_step = Column(types.String(128), default='na')
-    failed_at = Column(types.DateTime)
     comment = Column(types.Text)
     is_deleted = Column(types.Boolean, default=False)
     is_visible = Column(types.Boolean, default=True)
-    _samples = Column(types.Text)
-
-    user = orm.relationship(User, backref='runs')
+    type = Column(types.Enum(*TYPES))
     user_id = Column(ForeignKey(User.id))
+    progress = Column(types.Float, default=0.)
+
+    failed_jobs = orm.relationship('Job', backref='analysis')
 
     @property
-    def samples(self):
-        return self._samples.split(',') if self._samples else []
+    def is_temp(self):
+        """Check if the log is for a temporary status: running/pending."""
+        return self.status in TEMP_STATUSES
 
-    @samples.setter
-    def samples(self, sample_list):
-        """Serialize a list of sample ids."""
-        self._samples = ','.join(sample_list)
 
-    @property
-    def runtime_obj(self):
-        """Format runtime as datetime object."""
-        return datetime.timedelta(seconds=self.runtime)
+class Job(Model):
 
-    def failed_variantrecal(self):
-        """Check if analysis failed on variat recalibration."""
-        return (self.failed_step and 'GATKVariantRecalibration' in self.failed_step)
+    """Represent a step in the pipeline."""
+
+    __tablename__ = 'job'
+
+    id = Column(types.Integer, primary_key=True)
+    analysis_id = Column(ForeignKey(Analysis.id, ondelete='CASCADE'), nullable=False)
+    slurm_id = Column(types.Integer)
+    name = Column(types.String(64))
+    context = Column(types.String(64))
+    started_at = Column(types.DateTime)
+    elapsed = Column(types.Integer)
+    status = Column(types.Enum(*JOB_STATUS_OPTIONS))
