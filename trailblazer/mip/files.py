@@ -63,6 +63,11 @@ def parse_sampleinfo(data: dict) -> dict:
             'clinical_vcf': data['vcf_binary_file']['clinical']['path'],
             'research_vcf': data['vcf_binary_file']['research']['path'],
         },
+        'peddy': {
+            'ped_check': data['program']['peddy']['ped_check']['path'],
+            'ped': data['program']['peddy']['peddy']['path'],
+            'sex_check': data['program']['peddy']['sex_check']['path'],
+        },
     }
 
 

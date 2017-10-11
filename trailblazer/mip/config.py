@@ -8,7 +8,7 @@ import ruamel.yaml
 
 from trailblazer.exc import ConfigError
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 class SampleSchema(Schema):
@@ -29,10 +29,10 @@ class SampleSchema(Schema):
     )
     expected_coverage = fields.Float()
     capture_kit = fields.Str(
-        validate=validate.OneOf(choices=['Agilent_SureSelectCRE.V1',
-                                         'Agilent_SureSelect.V5',
-                                         'Agilent_SureSelect_FocusedExome.V1']),
-        default='Agilent_SureSelectCRE.v1',
+        validate=validate.OneOf(choices=['agilent_sureselect_cre.v1',
+                                         'agilent_sureselect.v5',
+                                         'agilent_sureselect_focusedexome.v1']),
+        default='agilent_sureselect_cre.v1',
     )
 
 
@@ -60,9 +60,9 @@ class ConfigHandler:
                     for level, sample_errors in messages.items():
                         sample_id = data['samples'][level]['sample_id']
                         for sub_field, sub_messages in sample_errors.items():
-                            log.error(f"{sample_id} -> {sub_field}: {', '.join(sub_messages)}")
+                            LOG.error(f"{sample_id} -> {sub_field}: {', '.join(sub_messages)}")
                 else:
-                    log.error(f"{field}: {', '.join(messages)}")
+                    LOG.error(f"{field}: {', '.join(messages)}")
             raise ConfigError('invalid config input', errors=errors)
 
     @staticmethod
@@ -72,7 +72,7 @@ class ConfigHandler:
         # handle single sample cases with 'unknown' phenotype
         if len(data_copy['samples']) == 1:
             if data_copy['samples'][0]['phenotype'] == 'unknown':
-                log.info("setting 'unknown' phenotype to 'unaffected'")
+                LOG.info("setting 'unknown' phenotype to 'unaffected'")
                 data_copy['samples'][0]['phenotype'] = 'unaffected'
         # set the mother/father to '0' if they are not set for a sample
         for sample_data in data_copy['samples']:

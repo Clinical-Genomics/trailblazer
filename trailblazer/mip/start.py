@@ -5,7 +5,7 @@ import subprocess
 
 from trailblazer.exc import MipStartError
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 CLI_OPTIONS = {
     'family': {'option': '--family_id'},
@@ -37,6 +37,7 @@ class MipCli(object):
     def __call__(self, config, family, **kwargs):
         """Execute the pipeline."""
         command = self.build_command(config, family=family, **kwargs)
+        LOG.debug(' '.join(command))
         process = self.execute(command)
         process.wait()
         if process.returncode != 0:
