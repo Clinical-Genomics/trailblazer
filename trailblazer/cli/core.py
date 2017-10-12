@@ -56,6 +56,9 @@ def log_cmd(context, sampleinfo, sacct, quiet, config):
     except MissingFileError as error:
         click.echo(click.style(f"Skipping, missing Sacct file: {error.message}", fg='yellow'))
         return
+    except KeyError as error:
+        print(click.style(f"unexpected output, missing key: {error.args[0]}", fg='yellow'))
+        return
     if new_run is None:
         if not quiet:
             click.echo(click.style('Analysis already logged', fg='yellow'))
