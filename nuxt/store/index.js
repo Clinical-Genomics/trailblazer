@@ -39,6 +39,9 @@ export const mutations = {
   },
   SET_JOB_STATS (state, jobStats) {
     state.jobStats = jobStats
+  },
+  DELETE_ANALYSIS (state, analysisId) {
+    state.analyses = state.analyses.filter(analysis => analysis.id !== analysisId)
   }
 }
 
@@ -110,6 +113,10 @@ export const actions = {
       // statements
       console.log(error)
     }
+  },
+  async hideAnalysis ({ commit }, { analysisId }) {
+    await this.$axios.$put(`/analyses/${analysisId}`, { is_visible: false })
+    commit('DELETE_ANALYSIS', analysisId)
   }
 }
 

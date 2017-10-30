@@ -18,21 +18,33 @@
                     :value="field.item.progress"
                     :max="1"
                     show-progress />
-        <span v-else-if="field.value === 'failed'">
-          <b-button :id="`failed-button-${field.item.id}`" variant="danger" size="sm">
+        <b-button-group v-else>
+          <b-button
+            v-if="field.value === 'failed'"
+            :id="`failed-button-${field.item.id}`"
+            variant="danger"
+            size="sm">
             {{ field.value }}
           </b-button>
-          <b-popover :target="`failed-button-${field.item.id}`" triggers="hover" placement="right">
-            <div v-for="job in field.item.failed_jobs" :key="job.id" v-if="job.status === 'failed'">
+          <b-popover
+            v-if="field.value === 'failed'"
+            :target="`failed-button-${field.item.id}`"
+            triggers="hover"
+            placement="left">
+            <div
+              v-for="job in field.item.failed_jobs"
+              :key="job.id"
+              v-if="job.status === 'failed'">
               {{ job.name }}
             </div>
           </b-popover>
-        </span>
-        <b-button-group v-else-if="field.value === 'completed'" >
-          <b-button variant="success" size="sm">{{ field.value }}</b-button>
-          <b-button size="sm">{{ field.item|dateDiff }}</b-button>
+          <b-button-group v-else-if="field.value === 'completed'">
+            <b-button variant="success" size="sm">{{ field.value }}</b-button>
+            <b-button size="sm">{{ field.item|dateDiff }}</b-button>
+          </b-button-group>
+          <b-btn variant="info" size="sm" v-else>{{ field.value }}</b-btn>
+          <b-btn variant="warning" size="sm" @click="hideAnalysis(field.item)">Hide</b-btn>
         </b-button-group>
-        <b-btn variant="info" size="sm" v-else>{{ field.value }}</b-btn>
       </template>
       <template slot="comment" scope="field">
         <div class="comment-box">
@@ -80,11 +92,14 @@
       }
     },
     methods: {
-      saveComment ({ parentId, text }) {
-        this.$store.dispatch('updateComment', {
+      async saveComment ({ parentId, text }) {
+        await this.$store.dispatch('updateComment', {
           analysisId: parentId,
           text: text
         })
+      },
+      async hideAnalysis (analysis) {
+        await this.$store.dispatch('hideAnalysis', { analysisId: analysis.id })
       }
     },
     components: {

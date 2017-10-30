@@ -29,7 +29,8 @@ def analyses():
     per_page = int(request.args.get('per_page', 50))
     page = int(request.args.get('page', 1))
     query = store.analyses(status=request.args.get('status'),
-                           query=request.args.get('query'))
+                           query=request.args.get('query'),
+                           visible=True)
 
     query_page = query.paginate(page, per_page=per_page)
     data = []

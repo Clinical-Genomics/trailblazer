@@ -33,7 +33,7 @@ class BaseHandler:
         return query.first()
 
     def analyses(self, *, family: str=None, query: str=None, status: str=None, deleted: bool=None,
-                 temp: bool=False, before: dt.datetime=None):
+                 temp: bool=False, before: dt.datetime=None, visible: bool=None):
         """Fetch analyses form the database."""
         analysis_query = self.Analysis.query
         if family:
@@ -51,6 +51,8 @@ class BaseHandler:
             analysis_query = analysis_query.filter(self.Analysis.status.in_(TEMP_STATUSES))
         if before:
             analysis_query = analysis_query.filter(self.Analysis.started_at < before)
+        if visible is not None:
+            analysis_query = analysis_query.filter_by(is_visible=visible)
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
     def analysis(self, analysis_id: int) -> models.Analysis:
