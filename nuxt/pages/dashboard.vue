@@ -10,13 +10,6 @@
             {{ tab.title }}
           </b-nav-item>
         </b-nav>
-
-        <form class="form-inline ml-3" @submit.prevent="queryAnalyses">
-          <input v-model="query"
-                 type="text"
-                 class="form-control"
-                 placeholder="search family, status">
-        </form>
       </slot>
     </Navbar>
 
@@ -38,27 +31,23 @@
     middleware: ['authenticated'],
     data () {
       return {
-        query: '',
         currentTabIndex: 0,
         analysisTabs: [{
-          category: 'allAnalyses',
-          title: 'All'
+          category: 'runningAnalyses',
+          title: 'Running'
         }, {
           category: 'failedAnalyses',
           title: 'Failed'
         }, {
-          category: 'runningAnalyses',
-          title: 'Running'
-        }, {
           category: 'completedAnalyses',
           title: 'Completed'
         }],
-        selectedCategory: 'allAnalyses'
+        selectedCategory: 'runningAnalyses'
       }
     },
     async fetch ({ store, app }) {
       await Promise.all([
-        store.dispatch('fetchAnalyses', {}),
+        store.dispatch('fetchAnalyses', { isVisible: true }),
         store.dispatch('setLastUpdate')
       ])
     },
@@ -71,7 +60,6 @@
         }
       },
       ...mapGetters([
-        'allAnalyses',
         'failedAnalyses',
         'runningAnalyses',
         'completedAnalyses',
@@ -84,9 +72,6 @@
       }
     },
     methods: {
-      queryAnalyses () {
-        this.$store.dispatch('fetchAnalyses', { query: this.query })
-      },
       setCategory (analysisCategory) {
         this.selectedCategory = analysisCategory
       }

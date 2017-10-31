@@ -43,7 +43,20 @@
             <b-button size="sm">{{ field.item|dateDiff }}</b-button>
           </b-button-group>
           <b-btn variant="info" size="sm" v-else>{{ field.value }}</b-btn>
-          <b-btn variant="warning" size="sm" @click="hideAnalysis(field.item)">Hide</b-btn>
+          <b-btn
+            v-if="field.item.is_visible"
+            variant="warning"
+            size="sm"
+            @click="hideAnalysis({ analysisId: field.item.id })">
+            Hide
+          </b-btn>
+          <b-btn
+            v-else
+            variant="info"
+            size="sm"
+            @click="unHideAnalysis({ analysisId: field.item.id })">
+            Unhide
+          </b-btn>
         </b-button-group>
       </template>
       <template slot="comment" scope="field">
@@ -58,6 +71,7 @@
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
   import CommentBox from '~/components/CommentBox'
 
   export default {
@@ -92,14 +106,12 @@
       }
     },
     methods: {
+      ...mapActions([ 'hideAnalysis', 'unHideAnalysis' ]),
       async saveComment ({ parentId, text }) {
         await this.$store.dispatch('updateComment', {
           analysisId: parentId,
           text: text
         })
-      },
-      async hideAnalysis (analysis) {
-        await this.$store.dispatch('hideAnalysis', { analysisId: analysis.id })
       }
     },
     components: {

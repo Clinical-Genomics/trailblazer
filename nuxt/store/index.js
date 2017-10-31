@@ -42,6 +42,15 @@ export const mutations = {
   },
   DELETE_ANALYSIS (state, analysisId) {
     state.analyses = state.analyses.filter(analysis => analysis.id !== analysisId)
+  },
+  SHOW_ANALYSIS (state, analysisId) {
+    state.analyses = state.analyses.map(analysis => {
+      if (analysis.id === analysisId) {
+        return { ...analysis, is_visible: true }
+      } else {
+        return analysis
+      }
+    })
   }
 }
 
@@ -88,10 +97,10 @@ export const actions = {
       console.log(error)
     }
   },
-  async fetchAnalyses ({ commit }, { query }) {
-    let url = query ? `/analyses?query=${query}&per_page=200` : '/analyses?per_page=200'
+  async fetchAnalyses ({ commit }, { query, isVisible, perPage }) {
+    const params = { is_visible: isVisible, query, per_page: perPage || 200 }
     try {
-      let data = await this.$axios.$get(url)
+      let data = await this.$axios.$get('/analyses', { params })
       commit('UPDATE_ANALYSES', data.analyses)
     } catch (error) {
       console.log(error)
@@ -117,6 +126,10 @@ export const actions = {
   async hideAnalysis ({ commit }, { analysisId }) {
     await this.$axios.$put(`/analyses/${analysisId}`, { is_visible: false })
     commit('DELETE_ANALYSIS', analysisId)
+  },
+  async unHideAnalysis ({ commit }, { analysisId }) {
+    await this.$axios.$put(`/analyses/${analysisId}`, { is_visible: true })
+    commit('SHOW_ANALYSIS', analysisId)
   }
 }
 

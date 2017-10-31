@@ -6,6 +6,7 @@
     <b-collapse is-nav id="nav_collapse">
       <b-nav is-nav-bar>
         <b-nav-item v-if="isAuthenticated" to="/dashboard">Dashboard</b-nav-item>
+        <b-nav-item v-if="isAuthenticated" to="/analyses">Analyses</b-nav-item>
         <b-nav-item v-if="isAuthenticated" to="/stats">Stats</b-nav-item>
         <b-button v-if="showSignin" @click="onSignIn" variant="info">
           Sign in with Google
