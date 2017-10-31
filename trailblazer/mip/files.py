@@ -56,6 +56,8 @@ def parse_sampleinfo(data: dict) -> dict:
             'research_vcf': (data['sv_vcf_binary_file']['research']['path'] if
                              'sv_vcf_binary_file' in data else None),
             'bcf': data.get('sv_bcf_file'),
+            'merged': (f"{data['program']['svdb']['outdirectory']}/"
+                       f"{data['program']['svdb']['outfile']}"),
         },
         'snv': {
             'bcf': data['bcf_file']['path'],
