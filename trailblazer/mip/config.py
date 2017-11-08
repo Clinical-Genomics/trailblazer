@@ -28,12 +28,7 @@ class SampleSchema(Schema):
         validate=validate.OneOf(choices=['male', 'female', 'unknown'])
     )
     expected_coverage = fields.Float()
-    capture_kit = fields.Str(
-        validate=validate.OneOf(choices=['agilent_sureselect_cre.v1',
-                                         'agilent_sureselect.v5',
-                                         'agilent_sureselect_focusedexome.v1']),
-        default='agilent_sureselect_cre.v1',
-    )
+    capture_kit = fields.Str(default='agilent_sureselect_cre.v1')
 
 
 class ConfigSchema(Schema):
