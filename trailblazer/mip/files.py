@@ -73,6 +73,7 @@ def parse_sampleinfo(data: dict) -> dict:
             'sex_check': (data['program']['peddy']['sex_check']['path'] if
                           'peddy' in data['program'] else None),
         },
+        'family': data['family'],
     }
 
 
