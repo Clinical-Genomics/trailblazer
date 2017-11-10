@@ -38,6 +38,11 @@ def parse_sampleinfo(data: dict) -> dict:
     """
     genome_build = data['human_genome_build']
     genome_build_str = f"{genome_build['source']}{genome_build['version']}"
+    svdb_outdirectory = ''
+    svdb_outfile = ''
+    if 'svdb' in data['program']:
+        svdb_outdirectory = f"{data['program']['svdb']['outdirectory']}/"
+        svdb_outfile = data['program']['svdb']['outfile']
     return {
         'date': data['analysis_date'],
         'is_finished': True if data['analysisrunstatus'] == 'finished' else False,
@@ -56,8 +61,7 @@ def parse_sampleinfo(data: dict) -> dict:
             'research_vcf': (data['sv_vcf_binary_file']['research']['path'] if
                              'sv_vcf_binary_file' in data else None),
             'bcf': data.get('sv_bcf_file', {}).get('path'),
-            'merged': (f"{data['program']['svdb']['outdirectory']}/"
-                       f"{data['program']['svdb']['outfile']}"),
+            'merged': (svdb_outdirectory, svdb_outfile),
         },
         'snv': {
             'bcf': data['bcf_file']['path'],
