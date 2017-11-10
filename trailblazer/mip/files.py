@@ -38,10 +38,11 @@ def parse_sampleinfo(data: dict) -> dict:
     """
     genome_build = data['human_genome_build']
     genome_build_str = f"{genome_build['source']}{genome_build['version']}"
-    svdb_outpath = ''
     if 'svdb' in data['program']:
         svdb_outpath = (f"{data['program']['svdb']['outdirectory']}/"
                         f"{data['program']['svdb']['outfile']}")
+    else:
+        svdb_outpath = ''
     return {
         'date': data['analysis_date'],
         'is_finished': True if data['analysisrunstatus'] == 'finished' else False,
