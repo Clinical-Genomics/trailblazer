@@ -47,18 +47,13 @@ def parse_sampleinfo(data: dict) -> dict:
                         f"{data['program']['svdb']['outfile']}")
     else:
         svdb_outpath = ''
-    return {
+    data = {
         'date': data['analysis_date'],
         'is_finished': True if data['analysisrunstatus'] == 'finished' else False,
         'genome_build': genome_build_str,
         'version': data['mip_version'],
         'pedigree_path': data['pedigree_minimal'],
-        'samples': [{
-            'id': sample_id,
-            'bam': sample_data['most_complete_bam']['path'],
-            'sambamba': list(sample_data['program']['sambamba_depth'].values())[0]['bed']['path'],
-            'sex': sample_data['sex'],
-        } for sample_id, sample_data in data['sample'].items()],
+        'samples': [],
         'qcmetrics_path': data['program']['qccollect']['qccollect_metrics_file']['path'],
         'sv': {
             'clinical_vcf': (data['sv_vcf_binary_file']['clinical']['path'] if
@@ -84,6 +79,20 @@ def parse_sampleinfo(data: dict) -> dict:
         },
         'family': data['family'],
     }
+
+    for sample_id, sample_data in data['sample'].items():
+        sample_data = {
+            'id': sample_id,
+            'bam': sample_data['most_complete_bam']['path'],
+            'sambamba': list(sample_data['program']['sambamba_depth'].values())[0]['bed']['path'],
+            'sex': sample_data['sex'],
+        }
+        chanjo_sexcheck = list(sample_data['program']['chanjo_sexcheck'].values())[0]
+        sexcheck_path = f"{chanjo_sexcheck['outdirectory']}/{chanjo_sexcheck['outfile']}"
+        sample_data['chanjo_sexcheck'] = sexcheck_path
+        data['samples'].append(sample_data)
+
+    return data
 
 
 def parse_qcmetrics(metrics: dict) -> dict:
@@ -111,9 +120,10 @@ def parse_qcmetrics(metrics: dict) -> dict:
     if isinstance(plink_sexcheck, str):
         sample_id, sex_number = plink_sexcheck.strip().split(':', 1)
         plink_samples[sample_id] = PED_SEX_MAP.get(int(sex_number))
-    elif isinstance(plink_samples, dict):
-        for sample_id, sex_number in plink_samples.items():
-            plink_samples[sample_id] = PED_SEX_MAP.get(sex_number)
+    elif isinstance(plink_sexcheck, list):
+        for sample_raw in plink_sexcheck:
+            sample_id, sex_number = sample_raw.split(':', 1)
+            plink_samples[sample_id] = PED_SEX_MAP.get(int(sex_number))
 
     for sample_id, sample_metrics in metrics['sample'].items():
         main_key = [key for key in sample_metrics.keys() if '_lanes_' in key][0]
@@ -138,3 +148,14 @@ def parse_peddy_sexcheck(handle: TextIO):
             'error': True if sample['error'] == 'True' else False,
         }
     return data
+
+
+def parse_chanjo_sexcheck(handle: TextIO):
+    """Parse Chanjo sex-check output."""
+    samples = csv.DictReader(handle, delimiter='\t')
+    for sample in samples:
+        return {
+            'predicted_sex': sample['sex'],
+            'x_coverage': sample['#X_coverage'],
+            'y_coverage': sample['Y_coverage'],
+        }

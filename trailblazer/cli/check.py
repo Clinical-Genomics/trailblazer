@@ -34,11 +34,19 @@ def check(context: click.Context, family: str):
         samples['sample'].append(sample_data['id'])
         samples['ped'].append(sample_data['sex'])
 
+        with Path(sample_data['chanjo_sexcheck']) as chanjo_handle:
+            sexcheck_data = files.parse_chanjo_sexcheck(chanjo_handle)
+
+        predicted_sex = sexcheck_data['predicted_sex']
+        xy_ratio = sexcheck_data['y_coverage'] / sexcheck_data['x_coverage']
+        samples['chanjo'].append(f"{predicted_sex} ({xy_ratio})")
+
     for sample_data in qcmetrics_data['samples']:
-        samples['chanjo'].append(sample_data['predicted_sex'])
         samples['plink'].append(sample_data['plink_sex'])
 
     for sample_id in samples['sample']:
-        samples['peddy'].append(peddy_data[sample_id]['predicted_sex'])
+        predicted_sex = peddy_data[sample_id]['predicted_sex']
+        het_ratio = peddy_data[sample_id]['het_ratio']
+        samples['peddy'].append(f"{predicted_sex} ({het_ratio})")
 
     print(tabulate(samples, headers='keys', tablefmt='psql'))
