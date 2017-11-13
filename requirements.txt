@@ -4,6 +4,7 @@ coloredlogs
 ruamel.yaml
 SQLAlchemy
 marshmallow
+tabulate
 
 # server
 Flask

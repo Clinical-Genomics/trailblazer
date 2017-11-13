@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 """Parse the MIP config file."""
+from typing import List, TextIO
+import csv
+
+PED_SEX_MAP = {1: 'male', 2: 'female', 0: 'unknown'}
 
 
 def parse_config(data: dict) -> dict:
@@ -52,6 +56,7 @@ def parse_sampleinfo(data: dict) -> dict:
             'id': sample_id,
             'bam': sample_data['most_complete_bam']['path'],
             'sambamba': list(sample_data['program']['sambamba_depth'].values())[0]['bed']['path'],
+            'sex': sample_data['sex'],
         } for sample_id, sample_data in data['sample'].items()],
         'qcmetrics_path': data['program']['qccollect']['qccollect_metrics_file']['path'],
         'sv': {
@@ -99,12 +104,36 @@ def parse_qcmetrics(metrics: dict) -> dict:
         },
         'samples': [],
     }
+
+    plink_samples = {}
+    plink_sexcheck = metrics['program']['plink_sexcheck']['sample_sexcheck']
+    if isinstance(plink_sexcheck, str):
+        sample_id, sex_number = plink_sexcheck.strip().split(':', 1)
+        plink_samples[sample_id] = PED_SEX_MAP.get(int(sex_number))
+    elif isinstance(plink_samples, dict):
+        for sample_id, sex_number in plink_samples.items():
+            plink_samples[sample_id] = PED_SEX_MAP.get(sex_number)
+
     for sample_id, sample_metrics in metrics['sample'].items():
         main_key = [key for key in sample_metrics.keys() if '_lanes_' in key][0]
         sample_data = {
             'id': sample_id,
             'predicted_sex': sample_metrics[main_key]['chanjo_sexcheck']['gender'],
             'duplicates': sample_metrics[main_key]['markduplicates']['fraction_duplicates'],
+            'plink_sex': plink_samples.get(sample_id),
         }
         data['samples'].append(sample_data)
+    return data
+
+
+def parse_peddy_sexcheck(handle: TextIO):
+    """Parse Peddy sexcheck output."""
+    data = {}
+    samples = csv.DictReader(handle)
+    for sample in samples:
+        data[sample['sample_id']] = {
+            'predicted_sex': sample['predicted_sex'],
+            'het_ratio': sample['het_ratio'],
+            'error': True if sample['error'] == 'True' else False,
+        }
     return data
