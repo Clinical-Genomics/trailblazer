@@ -47,7 +47,7 @@ def parse_sampleinfo(data: dict) -> dict:
                         f"{data['program']['svdb']['outfile']}")
     else:
         svdb_outpath = ''
-    data = {
+    outdata = {
         'date': data['analysis_date'],
         'is_finished': True if data['analysisrunstatus'] == 'finished' else False,
         'genome_build': genome_build_str,
@@ -81,7 +81,7 @@ def parse_sampleinfo(data: dict) -> dict:
     }
 
     for sample_id, sample_data in data['sample'].items():
-        sample_data = {
+        sample = {
             'id': sample_id,
             'bam': sample_data['most_complete_bam']['path'],
             'sambamba': list(sample_data['program']['sambamba_depth'].values())[0]['bed']['path'],
@@ -89,10 +89,10 @@ def parse_sampleinfo(data: dict) -> dict:
         }
         chanjo_sexcheck = list(sample_data['program']['chanjo_sexcheck'].values())[0]
         sexcheck_path = f"{chanjo_sexcheck['outdirectory']}/{chanjo_sexcheck['outfile']}"
-        sample_data['chanjo_sexcheck'] = sexcheck_path
-        data['samples'].append(sample_data)
+        sample['chanjo_sexcheck'] = sexcheck_path
+        outdata['samples'].append(sample)
 
-    return data
+    return outdata
 
 
 def parse_qcmetrics(metrics: dict) -> dict:
@@ -144,7 +144,7 @@ def parse_peddy_sexcheck(handle: TextIO):
     for sample in samples:
         data[sample['sample_id']] = {
             'predicted_sex': sample['predicted_sex'],
-            'het_ratio': sample['het_ratio'],
+            'het_ratio': float(sample['het_ratio']),
             'error': True if sample['error'] == 'True' else False,
         }
     return data
@@ -156,6 +156,6 @@ def parse_chanjo_sexcheck(handle: TextIO):
     for sample in samples:
         return {
             'predicted_sex': sample['sex'],
-            'x_coverage': sample['#X_coverage'],
-            'y_coverage': sample['Y_coverage'],
+            'x_coverage': float(sample['#X_coverage']),
+            'y_coverage': float(sample['Y_coverage']),
         }

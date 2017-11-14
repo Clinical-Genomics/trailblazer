@@ -34,12 +34,12 @@ def check(context: click.Context, family: str):
         samples['sample'].append(sample_data['id'])
         samples['ped'].append(sample_data['sex'])
 
-        with Path(sample_data['chanjo_sexcheck']) as chanjo_handle:
+        with Path(sample_data['chanjo_sexcheck']).open() as chanjo_handle:
             sexcheck_data = files.parse_chanjo_sexcheck(chanjo_handle)
 
         predicted_sex = sexcheck_data['predicted_sex']
         xy_ratio = sexcheck_data['y_coverage'] / sexcheck_data['x_coverage']
-        samples['chanjo'].append(f"{predicted_sex} ({xy_ratio})")
+        samples['chanjo'].append(f"{predicted_sex} ({xy_ratio:.3f})")
 
     for sample_data in qcmetrics_data['samples']:
         samples['plink'].append(sample_data['plink_sex'])
