@@ -17,13 +17,21 @@ def check(context: click.Context, family: str):
         print(click.style('no analysis found', fg='yellow'))
         context.abort()
 
-    config_raw = ruamel.yaml.safe_load(Path(analysis_obj.config_path).open())
+    config_path = Path(analysis_obj.config_path)
+    if not config_path.exists():
+        print(click.style(f"analysis config not found: {config_path}", fg='red'))
+        context.abort()
+    config_raw = ruamel.yaml.safe_load(config_path.open())
     config_data = files.parse_config(config_raw)
 
     sampleinfo_raw = ruamel.yaml.safe_load(Path(config_data['sampleinfo_path']).open())
     sampleinfo_data = files.parse_sampleinfo(sampleinfo_raw)
 
-    qcmetrics_raw = ruamel.yaml.safe_load(Path(sampleinfo_data['qcmetrics_path']).open())
+    qcmetrics_path = Path(sampleinfo_data['qcmetrics_path'])
+    if not qcmetrics_path.exists():
+        print(click.style(f"qc metrics not found: {str(qcmetrics_path)}", fg='red'))
+        context.abort()
+    qcmetrics_raw = ruamel.yaml.safe_load(qcmetrics_path.open())
     qcmetrics_data = files.parse_qcmetrics(qcmetrics_raw)
 
     with Path(sampleinfo_data['peddy']['sex_check']).open() as sexcheck_handle:
