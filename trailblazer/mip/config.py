@@ -6,6 +6,7 @@ from pathlib import Path
 from marshmallow import Schema, fields, validate
 import ruamel.yaml
 
+from trailblazer.constants import DEFAULT_CAPTURE_KIT
 from trailblazer.exc import ConfigError
 
 LOG = logging.getLogger(__name__)
@@ -28,7 +29,7 @@ class SampleSchema(Schema):
         validate=validate.OneOf(choices=['male', 'female', 'unknown'])
     )
     expected_coverage = fields.Float()
-    capture_kit = fields.Str(default='agilent_sureselect_cre.v1')
+    capture_kit = fields.Str(default=DEFAULT_CAPTURE_KIT)
 
 
 class ConfigSchema(Schema):
@@ -73,6 +74,8 @@ class ConfigHandler:
         for sample_data in data_copy['samples']:
             sample_data['mother'] = sample_data.get('mother') or '0'
             sample_data['father'] = sample_data.get('father') or '0'
+            if sample_data['analysis_type'] == 'wgs' and sample_data.get('capture_kit') is None:
+                sample_data['capture_kit'] = DEFAULT_CAPTURE_KIT
         return data_copy
 
     def save_config(self, data: dict) -> Path:
