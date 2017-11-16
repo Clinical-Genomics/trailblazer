@@ -46,7 +46,7 @@ def check(context: click.Context, family: str):
         'plink': [],
         'duplicates': [],
     }
-    for sample_data in sampleinfo_data['samples']:
+    for sample_data in config_data['samples']:
         LOG.debug(f"{sample_data['id']}: parse analysis config")
         samples['sample'].append(sample_data['id'])
         samples['type'].append(sample_data['type'])
@@ -66,7 +66,7 @@ def check(context: click.Context, family: str):
         LOG.debug(f"{sample_data['id']}: parse qc metrics")
         samples['plink'].append(sample_data['plink_sex'])
         duplicates_percent = sample_data['duplicates'] * 100
-        samples['duplicates'].append(f"{duplicates_percent}%")
+        samples['duplicates'].append(f"{duplicates_percent:.3f}%")
 
     peddy_path = Path(sampleinfo_data['peddy']['sex_check'])
     if peddy_path.exists():

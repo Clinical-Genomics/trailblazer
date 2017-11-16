@@ -130,7 +130,7 @@ def parse_qcmetrics(metrics: dict) -> dict:
         sample_data = {
             'id': sample_id,
             'predicted_sex': sample_metrics[main_key]['chanjo_sexcheck']['gender'],
-            'duplicates': sample_metrics[main_key]['markduplicates']['fraction_duplicates'],
+            'duplicates': float(sample_metrics[main_key]['markduplicates']['fraction_duplicates']),
             'plink_sex': plink_samples.get(sample_id),
         }
         data['samples'].append(sample_data)
