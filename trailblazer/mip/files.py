@@ -126,12 +126,30 @@ def parse_qcmetrics(metrics: dict) -> dict:
             plink_samples[sample_id] = PED_SEX_MAP.get(int(sex_number))
 
     for sample_id, sample_metrics in metrics['sample'].items():
+        bam_stats = [values['bamstats'] for key, values in sample_metrics.items()
+                     if key[:-1].endswith('.lane')]
+        total_reads = sum(bam_stat['raw_total_sequences'] for bam_stat in bam_stats)
+        total_mapped = sum(bam_stat['reads_mapped'] for bam_stat in bam_stats)
+
         main_key = [key for key in sample_metrics.keys() if '_lanes_' in key][0]
+
+        hs_metrics = sample_metrics['collecthsmetrics']['header']['data']
+        multiple_metrics = sample_metrics['collectmultiplemetrics']['header']['pair']
         sample_data = {
             'id': sample_id,
             'predicted_sex': sample_metrics[main_key]['chanjo_sexcheck']['gender'],
             'duplicates': float(sample_metrics[main_key]['markduplicates']['fraction_duplicates']),
             'plink_sex': plink_samples.get(sample_id),
+            'reads': total_reads,
+            'mapped': total_mapped / total_reads,
+            'target_coverage': float(hs_metrics['MEAN_TARGET_COVERAGE']),
+            'strand_balance': float(multiple_metrics['STRAND_BALANCE']),
+            'completeness_target': {
+                10: hs_metrics['PCT_TARGET_BASES_10X'],
+                20: hs_metrics['PCT_TARGET_BASES_20X'],
+                50: hs_metrics['PCT_TARGET_BASES_50X'],
+                100: hs_metrics['PCT_TARGET_BASES_100X'],
+            },
         }
         data['samples'].append(sample_data)
     return data
