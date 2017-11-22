@@ -2,14 +2,14 @@
   <div class="app-container">
     <Navbar>
       <slot>
-        <b-nav is-nav-bar class="ml-auto">
+        <b-navbar-nav class="ml-auto">
           <b-nav-item v-for="tab in analysisTabs"
                       :key="tab.category"
                       :active="tab.category === selectedCategory"
                       @click="setCategory(tab.category)">
             {{ tab.title }}
           </b-nav-item>
-        </b-nav>
+        </b-navbar-nav>
       </slot>
     </Navbar>
 

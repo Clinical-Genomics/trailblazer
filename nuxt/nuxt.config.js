@@ -27,7 +27,7 @@ module.exports = {
   css: [ '~static/main.css' ],
   modules: [
     [ '@nuxtjs/axios', { redirectError: { 403: '/' } } ],
-    '@nuxtjs/bootstrap-vue'
+    'bootstrap-vue/nuxt'
   ],
   env: { GOOGLE_OAUTH_CLIENT_ID: process.env.GOOGLE_OAUTH_CLIENT_ID },
   /*
@@ -52,6 +52,7 @@ module.exports = {
   plugins: [
     '~/plugins/vue-click-outside.js',
     { src: '~/plugins/vue-google-auth.js', ssr: false },
-    '~/plugins/filters.js'
+    '~/plugins/filters.js',
+    '~/plugins/auth.js'
   ]
 }

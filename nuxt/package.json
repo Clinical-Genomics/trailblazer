@@ -5,9 +5,10 @@
   "author": "Robin Andeer <robin.andeer@gmail.com>",
   "private": true,
   "dependencies": {
-    "@nuxtjs/axios": "^4.2.1",
-    "@nuxtjs/bootstrap-vue": "^2.0.2",
-    "js-cookie": "^2.1.4",
+    "@nuxtjs/axios": "^4.5.0",
+    "bootstrap": "4.0.0-beta.2",
+    "bootstrap-vue": "^1.2.0",
+    "js-cookie": "^2.2.0",
     "jwt-decode": "^2.2.0",
     "nuxt": "^1.0.0-rc11",
     "vue-google-auth": "^1.0.5"

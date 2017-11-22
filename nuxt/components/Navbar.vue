@@ -4,7 +4,7 @@
 
     <nuxt-link class="navbar-brand" to="/">Trailblazer</nuxt-link>
     <b-collapse is-nav id="nav_collapse">
-      <b-nav is-nav-bar>
+      <b-navbar-nav>
         <b-nav-item v-if="isAuthenticated" to="/dashboard">Dashboard</b-nav-item>
         <b-nav-item v-if="isAuthenticated" to="/analyses">Analyses</b-nav-item>
         <b-nav-item v-if="isAuthenticated" to="/stats">Stats</b-nav-item>
@@ -12,7 +12,7 @@
           Sign in with Google
         </b-button>
         <b-button v-else variant="link" @click="onSignOut">Sign out</b-button>
-      </b-nav>
+      </b-navbar-nav>
 
       <slot></slot>
     </b-collapse>
