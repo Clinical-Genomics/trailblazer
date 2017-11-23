@@ -116,7 +116,7 @@ def parse_qcmetrics(metrics: dict) -> dict:
     }
 
     plink_samples = {}
-    plink_sexcheck = metrics['program']['plink_sexcheck']['sample_sexcheck']
+    plink_sexcheck = metrics['program'].get('plink_sexcheck', {}).get('sample_sexcheck')
     if isinstance(plink_sexcheck, str):
         sample_id, sex_number = plink_sexcheck.strip().split(':', 1)
         plink_samples[sample_id] = PED_SEX_MAP.get(int(sex_number))
@@ -128,13 +128,13 @@ def parse_qcmetrics(metrics: dict) -> dict:
     for sample_id, sample_metrics in metrics['sample'].items():
         bam_stats = [values['bamstats'] for key, values in sample_metrics.items()
                      if key[:-1].endswith('.lane')]
-        total_reads = sum(bam_stat['raw_total_sequences'] for bam_stat in bam_stats)
-        total_mapped = sum(bam_stat['reads_mapped'] for bam_stat in bam_stats)
+        total_reads = sum(int(bam_stat['raw_total_sequences']) for bam_stat in bam_stats)
+        total_mapped = sum(int(bam_stat['reads_mapped']) for bam_stat in bam_stats)
 
         main_key = [key for key in sample_metrics.keys() if '_lanes_' in key][0]
 
-        hs_metrics = sample_metrics['collecthsmetrics']['header']['data']
-        multiple_metrics = sample_metrics['collectmultiplemetrics']['header']['pair']
+        hs_metrics = sample_metrics[main_key]['collecthsmetrics']['header']['data']
+        multiple_metrics = sample_metrics[main_key]['collectmultiplemetrics']['header']['pair']
         sample_data = {
             'id': sample_id,
             'predicted_sex': sample_metrics[main_key]['chanjo_sexcheck']['gender'],
