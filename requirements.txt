@@ -5,6 +5,7 @@ ruamel.yaml
 SQLAlchemy
 marshmallow
 tabulate
+python-dateutil
 
 # server
 Flask
