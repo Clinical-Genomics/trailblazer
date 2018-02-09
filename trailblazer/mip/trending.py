@@ -40,18 +40,15 @@ def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw
     ## Parse qc metric file into dict
     qcmetrics_data = files.parse_qcmetrics(qcmetrics_raw)
 
-    ## Add duplicates from qc_metric file
+    ## Add sample level info from qc_metric file
     for sample_data in qcmetrics_data['samples']:
          duplicates_percent = sample_data['duplicates'] * 100
          outdata['duplicates'][sample_data['id']] = f"{duplicates_percent:.3f}%"
 
-    ## Add mapped read from qc_metric file
-    for sample_data in qcmetrics_data['samples']:
+         ## Add mapped reads
          mapped_reads_percent = sample_data['mapped'] * 100
          outdata['mapped_reads'][sample_data['id']] = f"{mapped_reads_percent:.3f}%"
-
-    ## Add predicted sex from qc metric file
-    for sample_data in qcmetrics_data['samples']:
+         ## Add predicted sex
          outdata['analysis_sex'][sample_data['id']] = sample_data['predicted_sex']
 
     ### Qc sample info
@@ -65,4 +62,3 @@ def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw
     outdata['genome_build'] = sampleinfo_data['genome_build']
 
     return outdata
-
