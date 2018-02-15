@@ -20,8 +20,6 @@ program:
   relation_check: {}
   sambamba:
     version: 0.6.5
-  samtools:
-    version: 1.3.1+htslib-1.3.1
   snpeff:
     version: SnpSift_4.2_(build_2015-12-05)
   sv_combinevariantcallsets:
@@ -209,7 +207,7 @@ sample:
       bwa:
         version: 0.7.15-r1140
     sample_lanes_7777:
-      calculatehsmetrics:
+      collecthsmetrics:
         header:
           data:
             AT_DROPOUT: 0.126963

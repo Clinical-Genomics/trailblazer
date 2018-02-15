@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+import pytest
+
 from functools import partial
 
 from click.testing import CliRunner
-import pytest
 import ruamel.yaml
 
 from trailblazer.cli import base
@@ -61,7 +62,7 @@ def allfailed_sacct_jobs():
 
 @pytest.yield_fixture(scope='function')
 def store():
-    _store = Store(uri='sqlite://')
+    _store = Store(uri='sqlite://', families_dir='/tmp/families')
     _store.setup()
     yield _store
     _store.drop_all()
