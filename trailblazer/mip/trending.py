@@ -49,7 +49,7 @@ def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw
 
         ## Add duplicate reads
         duplicates_percent = sample_data['duplicates'] * 100
-        outdata['duplicates'][sample_data['id']] = f"{duplicates_percent:.3f}%"
+        outdata['duplicates'][sample_data['id']] = duplicates_percent
 
         ## Add at and gc droputs
         outdata['at_dropout'][sample_data['id']] = sample_data['at_dropout']
@@ -57,11 +57,11 @@ def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw
 
         ## Add insert size metrics
         outdata['median_insert_size'][sample_data['id']] = sample_data['median_insert_size']
-        outdata['insert_size_standard_deviation'][sample_data['id']] = f"{sample_data['insert_size_standard_deviation']:.3f}%"
+        outdata['insert_size_standard_deviation'][sample_data['id']] = sample_data['insert_size_standard_deviation']
 
         ## Add mapped reads
         mapped_reads_percent = sample_data['mapped'] * 100
-        outdata['mapped_reads'][sample_data['id']] = f"{mapped_reads_percent:.3f}%"
+        outdata['mapped_reads'][sample_data['id']] = mapped_reads_percent
 
         ## Add predicted sex
         outdata['analysis_sex'][sample_data['id']] = sample_data['predicted_sex']

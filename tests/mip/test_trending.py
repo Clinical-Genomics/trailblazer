@@ -43,13 +43,13 @@ def test_parse_mip_analysis(files_raw) -> dict:
             'sample': 'female',
             },
         'duplicates': {
-            'sample': '13.272%',
+            'sample': 13.2719986683768,
             },
         'insert_size_standard_deviation': {
-            'sample': '89.872%',
+            'sample': 89.871783,
             },
         'mapped_reads': {
-            'sample': '98.507%',
+            'sample': 98.50732625744484,
             },
         'median_insert_size': {
             'sample': 413,
