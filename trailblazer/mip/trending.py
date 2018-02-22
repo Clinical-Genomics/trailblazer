@@ -3,7 +3,7 @@
 
 from trailblazer.mip import files
 
-def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw: dict) -> dict: 
+def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw: dict) -> dict:
     """Parse the output analysis files from MIP for adding info
     to trend database
 
@@ -17,15 +17,19 @@ def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw
 
     ### Define output dict
     outdata = {
-        'analysis_sex': {}, 
+        'analysis_sex': {},
+        'at_dropout': {},
         'family': None,
         'duplicates': {},
+        'gc_dropout': {},
         'genome_build': None,
+        'insert_size_standard_deviation': {},
         'mapped_reads': {},
+        'median_insert_size': {},
         'mip_version': None,
         'sample_ids': [],
     }
-    ### Config 
+    ### Config
     ## Parse raw mip_config into dict
     config_data = files.parse_config(mip_config_raw)
 
@@ -42,15 +46,25 @@ def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw
 
     ## Add sample level info from qc_metric file
     for sample_data in qcmetrics_data['samples']:
-         duplicates_percent = sample_data['duplicates'] * 100
-         outdata['duplicates'][sample_data['id']] = f"{duplicates_percent:.3f}%"
 
-         ## Add mapped reads
-         mapped_reads_percent = sample_data['mapped'] * 100
-         outdata['mapped_reads'][sample_data['id']] = f"{mapped_reads_percent:.3f}%"
-            
-         ## Add predicted sex
-         outdata['analysis_sex'][sample_data['id']] = sample_data['predicted_sex']
+        ## Add duplicate reads
+        duplicates_percent = sample_data['duplicates'] * 100
+        outdata['duplicates'][sample_data['id']] = duplicates_percent
+
+        ## Add at and gc droputs
+        outdata['at_dropout'][sample_data['id']] = sample_data['at_dropout']
+        outdata['gc_dropout'][sample_data['id']] = sample_data['gc_dropout']
+
+        ## Add insert size metrics
+        outdata['median_insert_size'][sample_data['id']] = sample_data['median_insert_size']
+        outdata['insert_size_standard_deviation'][sample_data['id']] = sample_data['insert_size_standard_deviation']
+
+        ## Add mapped reads
+        mapped_reads_percent = sample_data['mapped'] * 100
+        outdata['mapped_reads'][sample_data['id']] = mapped_reads_percent
+
+        ## Add predicted sex
+        outdata['analysis_sex'][sample_data['id']] = sample_data['predicted_sex']
 
     ### Qc sample info
     ## Parse qc sample info file
@@ -58,7 +72,7 @@ def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw
 
     ## Add mip version
     outdata['mip_version'] = sampleinfo_data['version']
-    
+
     ## Add mip version
     outdata['genome_build'] = sampleinfo_data['genome_build']
 
