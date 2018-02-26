@@ -87,6 +87,8 @@ def parse_sampleinfo(data: dict) -> dict:
             'bam': sample_data['most_complete_bam']['path'],
             'sambamba': list(sample_data['program']['sambamba_depth'].values())[0]['path'],
             'sex': sample_data['sex'],
+            'subsample_mt': list(sample_data['program']['samtools_subsample_mt'].values())[0]['path'],
+            'vcf2cytosure': list(sample_data['program']['vcf2cytosure'].values())[0]['path'],
         }
         chanjo_sexcheck = list(sample_data['program']['chanjo_sexcheck'].values())[0]
         sample['chanjo_sexcheck'] = chanjo_sexcheck['path']
