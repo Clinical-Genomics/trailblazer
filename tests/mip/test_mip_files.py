@@ -80,13 +80,17 @@ def test_parse_sampleinfo(files_raw):
     ## Sample data
     # Build dict for sample return data
     sampleinfo_test_sample_data = {
-        'id': 'sample',
         'bam': '/path_to/sample/bwa/sample_lanes_7777_sorted_md_brecal.bam',
+        'chanjo_sexcheck': ('/path_to/sample/bwa/coveragereport/' +
+                            'sample_lanes_7777_sorted_md_brecal.sexcheck'),
+        'id': 'sample',
         'sambamba': ('/path_to/sample/bwa/coveragereport/sample_lanes_7777' +
                      '_sorted_md_brecal_coverage.bed'),
         'sex': 'female',
-        'chanjo_sexcheck': ('/path_to/sample/bwa/coveragereport/' +
-                            'sample_lanes_7777_sorted_md_brecal.sexcheck'),
+        'subsample_mt': ('/path_to/sample/bwa/ADM1059A4_lanes_8_sorted_md' +
+                         '_brecal_subsample_MT.bam'),
+        'vcf2cytosure': ('/path_to/sample/bwa/vcf2cytosure/ADM1059A4_sorted' +
+                         '_md_brecal_comb_SV.cgh'),
         }
 
     # Check returns from def
