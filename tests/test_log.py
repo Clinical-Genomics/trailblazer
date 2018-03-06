@@ -71,7 +71,9 @@ def test_parse_sacct(files_data):
     sacct_jobs = files_data['sacct']
     analysis_end = datetime.datetime(2017, 6, 19, 3, 39, 56)
     # WHEN parsing them for info
-    sacct_data, last_job_end = log.LogAnalysis._parse_sacct(sacct_jobs)
+    jobs_count = len(sacct_jobs)    # TODO: see code in _call_ in class LogAnalysis for proper
+    # jobs_count calculation
+    sacct_data, last_job_end = log.LogAnalysis._parse_sacct(sacct_jobs, jobs_count=jobs_count)
     # THEN it should return info about the jobs in general
     assert sacct_data['jobs'] == len(sacct_jobs)
     assert sacct_data['completed_jobs'] == len(sacct_jobs)
