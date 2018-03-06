@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from trailblazer import log, exc
+from trailblazer.log import LogAnalysis
 
 
 @pytest.mark.parametrize('kwargs, expected_status', [
@@ -22,23 +23,33 @@ def test_get_status(kwargs, expected_status):
 
 
 def test_call(store, log_analysis, files):
+
     # GIVEN an empty store
     assert store.analyses().count() == 0
+
     # WHEN adding a new analysis log entry
     with Path(files['config']).open() as config_stream:
         new_run = log_analysis(config_stream, sampleinfo=files['sampleinfo'], sacct=files['sacct'])
+
     # THEN it should add the analysis log
     assert store.analyses(family=new_run.family).first() == new_run
 
-    # WHEN logging the same run a second time
-    assert store.analyses().count() == 1
-    current_analysis = store.analyses().first()
+
+def test_call_twice(store, log_analysis, files):
+    # GIVEN an empty store
+    assert store.analyses().count() == 0
+
+    # WHEN adding a new analysis log entry twice
+    with Path(files['config']).open() as config_stream:
+        log_analysis(config_stream, sampleinfo=files['sampleinfo'], sacct=files['sacct'])
+    first_analysis = store.analyses().first()
     with Path(files['config']).open() as config_stream:
         new_run = log_analysis(config_stream, sampleinfo=files['sampleinfo'], sacct=files['sacct'])
+
     # THEN it should skip adding the duplicate log to the database
     assert new_run is None
-    assert store.analyses(family=current_analysis.family).count() == 1
-    assert store.analyses(family=current_analysis.family).first() == current_analysis
+    assert store.analyses(family=first_analysis.family).count() == 1
+    assert store.analyses(family=first_analysis.family).first() == first_analysis
 
 
 def test_call_with_missing_files(log_analysis, files):
@@ -108,7 +119,7 @@ def test_parse(files_data):
     sampleinfo_data = files_data['sampleinfo']
     sacct_jobs = files_data['sacct']
     # WHEN parsing log-information
-    run_data = log.LogAnalysis.parse(config_data, sampleinfo_data, sacct_jobs)
+    run_data = log.LogAnalysis.parse(config_data, sampleinfo_data, sacct_jobs, jobs=None)
     # THEN it should have parsed out a completed date
     assert run_data['status'] == 'completed'
     assert isinstance(run_data['completed_at'], datetime.datetime)
