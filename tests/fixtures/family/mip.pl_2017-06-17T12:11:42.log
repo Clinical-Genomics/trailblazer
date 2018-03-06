@@ -1,0 +1,570 @@
+[INFO] 2017/06/17 12:11:42 MIP_logger - Wrote: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/qc_pedigree.yaml
+[INFO] 2017/06/17 12:11:42 MIP_logger - Found single sample: ABC123456
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: sambamba installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: vt installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: bcftools installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: gzip installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: fastqc installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: grep installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: bedtools installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: samtools installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: freebayes installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: sed installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: bgzip installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: tabix installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: vcftools installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: plink2 installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: bwa installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Program check: configManta.py installed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set mip to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set cluster_constant_path to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set analysis_constant_path to: analysis
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set family_id to: 12345
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set outdata_dir to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set log_file to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/mip_log/2017-06-17/mip.pl_2017-06-17T12:11:42.log
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set project_id to: prod001
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set email to: emilia.ottosson@scilifelab.se
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set email_type to: F
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set core_processor_number to: 16
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set config_file to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/config/MIP_config.v1.6.yaml
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set platform to: ILLUMINA
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set outscript_dir to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set config_file_analysis to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345_config.yaml
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pedigree_file to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/12345_pedigree.yaml
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set source_environment_commands to: echo hello
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sample_ids to: ABC123456
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set analysis_type to: ABC123456=wgs
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set expected_coverage to: ABC123456=26.1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set infile_dirs to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/wgs/ABC123456/fastq=ABC123456
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sample_info_file to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345_qc_sample_info.yaml
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set script_dir to: /mnt/hds/proj/bioinfo/SERVER/miniconda/bin
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set reference_dir to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set dry_run_all to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set node_ram_memory to: 128
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set slurm_quality_of_service to: normal
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set temp_directory to: /scratch/$SLURM_JOB_ID
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set genomic_set to: nouser_info
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set reduce_io to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set replace_iupac to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set print_program_mode to: 2
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set psplit_fastq_file to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pgzip_fastq to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pfastqc to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pmadeline to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pmosaik_build to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pmosaik_aligner to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pbwa_mem to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set bwa_mem_hla to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set bwa_mem_cram to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set bwa_mem_bamstats to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set bwa_sambamba_sort_memory_limit to: 32G
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pbwa_aln to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pbwa_sampe to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set bwa_build_reference to: not_set_yet
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set outaligner_dir to: not_set_yet
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set ppicardtools_mergerapidreads to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pbamcalibrationblock to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set ppicardtools_mergesamfiles to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set ppicardtools_markduplicates to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set psambamba_markduplicates to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pgatk_realigner to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_realigner_indel_known_sites to: 1000G_phase1.indels.b37.vcf,Mills_and_1000G_gold_standard.indels.b37.vcf
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pgatk_baserecalibration to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_baserecalibration_covariates to: ReadGroupCovariate,ContextCovariate,CycleCovariate,QualityScoreCovariate
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_baserecalibration_known_sites to: dbsnp_138.b37.vcf,1000G_phase1.indels.b37.vcf,Mills_and_1000G_gold_standard.indels.b37.vcf
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_baserecalibration_over_clipped_read to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_baserecalibration_disable_indel_qual to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_baserecalibration_static_quantized_quals to: 10,20,30,40
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pchanjo_sexcheck to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set psambamba_depth to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sambamba_depth_cutoffs to: 10,15,20,50,100
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sambamba_depth_bed to: scout.exons.bed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sambamba_depth_base_quality to: 10
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sambamba_depth_mapping_quality to: 10
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sambamba_depth_noduplicates to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sambamba_depth_quality_control to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pgenomecoveragebed to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set ppicardtools_collectmultiplemetrics to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set ppicardtools_calculatehsmetrics to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set prcovplots to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pcnvnator to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pdelly to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pmanta to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pfindtranslocations to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set psv_combinevariantcallsets to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_vt_decompose to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_bcftools_view_filter to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_vcfanno to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_vcfanno_lua to: vcfanno_custom.v1.0.lua
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_vcfanno_config to: vcfanno_config.v1.0.toml
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_vcfannotation_header_lines_file to: vcfanno_headerLines.v1.0.txt
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_genmod_filter to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_genmod_filter_1000g to: ALL.wgs.phase3_shapeit2_mvncall_integrated_v5b.20130502.sites.vcf.gz
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_genmod_filter_threshold to: 0.10
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_combinevariantcallsets_bcf_file to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set psv_varianteffectpredictor to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_vep_features to: hgvs,symbol,numbers,sift,polyphen,humdiv,domains,protein,ccds,uniprot,biotype,regulatory,tsl,canonical,per_gene,appris
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_vep_plugins to: UpDownDistance,LoFtool,LoF
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set psv_vcfparser to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_vcfparser_vep_transcripts to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_vcfparser_per_gene to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_vcfparser_select_file to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/aggregated_master.bed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_vcfparser_select_file_matching_column to: 3
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set psv_rankvariant to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_genmod_annotate_regions to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_genmod_models_family_type to: cmms
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_genmod_models_whole_gene to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_genmod_models_reduced_penetrance_file to: cust003-CMMS-red-pen.txt.csv
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_rank_model_file to: svrank_model_cmms_v1.0.ini
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set psv_reformat to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set sv_rankvariant_binary_file to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set psamtools_mpileup to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pfreebayes to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pgatk_haplotypecaller to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_haplotypecaller_annotation to: BaseQualityRankSumTest,ChromosomeCounts,Coverage,DepthPerAlleleBySample,FisherStrand,MappingQualityRankSumTest,QualByDepth,RMSMappingQuality,ReadPosRankSumTest,StrandOddsRatio
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_haplotypecaller_snp_known_set to: dbsnp_138.b37.vcf
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_haplotypecaller_soft_clipped_bases to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_haplotypecaller_pcr_indel_model to: None
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set picardtools_path to: /mnt/hds/proj/bioinfo/SERVER/miniconda/bin
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pgatk_genotypegvcfs to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_genotypegvcfs_ref_gvcf to: Merged_reference_infiles.gvcf
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_genotypegvcfs_all_sites to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_concatenate_genotypegvcfs_bcf_file to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pgatk_variantrecalibration to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_variantrecalibration_training_set_hapmap to: hapmap_3.3.b37.sites.vcf
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_variantrecalibration_training_set_dbsnp to: dbsnp_138.b37.vcf
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_variantrecalibration_training_set_1000gsnp to: 1000G_phase1.snps.high_confidence.b37.vcf
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_variantrecalibration_training_set_1000g_omni to: 1000G_omni2.5.b37.sites.vcf
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_variantrecalibration_training_set_mills to: Mills_and_1000G_gold_standard.indels.b37.vcf
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_variantrecalibration_snv_tsfilter_level to: 99.9
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_variantrecalibration_indel_tsfilter_level to: 99.9
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_variantrecalibration_dp_annotation to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_variantrecalibration_snv_max_gaussians to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_variantrecalibration_indel_max_gaussians to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_variantrecalibration_exclude_nonvariants_file to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_variantrecalibration_bcf_file to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_calculategenotypeposteriors_support_set to: 1000G_phase3_v4_20130502.sites.vcf
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pgatk_combinevariantcallsets to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_combinevariants_prioritize_caller to: gatk,samtools,freebayes
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_combinevariantcallsets_bcf_file to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pvariantannotationblock to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pprepareforvariantannotationblock to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pvt to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vt_decompose to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vt_normalize to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vt_missing_alt_allele to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vt_genmod_filter to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vt_genmod_filter_1000g to: ALL.wgs.phase3_shapeit2_mvncall_integrated_v5b.20130502.sites.vcf.gz
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vt_genmod_filter_max_af to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vt_genmod_filter_threshold to: 0.10
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pgatk_phasebytransmission to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pgatk_readbackedphasing to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pgatk_variantevalall to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pgatk_variantevalexome to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_varianteval_dbsnp to: dbsnp_138.b37.excluding_sites_after_129.vcf
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_varianteval_gold to: Mills_and_1000G_gold_standard.indels.b37.vcf
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_downsample_to_coverage to: 1000
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_disable_auto_index_and_file_lock to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_bundle_download_version to: 2.8
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pvarianteffectpredictor to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vep_directory_path to: /mnt/hds/proj/bioinfo/SERVER/miniconda/ensembl-tools-release-87/scripts/variant_effect_predictor
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vep_directory_cache to: /mnt/hds/proj/bioinfo/SERVER/apps/mip/resources/ensembl-tools-release-87/cache
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vep_reference to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vep_features to: hgvs,symbol,numbers,sift,polyphen,humdiv,domains,protein,ccds,uniprot,biotype,regulatory,tsl,canonical,appris
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vep_plugins to: UpDownDistance,LoFtool,LoF
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pvcfparser to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vcfparser_vep_transcripts to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vcfparser_select_file to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/aggregated_master.bed
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vcfparser_select_file_matching_column to: 3
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set vcfparser_outfile_count to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pannovar to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set psnpeff to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set snpeff_path to: /mnt/hds/proj/bioinfo/SERVER/miniconda/bin
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set snpeff_ann to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set snpeff_genome_build_version to: GRCh37.75
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set snpsift_annotation_files to: anon-SweGen_STR_NSPHS_1000samples_snp_freq_hg19.vcf.gz=AF,AC_Hom,AC_Het,AC_Hemi,genbank_haplogroup_2015_August.vcf.gz=MTAF,anon-SweGen_STR_NSPHS_1000samples_indel_freq_hg19.vcf.gz=AF,AC_Hom,AC_Het,AC_Hemi,GRCh37_clinvar_-2017-01-04-.vcf.gz=CLNSIG,CLNACC,CLNREVSTAT,loqusdb.2016-09-26.vcf.gz=Obs,Hom,GRCh37_exac_reheader_-r0.3.1-.vcf.gz=AF,AF_Adj
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set snpsift_annotation_outinfo_key to: GRCh37_exac_reheader_-r0.3.1-.vcf.gz=EXAC
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set snpsift_dbnsfp_file to: dbNSFP2.9.txt.gz
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set snpsift_dbnsfp_annotations to: GERP++_RS,GERP++_NR,phyloP46way_primate,phyloP100way_vertebrate,phastCons46way_primate,phastCons100way_vertebrate
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set java_use_large_pages to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set gatk_path to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/modules/GenomeAnalysisTK-3.6
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set psamplecheck to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pevaluation to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set prankvariant to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set genmod_annotate_regions to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set genmod_annotate_cadd_files to: whole_genome_SNVs.v1.3_ge10.tsv.gz,1000G_phase3.v1.3.tsv.gz,ExAC_r0.3.v1.3.tsv.gz
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set genmod_annotate_spidex_file to: spidex_public_noncommercial_v1_0.tab.gz
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set genmod_models_whole_gene to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set genmod_models_family_type to: ped
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set genmod_models_reduced_penetrance_file to: cust003-CMMS-red-pen.txt.csv
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set rank_model_file to: rank_model_cmms_v1.18.ini
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pendvariantannotationblock to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set rankvariant_binary_file to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pqccollect to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set qccollect_sampleinfo_file to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345_qc_sample_info.yaml
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set qccollect_regexp_file to: qc_regexp_v1.13.yaml
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set qccollect_skip_evaluation to: 0
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set pmultiqc to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set premoveredundantfiles to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set panalysisrunstatus to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set psacct to: 1
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set human_genome_reference to: Homo_sapiens.GRCh37.d5.fasta
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set exome_target_bed to: Agilent_SureSelectCRE.V1.GRCh37_targets.bed=ABC123456
+[INFO] 2017/06/17 12:11:42 MIP_logger - Set outaligner_dir to: bwa
+[INFO] 2017/06/17 12:11:42 MIP_logger - Wrote: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345_config.yaml
+[INFO] 2017/06/17 12:11:42 MIP_logger - mip.pl -cluster_constant_path /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003 -analysis_constant_path analysis -family_id 12345 -outdata_dir /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis -log_file /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/mip_log/2017-06-17/mip.pl_2017-06-17T12:11:42.log -project_id prod001 -email emilia.ottosson@scilifelab.se -email_type F -core_processor_number 16 -config_file /mnt/hds/proj/bioinfo/MIP_ANALYSIS/config/MIP_config.v1.6.yaml -platform ILLUMINA -outscript_dir /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts -config_file_analysis /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345_config.yaml -pedigree_file /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/12345_pedigree.yaml -source_environment_commands echo hello -sample_ids ABC123456 -analysis_type ABC123456=wgs -expected_coverage ABC123456=26.1 -infile_dirs /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/wgs/ABC123456/fastq=ABC123456 -sample_info_file /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345_qc_sample_info.yaml -script_dir /mnt/hds/proj/bioinfo/SERVER/miniconda/bin -reference_dir /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0 -dry_run_all 0 -node_ram_memory 128 -slurm_quality_of_service normal -temp_directory /scratch/$SLURM_JOB_ID -genomic_set nouser_info -reduce_io 1 -replace_iupac 0 -print_program_mode 2 -psplit_fastq_file 0 -pgzip_fastq 1 -pfastqc 1 -pmadeline 0 -pmosaik_build 0 -pmosaik_aligner 0 -pbwa_mem 1 -bwa_mem_hla 1 -bwa_mem_cram 0 -bwa_mem_bamstats 1 -bwa_sambamba_sort_memory_limit 32G -pbwa_aln 0 -pbwa_sampe 0 -outaligner_dir bwa -ppicardtools_mergerapidreads 0 -ppicardtools_mergesamfiles 1 -ppicardtools_markduplicates 1 -psambamba_markduplicates 0 -pgatk_realigner 0 -gatk_realigner_indel_known_sites 1000G_phase1.indels.b37.vcf,Mills_and_1000G_gold_standard.indels.b37.vcf -pgatk_baserecalibration 1 -gatk_baserecalibration_covariates ReadGroupCovariate,ContextCovariate,CycleCovariate,QualityScoreCovariate -gatk_baserecalibration_known_sites dbsnp_138.b37.vcf,1000G_phase1.indels.b37.vcf,Mills_and_1000G_gold_standard.indels.b37.vcf -gatk_baserecalibration_over_clipped_read 1 -gatk_baserecalibration_disable_indel_qual 1 -gatk_baserecalibration_static_quantized_quals 10,20,30,40 -pchanjo_sexcheck 1 -psambamba_depth 1 -sambamba_depth_cutoffs 10,15,20,50,100 -sambamba_depth_bed scout.exons.bed -sambamba_depth_base_quality 10 -sambamba_depth_mapping_quality 10 -sambamba_depth_noduplicates 1 -sambamba_depth_quality_control 1 -pgenomecoveragebed 0 -ppicardtools_collectmultiplemetrics 1 -ppicardtools_calculatehsmetrics 1 -prcovplots 0 -pcnvnator 0 -pdelly 0 -pmanta 1 -pfindtranslocations 0 -psv_combinevariantcallsets 1 -sv_vt_decompose 1 -sv_bcftools_view_filter 1 -sv_vcfanno 1 -sv_vcfanno_lua vcfanno_custom.v1.0.lua -sv_vcfanno_config vcfanno_config.v1.0.toml -sv_vcfannotation_header_lines_file vcfanno_headerLines.v1.0.txt -sv_genmod_filter 1 -sv_genmod_filter_1000g ALL.wgs.phase3_shapeit2_mvncall_integrated_v5b.20130502.sites.vcf.gz -sv_genmod_filter_threshold 0.10 -sv_combinevariantcallsets_bcf_file 1 -psv_varianteffectpredictor 1 -sv_vep_features hgvs,symbol,numbers,sift,polyphen,humdiv,domains,protein,ccds,uniprot,biotype,regulatory,tsl,canonical,per_gene,appris -sv_vep_plugins UpDownDistance,LoFtool,LoF -psv_vcfparser 1 -sv_vcfparser_vep_transcripts 1 -sv_vcfparser_per_gene 1 -sv_vcfparser_select_file /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/aggregated_master.bed -sv_vcfparser_select_file_matching_column 3 -psv_rankvariant 1 -sv_genmod_annotate_regions 1 -sv_genmod_models_family_type cmms -sv_genmod_models_whole_gene 0 -sv_genmod_models_reduced_penetrance_file cust003-CMMS-red-pen.txt.csv -sv_rank_model_file svrank_model_cmms_v1.0.ini -psv_reformat 1 -sv_rankvariant_binary_file 1 -psamtools_mpileup 1 -pfreebayes 1 -pgatk_haplotypecaller 1 -gatk_haplotypecaller_annotation BaseQualityRankSumTest,ChromosomeCounts,Coverage,DepthPerAlleleBySample,FisherStrand,MappingQualityRankSumTest,QualByDepth,RMSMappingQuality,ReadPosRankSumTest,StrandOddsRatio -gatk_haplotypecaller_snp_known_set dbsnp_138.b37.vcf -gatk_haplotypecaller_soft_clipped_bases 1 -gatk_haplotypecaller_pcr_indel_model None -picardtools_path /mnt/hds/proj/bioinfo/SERVER/miniconda/bin -pgatk_genotypegvcfs 1 -gatk_genotypegvcfs_ref_gvcf Merged_reference_infiles.gvcf -gatk_genotypegvcfs_all_sites 0 -gatk_concatenate_genotypegvcfs_bcf_file 1 -pgatk_variantrecalibration 1 -gatk_variantrecalibration_training_set_hapmap hapmap_3.3.b37.sites.vcf -gatk_variantrecalibration_training_set_dbsnp dbsnp_138.b37.vcf -gatk_variantrecalibration_training_set_1000gsnp 1000G_phase1.snps.high_confidence.b37.vcf -gatk_variantrecalibration_training_set_1000g_omni 1000G_omni2.5.b37.sites.vcf -gatk_variantrecalibration_training_set_mills Mills_and_1000G_gold_standard.indels.b37.vcf -gatk_variantrecalibration_snv_tsfilter_level 99.9 -gatk_variantrecalibration_indel_tsfilter_level 99.9 -gatk_variantrecalibration_dp_annotation 1 -gatk_variantrecalibration_snv_max_gaussians 1 -gatk_variantrecalibration_indel_max_gaussians 1 -gatk_variantrecalibration_exclude_nonvariants_file 0 -gatk_variantrecalibration_bcf_file 0 -gatk_calculategenotypeposteriors_support_set 1000G_phase3_v4_20130502.sites.vcf -pgatk_combinevariantcallsets 1 -gatk_combinevariants_prioritize_caller gatk,samtools,freebayes -gatk_combinevariantcallsets_bcf_file 1 -pprepareforvariantannotationblock 1 -pvt 1 -vt_decompose 1 -vt_normalize 1 -vt_missing_alt_allele 1 -vt_genmod_filter 1 -vt_genmod_filter_1000g ALL.wgs.phase3_shapeit2_mvncall_integrated_v5b.20130502.sites.vcf.gz -vt_genmod_filter_max_af 1 -vt_genmod_filter_threshold 0.10 -pgatk_phasebytransmission 0 -pgatk_readbackedphasing 0 -pgatk_variantevalall 1 -pgatk_variantevalexome 1 -gatk_varianteval_dbsnp dbsnp_138.b37.excluding_sites_after_129.vcf -gatk_varianteval_gold Mills_and_1000G_gold_standard.indels.b37.vcf -gatk_downsample_to_coverage 1000 -gatk_disable_auto_index_and_file_lock 0 -gatk_bundle_download_version 2.8 -pvarianteffectpredictor 1 -vep_directory_path /mnt/hds/proj/bioinfo/SERVER/miniconda/ensembl-tools-release-87/scripts/variant_effect_predictor -vep_directory_cache /mnt/hds/proj/bioinfo/SERVER/apps/mip/resources/ensembl-tools-release-87/cache -vep_reference 0 -vep_features hgvs,symbol,numbers,sift,polyphen,humdiv,domains,protein,ccds,uniprot,biotype,regulatory,tsl,canonical,appris -vep_plugins UpDownDistance,LoFtool,LoF -pvcfparser 1 -vcfparser_vep_transcripts 1 -vcfparser_select_file /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/aggregated_master.bed -vcfparser_select_file_matching_column 3 -vcfparser_outfile_count 2 -pannovar 0 -psnpeff 1 -snpeff_path /mnt/hds/proj/bioinfo/SERVER/miniconda/bin -snpeff_ann 1 -snpeff_genome_build_version GRCh37.75 -snpsift_annotation_files anon-SweGen_STR_NSPHS_1000samples_snp_freq_hg19.vcf.gz=AF,AC_Hom,AC_Het,AC_Hemi -snpsift_annotation_files genbank_haplogroup_2015_August.vcf.gz=MTAF -snpsift_annotation_files anon-SweGen_STR_NSPHS_1000samples_indel_freq_hg19.vcf.gz=AF,AC_Hom,AC_Het,AC_Hemi -snpsift_annotation_files GRCh37_clinvar_-2017-01-04-.vcf.gz=CLNSIG,CLNACC,CLNREVSTAT -snpsift_annotation_files loqusdb.2016-09-26.vcf.gz=Obs,Hom -snpsift_annotation_files GRCh37_exac_reheader_-r0.3.1-.vcf.gz=AF,AF_Adj -snpsift_annotation_outinfo_key GRCh37_exac_reheader_-r0.3.1-.vcf.gz=EXAC -snpsift_dbnsfp_file dbNSFP2.9.txt.gz -snpsift_dbnsfp_annotations GERP++_RS,GERP++_NR,phyloP46way_primate,phyloP100way_vertebrate,phastCons46way_primate,phastCons100way_vertebrate -java_use_large_pages 1 -gatk_path /mnt/hds/proj/bioinfo/MIP_ANALYSIS/modules/GenomeAnalysisTK-3.6 -psamplecheck 1 -pevaluation 0 -prankvariant 1 -genmod_annotate_regions 1 -genmod_annotate_cadd_files whole_genome_SNVs.v1.3_ge10.tsv.gz,1000G_phase3.v1.3.tsv.gz,ExAC_r0.3.v1.3.tsv.gz -genmod_annotate_spidex_file spidex_public_noncommercial_v1_0.tab.gz -genmod_models_whole_gene 1 -genmod_models_family_type ped -genmod_models_reduced_penetrance_file cust003-CMMS-red-pen.txt.csv -rank_model_file rank_model_cmms_v1.18.ini -pendvariantannotationblock 1 -rankvariant_binary_file 1 -pqccollect 1 -qccollect_sampleinfo_file /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345_qc_sample_info.yaml -qccollect_regexp_file qc_regexp_v1.13.yaml -qccollect_skip_evaluation 0 -pmultiqc 1 -premoveredundantfiles 1 -panalysisrunstatus 1 -psacct 1 -human_genome_reference Homo_sapiens.GRCh37.d5.fasta -exome_target_bed Agilent_SureSelectCRE.V1.GRCh37_targets.bed=ABC123456
+[INFO] 2017/06/17 12:11:42 MIP_logger - MIP Version: v4.0.20
+[INFO] 2017/06/17 12:11:42 MIP_logger - Script parameters and info from mip.pl are saved in file: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/mip_log/2017-06-17/mip.pl_2017-06-17T12:11:42.log
+[INFO] 2017/06/17 12:11:42 MIP_logger - Reads from platform:
+[INFO] 2017/06/17 12:11:43 MIP_logger - Sample id: ABC123456
+[INFO] 2017/06/17 12:11:43 MIP_logger - 	Inputfiles:
+[INFO] 2017/06/17 12:11:43 MIP_logger - 		7_170613_HJG7MALXX-11-Undetermined_ABC123456_TAATGCGC_1.fastq.gz
+[INFO] 2017/06/17 12:11:43 MIP_logger - 		7_170613_HJG7MALXX-11-Undetermined_ABC123456_TAATGCGC_2.fastq.gz
+[INFO] 2017/06/17 12:11:43 MIP_logger - 		7_170613_HJG7MALXX-11_ABC123456_TAATGCGC_1.fastq.gz
+[INFO] 2017/06/17 12:11:43 MIP_logger - 		7_170613_HJG7MALXX-11_ABC123456_TAATGCGC_2.fastq.gz
+[INFO] 2017/06/17 12:11:43 MIP_logger - 		7_170613_HJG7MALXX-21-Undetermined_ABC123456_TAATGCGC_1.fastq.gz
+[INFO] 2017/06/17 12:11:43 MIP_logger - 		7_170613_HJG7MALXX-21-Undetermined_ABC123456_TAATGCGC_2.fastq.gz
+[INFO] 2017/06/17 12:11:43 MIP_logger - 		7_170613_HJG7MALXX-21_ABC123456_TAATGCGC_1.fastq.gz
+[INFO] 2017/06/17 12:11:43 MIP_logger - 		7_170613_HJG7MALXX-21_ABC123456_TAATGCGC_2.fastq.gz
+[INFO] 2017/06/17 12:11:43 MIP_logger - Wrote: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/12345.fam
+[INFO] 2017/06/17 12:11:43 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/dbsnp_138.b37.vcf vt:normalize - PASS
+[INFO] 2017/06/17 12:11:43 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/dbsnp_138.b37.vcf vt:decompose - PASS
+[INFO] 2017/06/17 12:11:43 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/hapmap_3.3.b37.sites.vcf vt:normalize - PASS
+[INFO] 2017/06/17 12:11:43 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/hapmap_3.3.b37.sites.vcf vt:decompose - PASS
+[INFO] 2017/06/17 12:11:43 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/1000G_omni2.5.b37.sites.vcf vt:normalize - PASS
+[INFO] 2017/06/17 12:11:43 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/1000G_omni2.5.b37.sites.vcf vt:decompose - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/1000G_phase1.snps.high_confidence.b37.vcf vt:normalize - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/1000G_phase1.snps.high_confidence.b37.vcf vt:decompose - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/ALL.wgs.phase3_shapeit2_mvncall_integrated_v5b.20130502.sites.vcf.gz vt:decompose - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/ALL.wgs.phase3_shapeit2_mvncall_integrated_v5b.20130502.sites.vcf.gz vt:max_af - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/ALL.wgs.phase3_shapeit2_mvncall_integrated_v5b.20130502.sites.vcf.gz vt:normalize - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/dbsnp_138.b37.excluding_sites_after_129.vcf vt:decompose - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/dbsnp_138.b37.excluding_sites_after_129.vcf vt:normalize - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/anon-SweGen_STR_NSPHS_1000samples_snp_freq_hg19.vcf.gz vt:normalize - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/anon-SweGen_STR_NSPHS_1000samples_snp_freq_hg19.vcf.gz vt:decompose - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/genbank_haplogroup_2015_August.vcf.gz vt:normalize - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/genbank_haplogroup_2015_August.vcf.gz vt:decompose - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/anon-SweGen_STR_NSPHS_1000samples_indel_freq_hg19.vcf.gz vt:normalize - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/anon-SweGen_STR_NSPHS_1000samples_indel_freq_hg19.vcf.gz vt:decompose - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/GRCh37_clinvar_-2017-01-04-.vcf.gz vt:decompose - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/GRCh37_clinvar_-2017-01-04-.vcf.gz vt:normalize - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/loqusdb.2016-09-26.vcf.gz vt:normalize - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/loqusdb.2016-09-26.vcf.gz vt:decompose - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/GRCh37_exac_reheader_-r0.3.1-.vcf.gz vt:decompose - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - Reference check: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/references_4.0/GRCh37_exac_reheader_-r0.3.1-.vcf.gz vt:normalize - PASS
+[INFO] 2017/06/17 12:11:44 MIP_logger - [Fastqc]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for fastqc and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/ABC123456/fastqc/fastqc_ABC123456.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script fastqc data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/ABC123456/fastqc
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813852
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813852'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813852'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [BWA Mem]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for bwa_mem and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/ABC123456/bwa/bwa_mem_ABC123456.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script bwa_mem data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/ABC123456/bwa
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813853
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813853'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813853'
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for bwa_mem and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/ABC123456/bwa/bwa_mem_ABC123456.1.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script bwa_mem data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/ABC123456/bwa
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813854
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813854'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813854'
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for bwa_mem and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/ABC123456/bwa/bwa_mem_ABC123456.2.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script bwa_mem data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/ABC123456/bwa
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813855
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813855'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813855'
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for bwa_mem and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/ABC123456/bwa/bwa_mem_ABC123456.3.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script bwa_mem data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/ABC123456/bwa
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813856
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813856'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813856'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [Bamcalibrationblock]
+[INFO] 2017/06/17 12:11:44 MIP_logger - 	[Picardtools mergesamfiles]
+[INFO] 2017/06/17 12:11:44 MIP_logger - 	[Picardtools markduplicates]
+[INFO] 2017/06/17 12:11:44 MIP_logger - 	[GATK baserecalibrator/printreads]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for bamcalibrationblock and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/ABC123456/bwa/bamcalibrationblock_ABC123456.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script bamcalibrationblock data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/ABC123456/bwa
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813857
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813857'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813857'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [Chanjo sexcheck]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for chanjo_sexcheck and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/ABC123456/bwa/coveragereport/chanjo_sexcheck_ABC123456.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script chanjo_sexcheck data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/ABC123456/bwa/coveragereport
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813858
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813858'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813858'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [Sambamba depth]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for sambamba_depth and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/ABC123456/bwa/coveragereport/sambamba_depth_ABC123456.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script sambamba_depth data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/ABC123456/bwa/coveragereport
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813859
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813859'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813859'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [Picardtools collectmultiplemetrics]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for picardtools_collectmultiplemetrics and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/ABC123456/bwa/coveragereport/picardtools_collectmultiplemetrics_ABC123456.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script picardtools_collectmultiplemetrics data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/ABC123456/bwa/coveragereport
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813860
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813860'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813860'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [Picardtools calculatehsmetrics]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for picardtools_calculatehsmetrics and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/ABC123456/bwa/coveragereport/picardtools_calculatehsmetrics_ABC123456.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script picardtools_calculatehsmetrics data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/ABC123456/bwa/coveragereport
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813861
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813861'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813861'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [Manta]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for manta and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/manta/manta_12345.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script manta data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/manta
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813862
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813862'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813862'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [SV combinevariantcallsets]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for sv_combinevariantcallsets and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/sv_combinevariantcallsets_12345_SV.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script sv_combinevariantcallsets data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813863
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813863'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813863'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [SV varianteffectpredictor]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for sv_varianteffectpredictor and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/sv_varianteffectpredictor_12345_SV.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script sv_varianteffectpredictor data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813864
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813864'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813864'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [SV vcfparser]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for sv_vcfparser and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/sv_vcfparser_12345_SV.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script sv_vcfparser data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813865
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813865'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813865'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [SV rankvariant]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for sv_rankvariant and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/sv_rankvariant_12345.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script sv_rankvariant data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813866
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813866'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813866'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [SV reformat]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for sv_reformat and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/sv_reformat_12345.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script sv_reformat data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813867
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813867'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813867'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [Samtools mpileup]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for samtools_mpileup and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/samtools/samtools_mpileup_12345.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script samtools_mpileup data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/samtools
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813868
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813868'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813868'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [Freebayes]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for freebayes and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/freebayes/freebayes_12345.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script freebayes data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/freebayes
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script submitted, job id: 813869
+[INFO] 2017/06/17 12:11:44 MIP_logger - To check status of job, please run 'squeue -j 813869'
+[INFO] 2017/06/17 12:11:44 MIP_logger - To cancel job, please run 'scancel 813869'
+[INFO] 2017/06/17 12:11:44 MIP_logger - [GATK haplotypecaller]
+[INFO] 2017/06/17 12:11:44 MIP_logger - Creating sbatch script for gatk_haplotypecaller and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/ABC123456/bwa/gatk/gatk_haplotypecaller_ABC123456.0.sh
+[INFO] 2017/06/17 12:11:44 MIP_logger - Sbatch script gatk_haplotypecaller data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/ABC123456/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813870
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813870'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813870'
+[INFO] 2017/06/17 12:11:45 MIP_logger - [GATK genotypegvcfs]
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.0.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813871
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813871'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813871'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.1.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813872
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813872'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813872'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.2.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813873
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813873'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813873'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.3.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813874
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813874'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813874'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.4.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813875
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813875'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813875'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.5.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813876
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813876'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813876'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.6.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813877
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813877'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813877'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.7.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813878
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813878'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813878'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.8.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813879
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813879'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813879'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.9.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813880
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813880'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813880'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.10.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813881
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813881'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813881'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.11.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813882
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813882'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813882'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.12.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813883
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813883'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813883'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.13.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813884
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813884'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813884'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.14.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813885
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813885'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813885'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.15.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813886
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813886'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813886'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.16.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813887
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813887'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813887'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.17.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813888
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813888'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813888'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.18.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813889
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813889'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813889'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.19.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813890
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813890'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813890'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.20.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813891
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813891'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813891'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.21.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813892
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813892'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813892'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.22.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813893
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813893'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813893'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.23.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813894
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813894'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813894'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.24.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813895
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813895'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813895'
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_genotypegvcfs_12345_BOTH.25.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_genotypegvcfs data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813896
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813896'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813896'
+[INFO] 2017/06/17 12:11:45 MIP_logger - [GATK variantrecalibrator/applyrecalibration]
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_variantrecalibration and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk/gatk_variantrecalibration_12345_BOTH.0.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_variantrecalibration data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/gatk
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813897
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813897'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813897'
+[INFO] 2017/06/17 12:11:45 MIP_logger - [GATK combinevariantcallsets]
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_combinevariantcallsets and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/gatk_combinevariantcallsets_12345_BOTH.0.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_combinevariantcallsets data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813898
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813898'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813898'
+[INFO] 2017/06/17 12:11:45 MIP_logger - [Samplecheck]
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for samplecheck and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/samplecheck/samplecheck_12345_BOTH.0.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script samplecheck data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa/samplecheck
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813899
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813899'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813899'
+[INFO] 2017/06/17 12:11:45 MIP_logger - [GATK variantevalall]
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_variantevalall and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/ABC123456/bwa/gatk_variantevalall/gatk_variantevalall_ABC123456_BOTH.0.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_variantevalall data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/ABC123456/bwa/gatk_variantevalall
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813900
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813900'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813900'
+[INFO] 2017/06/17 12:11:45 MIP_logger - [Variantannotationblock]
+[INFO] 2017/06/17 12:11:45 MIP_logger - 	[Prepareforvariantannotationblock]
+[INFO] 2017/06/17 12:11:45 MIP_logger - 	[Vt]
+[INFO] 2017/06/17 12:11:45 MIP_logger - 	[Varianteffectpredictor]
+[INFO] 2017/06/17 12:11:45 MIP_logger - 	[Vcfparser]
+[INFO] 2017/06/17 12:11:45 MIP_logger - 	[Snpeff]
+[INFO] 2017/06/17 12:11:45 MIP_logger - 	[Rankvariant]
+[INFO] 2017/06/17 12:11:45 MIP_logger - 	[Endvariantannotationblock]
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for variantannotationblock and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/variantannotationblock_12345.0.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script variantannotationblock data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813901
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813901'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813901'
+[INFO] 2017/06/17 12:11:45 MIP_logger - [GATK variantevalexome]
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for gatk_variantevalexome and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/ABC123456/bwa/gatk_variantevalexome/gatk_variantevalexome_ABC123456_BOTH.0.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script gatk_variantevalexome data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/ABC123456/bwa/gatk_variantevalexome
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813902
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813902'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813902'
+[INFO] 2017/06/17 12:11:45 MIP_logger - [Qccollect]
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for qccollect and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/qccollect/qccollect_12345.0.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script qccollect data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/qccollect
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813903
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813903'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813903'
+[INFO] 2017/06/17 12:11:45 MIP_logger - [Multiqc]
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for multiqc and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/multiqc/multiqc_12345.0.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script multiqc data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/multiqc
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script submitted, job id: 813904
+[INFO] 2017/06/17 12:11:45 MIP_logger - To check status of job, please run 'squeue -j 813904'
+[INFO] 2017/06/17 12:11:45 MIP_logger - To cancel job, please run 'scancel 813904'
+[INFO] 2017/06/17 12:11:45 MIP_logger - [Removal of redundant files]
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for removeredundantfiles and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/bwa/removeredundantfiles_12345.0.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script removeredundantfiles data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/bwa
+[INFO] 2017/06/17 12:11:45 MIP_logger - [Analysis run status]
+[INFO] 2017/06/17 12:11:45 MIP_logger - Creating sbatch script for analysisrunstatus and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/analysisrunstatus/analysisrunstatus_12345.0.sh
+[INFO] 2017/06/17 12:11:45 MIP_logger - Sbatch script analysisrunstatus data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/analysisrunstatus
+[INFO] 2017/06/17 12:11:46 MIP_logger - Sbatch script submitted, job id: 813905
+[INFO] 2017/06/17 12:11:46 MIP_logger - To check status of job, please run 'squeue -j 813905'
+[INFO] 2017/06/17 12:11:46 MIP_logger - To cancel job, please run 'scancel 813905'
+[INFO] 2017/06/17 12:11:46 MIP_logger - [Sacct]
+[INFO] 2017/06/17 12:11:46 MIP_logger - Creating sbatch script for sacct and writing script file(s) to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/scripts/12345/sacct/sacct_12345.0.sh
+[INFO] 2017/06/17 12:11:46 MIP_logger - Sbatch script sacct data files will be written to: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345/sacct
+[INFO] 2017/06/17 12:11:46 MIP_logger - Sbatch script submitted, job id: 813906
+[INFO] 2017/06/17 12:11:46 MIP_logger - To check status of job, please run 'squeue -j 813906'
+[INFO] 2017/06/17 12:11:46 MIP_logger - To cancel job, please run 'scancel 813906'
+[INFO] 2017/06/17 12:11:46 MIP_logger - Wrote: /mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/cust003/12345/analysis/12345_qc_sample_info.yaml
