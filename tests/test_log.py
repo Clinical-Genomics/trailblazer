@@ -21,21 +21,6 @@ def test_get_status(kwargs, expected_status):
     assert run_status == expected_status
 
 
-def test_commit(store, log_analysis):
-    # GIVEN a store with a pending log for a family
-    family_id = 'family'
-    store.add_pending(family=family_id)
-    assert store.analyses(family=family_id, status='pending').count() > 0
-    assert store.analyses(family=family_id, status='completed').count() == 0
-    # WHEN commiting a new analysis log entry
-    new_run = store.Analysis(family=family_id, status='completed')
-    log_analysis.commit(new_run)
-    # THEN it should add the new run log
-    assert store.analyses(family=family_id, status='completed').count() == 1
-    # ... and remove the "pending" log entry(s)
-    assert store.analyses(family=family_id, status='pending').count() == 0
-
-
 def test_call(store, log_analysis, files):
     # GIVEN an empty store
     assert store.analyses().count() == 0
