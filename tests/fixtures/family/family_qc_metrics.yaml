@@ -209,7 +209,7 @@ sample:
       bwa:
         version: 0.7.15-r1140
     sample_lanes_7777:
-      calculatehsmetrics:
+      collecthsmetrics:
         header:
           data:
             AT_DROPOUT: 0.126963
