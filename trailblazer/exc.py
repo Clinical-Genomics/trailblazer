@@ -11,7 +11,7 @@ class MissingFileError(TrailblazerError):
     pass
 
 
-class MipStartError(TrailblazerError):
+class PipelineStartError(TrailblazerError):
     pass
 
 

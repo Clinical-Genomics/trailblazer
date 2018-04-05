@@ -3,7 +3,8 @@ import logging
 import signal
 import subprocess
 
-from trailblazer.exc import MipStartError
+from trailblazer.exc import PipelineStartError
+from trailblazer.pipeline import Pipeline
 
 LOG = logging.getLogger(__name__)
 
@@ -27,23 +28,9 @@ CLI_OPTIONS = {
 }
 
 
-class MipCli(object):
+class MipCli(Pipeline):
 
     """Wrapper around MIP command line interface."""
-
-    def __init__(self, script):
-        """Initialize MIP command line interface."""
-        self.script = script
-
-    def __call__(self, config, family, **kwargs):
-        """Execute the pipeline."""
-        command = self.build_command(config, family=family, **kwargs)
-        LOG.debug(' '.join(command))
-        process = self.execute(command)
-        process.wait()
-        if process.returncode != 0:
-            raise MipStartError('error starting analysis, check the output')
-        return process
 
     def build_command(self, config, **kwargs):
         """Builds the command to execute MIP."""
@@ -58,12 +45,3 @@ class MipCli(object):
                     command.append(value)
         return command
 
-
-
-    def execute(self, command):
-        """Start a new MIP run."""
-        process = subprocess.Popen(
-            command,
-            preexec_fn=lambda: signal.signal(signal.SIGPIPE, signal.SIG_DFL)
-        )
-        return process
