@@ -23,7 +23,7 @@ CLI_OPTIONS = {
         'default': '1',
     },
     'skip_evaluation': {'option': '--qccollect_skip_evaluation'},
-    'start_from': {'option': '—start_with_program'}
+    'startfrom': {'option': '—start_with_program'}
 }
 
 
