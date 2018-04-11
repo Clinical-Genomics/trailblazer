@@ -74,7 +74,7 @@ def log_cmd(context, sampleinfo, sacct, quiet, config):
 @click.option('-p', '--priority', type=click.Choice(['low', 'normal', 'high']), default='normal')
 @click.option('-d', '--dryrun', is_flag=True, help='only generate SBATCH scripts')
 @click.option('--command', is_flag=True, help='only show the MIP command')
-@click.option('--startfrom', help='start the pipeline from this program')
+@click.option('--startfrom', help='start the pipeline from this step, see format for program using mip --help')
 @click.argument('family', required=False)
 @click.pass_context
 def start(context, mip_config, email, priority, dryrun, command, startfrom, family):
