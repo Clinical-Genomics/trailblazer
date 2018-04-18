@@ -22,7 +22,8 @@ CLI_OPTIONS = {
         'option': '--gatk_variantrecalibration_snv_max_gaussians',
         'default': '1',
     },
-    'skip_evaluation': {'option': '--qccollect_skip_evaluation'}
+    'skip_evaluation': {'option': '--qccollect_skip_evaluation'},
+    'start_with_program': {'option': '--start_with_program'},
 }
 
 
