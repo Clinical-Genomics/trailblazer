@@ -23,7 +23,7 @@ CLI_OPTIONS = {
         'default': '1',
     },
     'skip_evaluation': {'option': '--qccollect_skip_evaluation'},
-    'start_with_program': {'option': '--start_with_program'},
+    'startwith': {'option': '--start_with_program'},
 }
 
 
@@ -57,6 +57,8 @@ class MipCli(object):
                 else:
                     command.append(value)
         return command
+
+
 
     def execute(self, command):
         """Start a new MIP run."""
