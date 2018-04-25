@@ -24,7 +24,7 @@ def test_parse_mip_analysis(files_raw) -> dict:
     trend_test_data = {
         'family': 'family',
         'genome_build': 'GRCh37',
-        'mip_version': 'v6.0.0',
+        'mip_version': 'v4.0.20',
     }
 
     # Check returns from def
