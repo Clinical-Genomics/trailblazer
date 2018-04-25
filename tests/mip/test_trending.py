@@ -31,32 +31,32 @@ def test_parse_mip_analysis(files_raw) -> dict:
     for key, value in trend_test_data.items():
         assert trend_data[key] == value
 
-    ## Check sample id
+    # Check sample id
     assert 'sample' in trend_data['sample_ids']
 
-    ## Build dict for sample return data
+    # Build dict for sample return data
     trend_test_sample_data = {
-        'at_dropout': {
-            'sample': 0.126963,
-            },
+        # 'at_dropout': {
+        #     'sample': 0.126963,
+        #     },
         'analysis_sex': {
             'sample': 'female',
             },
         'duplicates': {
             'sample': 13.2719986683768,
             },
-        'insert_size_standard_deviation': {
-            'sample': 89.871783,
-            },
+        # 'insert_size_standard_deviation': {
+        #     'sample': 89.871783,
+        #     },
         'mapped_reads': {
             'sample': 98.50732625744484,
             },
-        'median_insert_size': {
-            'sample': 413,
-            },
-        'gc_dropout': {
-            'sample': 3.956909,
-            },
+        # 'median_insert_size': {
+        #     'sample': 413,
+        #     },
+        # 'gc_dropout': {
+        #     'sample': 3.956909,
+        #     },
     }
 
     # Check returns from def
