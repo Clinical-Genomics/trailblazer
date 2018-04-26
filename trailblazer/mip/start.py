@@ -23,7 +23,7 @@ CLI_OPTIONS = {
         'default': '1',
     },
     'skip_evaluation': {'option': '--qccollect_skip_evaluation'},
-    'startwith': {'option': '--start_with_program'},
+    'start-with': {'option': '--start_with_program'},
 }
 
 
@@ -47,6 +47,7 @@ class MipCli(object):
 
     def build_command(self, config, **kwargs):
         """Builds the command to execute MIP."""
+        import ipdb; ipdb.set_trace()
         command = ['perl', self.script, CLI_OPTIONS['config']['option'], config]
         for key, value in kwargs.items():
             # enable passing in flags as "False" - shouldn't add command
