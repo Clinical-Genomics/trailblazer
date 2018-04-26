@@ -47,7 +47,6 @@ class MipCli(object):
 
     def build_command(self, config, **kwargs):
         """Builds the command to execute MIP."""
-        import ipdb; ipdb.set_trace()
         command = ['perl', self.script, CLI_OPTIONS['config']['option'], config]
         for key, value in kwargs.items():
             # enable passing in flags as "False" - shouldn't add command
