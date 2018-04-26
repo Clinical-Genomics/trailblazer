@@ -19,14 +19,10 @@ def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw
     ### Define output dict
     outdata = {
         'analysis_sex': {},
-        'at_dropout': {},
         'family': None,
         'duplicates': {},
-        'gc_dropout': {},
         'genome_build': None,
-        'insert_size_standard_deviation': {},
         'mapped_reads': {},
-        'median_insert_size': {},
         'mip_version': None,
         'sample_ids': [],
     }
