@@ -61,8 +61,8 @@ def allfailed_sacct_jobs():
 
 
 @pytest.yield_fixture(scope='function')
-def store():
-    _store = Store(uri='sqlite://', families_dir='/tmp/families')
+def store(tmpdir):
+    _store = Store(uri='sqlite://', families_dir=tmpdir)
     _store.setup()
     yield _store
     _store.drop_all()
