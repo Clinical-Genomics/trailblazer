@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+import pytest
+
 from functools import partial
 
 from click.testing import CliRunner
-import pytest
 import ruamel.yaml
 
 from trailblazer.cli import base
