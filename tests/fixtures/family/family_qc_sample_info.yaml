@@ -331,6 +331,12 @@ sample:
       sambamba_depth:
         sample_lanes_7777:
             path: /path_to/sample/bwa/coveragereport/sample_lanes_7777_sorted_md_brecal_coverage.bed
+      samtools_subsample_mt:
+        ADM1059A4_lanes_8:
+            path: /path_to/sample/bwa/ADM1059A4_lanes_8_sorted_md_brecal_subsample_MT.bam
+      vcf2cytosure:
+        ADM1059A4_lanes_8:
+          path: /path_to/sample/bwa/vcf2cytosure/ADM1059A4_sorted_md_brecal_comb_SV.cgh
       variantevalall:
         sample_lanes_7777:
           outdirectory: /path_to/sample/bwa/gatk_variantevalall
