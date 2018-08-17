@@ -24,10 +24,16 @@ def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw
     return outdata
 
 
+def _add_rank_model_version(outdata, sampleinfo_data):
+
+    outdata['rank_model_version'] = sampleinfo_data['rank_model_version']
+
+
 def _qc_sample_info(outdata, sampleinfo_raw):
     sampleinfo_data = _parse_qc_sample_info_file(sampleinfo_raw)
     _add_mip_version(outdata, sampleinfo_data)
     _add_genome_build(outdata, sampleinfo_data)
+    _add_rank_model_version(outdata, sampleinfo_data)
 
 
 def _qc_metrics(outdata, qcmetrics_raw):
@@ -105,6 +111,7 @@ def _define_output_dict():
         'duplicates': {},
         'gc_dropout': {},
         'genome_build': None,
+        'rank_model_version': None,
         'insert_size_standard_deviation': {},
         'mapped_reads': {},
         'median_insert_size': {},
@@ -113,6 +120,7 @@ def _define_output_dict():
     }
 
     return outdata
+
 
 def _add_all_samples_from_mip_config(config_data, outdata):
     for sample_data in config_data['samples']:
