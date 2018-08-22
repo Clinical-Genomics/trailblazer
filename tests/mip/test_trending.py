@@ -18,8 +18,6 @@ def test_parse_mip_analysis(files_raw) -> dict:
     # GIVEN qc metrics input from an analysis
     qcmetrics_raw = files_raw['qcmetrics']
 
-    print(files_raw)
-
     trend_data = trending.parse_mip_analysis(mip_config_raw, qcmetrics_raw, sampleinfo_raw)
 
     ## Build dict for family return data
