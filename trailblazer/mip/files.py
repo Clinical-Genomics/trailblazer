@@ -51,7 +51,7 @@ def parse_sampleinfo(data: dict) -> dict:
         'date': data['analysis_date'],
         'family': data['family'],
         'genome_build': genome_build_str,
-        'rank_model_version': data['program']['rankvariant']['rank_model']['version'],
+        'rank_model_version': data['program']['genmod']['rank_model']['version'],
         'is_finished': True if data['analysisrunstatus'] == 'finished' else False,
         'pedigree_path': data['pedigree_minimal'],
         'peddy': {
