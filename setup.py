@@ -68,7 +68,7 @@ setup(
     # Versions should comply with PEP440. For a discussion on
     # single-sourcing the version across setup.py and the project code,
     # see http://packaging.python.org/en/latest/tutorial.html#version
-    version='3.1.1',
+    version='3.1.2',
 
     description=('Track MIP analyses.'),
     long_description=__doc__,
