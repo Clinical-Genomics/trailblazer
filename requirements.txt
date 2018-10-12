@@ -1,5 +1,5 @@
 Alchy
-Click
+Click<7
 coloredlogs
 ruamel.yaml
 SQLAlchemy
