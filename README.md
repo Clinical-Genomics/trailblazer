@@ -29,7 +29,7 @@ We have chosen to have a pipeline export the SLURM job ids in the form of a file
 123148
 ```
 
-The plan is formulated in [https://github.com/Clinical-Genomics/trailblazer/issues/39][issue/39].
+The plan is formulated in [issue/39](https://github.com/Clinical-Genomics/trailblazer/issues/39).
 
 ## Installation
 
