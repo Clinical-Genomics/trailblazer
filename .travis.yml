@@ -8,7 +8,7 @@ before_install:
     - git reset --soft ${TRAVIS_COMMIT_RANGE%...*} && git lint
 
 install:
-    - pip install -r requirements.txt -r requirements-dev.txt -e .
+    - pip install -q -r requirements-dev.txt .
 
 script:
     - coverage run --source "$(basename "$PWD")" setup.py test
