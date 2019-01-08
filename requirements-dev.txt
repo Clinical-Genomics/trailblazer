@@ -2,3 +2,9 @@ pytest
 pytest-cov
 pytest-flask
 coveralls
+git-lint
+pylint
+pycodestyle
+yamllint
+docutils
+html-linter
