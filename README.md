@@ -16,9 +16,7 @@ Trailblazer is a tool that aims to provide:
 ### Roadmap
 
 Trailblazer's scope will be reduced in the next months and will become SLURM+!
-Meaning it will become a tool that:
-
-- a monitoring web UI to help you keep track of the status of multiple pipelines
+Meaning it will become a web UI tool that monitors pipelines to help you keep track of the status of multiple analyses.
 
 We have chosen to have a pipeline export the SLURM job ids in the form of a file:
 
