@@ -17,17 +17,17 @@ def parse_config(data: dict) -> dict:
     """
     return {
         'email': data.get('email'),
-        'family': data['family_id'],
+        'family': data.get('family_id'),
         'samples': [{
             'id': sample_id,
             'type': analysis_type,
         } for sample_id, analysis_type in data['analysis_type'].items()],
-        'config_path': data['config_file_analysis'],
+        'config_path': data.get('config_file_analysis'),
         'is_dryrun': True if 'dry_run_all' in data else False,
-        'log_path': data['log_file'],
-        'out_dir': data['outdata_dir'],
-        'priority': data['slurm_quality_of_service'],
-        'sampleinfo_path': data['sample_info_file'],
+        'log_path': data.get('log_file'),
+        'out_dir': data.get('outdata_dir'),
+        'priority': data.get('slurm_quality_of_service'),
+        'sampleinfo_path': data.get('sample_info_file'),
     }
 
 
@@ -41,19 +41,19 @@ def parse_sampleinfo(data: dict) -> dict:
         dict: parsed data
     """
 
-    genome_build = data['human_genome_build']
+    genome_build = data.get('human_genome_build')
     genome_build_str = f"{genome_build['source']}{genome_build['version']}"
     if 'svdb' in data['program']:
-        svdb_outpath = (f"{data['program']['svdb']['path']}")
+        svdb_outpath = (f"{data['program']['svdb'].get('path')}")
     else:
         svdb_outpath = ''
     outdata = {
-        'date': data['analysis_date'],
-        'family': data['family'],
+        'date': data.get('analysis_date'),
+        'family': data.get('family'),
         'genome_build': genome_build_str,
-        'rank_model_version': data['program']['genmod']['rank_model']['version'],
+        'rank_model_version': data['program']['genmod']['rank_model'].get('version'),
         'is_finished': True if data['analysisrunstatus'] == 'finished' else False,
-        'pedigree_path': data['pedigree_minimal'],
+        'pedigree_path': data.get('pedigree_minimal'),
         'peddy': {
             'ped': (data['program']['peddy']['peddy']['path'] if
                     'peddy' in data['program'] else None),
@@ -62,36 +62,36 @@ def parse_sampleinfo(data: dict) -> dict:
             'sex_check': (data['program']['peddy']['sex_check']['path'] if
                           'peddy' in data['program'] else None),
         },
-        'qcmetrics_path': data['program']['qccollect']['path'],
+        'qcmetrics_path': data['program']['qccollect'].get('path'),
         'samples': [],
         'snv': {
-            'bcf': data['most_complete_bcf']['path'],
-            'clinical_vcf': data['vcf_binary_file']['clinical']['path'],
-            'gbcf': data['gbcf_file']['path'],
-            'research_vcf': data['vcf_binary_file']['research']['path'],
+            'bcf': data['most_complete_bcf'].get('path'),
+            'clinical_vcf': data['vcf_binary_file']['clinical'].get('path'),
+            'gbcf': data['gbcf_file'].get('path'),
+            'research_vcf': data['vcf_binary_file']['research'].get('path'),
         },
         'svdb_outpath': svdb_outpath,
         'sv': {
             'bcf': data.get('sv_bcf_file', {}).get('path'),
-            'clinical_vcf': (data['sv_vcf_binary_file']['clinical']['path'] if
+            'clinical_vcf': (data['sv_vcf_binary_file']['clinical'].get('path') if
                              'sv_vcf_binary_file' in data else None),
             'merged': svdb_outpath,
-            'research_vcf': (data['sv_vcf_binary_file']['research']['path'] if
+            'research_vcf': (data['sv_vcf_binary_file']['research'].get('path') if
                              'sv_vcf_binary_file' in data else None),
         },
-        'version': data['mip_version'],
+        'version': data.get('mip_version'),
     }
 
     for sample_id, sample_data in data['sample'].items():
         sample = {
             'id': sample_id,
-            'bam': sample_data['most_complete_bam']['path'],
-            'sambamba': list(sample_data['program']['sambamba_depth'].values())[0]['path'],
-            'sex': sample_data['sex'],
+            'bam': sample_data['most_complete_bam'].get('path'),
+            'sambamba': list(sample_data['program']['sambamba_depth'].values())[0].get('path'),
+            'sex': sample_data.get('sex'),
             # subsample mt is only for wgs data
             'subsample_mt': (list(sample_data['program']['samtools_subsample_mt'].values())[0]['path'] if
                              'samtools_subsample_mt' in sample_data['program'] else None),
-            'vcf2cytosure': list(sample_data['program']['vcf2cytosure'].values())[0]['path'],
+            'vcf2cytosure': list(sample_data['program']['vcf2cytosure'].values())[0].get('path'),
         }
         chanjo_sexcheck = list(sample_data['program']['chanjo_sexcheck'].values())[0]
         sample['chanjo_sexcheck'] = chanjo_sexcheck['path']
@@ -110,11 +110,11 @@ def parse_qcmetrics(metrics: dict) -> dict:
     """
     data = {
         'versions': {
-            'freebayes': metrics['program']['freebayes']['version'],
-            'gatk': metrics['program']['gatk']['version'],
+            'freebayes': metrics['program']['freebayes'].get('version'),
+            'gatk': metrics['program']['gatk'].get('version'),
             'manta': metrics['program'].get('manta', {}).get('version'),
-            'bcftools': metrics['program']['bcftools']['version'],
-            'vep': metrics['program']['varianteffectpredictor']['version'],
+            'bcftools': metrics['program']['bcftools'].get('version'),
+            'vep': metrics['program']['varianteffectpredictor'].get('version'),
         },
         'samples': [],
     }
@@ -145,20 +145,20 @@ def parse_qcmetrics(metrics: dict) -> dict:
         multiple_metrics = sample_metrics[main_key]['collectmultiplemetrics']['header']['pair']
 
         sample_data = {
-            'at_dropout': hs_metrics['AT_DROPOUT'],
+            'at_dropout': hs_metrics.get('AT_DROPOUT'),
             'completeness_target': {
-                10: hs_metrics['PCT_TARGET_BASES_10X'],
-                20: hs_metrics['PCT_TARGET_BASES_20X'],
-                50: hs_metrics['PCT_TARGET_BASES_50X'],
-                100: hs_metrics['PCT_TARGET_BASES_100X'],
+                10: hs_metrics.get('PCT_TARGET_BASES_10X'),
+                20: hs_metrics.get('PCT_TARGET_BASES_20X'),
+                50: hs_metrics.get('PCT_TARGET_BASES_50X'),
+                100: hs_metrics.get('PCT_TARGET_BASES_100X'),
             },
             'duplicates': float(sample_metrics[main_key]['markduplicates']['fraction_duplicates']),
-            'gc_dropout': hs_metrics['GC_DROPOUT'],
+            'gc_dropout': hs_metrics.get('GC_DROPOUT'),
             'id': sample_id,
-            'median_insert_size':  multiple_inst_metrics['MEDIAN_INSERT_SIZE'],
+            'median_insert_size':  multiple_inst_metrics.get('MEDIAN_INSERT_SIZE'),
             'mapped': total_mapped / total_reads,
             'plink_sex': plink_samples.get(sample_id),
-            'predicted_sex': sample_metrics[main_key]['chanjo_sexcheck']['gender'],
+            'predicted_sex': sample_metrics[main_key]['chanjo_sexcheck'].get('gender'),
             'reads': total_reads,
             'insert_size_standard_deviation': float(multiple_inst_metrics['STANDARD_DEVIATION']),
             'strand_balance': float(multiple_metrics['STRAND_BALANCE']),
@@ -174,7 +174,7 @@ def parse_peddy_sexcheck(handle: TextIO):
     samples = csv.DictReader(handle)
     for sample in samples:
         data[sample['sample_id']] = {
-            'predicted_sex': sample['predicted_sex'],
+            'predicted_sex': sample.get('predicted_sex'),
             'het_ratio': float(sample['het_ratio']),
             'error': True if sample['error'] == 'True' else False,
         }
@@ -186,7 +186,7 @@ def parse_chanjo_sexcheck(handle: TextIO):
     samples = csv.DictReader(handle, delimiter='\t')
     for sample in samples:
         return {
-            'predicted_sex': sample['sex'],
+            'predicted_sex': sample.get('sex'),
             'x_coverage': float(sample['#X_coverage']),
             'y_coverage': float(sample['Y_coverage']),
         }
