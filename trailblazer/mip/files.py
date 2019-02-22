@@ -1,9 +1,17 @@
 # -*- coding: utf-8 -*-
 """Parse the MIP config file."""
-from typing import TextIO
 import csv
+from typing import TextIO
 
 PED_SEX_MAP = {1: 'male', 2: 'female', 0: 'unknown'}
+
+
+def safe_list_get(a_list, idx, default=None):
+    """Method to safely read values from a list"""
+    try:
+        return a_list[idx]
+    except IndexError:
+        return default
 
 
 def parse_config(data: dict) -> dict:
@@ -89,18 +97,21 @@ def parse_sampleinfo(data: dict) -> dict:
         sample = {
             'id': sample_id,
             'bam': sample_data.get('most_complete_bam', {}).get('path'),
-            'sambamba': list(sample_data.get('program', {}).get('sambamba_depth', {}).values())[
-                0].get('path'),
+            'sambamba': safe_list_get(list(sample_data.get('program', {}).get('sambamba_depth',
+                                                                              {}).values()), 0,
+                                      {}).get('path'),
             'sex': sample_data.get('sex'),
             # subsample mt is only for wgs data
-            'subsample_mt': (list(sample_data.get('program', {}).get('samtools_subsample_mt', {})
-                                  .values())[0].get('path') if
+            'subsample_mt': (safe_list_get(list(sample_data.get('program', {}).get(
+                'samtools_subsample_mt', {})
+                                                .values()), 0, {}).get('path') if
                              'samtools_subsample_mt' in sample_data['program'] else None),
-            'vcf2cytosure': list(sample_data.get('program', {}).get('vcf2cytosure', {}).values(
-            ))[0].get('path'),
+            'vcf2cytosure': safe_list_get(list(sample_data.get('program', {}).get('vcf2cytosure',
+                                                                                  {}).values()),
+                                          0, {}).get('path'),
         }
-        chanjo_sexcheck = list(sample_data.get('program', {}).get('chanjo_sexcheck', {}).values(
-        ))[0]
+        chanjo_sexcheck = safe_list_get(list(sample_data.get('program', {}).get(
+            'chanjo_sexcheck', {}).values()), 0)
         sample['chanjo_sexcheck'] = chanjo_sexcheck.get('path')
         outdata['samples'].append(sample)
 
@@ -137,7 +148,6 @@ def parse_qcmetrics(metrics: dict) -> dict:
             plink_samples[sample_id] = PED_SEX_MAP.get(int(sex_number))
 
     for sample_id, sample_metrics in metrics['sample'].items():
-
         ## Bam stats metrics
         bam_stats = [values['bamstats'] for key, values in sample_metrics.items()
                      if key[:-1].endswith('.lane')]
@@ -148,7 +158,8 @@ def parse_qcmetrics(metrics: dict) -> dict:
         main_key = [key for key in sample_metrics.keys() if '_lanes_' in key][0]
 
         hs_metrics = sample_metrics[main_key]['collecthsmetrics']['header']['data']
-        multiple_inst_metrics = sample_metrics[main_key]['collectmultiplemetricsinsertsize']['header']['data']
+        multiple_inst_metrics = sample_metrics[main_key]['collectmultiplemetricsinsertsize'][
+            'header']['data']
         multiple_metrics = sample_metrics[main_key]['collectmultiplemetrics']['header']['pair']
 
         sample_data = {
@@ -162,7 +173,7 @@ def parse_qcmetrics(metrics: dict) -> dict:
             'duplicates': float(sample_metrics[main_key]['markduplicates']['fraction_duplicates']),
             'gc_dropout': hs_metrics.get('GC_DROPOUT'),
             'id': sample_id,
-            'median_insert_size':  multiple_inst_metrics.get('MEDIAN_INSERT_SIZE'),
+            'median_insert_size': multiple_inst_metrics.get('MEDIAN_INSERT_SIZE'),
             'mapped': total_mapped / total_reads,
             'plink_sex': plink_samples.get(sample_id),
             'predicted_sex': sample_metrics[main_key]['chanjo_sexcheck'].get('gender'),
