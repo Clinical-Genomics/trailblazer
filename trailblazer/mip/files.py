@@ -42,7 +42,7 @@ def parse_sampleinfo(data: dict) -> dict:
     """
 
     genome_build = data.get('human_genome_build')
-    genome_build_str = f"{genome_build['source']}{genome_build['version']}"
+    genome_build_str = f"{genome_build.get('source')}{genome_build.get('version')}"
     if 'svdb' in data['program']:
         svdb_outpath = (f"{data['program']['svdb'].get('path')}")
     else:
@@ -51,32 +51,35 @@ def parse_sampleinfo(data: dict) -> dict:
         'date': data.get('analysis_date'),
         'family': data.get('family'),
         'genome_build': genome_build_str,
-        'rank_model_version': data['program']['genmod']['rank_model'].get('version'),
-        'is_finished': True if data['analysisrunstatus'] == 'finished' else False,
+        'rank_model_version': data.get('program', {}).get('genmod', {}).get('rank_model', {}).get(
+            'version'),
+        'is_finished': data.get('analysisrunstatus') == 'finished',
         'pedigree_path': data.get('pedigree_minimal'),
         'peddy': {
-            'ped': (data['program']['peddy']['peddy']['path'] if
+            'ped': (data.get('program', {}).get('peddy', {}).get('peddy', {}).get('path') if
                     'peddy' in data['program'] else None),
-            'ped_check': (data['program']['peddy']['ped_check']['path'] if
+            'ped_check': (data.get('program', {}).get('peddy', {}).get('ped_check',
+                                                                       {}).get('path') if
                           'peddy' in data['program'] else None),
-            'sex_check': (data['program']['peddy']['sex_check']['path'] if
+            'sex_check': (data.get('program', {}).get('peddy', {}).get('sex_check',
+                                                                       {}).get('path') if
                           'peddy' in data['program'] else None),
         },
-        'qcmetrics_path': data['program']['qccollect'].get('path'),
+        'qcmetrics_path': data.get('program', {}).get('qccollect', {}).get('path'),
         'samples': [],
         'snv': {
-            'bcf': data['most_complete_bcf'].get('path'),
-            'clinical_vcf': data['vcf_binary_file']['clinical'].get('path'),
-            'gbcf': data['gbcf_file'].get('path'),
-            'research_vcf': data['vcf_binary_file']['research'].get('path'),
+            'bcf': data.get('most_complete_bcf', {}).get('path'),
+            'clinical_vcf': data.get('vcf_binary_file', {}).get('clinical', {}).get('path'),
+            'gbcf': data.get('gbcf_file', {}).get('path'),
+            'research_vcf': data.get('vcf_binary_file', {}).get('research', {}).get('path'),
         },
         'svdb_outpath': svdb_outpath,
         'sv': {
             'bcf': data.get('sv_bcf_file', {}).get('path'),
-            'clinical_vcf': (data['sv_vcf_binary_file']['clinical'].get('path') if
+            'clinical_vcf': (data.get('sv_vcf_binary_file', {}).get('clinical', {}).get('path') if
                              'sv_vcf_binary_file' in data else None),
             'merged': svdb_outpath,
-            'research_vcf': (data['sv_vcf_binary_file']['research'].get('path') if
+            'research_vcf': (data.get('sv_vcf_binary_file', {}).get('research', {}).get('path') if
                              'sv_vcf_binary_file' in data else None),
         },
         'version': data.get('mip_version'),
@@ -85,16 +88,20 @@ def parse_sampleinfo(data: dict) -> dict:
     for sample_id, sample_data in data['sample'].items():
         sample = {
             'id': sample_id,
-            'bam': sample_data['most_complete_bam'].get('path'),
-            'sambamba': list(sample_data['program']['sambamba_depth'].values())[0].get('path'),
+            'bam': sample_data.get('most_complete_bam', {}).get('path'),
+            'sambamba': list(sample_data.get('program', {}).get('sambamba_depth', {}).values())[
+                0].get('path'),
             'sex': sample_data.get('sex'),
             # subsample mt is only for wgs data
-            'subsample_mt': (list(sample_data['program']['samtools_subsample_mt'].values())[0]['path'] if
+            'subsample_mt': (list(sample_data.get('program', {}).get('samtools_subsample_mt', {})
+                                  .values())[0].get('path') if
                              'samtools_subsample_mt' in sample_data['program'] else None),
-            'vcf2cytosure': list(sample_data['program']['vcf2cytosure'].values())[0].get('path'),
+            'vcf2cytosure': list(sample_data.get('program', {}).get('vcf2cytosure', {}).values(
+            ))[0].get('path'),
         }
-        chanjo_sexcheck = list(sample_data['program']['chanjo_sexcheck'].values())[0]
-        sample['chanjo_sexcheck'] = chanjo_sexcheck['path']
+        chanjo_sexcheck = list(sample_data.get('program', {}).get('chanjo_sexcheck', {}).values(
+        ))[0]
+        sample['chanjo_sexcheck'] = chanjo_sexcheck.get('path')
         outdata['samples'].append(sample)
 
     return outdata
@@ -110,17 +117,17 @@ def parse_qcmetrics(metrics: dict) -> dict:
     """
     data = {
         'versions': {
-            'freebayes': metrics['program']['freebayes'].get('version'),
-            'gatk': metrics['program']['gatk'].get('version'),
-            'manta': metrics['program'].get('manta', {}).get('version'),
-            'bcftools': metrics['program']['bcftools'].get('version'),
-            'vep': metrics['program']['varianteffectpredictor'].get('version'),
+            'freebayes': metrics.get('program', {}).get('freebayes', {}).get('version'),
+            'gatk': metrics.get('program', {}).get('gatk', {}).get('version'),
+            'manta': metrics.get('program', {}).get('manta', {}).get('version'),
+            'bcftools': metrics.get('program', {}).get('bcftools', {}).get('version'),
+            'vep': metrics.get('program', {}).get('varianteffectpredictor', {}).get('version'),
         },
         'samples': [],
     }
 
     plink_samples = {}
-    plink_sexcheck = metrics['program'].get('plink_sexcheck', {}).get('sample_sexcheck')
+    plink_sexcheck = metrics.get('program', {}).get('plink_sexcheck', {}).get('sample_sexcheck')
     if isinstance(plink_sexcheck, str):
         sample_id, sex_number = plink_sexcheck.strip().split(':', 1)
         plink_samples[sample_id] = PED_SEX_MAP.get(int(sex_number))
