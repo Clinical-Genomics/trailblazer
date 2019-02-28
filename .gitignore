@@ -33,6 +33,7 @@ nosetests.xml
 htmlcov
 .cache/
 .coverage*
+.pytest_cache
 
 # Translations
 *.mo
@@ -73,3 +74,4 @@ npm-debug.log
 
 # vim
 *.swp
+
