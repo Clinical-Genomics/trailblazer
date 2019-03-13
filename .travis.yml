@@ -1,19 +1,31 @@
-language: python
+matrix:
+  include:
+    - language: node_js
+      node_js: 9
+      cache:
+        yarn: true
+        directories:
+          - node_modules
 
-python:
-    - '3.6'
+      install:
+        - yarn build --universal
 
-before_install:
-    - pip install git-lint pylint pycodestyle yamllint docutils html-linter
-    - git reset --soft ${TRAVIS_COMMIT_RANGE%...*} && git lint
+    - language: python
+      python:
+        - '3.6'
+      cache: pip
 
-install:
-    - pip install -q -r requirements-dev.txt .
+      before_install:
+        - pip install git-lint pylint pycodestyle yamllint docutils html-linter
+        - git reset --soft ${TRAVIS_COMMIT_RANGE%...*} && git lint
 
-script:
-    - coverage run --source "$(basename "$PWD")" setup.py test
+      install:
+        - pip install -q -r requirements-dev.txt .
 
-after_success: coveralls
+      script:
+        - coverage run --source "$(basename "$PWD")" setup.py test
+
+      after_success: coveralls
 
 notifications:
   email: false
