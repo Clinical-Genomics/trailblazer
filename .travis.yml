@@ -8,8 +8,7 @@ matrix:
           - nuxt/node_modules
 
       install:
-        - cd nuxt
-        - yarn build --universal
+        - cd nuxt; yarn build --universal
 
     - language: python
       python:
