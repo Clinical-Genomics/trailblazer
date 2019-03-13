@@ -7,8 +7,11 @@ matrix:
         directories:
           - nuxt/node_modules
 
+      before_install:
+        - cd nuxt
+
       install:
-        - cd nuxt; yarn build --universal
+        - yarn build --universal
 
     - language: python
       python:
