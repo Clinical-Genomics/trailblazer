@@ -5,9 +5,10 @@ matrix:
       cache:
         yarn: true
         directories:
-          - node_modules
+          - nuxt/node_modules
 
       install:
+        - cd nuxt
         - yarn build --universal
 
     - language: python
