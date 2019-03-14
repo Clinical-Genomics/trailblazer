@@ -11,7 +11,7 @@ matrix:
         - cd nuxt
 
       install:
-        - cd nuxt; yarn install; yarn build --universal
+        - yarn install; yarn build --universal
 
     - language: python
       python:
