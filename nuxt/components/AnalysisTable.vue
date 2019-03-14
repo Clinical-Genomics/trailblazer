@@ -2,19 +2,19 @@
   <div>
     <div class="table-reponsive">
         <b-table hover :items="analyses" :fields="fields">
-        <template slot="family" scope="field">
+        <template slot="family" slot-scope="field">
           <nuxt-link :to="{ name: 'analyses-id', params: { id: field.item.id }}">
             {{ field.value }}
           </nuxt-link>
           <span v-if="field.item.priority === 'high'" class="badge badge-info">prio</span>
         </template>
-        <template slot="started_at" scope="field">
+        <template slot="started_at" slot-scope="field">
           {{ field.value | formatDate }}
         </template>
-        <template slot="user" scope="field">
+        <template slot="user" slot-scope="field">
           <span v-if="field.value">{{ field.value.name }}</span>
         </template>
-        <template slot="status" scope="field">
+        <template slot="status" slot-scope="field">
           <b-progress v-if="field.value === 'running'"
                       :value="field.item.progress"
                       :max="1"
@@ -60,7 +60,7 @@
             </b-btn>
           </b-button-group>
         </template>
-        <template slot="comment" scope="field">
+        <template slot="comment" slot-scope="field">
           <div class="comment-box">
             <CommentBox @saved="saveComment" :message="field.value" :parentId="field.item.id" />
           </div>
