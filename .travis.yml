@@ -7,24 +7,16 @@ matrix:
         directories:
           - nuxt/node_modules
 
-      before_script:
-        - echo "before_script"
-        - pwd
-        - cd nuxt
-
       before_install:
-        - echo "before_install"
-        - pwd
         - cd nuxt
 
       install:
-        - echo "install"
         - pwd
         - yarn build --universal
 
     - language: python
       python:
-        - '3.7'
+        - '3.6'
       cache: pip
 
       before_install:
