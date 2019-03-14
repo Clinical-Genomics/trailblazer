@@ -1,21 +1,30 @@
 matrix:
   include:
     - language: node_js
-      node_js: 9
+      node_js: 8
       cache:
         yarn: true
         directories:
           - nuxt/node_modules
 
+      before_script:
+        - echo "before_script"
+        - pwd
+        - cd nuxt
+
       before_install:
+        - echo "before_install"
+        - pwd
         - cd nuxt
 
       install:
+        - echo "install"
+        - pwd
         - yarn build --universal
 
     - language: python
       python:
-        - '3.6'
+        - '3.7'
       cache: pip
 
       before_install:
