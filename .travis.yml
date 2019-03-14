@@ -11,6 +11,7 @@ matrix:
         - cd nuxt
 
       install:
+        - cd nuxt; yarn install; yarn build --universal
 
     - language: python
       python:
@@ -32,8 +33,6 @@ matrix:
 
 notifications:
   email: false
-  slack:
-    secure: KWvQqTqRUzo4IaDZs2XJtqvFeDXx1CQsDVaguNkaFuhCupGS+gbVA6MgxPJbF2BdIK2iAIxKG4n2FSAqWv10PdTVqvBnPFIG0yRJ7nciTveXRIwas7vGlE08AVJX/tnBJrsTZih5IbBZPzWtv4ahwU9TIDqpHRE1wFCCc4PUVsXOsDRnLg772BNTSfMnqpXutdIDhhQFybR/jGARC3LpJxctP3ELH7CZyEf6jN0EviKlcNgdRORG6Jw6mRI7rYCvkSm+CVyQYrkcHrfnkZfZjYxCceQL20tlFSBO4AAYIRGu7B9xHOEPKxXNZq4rMr5B2AmA3RE9F04FVsre3vTNzTm1SIZ9lI4AiDwoWrv8y7jV4k9VQhasfzH182ob0nEnd3ELb/LDn1mCVuo4R41DcegeGy/OxE0LUq62LPPMtiuFoQIzidSPq3LY7stwQnhMSidTPOl4wKj9OhhC4hG9e02djm3YEEX7efg8vBWq26tGuu2WPZ0mccQFSDnfnVkc6I74+lB2GYp8SETouirnrJKqjcYSrUhTZ0HNqbPG6+Qr4974Rb5m3sz+I6Y5EAqymesbenZdBJ2mUNydkqBuSvr+4TNteylHe0GNoxwreWvv4Phq3GBVSPItQGcUqdcdOi4ux+eoNT0IVi5+ytFRNXgBlo3BJ0+WkcozhalWykI=
 
 deploy:
 - provider: pypi
