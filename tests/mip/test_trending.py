@@ -26,6 +26,7 @@ def test_parse_mip_analysis(files_raw) -> dict:
         'genome_build': 'GRCh37',
         'mip_version': 'v6.0.0',
         'rank_model_version': '1.20'
+        'sv_rank_model_version': '1.2'
     }
 
     # Check returns from def
