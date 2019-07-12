@@ -13,6 +13,22 @@ Trailblazer is a tool that aims to provide:
 - [ ] fetch all job ids from sacct status log and offer to kill all jobs
 - [ ] display statistics like which steps most analyses fail at
 
+### Roadmap
+
+Trailblazer's scope will be reduced in the next months and will become SLURM+!
+Meaning it will become a web UI tool that monitors pipelines to help you keep track of the status of multiple analyses.
+
+We have chosen to have a pipeline export the SLURM job ids in the form of a file:
+
+```
+123145
+123146
+123147
+123148
+```
+
+The plan is formulated in [issue/39](https://github.com/Clinical-Genomics/trailblazer/issues/39).
+
 ## Installation
 
 Trailblazer written in Python 3.6+ and is available on the [Python Package Index][pypi] (PyPI).
@@ -128,7 +144,7 @@ Start MIP from Trailblazer. It's only a thin wrapper around the MIP command line
 trailblazer start family4 --priority high
 ```
 
-[mip]: https://github.com/henrikstranneheim/MIP
+[mip]: https://github.com/clinical-genomics/MIP
 [pypi]: https://pypi.python.org/pypi/trailblazer/
 
 [travis-url]: https://travis-ci.org/Clinical-Genomics/trailblazer
