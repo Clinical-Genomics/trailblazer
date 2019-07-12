@@ -45,6 +45,10 @@ cd trailblazer
 pip install --editable .
 ```
 
+## Contributing
+
+Trailblazer is using github flow branching model as described in our [development manual][development manual].
+
 ## Documentation
 
 Here's a brief documentation. Trailblazer functionality can be accessed from the command line interface (CLI), the monitoring web interface, the supporting REST API, as well as using the Python API.
