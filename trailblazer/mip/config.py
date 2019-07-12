@@ -33,7 +33,7 @@ class SampleSchema(Schema):
 
 
 class ConfigSchema(Schema):
-    family = fields.Str(required=True)
+    case = fields.Str(required=True)
     default_gene_panels = fields.List(fields.Str(), required=True)
     samples = fields.List(fields.Nested(SampleSchema), required=True)
 
@@ -80,7 +80,7 @@ class ConfigHandler:
 
     def save_config(self, data: dict) -> Path:
         """Save a config to the expected location."""
-        out_dir = Path(self.families_dir) / data['family']
+        out_dir = Path(self.families_dir) / data['case']
         out_dir.mkdir(parents=True, exist_ok=True)
         out_path = out_dir / 'pedigree.yaml'
         dump = ruamel.yaml.round_trip_dump(data, indent=4, block_seq_indent=2)
