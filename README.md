@@ -155,3 +155,4 @@ trailblazer start family4 --priority high
 [travis-image]: https://img.shields.io/travis/Clinical-Genomics/trailblazer.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/Clinical-Genomics/trailblazer
 [coveralls-image]: https://img.shields.io/coveralls/Clinical-Genomics/trailblazer.svg?style=flat-square
+[development manual]: http://www.clinicalgenomics.se/development/dev/githubflow/
