@@ -8,22 +8,18 @@ from trailblazer.exc import MipStartError
 LOG = logging.getLogger(__name__)
 
 CLI_OPTIONS = {
-    'family': {'option': '--family_id'},
     'config': {'option': '--config_file'},
     'priority': {'option': '--slurm_quality_of_service'},
     'email': {'option': '--email'},
     'base': {'option': '--cluster_constant_path'},
-    'dryrun': {
-        'option': '--dry_run_all',
-        'default': '2',
-    },
-    'gene_list': {'option': '--vcfparser_select_file'},
+    'dryrun': {'option': '--dry_run_all'},
+    'gene_list': {'option': '--vcfparser_slt_fl'},
     'max_gaussian': {
-        'option': '--gatk_variantrecalibration_snv_max_gaussians',
+        'option': '--gatk_varrecal_snv_max_gau',
         'default': '1',
     },
     'skip_evaluation': {'option': '--qccollect_skip_evaluation'},
-    'start_with': {'option': '--start_with_program'},
+    'start_with': {'option': '--start_with_recipe'},
 }
 
 
@@ -35,9 +31,9 @@ class MipCli(object):
         """Initialize MIP command line interface."""
         self.script = script
 
-    def __call__(self, config, family, **kwargs):
+    def __call__(self, config, case, **kwargs):
         """Execute the pipeline."""
-        command = self.build_command(config, family=family, **kwargs)
+        command = self.build_command(config, case, **kwargs)
         LOG.debug(' '.join(command))
         process = self.execute(command)
         process.wait()
@@ -45,9 +41,9 @@ class MipCli(object):
             raise MipStartError('error starting analysis, check the output')
         return process
 
-    def build_command(self, config, **kwargs):
+    def build_command(self, case, config, **kwargs):
         """Builds the command to execute MIP."""
-        command = ['perl', self.script, CLI_OPTIONS['config']['option'], config]
+        command = [self.script, case, CLI_OPTIONS['config']['option'], config]
         for key, value in kwargs.items():
             # enable passing in flags as "False" - shouldn't add command
             if value:
@@ -57,8 +53,6 @@ class MipCli(object):
                 else:
                     command.append(value)
         return command
-
-
 
     def execute(self, command):
         """Start a new MIP run."""
