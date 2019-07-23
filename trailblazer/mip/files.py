@@ -17,7 +17,7 @@ def parse_config(data: dict) -> dict:
     """
     return {
         'email': data.get('email'),
-        'family': data['family_id'],
+        'family': data['case_id'],
         'samples': [{
             'id': sample_id,
             'type': analysis_type,
@@ -43,36 +43,35 @@ def parse_sampleinfo(data: dict) -> dict:
 
     genome_build = data['human_genome_build']
     genome_build_str = f"{genome_build['source']}{genome_build['version']}"
-    if 'svdb' in data['program']:
-        svdb_outpath = (f"{data['program']['svdb']['path']}")
+    if 'svdb' in data['recipe']:
+        svdb_outpath = (f"{data['recipe']['svdb']['path']}")
     else:
         svdb_outpath = ''
     outdata = {
         'date': data['analysis_date'],
-        'family': data['family'],
+        'family': data['case'],
         'genome_build': genome_build_str,
-        'rank_model_version': data['program']['genmod']['rank_model']['version'],
+        'rank_model_version': data['recipe']['genmod']['rank_model']['version'],
         'is_finished': True if data['analysisrunstatus'] == 'finished' else False,
         'pedigree_path': data['pedigree_minimal'],
         'peddy': {
-            'ped': (data['program']['peddy']['peddy']['path'] if
-                    'peddy' in data['program'] else None),
-            'ped_check': (data['program']['peddy']['ped_check']['path'] if
-                          'peddy' in data['program'] else None),
-            'sex_check': (data['program']['peddy']['sex_check']['path'] if
-                          'peddy' in data['program'] else None),
+            'ped': (data['recipe']['peddy_ar']['peddy']['path'] if
+                    'peddy_ar' in data['recipe'] else None),
+            'ped_check': (data['recipe']['peddy_ar']['ped_check']['path'] if
+                          'peddy_ar' in data['recipe'] else None),
+            'sex_check': (data['recipe']['peddy_ar']['sex_check']['path'] if
+                          'peddy_ar' in data['recipe'] else None),
         },
-        'qcmetrics_path': data['program']['qccollect']['path'],
+        'qcmetrics_path': data['recipe']['qccollect']['path'],
         'samples': [],
         'snv': {
             'bcf': data['most_complete_bcf']['path'],
             'clinical_vcf': data['vcf_binary_file']['clinical']['path'],
-            'gbcf': data['gbcf_file']['path'],
             'research_vcf': data['vcf_binary_file']['research']['path'],
         },
         'svdb_outpath': svdb_outpath,
         'sv': {
-            'bcf': data.get('sv_bcf_file', {}).get('path'),
+            'bcf': data['recipe']['sv_combinevariantcallsets']['sv_bcf_file']['path'],
             'clinical_vcf': (data['sv_vcf_binary_file']['clinical']['path'] if
                              'sv_vcf_binary_file' in data else None),
             'merged': svdb_outpath,
@@ -80,20 +79,21 @@ def parse_sampleinfo(data: dict) -> dict:
                              'sv_vcf_binary_file' in data else None),
         },
         'version': data['mip_version'],
+        'str_vcf': data['recipe']['expansionhunter']['path']
     }
 
     for sample_id, sample_data in data['sample'].items():
         sample = {
             'id': sample_id,
             'bam': sample_data['most_complete_bam']['path'],
-            'sambamba': list(sample_data['program']['sambamba_depth'].values())[0]['path'],
+            'sambamba': list(sample_data['recipe']['sambamba_depth'].values())[0]['path'],
             'sex': sample_data['sex'],
             # subsample mt is only for wgs data
-            'subsample_mt': (list(sample_data['program']['samtools_subsample_mt'].values())[0]['path'] if
-                             'samtools_subsample_mt' in sample_data['program'] else None),
-            'vcf2cytosure': list(sample_data['program']['vcf2cytosure'].values())[0]['path'],
+            'subsample_mt': (list(sample_data['recipe']['samtools_subsample_mt'].values())[0]['path'] if
+                             'samtools_subsample_mt' in sample_data['recipe'] else None),
+            'vcf2cytosure': list(sample_data['recipe']['vcf2cytosure'].values())[0]['path'],
         }
-        chanjo_sexcheck = list(sample_data['program']['chanjo_sexcheck'].values())[0]
+        chanjo_sexcheck = list(sample_data['recipe']['chanjo_sexcheck'].values())[0]
         sample['chanjo_sexcheck'] = chanjo_sexcheck['path']
         outdata['samples'].append(sample)
 
