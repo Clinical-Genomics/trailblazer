@@ -14,5 +14,5 @@ def failed_sacct_jobs():
 
 @pytest.fixture(scope='session')
 def mip_cli():
-    _mip_cli = start.MipCli(script='test/fake_mip.pl')
+    _mip_cli = start.MipCli(script='test/fake_mip.pl', pipeline='rd_dna')
     return _mip_cli
