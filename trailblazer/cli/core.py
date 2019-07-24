@@ -74,7 +74,8 @@ def log_cmd(context, sampleinfo, sacct, quiet, config):
 @click.option('-p', '--priority', type=click.Choice(['low', 'normal', 'high']), default='normal')
 @click.option('-d', '--dryrun', is_flag=True, help='only generate SBATCH scripts')
 @click.option('--command', is_flag=True, help='only show the MIP command')
-@click.option('-sw', '--start-with', help='start the pipeline beginning with program, see format for program in mip.pl')
+@click.option('-sw', '--start-with', help='start the pipeline beginning with program,\
+                                           see format for program in mip.pl')
 @click.argument('case', required=False)
 @click.pass_context
 def start(context, mip_config, email, priority, dryrun, command, start_with, case):
@@ -82,7 +83,8 @@ def start(context, mip_config, email, priority, dryrun, command, start_with, cas
     mip_cli = MipCli(context.obj['script'], context.obj['pipeline'])
     mip_config = mip_config or context.obj['mip_config']
     email = email or environ_email()
-    kwargs = dict(config=mip_config, case=case, priority=priority, email=email, dryrun=dryrun, start_with=start_with)
+    kwargs = dict(config=mip_config, case=case, priority=priority,
+                  email=email, dryrun=dryrun, start_with=start_with)
     if command:
         mip_command = mip_cli.build_command(**kwargs)
         click.echo(' '.join(mip_command))
@@ -90,7 +92,7 @@ def start(context, mip_config, email, priority, dryrun, command, start_with, cas
         try:
             mip_cli(**kwargs)
             if not dryrun:
-                context.obj['store'].add_pending(family, email=email)
+                context.obj['store'].add_pending(case, email=email)
         except MipStartError as error:
             click.echo(click.style(error.message, fg='red'))
 
