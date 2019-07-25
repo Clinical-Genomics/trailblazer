@@ -14,7 +14,7 @@ CLI_OPTIONS = {
     'base': {'option': '--cluster_constant_path'},
     'dryrun': {'option': '--dry_run_all'},
     'gene_list': {'option': '--vcfparser_slt_fl'},
-    'max_gaussian': { 'option': '--gatk_varrecal_snv_max_gau'},
+    'max_gaussian': {'option': '--gatk_varrecal_snv_max_gau'},
     'skip_evaluation': {'option': '--qccollect_skip_evaluation'},
     'start_with': {'option': '--start_with_recipe'},
 }
@@ -42,7 +42,6 @@ class MipCli(object):
     def build_command(self, case, config, **kwargs):
         """Builds the command to execute MIP."""
         command = [self.script, self.pipeline, case, CLI_OPTIONS['config']['option'], config]
-        print(command)
         for key, value in kwargs.items():
             # enable passing in flags as "False" - shouldn't add command
             if value:
