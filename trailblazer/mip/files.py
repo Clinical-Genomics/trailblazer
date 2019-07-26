@@ -17,7 +17,7 @@ def parse_config(data: dict) -> dict:
     """
     return {
         'email': data.get('email'),
-        'family': data['case_id'],
+        'case': data['case_id'],
         'samples': [{
             'id': sample_id,
             'type': analysis_type,
@@ -71,7 +71,7 @@ def parse_sampleinfo(data: dict) -> dict:
         },
         'svdb_outpath': svdb_outpath,
         'sv': {
-            'bcf': data['recipe']['sv_combinevariantcallsets']['sv_bcf_file']['path'],
+            'bcf': data['recipe']['sv_combinevariantcallsets'].get('sv_bcf_file', {}).get('path'),
             'clinical_vcf': (data['sv_vcf_binary_file']['clinical']['path'] if
                              'sv_vcf_binary_file' in data else None),
             'merged': svdb_outpath,
@@ -89,8 +89,9 @@ def parse_sampleinfo(data: dict) -> dict:
             'sambamba': list(sample_data['recipe']['sambamba_depth'].values())[0]['path'],
             'sex': sample_data['sex'],
             # subsample mt is only for wgs data
-            'subsample_mt': (list(sample_data['recipe']['samtools_subsample_mt'].values())[0]['path'] if
-                             'samtools_subsample_mt' in sample_data['recipe'] else None),
+            'subsample_mt': (list(sample_data['recipe']['samtools_subsample_mt'].values())
+                             [0]['path'] if 'samtools_subsample_mt' in sample_data['recipe']
+                             else None),
             'vcf2cytosure': list(sample_data['recipe']['vcf2cytosure'].values())[0]['path'],
         }
         chanjo_sexcheck = list(sample_data['recipe']['chanjo_sexcheck'].values())[0]
@@ -110,17 +111,17 @@ def parse_qcmetrics(metrics: dict) -> dict:
     """
     data = {
         'versions': {
-            'freebayes': metrics['program']['freebayes']['version'],
-            'gatk': metrics['program']['gatk']['version'],
-            'manta': metrics['program'].get('manta', {}).get('version'),
-            'bcftools': metrics['program']['bcftools']['version'],
-            'vep': metrics['program']['varianteffectpredictor']['version'],
+            'freebayes': metrics['recipe'].get('freebayes', {}).get('version'),
+            'gatk': metrics['recipe']['gatk']['version'],
+            'manta': metrics['recipe'].get('manta', {}).get('version'),
+            'bcftools': metrics['recipe'].get('bcftools', {}).get('version'),
+            'vep': metrics['recipe'].get('varianteffectpredictor', {}).get('version'),
         },
         'samples': [],
     }
 
     plink_samples = {}
-    plink_sexcheck = metrics['program'].get('plink_sexcheck', {}).get('sample_sexcheck')
+    plink_sexcheck = metrics['recipe'].get('plink_sexcheck', {}).get('sample_sexcheck')
     if isinstance(plink_sexcheck, str):
         sample_id, sex_number = plink_sexcheck.strip().split(':', 1)
         plink_samples[sample_id] = PED_SEX_MAP.get(int(sex_number))
@@ -131,18 +132,24 @@ def parse_qcmetrics(metrics: dict) -> dict:
 
     for sample_id, sample_metrics in metrics['sample'].items():
 
-        ## Bam stats metrics
+        # Bam stats metrics
         bam_stats = [values['bamstats'] for key, values in sample_metrics.items()
-                     if key[:-1].endswith('.lane')]
+                     if key[:-8].endswith('_lane')]
         total_reads = sum(int(bam_stat['raw_total_sequences']) for bam_stat in bam_stats)
         total_mapped = sum(int(bam_stat['reads_mapped']) for bam_stat in bam_stats)
 
-        ## Picard metrics
-        main_key = [key for key in sample_metrics.keys() if '_lanes_' in key][0]
+        # Picard metrics
+        metrics_keys = [key for key in sample_metrics.keys() if '_lanes_' in key]
+        main_key = metrics_keys[0]
+        hsmetrics_key = metrics_keys[1]
+        multimetrics_key = metrics_keys[2]
+        sex_check_key = metrics_keys[3]
 
-        hs_metrics = sample_metrics[main_key]['collecthsmetrics']['header']['data']
-        multiple_inst_metrics = sample_metrics[main_key]['collectmultiplemetricsinsertsize']['header']['data']
-        multiple_metrics = sample_metrics[main_key]['collectmultiplemetrics']['header']['pair']
+        hs_metrics = sample_metrics[hsmetrics_key]['collecthsmetrics']['header']['data']
+        multiple_inst_metrics = \
+            sample_metrics[multimetrics_key]['collectmultiplemetricsinsertsize']['header']['data']
+        multiple_metrics = \
+            sample_metrics[multimetrics_key]['collectmultiplemetrics']['header']['pair']
 
         sample_data = {
             'at_dropout': hs_metrics['AT_DROPOUT'],
@@ -158,7 +165,7 @@ def parse_qcmetrics(metrics: dict) -> dict:
             'median_insert_size':  multiple_inst_metrics['MEDIAN_INSERT_SIZE'],
             'mapped': total_mapped / total_reads,
             'plink_sex': plink_samples.get(sample_id),
-            'predicted_sex': sample_metrics[main_key]['chanjo_sexcheck']['gender'],
+            'predicted_sex': sample_metrics[sex_check_key]['chanjo_sexcheck']['gender'],
             'reads': total_reads,
             'insert_size_standard_deviation': float(multiple_inst_metrics['STANDARD_DEVIATION']),
             'strand_balance': float(multiple_metrics['STRAND_BALANCE']),

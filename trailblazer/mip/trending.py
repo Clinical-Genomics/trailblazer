@@ -43,7 +43,7 @@ def _qc_metrics(outdata, qcmetrics_raw):
 
 def _config(mip_config_raw, outdata):
     config_data = _parse_raw_mip_config_into_dict(mip_config_raw)
-    _add_family_id(config_data, outdata)
+    _add_case_id(config_data, outdata)
     _add_all_samples_from_mip_config(config_data, outdata)
 
 
@@ -107,7 +107,7 @@ def _define_output_dict():
     outdata = {
         'analysis_sex': {},
         'at_dropout': {},
-        'family': None,
+        'case': None,
         'duplicates': {},
         'gc_dropout': {},
         'genome_build': None,
@@ -127,5 +127,5 @@ def _add_all_samples_from_mip_config(config_data, outdata):
         outdata['sample_ids'].append(sample_data['id'])
 
 
-def _add_family_id(config_data, outdata):
-    outdata['family'] = config_data['family']
+def _add_case_id(config_data, outdata):
+    outdata['case'] = config_data['case']
