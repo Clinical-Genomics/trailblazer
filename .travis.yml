@@ -1,3 +1,4 @@
+dist: xenial
 matrix:
   include:
     - language: node_js
@@ -16,6 +17,7 @@ matrix:
     - language: python
       python:
         - '3.6'
+        - '3.7'
       cache: pip
 
       before_install:
