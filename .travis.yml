@@ -27,10 +27,9 @@ matrix:
         - pip install -q -r requirements-dev.txt .
 
       script:
-        - coverage run --source "$(basename "$PWD")" setup.py test
+        - py.test -v tests/*
         - pip check
 
-      after_success: coveralls
     - language: python
       python:
         - '3.7'
