@@ -17,6 +17,22 @@ matrix:
     - language: python
       python:
         - '3.6'
+      cache: pip
+
+      before_install:
+        - pip install git-lint pylint pycodestyle yamllint docutils html-linter
+        - git reset --soft ${TRAVIS_COMMIT_RANGE%...*} && git lint
+
+      install:
+        - pip install -q -r requirements-dev.txt .
+
+      script:
+        - coverage run --source "$(basename "$PWD")" setup.py test
+        - pip check
+
+      after_success: coveralls
+    - language: python
+      python:
         - '3.7'
       cache: pip
 
@@ -32,6 +48,7 @@ matrix:
         - pip check
 
       after_success: coveralls
+
 
 notifications:
   email: false
