@@ -25,7 +25,7 @@ most_complete_bcf:
 most_complete_vcf:
   path: /path_to/case/case/gatk_combinevariantcallsets/case_gatkcomb.vcf
 pedigree_file:
-  path: /proj/stage/rare-disease/cases/case/case_pedigree.yaml
+  path: /path_to/cases/case/case_pedigree.yaml
 #pedigree_minimal: /path_to/case/case/rankvariant/case.fam
 pedigree_minimal: /path_to/case/case.fam 
 recipe:
