@@ -44,10 +44,10 @@ def parse_sampleinfo(data: dict) -> dict:
     genome_build = data['human_genome_build']
     genome_build_str = f"{genome_build['source']}{genome_build['version']}"
     if 'sv_combinevariantcallsets' in data['recipe']:
-        sv_combinevariantcallsets_outpath = \
+        sv_combinevariantcallsets_path = \
             (f"{data['recipe']['sv_combinevariantcallsets']['path']}")
     else:
-        sv_combinevariantcallsets_outpath = ''
+        sv_combinevariantcallsets_path = ''
     outdata = {
         'date': data['analysis_date'],
         'case': data['case'],
@@ -70,12 +70,12 @@ def parse_sampleinfo(data: dict) -> dict:
             'clinical_vcf': data['vcf_binary_file']['clinical']['path'],
             'research_vcf': data['vcf_binary_file']['research']['path'],
         },
-        'sv_combinevariantcallsets_outpath': sv_combinevariantcallsets_outpath,
+        'sv_combinevariantcallsets_path': sv_combinevariantcallsets_path,
         'sv': {
             'bcf': data['recipe']['sv_combinevariantcallsets'].get('sv_bcf_file', {}).get('path'),
             'clinical_vcf': (data['sv_vcf_binary_file']['clinical']['path'] if
                              'sv_vcf_binary_file' in data else None),
-            'merged': sv_combinevariantcallsets_outpath,
+            'merged': sv_combinevariantcallsets_path,
             'research_vcf': (data['sv_vcf_binary_file']['research']['path'] if
                              'sv_vcf_binary_file' in data else None),
         },
