@@ -80,14 +80,16 @@ def test_call_with_missing_files(log_analysis, files):
 def test_parse_sacct(files_data):
     # GIVEN sacct jobs from a finished analysis
     sacct_jobs = files_data['sacct']
-    analysis_end = datetime.datetime(2017, 6, 19, 3, 39, 56)
+    analysis_end = datetime.datetime(2019, 7, 4, 23, 16, 54)
     # WHEN parsing them for info
     jobs_count = len(sacct_jobs)    # TODO: see code in _call_ in class LogAnalysis for proper
     # jobs_count calculation
     sacct_data, last_job_end = log.LogAnalysis._parse_sacct(sacct_jobs, jobs_count=jobs_count)
+
     # THEN it should return info about the jobs in general
     assert sacct_data['jobs'] == len(sacct_jobs)
-    assert sacct_data['completed_jobs'] == len(sacct_jobs)
+    assert sacct_data['completed_jobs'] + len(sacct_data['failed_jobs']) == len(sacct_jobs)
+
     # ... and correctly determine the end of the last job
     assert last_job_end == analysis_end
 

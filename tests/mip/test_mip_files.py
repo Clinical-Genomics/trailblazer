@@ -19,29 +19,27 @@ def test_parse_config(files_raw) -> dict:
     # THEN it should work
     assert isinstance(config_data, dict)
 
-    # THEN it should work and the dry run check should be "no"
-    assert config_data['is_dryrun'] is False
+    # THEN it should work and the dry run check should be "yes"
+    assert config_data['is_dryrun'] is True
 
     # ... and should include all samples
     assert len(config_raw['analysis_type']) == len(config_data['samples'])
 
     # Build dict for return data
     config_test_data = {
-        'config_path': 'tests/fixtures/family/family_config.yaml',
-        'email': 'emilia.ottosson@scilifelab.se',
-        'family': 'family',
-        'log_path': 'tests/fixtures/family/mip.pl_2017-06-17T12:11:42.log',
-        'sampleinfo_path': ('/mnt/hds/proj/bioinfo/MIP_ANALYSIS/' +
-                            'customers/cust003/family/analysis/' +
-                            'family_qc_sample_info.yaml'),
-        'out_dir': ('/mnt/hds/proj/bioinfo/MIP_ANALYSIS/customers/' +
-                    'cust003/family/analysis'),
+        'config_path': '/path_to/cases/case/analysis/case_config.yaml',
+        'email': None,  # TODO: add dummy email in config
+        'case': 'case',
+        'log_path': 'tests/fixtures/case/mip_2019-07-04T10:47:15.log',
+        'sampleinfo_path': '/path_to/cases/case/analysis/case_qc_sample_info.yaml',
+        'out_dir': '/path_to/cases/case/analysis',
         'priority': 'normal',
         }
 
     # Check returns from def
     for key, value in config_test_data.items():
         assert config_data[key] == value
+
 
 def test_parse_sampleinfo(files_raw):
     """
@@ -61,86 +59,89 @@ def test_parse_sampleinfo(files_raw):
     # THEN it should mark the run as "finished"
     assert sampleinfo_data['is_finished'] is True
 
-    ### More in-depth testing
-    ## Family data
+    # More in-depth testing
+    # Family data
     # Build dict for family return data
     sampleinfo_test_data = {
-        'family': 'family',
-        'genome_build': 'GRCh37',
-        'pedigree_path': '/path_to/family/family.fam',
-        'qcmetrics_path': ('/path_to/family/family_qc_metrics.yaml'),
-        'svdb_outpath': 'path/to/118_sorted_md_brecal_comb_SV.vcf',
-        'version': 'v6.0.0',
+        'case': 'case',
+        'genome_build': 'grch37',
+        'pedigree_path': '/path_to/case/case.fam',
+        'qcmetrics_path': '/path_to/case/case_qc_metrics.yaml',
+        'sv_combinevariantcallsets_outpath': '/path_to/case/case/sv_combinevariantcallsets/case_comb.vcf',
+        'version': 'v7.1.0',
         }
 
-    # Check returns from def
+    # Check returns from def 1
     for key, value in sampleinfo_test_data.items():
         assert sampleinfo_data[key] == value
 
-    ## Sample data
+    # Sample data
     # Build dict for sample return data
     sampleinfo_test_sample_data = {
-        'bam': '/path_to/sample/bwa/sample_lanes_7777_sorted_md_brecal.bam',
-        'chanjo_sexcheck': ('/path_to/sample/bwa/coveragereport/' +
-                            'sample_lanes_7777_sorted_md_brecal.sexcheck'),
-        'id': 'sample',
-        'sambamba': ('/path_to/sample/bwa/coveragereport/sample_lanes_7777' +
-                     '_sorted_md_brecal_coverage.bed'),
+        'bam': '/path_to/case/mother/gatk_baserecalibration/mother_lanes_1_sorted_md_brecal.bam',
+        'chanjo_sexcheck': (
+            '/path_to/case/mother/chanjo_sexcheck/mother_lanes_1_sorted_md_brecal_sex.tsv'),
+        'id': 'mother',
+        'sambamba': ('/path_to/case/mother/sambamba_depth'
+                     '/mother_lanes_1_sorted_md_brecal_coverage.bed'),
         'sex': 'female',
-        'subsample_mt': ('/path_to/sample/bwa/ADM1059A4_lanes_8_sorted_md' +
-                         '_brecal_subsample_MT.bam'),
-        'vcf2cytosure': ('/path_to/sample/bwa/vcf2cytosure/ADM1059A4_sorted' +
-                         '_md_brecal_comb_SV.cgh'),
+        'subsample_mt': ('/path_to/case/mother/samtools_subsample_mt'
+                         '/mother_lanes_1_sorted_md_brecal_subsample_MT.bam'),
+        'vcf2cytosure': '/path_to/case/case/vcf2cytosure_ar/case_cyto.mother.cgh',
         }
 
-    # Check returns from def
+    # Check returns from def 2
     for key, value in sampleinfo_test_sample_data.items():
         for sample_data in sampleinfo_data['samples']:
+
+            if sample_data['id'] != sampleinfo_test_sample_data['id']:
+                continue
+
             assert sample_data[key] == value
 
     assert len(sampleinfo_raw['analysis_type']) == len(sampleinfo_data['samples'])
 
-    ## Snv data
+    # Snv data
     # Build dict for snv return data
     sampleinfo_test_snv_data = {
-        'clinical_vcf': ('/path_to/family_sorted_md_brecal_gvcf_vrecal_comb' +
-                         '_vt_vep_parsed_snpeff_ranked_BOTH.selected.vcf.gz'),
-        'research_vcf': ('/path_to/family_sorted_md_brecal_gvcf_vrecal_comb' +
-                         '_vt_vep_parsed_snpeff_ranked_BOTH.vcf.gz'),
-        'bcf': '/path_to/family_sorted_md_brecal_gvcf_vrecal_comb_BOTH.bcf',
-        'gbcf': '/path_to/gatk/family_sorted_md_brecal_gvcf_BOTH.bcf'
+        'clinical_vcf': ('/path_to/case/case/endvariantannotationblock'
+                         '/case_gatkcomb_rhocall_vt_frqf_cadd_vep_parsed_snpeff_ranked.selected'
+                         '.vcf.gz'),
+        'research_vcf': ('/path_to/case/case/endvariantannotationblock'
+                         '/case_gatkcomb_rhocall_vt_frqf_cadd_vep_parsed_snpeff_ranked.vcf.gz'),
+        'bcf': '/path_to/case/case/gatk_combinevariantcallsets/case_gatkcomb.bcf',
         }
 
-    # Check returns from def
+    # Check returns from def 3
     for key, value in sampleinfo_test_snv_data.items():
         assert sampleinfo_data['snv'][key] == value
 
-    ## SV data
+    # SV data
     # Build dict for sv return data
     sampleinfo_test_sv_data = {
-        'clinical_vcf': ('/path_to/family_sorted_md_brecal_comb_vep_' +
-                         'parsed_ranked_SV.selected.vcf.gz'),
-        'research_vcf': ('/path_to/family_sorted_md_brecal_comb_vep_' +
-                         'parsed_ranked_SV.vcf.gz'),
-        'bcf': '/path_to/family_sorted_md_brecal_comb_SV.bcf',
-        'merged': 'path/to/118_sorted_md_brecal_comb_SV.vcf',
+        'clinical_vcf': ('/path_to/case/case/sv_reformat/case_comb_ann_vep_parsed_ranked.selected'
+                         '.vcf.gz'),
+        'research_vcf': '/path_to/case/case/sv_reformat/case_comb_ann_vep_parsed_ranked.vcf.gz',
+        'bcf': '/path_to/case/case/sv_combinevariantcallsets/case_comb.bcf',
+        'merged': '/path_to/case/case/sv_combinevariantcallsets/case_comb.vcf',
         }
 
-    # Check returns from def
+    # Check returns from def 4
     for key, value in sampleinfo_test_sv_data.items():
         assert sampleinfo_data['sv'][key] == value
 
-    ## Peddy data
+    # Peddy data
     # Build dict for peddy return data
     sampleinfo_test_peddy_data = {
-        'ped_check': '/path_to/118.ped_check.csv',
-        'ped': '/path_to/118.peddy.ped',
-        'sex_check': '/path_to/118.sex_check.csv',
+        'ped_check': '/path_to/case/case/peddy_ar/case_gatkcomb.ped_check.csv',
+        'ped': '/path_to/case/case/peddy_ar/case_gatkcomb.peddy.ped',
+        'sex_check': '/path_to/case/case/peddy_ar/case_gatkcomb.sex_check.csv',
         }
 
-    # Check returns from def
+    # Check returns from def 5
     for key, value in sampleinfo_test_peddy_data.items():
         assert sampleinfo_data['peddy'][key] == value
+
 
 def test_parse_qcmetrics(files_raw):
     """
@@ -157,51 +158,58 @@ def test_parse_qcmetrics(files_raw):
     # THEN it should work ;-)
     assert isinstance(qcmetrics_data, dict)
 
-    ## Version data
+    # Version data
     # Build dict for version return data
     qcmetrics_test_version_data = {
-        'freebayes': 'v1.0.2',
-        'gatk': 3.6,
-        'manta': '1.0.3',
-        'bcftools': '1.3.1+htslib-1.3.1',
-        'vep': 'v87',
+        'gatk': '3.8',
+        'manta': '1.5.0',
+        'vep': 'v95',
         }
 
     # Check returns from def
     for key, value in qcmetrics_test_version_data.items():
         assert qcmetrics_data['versions'][key] == value
 
-    ## Sample data
+    # Sample data
     # Build dict for sample return data
     qcmetrics_test_sample_data = {
-        'at_dropout': 0.126963,
-        'duplicates': 0.132719986683768,
-        'id': 'sample',
-        'insert_size_standard_deviation': 89.871783,
-        'gc_dropout': 3.956909,
-        'mapped': 0.9850732625744484,
-        'median_insert_size': 413,
+        'at_dropout': '1.716704',
+        'duplicates': 0.0379523291229131,
+        'id': 'mother',
+        'insert_size_standard_deviation': 94.353778,
+        'gc_dropout': '0.214813',
+        'mapped': 0.9974176575073073,
+        'median_insert_size': '409',
         'plink_sex': 'female',
         'predicted_sex': 'female',
-        'reads': 949878168,
-        'strand_balance': 0.499558,
-        'target_coverage': 37.428611,
+        'reads': 600006004,
+        'strand_balance': 0.50162,
+        'target_coverage': 28.643247,
         }
 
     # Check returns from def
     for key, value in qcmetrics_test_sample_data.items():
         for sample_data in qcmetrics_data['samples']:
-            assert sample_data[key] == value
 
-    ## Sample coverage data
+            if sample_data['id'] != qcmetrics_test_sample_data['id']:
+                continue
+
+        assert sample_data[key] == value
+
+    # Sample coverage data
     # Build dict for sample coverage return data
     qcmetrics_test_sample_cov_data = {
-        10: 0.991187,
-        20: 0.984713,
-        50: 0.063229,
-        100: 0.000372,
+        10: '0.98974',
+        20: '0.935455',
+        50: '0.002685',
+        100: '0.000101',
         }
+
     # Check returns from def
     for key, value in qcmetrics_test_sample_cov_data.items():
         for sample_data in qcmetrics_data['samples']:
+
+            if sample_data['id'] != qcmetrics_test_sample_data['id']:
+                continue
+
             assert sample_data['completeness_target'][key] == value

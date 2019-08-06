@@ -43,13 +43,13 @@ def parse_sampleinfo(data: dict) -> dict:
 
     genome_build = data['human_genome_build']
     genome_build_str = f"{genome_build['source']}{genome_build['version']}"
-    if 'svdb' in data['recipe']:
-        svdb_outpath = (f"{data['recipe']['svdb']['path']}")
+    if 'sv_combinevariantcallsets' in data['recipe']:
+        sv_combinevariantcallsets_outpath = (f"{data['recipe']['sv_combinevariantcallsets']['path']}")
     else:
-        svdb_outpath = ''
+        sv_combinevariantcallsets_outpath = ''
     outdata = {
         'date': data['analysis_date'],
-        'family': data['case'],
+        'case': data['case'],
         'genome_build': genome_build_str,
         'rank_model_version': data['recipe']['genmod']['rank_model']['version'],
         'is_finished': True if data['analysisrunstatus'] == 'finished' else False,
@@ -69,12 +69,12 @@ def parse_sampleinfo(data: dict) -> dict:
             'clinical_vcf': data['vcf_binary_file']['clinical']['path'],
             'research_vcf': data['vcf_binary_file']['research']['path'],
         },
-        'svdb_outpath': svdb_outpath,
+        'sv_combinevariantcallsets_outpath': sv_combinevariantcallsets_outpath,
         'sv': {
             'bcf': data['recipe']['sv_combinevariantcallsets'].get('sv_bcf_file', {}).get('path'),
             'clinical_vcf': (data['sv_vcf_binary_file']['clinical']['path'] if
                              'sv_vcf_binary_file' in data else None),
-            'merged': svdb_outpath,
+            'merged': sv_combinevariantcallsets_outpath,
             'research_vcf': (data['sv_vcf_binary_file']['research']['path'] if
                              'sv_vcf_binary_file' in data else None),
         },
@@ -111,10 +111,8 @@ def parse_qcmetrics(metrics: dict) -> dict:
     """
     data = {
         'versions': {
-            'freebayes': metrics['recipe'].get('freebayes', {}).get('version'),
             'gatk': metrics['recipe']['gatk']['version'],
             'manta': metrics['recipe'].get('manta', {}).get('version'),
-            'bcftools': metrics['recipe'].get('bcftools', {}).get('version'),
             'vep': metrics['recipe'].get('varianteffectpredictor', {}).get('version'),
         },
         'samples': [],
