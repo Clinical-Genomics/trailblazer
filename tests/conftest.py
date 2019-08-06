@@ -26,10 +26,10 @@ def invoke_cli(cli_runner):
 @pytest.fixture(scope='session')
 def files():
     return {
-        'config': 'tests/fixtures/family/family_config.yaml',
-        'sampleinfo': 'tests/fixtures/family/family_qc_sample_info.yaml',
-        'qcmetrics': 'tests/fixtures/family/family_qc_metrics.yaml',
-        'sacct': 'tests/fixtures/family/mip.pl_2017-06-17T12:11:42.log.status',
+        'config': 'tests/fixtures/case/case_config.yaml',
+        'sampleinfo': 'tests/fixtures/case/case_qc_sample_info.yaml',
+        'qcmetrics': 'tests/fixtures/case/case_qc_metrics.yaml',
+        'sacct': 'tests/fixtures/case/mip_2019-07-04T10:47:15.log.status',
     }
 
 
