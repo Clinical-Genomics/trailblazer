@@ -67,7 +67,7 @@ def test_parse_sampleinfo(files_raw):
         'genome_build': 'grch37',
         'pedigree_path': '/path_to/case/case.fam',
         'qcmetrics_path': '/path_to/case/case_qc_metrics.yaml',
-        'sv_combinevariantcallsets_outpath':
+        'sv_combinevariantcallsets_path':
             '/path_to/case/case/sv_combinevariantcallsets/case_comb.vcf',
         'version': 'v7.1.0',
         }
