@@ -195,7 +195,7 @@ def test_parse_qcmetrics(files_raw):
             if sample_data['id'] != qcmetrics_test_sample_data['id']:
                 continue
 
-        assert sample_data[key] == value
+            assert sample_data[key] == value
 
     # Sample coverage data
     # Build dict for sample coverage return data
