@@ -54,6 +54,7 @@ delly_types:
   - INV
   - INS
 dry_run_all: 1
+email: 'test.person@test.se'
 email_types:
   - FAIL
 endvariantannotationblock: 2
