@@ -571,7 +571,7 @@ vep_features:
   - regulatory
   - sift p
   - symbol
-  - tsl
+  - tsl6
   - uniprot
 vep_plugin_pli_value_file_path: /path_to/references/references_7.1/gnomadpLI_values.txt
 vep_plugins:
@@ -585,4 +585,3 @@ vt_decompose: '1'
 vt_missing_alt_allele: '1'
 vt_normalize: '1'
 vt_uniq: '1'
-
