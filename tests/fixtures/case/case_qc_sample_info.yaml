@@ -26,7 +26,6 @@ most_complete_vcf:
   path: /path_to/case/case/gatk_combinevariantcallsets/case_gatkcomb.vcf
 pedigree_file:
   path: /path_to/cases/case/case_pedigree.yaml
-#pedigree_minimal: /path_to/case/case/rankvariant/case.fam
 pedigree_minimal: /path_to/case/case.fam
 recipe:
   cadd_ar:
@@ -587,4 +586,3 @@ vcfparser_ar:
         gene_panel: mtDNA
         updated_at: 2015-11-30
         version: '8.0'
-
