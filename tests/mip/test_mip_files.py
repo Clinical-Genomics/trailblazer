@@ -28,7 +28,7 @@ def test_parse_config(files_raw) -> dict:
     # Build dict for return data
     config_test_data = {
         'config_path': '/path_to/cases/case/analysis/case_config.yaml',
-        'email': None,  # TODO: add dummy email in config
+        'email': test.person@test.se,
         'case': 'case',
         'log_path': 'tests/fixtures/case/mip_2019-07-04T10:47:15.log',
         'sampleinfo_path': '/path_to/cases/case/analysis/case_qc_sample_info.yaml',
