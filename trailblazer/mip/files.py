@@ -80,7 +80,7 @@ def parse_sampleinfo(data: dict) -> dict:
                              'sv_vcf_binary_file' in data else None),
         },
         'version': data['mip_version'],
-        'str_vcf': data['recipe'].get('expansionhunter', '').get('path')
+        'str_vcf': data['recipe'].get('expansionhunter', {}).get('path')
     }
 
     for sample_id, sample_data in data['sample'].items():
