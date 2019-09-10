@@ -21,9 +21,9 @@ def test_time_to_sec(time_str, expected_seconds):
 
 
 @pytest.mark.parametrize('row, expected_job', [
-    (['813887', 'gatk_genotypegvcfs_family_BOTH', 'prod001', 'core', '16', '10:03.096',
+    (['813887', 'gatk_genotypegvcfs_case_BOTH', 'prod001', 'core', '16', '10:03.096',
       '00:02:01', '2017-06-19T00:44:46', '2017-06-19T00:46:47', 'COMPLETED', '0:0'],
-     dict(step='gatk_genotypegvcfs', context='family', is_completed=True)),
+     dict(step='gatk_genotypegvcfs', context='case', is_completed=True)),
     (['815038', 'fastqc_ACC2698A3', 'prod001', 'core', '8', '00:00:00', '00:37:24',
       '2017-06-20T12:57:45', 'Unknown', 'RUNNING', '0:0'],
      dict(step='fastqc', context='ACC2698A3', is_completed=False)),
