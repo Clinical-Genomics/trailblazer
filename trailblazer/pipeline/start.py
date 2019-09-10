@@ -3,7 +3,7 @@ import logging
 import signal
 import subprocess
 
-from trailblazer.exc import MipStartError
+from trailblazer.exc import PipelineStartError
 
 LOG = logging.getLogger(__name__)
 
@@ -20,12 +20,12 @@ CLI_OPTIONS = {
 }
 
 
-class MipCli(object):
+class PipelineCli(object):
 
-    """Wrapper around MIP command line interface."""
+    """Wrapper around pipeline command line interface."""
 
     def __init__(self, script, pipeline):
-        """Initialize MIP command line interface."""
+        """Initialize pipeline command line interface."""
         self.script = script
         self.pipeline = pipeline
 
@@ -36,11 +36,11 @@ class MipCli(object):
         process = self.execute(command)
         process.wait()
         if process.returncode != 0:
-            raise MipStartError('error starting analysis, check the output')
+            raise PipelineStartError('error starting analysis, check the output')
         return process
 
     def build_command(self, case, config, **kwargs):
-        """Builds the command to execute MIP."""
+        """Builds the command to execute pipeline."""
         command = [self.script, self.pipeline, case, CLI_OPTIONS['config']['option'], config]
         for key, value in kwargs.items():
             # enable passing in flags as "False" - shouldn't add command
@@ -53,7 +53,7 @@ class MipCli(object):
         return command
 
     def execute(self, command):
-        """Start a new MIP run."""
+        """Start a new pipeline run."""
 
         """
         Remove the default SIGPIPE handler

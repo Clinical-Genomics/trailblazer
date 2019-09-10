@@ -53,7 +53,8 @@ class BaseHandler:
             analysis_query = analysis_query.filter(self.Analysis.started_at < before)
         if is_visible is not None:
             analysis_query = analysis_query.filter_by(is_visible=is_visible)
-        return analysis_query.order_by(self.Analysis.started_at.desc())
+        return analysis_query.order_by(self.Analysis.started_at.desc(), \
+                                                                  self.Analysis.logged_at.desc())
 
     def analysis(self, analysis_id: int) -> models.Analysis:
         """Get a single analysis."""

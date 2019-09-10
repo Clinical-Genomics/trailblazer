@@ -10,10 +10,10 @@ import ruamel.yaml
 import trailblazer
 from trailblazer.store import Store
 from trailblazer.log import LogAnalysis
-from trailblazer.mip.start import MipCli
+from trailblazer.mip.start import PipelineCli
 from trailblazer.mip.files import parse_config
 from trailblazer.mip.miplog import job_ids
-from trailblazer.exc import MissingFileError, MipStartError
+from trailblazer.exc import MissingFileError, PipelineStartError
 from .utils import environ_email
 from .clean import clean
 from .delete import delete
@@ -43,13 +43,13 @@ def base(context, config, database, root, log_level):
 @base.command('log')
 @click.option('-s', '--sampleinfo', type=click.Path(exists=True), help='sample info file')
 @click.option('-a', '--sacct', type=click.Path(exists=True), help='sacct job info file')
-@click.option('-q', '--quiet', is_flag=True, help='supress outputs')
+@click.option('-q', '--quiet', is_flag=True, help='suppress outputs')
 @click.argument('config', type=click.File())
 @click.pass_context
 def log_cmd(context, sampleinfo, sacct, quiet, config):
     """Log an analysis.
 
-    CONFIG: MIP config file for an analysis
+    CONFIG: pipeline config file for an analysis
     """
     log_analysis = LogAnalysis(context.obj['store'])
     try:
@@ -69,31 +69,38 @@ def log_cmd(context, sampleinfo, sacct, quiet, config):
 
 
 @base.command()
-@click.option('-c', '--mip-config', type=click.Path(exists=True), help='MIP config')
+@click.option('-c', '--mip-config', 'pipeline_config', type=click.Path(exists=True),
+              help='Pipeline config')
 @click.option('-e', '--email', help='email for logging user')
 @click.option('-p', '--priority', type=click.Choice(['low', 'normal', 'high']), default='normal')
 @click.option('-d', '--dryrun', is_flag=True, help='only generate SBATCH scripts')
-@click.option('--command', is_flag=True, help='only show the MIP command')
-@click.option('-sw', '--start-with', help='start the pipeline beginning with program,\
-                                           see format for program in mip.pl')
+@click.option('--command', is_flag=True, help='only show the pipeline command')
+@click.option('-sw', '--start-with', help='start the pipeline beginning with at ...')
 @click.argument('case', required=False)
+@click.argument('pipeline', required=False)
+@click.argument('script', required=False)
 @click.pass_context
-def start(context, mip_config, email, priority, dryrun, command, start_with, case):
+def start(context, pipeline_config, email, priority, dryrun, command, start_with, case, pipeline,
+          script):
     """Start a new analysis."""
-    mip_cli = MipCli(context.obj['script'], context.obj['pipeline'])
-    mip_config = mip_config or context.obj['mip_config']
+    pipeline = pipeline or context.obj['pipeline']
+    script = script or context.obj['script']
+    pipeline_cli = PipelineCli(script, pipeline)
+
+    pipeline_config = pipeline_config or context.obj['mip_config']
+
     email = email or environ_email()
-    kwargs = dict(config=mip_config, case=case, priority=priority,
+    kwargs = dict(config=pipeline_config, case=case, priority=priority,
                   email=email, dryrun=dryrun, start_with=start_with)
     if command:
-        mip_command = mip_cli.build_command(**kwargs)
+        mip_command = pipeline_cli.build_command(**kwargs)
         click.echo(' '.join(mip_command))
     else:
         try:
-            mip_cli(**kwargs)
+            pipeline_cli(**kwargs)
             if not dryrun:
                 context.obj['store'].add_pending(case, email=email)
-        except MipStartError as error:
+        except PipelineStartError as error:
             click.echo(click.style(error.message, fg='red'))
 
 
@@ -170,7 +177,7 @@ def cancel(context, jobs, analysis_id):
 
     log_path = Path(f"{config_data['log_path']}")
     if not log_path.exists():
-        click.echo(f"missing MIP log file: {log_path}")
+        click.echo(f"missing pipeline log file: {log_path}")
         context.abort()
 
     with log_path.open() as log_stream:
