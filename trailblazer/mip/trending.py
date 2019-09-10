@@ -25,7 +25,7 @@ def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw
 
 
 def _add_rank_model_version(outdata, sampleinfo_data):
-
+    outdata['sv_rank_model_version'] = sampleinfo_data['sv_rank_model_version']
     outdata['rank_model_version'] = sampleinfo_data['rank_model_version']
 
 

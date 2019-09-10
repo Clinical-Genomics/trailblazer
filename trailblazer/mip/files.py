@@ -53,6 +53,7 @@ def parse_sampleinfo(data: dict) -> dict:
         'case': data['case'],
         'genome_build': genome_build_str,
         'rank_model_version': data['recipe']['genmod']['rank_model']['version'],
+        'sv_rank_model_version': data['recipe']['sv_genmod']['version'],
         'is_finished': True if data['analysisrunstatus'] == 'finished' else False,
         'pedigree_path': data['pedigree_minimal'],
         'peddy': {
