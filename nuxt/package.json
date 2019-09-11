@@ -1,6 +1,6 @@
 {
   "name": "trailblazer",
-  "version": "3.1.6",
+  "version": "4.0.0",
   "description": "Trailblazer web UI",
   "author": "Robin Andeer <robin.andeer@gmail.com>",
   "private": true,
@@ -19,7 +19,7 @@
     "bootstrap": "^4.3.x",
     "bootstrap-vue": "^2.0.0-rc.11",
     "caniuse-lite": "^1.0.30000697",
-    "jquery": "^3.0.0",
+    "jquery": "^3.4.0",
     "js-cookie": "^2.2.0",
     "jwt-decode": "^2.2.0",
     "nuxt": "^1.0.0-rc11",

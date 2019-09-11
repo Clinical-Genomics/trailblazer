@@ -1,3 +1,4 @@
+dist: xenial
 matrix:
   include:
     - language: node_js
@@ -26,10 +27,27 @@ matrix:
         - pip install -q -r requirements-dev.txt .
 
       script:
+        - py.test -v tests/*
+        - pip check
+
+    - language: python
+      python:
+        - '3.7'
+      cache: pip
+
+      before_install:
+        - pip install git-lint pylint pycodestyle yamllint docutils html-linter
+        - git reset --soft ${TRAVIS_COMMIT_RANGE%...*} && git lint
+
+      install:
+        - pip install -q -r requirements-dev.txt .
+
+      script:
         - coverage run --source "$(basename "$PWD")" setup.py test
         - pip check
 
       after_success: coveralls
+
 
 notifications:
   email: false
