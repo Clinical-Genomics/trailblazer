@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test MIP files"""
 
-from trailblazer.mip import files
+from trailblazer.pipeline import files
 
 
 def test_parse_config(files_raw) -> dict:

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from trailblazer.mip import sacct
-from trailblazer.mip import start
+from trailblazer.pipeline import sacct
+from trailblazer.pipeline import start
 
 
 @pytest.fixture(scope='session')
@@ -14,5 +14,5 @@ def failed_sacct_jobs():
 
 @pytest.fixture(scope='session')
 def mip_cli():
-    _mip_cli = start.MipCli(script='test/fake_mip.pl', pipeline='rd_dna')
+    _mip_cli = start.PipelineCli(script='test/fake_mip.pl', pipeline='rd_dna')
     return _mip_cli

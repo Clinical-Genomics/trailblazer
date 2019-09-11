@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test MIP files"""
 
-from trailblazer.mip import trending
+from trailblazer.pipeline import trending
 
 
 def test_parse_mip_analysis(files_raw) -> dict:

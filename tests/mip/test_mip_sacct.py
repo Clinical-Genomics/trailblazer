@@ -3,7 +3,7 @@ import datetime
 
 import pytest
 
-from trailblazer.mip import sacct
+from trailblazer.pipeline import sacct
 
 
 @pytest.mark.parametrize('time_str, expected_seconds', [

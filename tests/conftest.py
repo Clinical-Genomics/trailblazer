@@ -7,7 +7,7 @@ from click.testing import CliRunner
 import ruamel.yaml
 
 from trailblazer.cli import base
-from trailblazer.mip import sacct, files as files_api
+from trailblazer.pipeline import sacct, files as files_api
 from trailblazer.log import LogAnalysis
 from trailblazer.store import Store
 

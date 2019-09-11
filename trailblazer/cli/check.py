@@ -5,7 +5,7 @@ import click
 import ruamel.yaml
 from tabulate import tabulate
 
-from trailblazer.mip import files
+from trailblazer.pipeline import files
 
 LOG = logging.getLogger(__name__)
 

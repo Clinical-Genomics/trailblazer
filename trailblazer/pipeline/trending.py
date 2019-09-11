@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ Get MIP data for trending."""
 
-from trailblazer.mip import files
+from trailblazer.pipeline import files
 
 
 def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw: dict) -> dict:

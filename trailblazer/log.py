@@ -5,7 +5,7 @@ from typing import List
 
 import ruamel.yaml
 
-from trailblazer.mip import sacct as sacct_api, files as files_api, miplog
+from trailblazer.pipeline import sacct as sacct_api, files as files_api, pipelinelog
 from trailblazer.store import models, Store
 from trailblazer.exc import MissingFileError
 
@@ -33,7 +33,7 @@ class LogAnalysis(object):
         with sacct_path.open() as stream:
             sacct_jobs = sacct_api.parse_sacct(stream)
         with Path(config_data['log_path']).open() as stream:
-            jobs = len(miplog.job_ids(stream))
+            jobs = len(pipelinelog.job_ids(stream))
         run_data = self.parse(config_data, sampleinfo_data, sacct_jobs, jobs=jobs)
         self._delete_temp_logs(run_data['case'])
         new_run = self.build(run_data)

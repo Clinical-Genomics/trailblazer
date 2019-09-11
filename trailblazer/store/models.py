@@ -4,7 +4,7 @@ import datetime
 import alchy
 from sqlalchemy import Column, ForeignKey, orm, types, UniqueConstraint
 
-from trailblazer.mip import sacct
+from trailblazer.pipeline import sacct
 from trailblazer.constants import TEMP_STATUSES
 
 STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error', 'canceled')

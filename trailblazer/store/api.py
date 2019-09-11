@@ -5,7 +5,7 @@ import datetime as dt
 import alchy
 import sqlalchemy as sqa
 
-from trailblazer.mip.config import ConfigHandler
+from trailblazer.pipeline.config import ConfigHandler
 from trailblazer.constants import TEMP_STATUSES
 from . import models
 

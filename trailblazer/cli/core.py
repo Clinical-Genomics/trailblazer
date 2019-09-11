@@ -10,9 +10,9 @@ import ruamel.yaml
 import trailblazer
 from trailblazer.store import Store
 from trailblazer.log import LogAnalysis
-from trailblazer.mip.start import PipelineCli
-from trailblazer.mip.files import parse_config
-from trailblazer.mip.miplog import job_ids
+from trailblazer.pipeline.start import PipelineCli
+from trailblazer.pipeline.files import parse_config
+from trailblazer.pipeline.pipelinelog import job_ids
 from trailblazer.exc import MissingFileError, PipelineStartError
 from .utils import environ_email
 from .clean import clean
@@ -74,14 +74,14 @@ def log_cmd(context, sampleinfo, sacct, quiet, config):
 @click.option('-e', '--email', help='email for logging user')
 @click.option('-p', '--priority', type=click.Choice(['low', 'normal', 'high']), default='normal')
 @click.option('-d', '--dryrun', is_flag=True, help='only generate SBATCH scripts')
+@click.option('--pipeline', help='sub-pipeline to run')
+@click.option('--script', help='binary path')
 @click.option('--command', is_flag=True, help='only show the pipeline command')
 @click.option('-sw', '--start-with', help='start the pipeline beginning with at ...')
 @click.argument('case', required=False)
-@click.argument('pipeline', required=False)
-@click.argument('script', required=False)
 @click.pass_context
-def start(context, pipeline_config, email, priority, dryrun, command, start_with, case, pipeline,
-          script):
+def start(context, pipeline_config, email, priority, dryrun, command, start_with, case, script,
+          pipeline):
     """Start a new analysis."""
     pipeline = pipeline or context.obj['pipeline']
     script = script or context.obj['script']
