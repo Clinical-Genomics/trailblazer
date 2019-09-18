@@ -64,7 +64,7 @@ def parse_sampleinfo(data: dict) -> dict:
             'sex_check': (data['recipe']['peddy_ar']['sex_check']['path'] if
                           'peddy_ar' in data['recipe'] else None),
         },
-        'qcmetrics_path': data['recipe']['qccollect']['path'],
+        'qcmetrics_path': data['recipe']['qccollect_ar']['path'],
         'samples': [],
         'snv': {
             'bcf': data['most_complete_bcf']['path'],
