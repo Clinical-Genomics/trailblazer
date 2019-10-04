@@ -35,7 +35,7 @@ class LogAnalysis(object):
         with Path(config_data['log_path']).open() as stream:
             jobs = len(miplog.job_ids(stream))
         run_data = self.parse(config_data, sampleinfo_data, sacct_jobs, jobs=jobs)
-        self._delete_temp_logs(run_data['family'])
+        self._delete_temp_logs(run_data['case'])
         new_run = self.build(run_data)
         if new_run:
             self.store.add_commit(new_run)
@@ -54,7 +54,7 @@ class LogAnalysis(object):
         analysis_types = [sample['type'] for sample in config_data['samples']]
         run_data = {
             'user': config_data['email'],
-            'family': config_data['family'],
+            'case': config_data['case'],
             'priority': config_data['priority'],
             'started_at': sampleinfo_data['date'],
             'version': sampleinfo_data['version'],
@@ -112,7 +112,7 @@ class LogAnalysis(object):
 
     def build(self, run_data: dict) -> models.Analysis:
         """Build a new Analysis object."""
-        existing_run = self.store.find_analysis(family=run_data['family'],
+        existing_run = self.store.find_analysis(family=run_data['case'],
                                                 started_at=run_data['started_at'],
                                                 status=run_data['status'])
         if existing_run:
@@ -121,6 +121,6 @@ class LogAnalysis(object):
         run_data['user'] = self.store.user(run_data['user'])
         new_failed_jobs = [self.store.Job(**job) for job in run_data['failed_jobs']]
         del run_data['failed_jobs']
-        new_run = self.store.Analysis(**run_data)
+        new_run = self.store.Analysis(family=run_data['case'], **run_data)
         new_run.failed_jobs = new_failed_jobs
         return new_run

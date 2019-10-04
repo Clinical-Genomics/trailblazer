@@ -1,0 +1,613 @@
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - MIP Version: v7.1.0
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Script parameters and info from are saved in file: /path_to/case/analysis/mip_log/2019-07-04/mip_2019-07-04T10:47:15.log
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Loaded: /path_to/case/case_pedigree.yaml
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Found trio: Child = "child", Father = "father", Mother = "mother"
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: vt in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: sed in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: bgzip in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: tabix in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_py3/bin/chanjo in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: bcftools in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_svdb/bin/svdb in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_py3/share/ExpansionHunter-v3.0.0-linux_x86_64/bin/ExpansionHunter in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_py3/bin/stranger in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: gatk in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_py3/bin/variant_integrity in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_vep/ensembl-vep/vep in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: vcfanno in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_perl5/opt/fastqc-0.11.8/fastqc in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_cnvnator/CNVnator/src/cnvnator in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_cnvnator/bin/samtools in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_py3/bin/genmod in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_delly/bin/delly in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: configManta.py in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_perl5/bin/bwa in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_perl5/bin/sambamba in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_tiddit/TIDDIT-TIDDIT-2.7.1/TIDDIT.py in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: picard in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: grep in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: plink2 in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_py3/bin/multiqc in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_peddy/bin/peddy in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: gzip in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: CADD.sh in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: bedtools in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/envs/S_mip7.1_rd-dna_tiddit/bin/vcf2cytosure in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Program check: /home/proj/bin/conda/bin/rhocall in PATH
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Wrote: /path_to/case/analysis/case/case.fam
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Pipeline analysis type: wgs
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Wrote: /path_to/case/analysis/case_config.yaml
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Reads from platform:
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Sample id: father
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - 	Inputfiles:
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - 		1_171015_HHT5NDSXX_father_XXXXXX_1.fastq.gz
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - 		1_171015_HHT5NDSXX_father_XXXXXX_2.fastq.gz
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Reads from platform:
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Sample id: child
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - 	Inputfiles:
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - 		1_171015_HHT5NDSXX_child_XXXXXX_1.fastq.gz
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - 		1_171015_HHT5NDSXX_child_XXXXXX_2.fastq.gz
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Reads from platform:
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - Sample id: mother
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - 	Inputfiles:
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - 		1_171015_HHT5NDSXX_mother_XXXXXX_1.fastq.gz
+[INFO] 2019/07/04 10:47:15 MIP_ANALYSE - 		1_171015_HHT5NDSXX_mother_XXXXXX_2.fastq.gz
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - [Reference check - Reference prerequisites]
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - 	Reference check: Reference prerequisites checked
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - [GZIP FASTQ]
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - [FASTQC AR]
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Creating sbatch script for fastqc_ar and writing script file(s) to: /path_to/case/analysis/scripts/father/fastqc_ar/fastqc_ar_father.0.sh
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script fastqc_ar data files will be written to: /path_to/case/analysis/father/fastqc_ar
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script submitted, job id: 80217
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To check status of job, please run 'squeue -j 80217'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To cancel job, please run 'scancel 80217'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Creating sbatch script for fastqc_ar and writing script file(s) to: /path_to/case/analysis/scripts/child/fastqc_ar/fastqc_ar_child.0.sh
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script fastqc_ar data files will be written to: /path_to/case/analysis/child/fastqc_ar
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script submitted, job id: 80218
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To check status of job, please run 'squeue -j 80218'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To cancel job, please run 'scancel 80218'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Creating sbatch script for fastqc_ar and writing script file(s) to: /path_to/case/analysis/scripts/mother/fastqc_ar/fastqc_ar_mother.0.sh
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script fastqc_ar data files will be written to: /path_to/case/analysis/mother/fastqc_ar
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script submitted, job id: 80219
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To check status of job, please run 'squeue -j 80219'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To cancel job, please run 'scancel 80219'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - [BWA MEM]
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Creating sbatch script for bwa_mem and writing script file(s) to: /path_to/case/analysis/scripts/father/bwa_mem/bwa_mem_father.0.sh
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script bwa_mem data files will be written to: /path_to/case/analysis/father/bwa_mem
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script submitted, job id: 80220
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To check status of job, please run 'squeue -j 80220'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To cancel job, please run 'scancel 80220'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Creating sbatch script for bwa_mem and writing script file(s) to: /path_to/case/analysis/scripts/child/bwa_mem/bwa_mem_child.0.sh
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script bwa_mem data files will be written to: /path_to/case/analysis/child/bwa_mem
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script submitted, job id: 80221
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To check status of job, please run 'squeue -j 80221'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To cancel job, please run 'scancel 80221'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Creating sbatch script for bwa_mem and writing script file(s) to: /path_to/case/analysis/scripts/mother/bwa_mem/bwa_mem_mother.0.sh
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script bwa_mem data files will be written to: /path_to/case/analysis/mother/bwa_mem
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script submitted, job id: 80222
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To check status of job, please run 'squeue -j 80222'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To cancel job, please run 'scancel 80222'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - [PICARDTOOLS MERGESAMFILES]
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Creating sbatch script for picardtools_mergesamfiles and writing script file(s) to: /path_to/case/analysis/scripts/father/picardtools_mergesamfiles/picardtools_mergesamfiles_father.0.sh
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script picardtools_mergesamfiles data files will be written to: /path_to/case/analysis/father/picardtools_mergesamfiles
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script submitted, job id: 80223
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To check status of job, please run 'squeue -j 80223'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To cancel job, please run 'scancel 80223'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Creating sbatch script for picardtools_mergesamfiles and writing script file(s) to: /path_to/case/analysis/scripts/child/picardtools_mergesamfiles/picardtools_mergesamfiles_child.0.sh
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script picardtools_mergesamfiles data files will be written to: /path_to/case/analysis/child/picardtools_mergesamfiles
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script submitted, job id: 80224
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To check status of job, please run 'squeue -j 80224'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To cancel job, please run 'scancel 80224'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Creating sbatch script for picardtools_mergesamfiles and writing script file(s) to: /path_to/case/analysis/scripts/mother/picardtools_mergesamfiles/picardtools_mergesamfiles_mother.0.sh
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script picardtools_mergesamfiles data files will be written to: /path_to/case/analysis/mother/picardtools_mergesamfiles
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script submitted, job id: 80225
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To check status of job, please run 'squeue -j 80225'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To cancel job, please run 'scancel 80225'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - [MARKDUPLICATES]
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Creating sbatch script for markduplicates and writing script file(s) to: /path_to/case/analysis/scripts/father/markduplicates/markduplicates_father.0.sh
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script markduplicates data files will be written to: /path_to/case/analysis/father/markduplicates
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script submitted, job id: 80226
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To check status of job, please run 'squeue -j 80226'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To cancel job, please run 'scancel 80226'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Creating sbatch script for markduplicates and writing script file(s) to: /path_to/case/analysis/scripts/child/markduplicates/markduplicates_child.0.sh
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script markduplicates data files will be written to: /path_to/case/analysis/child/markduplicates
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script submitted, job id: 80227
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To check status of job, please run 'squeue -j 80227'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To cancel job, please run 'scancel 80227'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Creating sbatch script for markduplicates and writing script file(s) to: /path_to/case/analysis/scripts/mother/markduplicates/markduplicates_mother.0.sh
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script markduplicates data files will be written to: /path_to/case/analysis/mother/markduplicates
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - Sbatch script submitted, job id: 80228
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To check status of job, please run 'squeue -j 80228'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - To cancel job, please run 'scancel 80228'
+[INFO] 2019/07/04 10:47:17 MIP_ANALYSE - [GATK BASERECALIBRATION]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for gatk_baserecalibration and writing script file(s) to: /path_to/case/analysis/scripts/father/gatk_baserecalibration/gatk_baserecalibration_father.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script gatk_baserecalibration data files will be written to: /path_to/case/analysis/father/gatk_baserecalibration
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80229
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80229'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80229'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for gatk_baserecalibration and writing script file(s) to: /path_to/case/analysis/scripts/child/gatk_baserecalibration/gatk_baserecalibration_child.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script gatk_baserecalibration data files will be written to: /path_to/case/analysis/child/gatk_baserecalibration
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80230
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80230'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80230'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for gatk_baserecalibration and writing script file(s) to: /path_to/case/analysis/scripts/mother/gatk_baserecalibration/gatk_baserecalibration_mother.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script gatk_baserecalibration data files will be written to: /path_to/case/analysis/mother/gatk_baserecalibration
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80231
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80231'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80231'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [CHANJO SEXCHECK]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for chanjo_sexcheck and writing script file(s) to: /path_to/case/analysis/scripts/father/chanjo_sexcheck/chanjo_sexcheck_father.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script chanjo_sexcheck data files will be written to: /path_to/case/analysis/father/chanjo_sexcheck
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80232
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80232'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80232'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for chanjo_sexcheck and writing script file(s) to: /path_to/case/analysis/scripts/child/chanjo_sexcheck/chanjo_sexcheck_child.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script chanjo_sexcheck data files will be written to: /path_to/case/analysis/child/chanjo_sexcheck
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80233
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80233'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80233'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for chanjo_sexcheck and writing script file(s) to: /path_to/case/analysis/scripts/mother/chanjo_sexcheck/chanjo_sexcheck_mother.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script chanjo_sexcheck data files will be written to: /path_to/case/analysis/mother/chanjo_sexcheck
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80234
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80234'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80234'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [SAMTOOLS SUBSAMPLE MT]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for samtools_subsample_mt and writing script file(s) to: /path_to/case/analysis/scripts/father/samtools_subsample_mt/samtools_subsample_mt_father.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script samtools_subsample_mt data files will be written to: /path_to/case/analysis/father/samtools_subsample_mt
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80235
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80235'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80235'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for samtools_subsample_mt and writing script file(s) to: /path_to/case/analysis/scripts/child/samtools_subsample_mt/samtools_subsample_mt_child.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script samtools_subsample_mt data files will be written to: /path_to/case/analysis/child/samtools_subsample_mt
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80236
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80236'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80236'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for samtools_subsample_mt and writing script file(s) to: /path_to/case/analysis/scripts/mother/samtools_subsample_mt/samtools_subsample_mt_mother.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script samtools_subsample_mt data files will be written to: /path_to/case/analysis/mother/samtools_subsample_mt
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80237
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80237'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80237'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [SAMBAMBA DEPTH]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for sambamba_depth and writing script file(s) to: /path_to/case/analysis/scripts/father/sambamba_depth/sambamba_depth_father.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script sambamba_depth data files will be written to: /path_to/case/analysis/father/sambamba_depth
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80238
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80238'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80238'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for sambamba_depth and writing script file(s) to: /path_to/case/analysis/scripts/child/sambamba_depth/sambamba_depth_child.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script sambamba_depth data files will be written to: /path_to/case/analysis/child/sambamba_depth
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80239
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80239'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80239'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for sambamba_depth and writing script file(s) to: /path_to/case/analysis/scripts/mother/sambamba_depth/sambamba_depth_mother.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script sambamba_depth data files will be written to: /path_to/case/analysis/mother/sambamba_depth
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80240
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80240'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80240'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [PICARDTOOLS COLLECTMULTIPLEMETRICS]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for picardtools_collectmultiplemetrics and writing script file(s) to: /path_to/case/analysis/scripts/father/picardtools_collectmultiplemetrics/picardtools_collectmultiplemetrics_father.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script picardtools_collectmultiplemetrics data files will be written to: /path_to/case/analysis/father/picardtools_collectmultiplemetrics
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80241
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80241'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80241'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for picardtools_collectmultiplemetrics and writing script file(s) to: /path_to/case/analysis/scripts/child/picardtools_collectmultiplemetrics/picardtools_collectmultiplemetrics_child.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script picardtools_collectmultiplemetrics data files will be written to: /path_to/case/analysis/child/picardtools_collectmultiplemetrics
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80242
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80242'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80242'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for picardtools_collectmultiplemetrics and writing script file(s) to: /path_to/case/analysis/scripts/mother/picardtools_collectmultiplemetrics/picardtools_collectmultiplemetrics_mother.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script picardtools_collectmultiplemetrics data files will be written to: /path_to/case/analysis/mother/picardtools_collectmultiplemetrics
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80243
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80243'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80243'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [PICARDTOOLS COLLECTHSMETRICS]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for picardtools_collecthsmetrics and writing script file(s) to: /path_to/case/analysis/scripts/father/picardtools_collecthsmetrics/picardtools_collecthsmetrics_father.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script picardtools_collecthsmetrics data files will be written to: /path_to/case/analysis/father/picardtools_collecthsmetrics
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80244
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80244'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80244'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for picardtools_collecthsmetrics and writing script file(s) to: /path_to/case/analysis/scripts/child/picardtools_collecthsmetrics/picardtools_collecthsmetrics_child.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script picardtools_collecthsmetrics data files will be written to: /path_to/case/analysis/child/picardtools_collecthsmetrics
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80245
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80245'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80245'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for picardtools_collecthsmetrics and writing script file(s) to: /path_to/case/analysis/scripts/mother/picardtools_collecthsmetrics/picardtools_collecthsmetrics_mother.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script picardtools_collecthsmetrics data files will be written to: /path_to/case/analysis/mother/picardtools_collecthsmetrics
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80246
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80246'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80246'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [CNVNATOR AR]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for cnvnator_ar and writing script file(s) to: /path_to/case/analysis/scripts/father/cnvnator_ar/cnvnator_ar_father.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script cnvnator_ar data files will be written to: /path_to/case/analysis/father/cnvnator_ar
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80247
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80247'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80247'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for cnvnator_ar and writing script file(s) to: /path_to/case/analysis/scripts/child/cnvnator_ar/cnvnator_ar_child.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script cnvnator_ar data files will be written to: /path_to/case/analysis/child/cnvnator_ar
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80248
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80248'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80248'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for cnvnator_ar and writing script file(s) to: /path_to/case/analysis/scripts/mother/cnvnator_ar/cnvnator_ar_mother.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script cnvnator_ar data files will be written to: /path_to/case/analysis/mother/cnvnator_ar
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80249
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80249'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80249'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [EXPANSIONHUNTER]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for expansionhunter and writing script file(s) to: /path_to/case/analysis/scripts/case/expansionhunter/expansionhunter_case.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script expansionhunter data files will be written to: /path_to/case/analysis/case/expansionhunter
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80250
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80250'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80250'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [MANTA]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for manta and writing script file(s) to: /path_to/case/analysis/scripts/case/manta/manta_case.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script manta data files will be written to: /path_to/case/analysis/case/manta
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80251
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80251'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80251'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [TIDDIT]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for tiddit and writing script file(s) to: /path_to/case/analysis/scripts/case/tiddit/tiddit_case.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script tiddit data files will be written to: /path_to/case/analysis/case/tiddit
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80252
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80252'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80252'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [DELLY CALL]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for delly_call and writing script file(s) to: /path_to/case/analysis/scripts/father/delly_call/delly_call_father.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script delly_call data files will be written to: /path_to/case/analysis/father/delly_call
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80253
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80253'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80253'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for delly_call and writing script file(s) to: /path_to/case/analysis/scripts/child/delly_call/delly_call_child.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script delly_call data files will be written to: /path_to/case/analysis/child/delly_call
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80254
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80254'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80254'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for delly_call and writing script file(s) to: /path_to/case/analysis/scripts/mother/delly_call/delly_call_mother.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script delly_call data files will be written to: /path_to/case/analysis/mother/delly_call
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80255
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80255'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80255'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [DELLY REFORMAT]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for delly_reformat and writing script file(s) to: /path_to/case/analysis/scripts/case/delly_reformat/delly_reformat_case.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script delly_reformat data files will be written to: /path_to/case/analysis/case/delly_reformat
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80256
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80256'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80256'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [SV COMBINEVARIANTCALLSETS]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for sv_combinevariantcallsets and writing script file(s) to: /path_to/case/analysis/scripts/case/sv_combinevariantcallsets/sv_combinevariantcallsets_case.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script sv_combinevariantcallsets data files will be written to: /path_to/case/analysis/case/sv_combinevariantcallsets
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80257
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80257'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80257'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [SV ANNOTATE]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for sv_annotate and writing script file(s) to: /path_to/case/analysis/scripts/case/sv_annotate/sv_annotate_case.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script sv_annotate data files will be written to: /path_to/case/analysis/case/sv_annotate
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80258
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80258'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80258'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [SV VARIANTEFFECTPREDICTOR]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for sv_varianteffectpredictor and writing script file(s) to: /path_to/case/analysis/scripts/case/sv_varianteffectpredictor/sv_varianteffectpredictor_case.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script sv_varianteffectpredictor data files will be written to: /path_to/case/analysis/case/sv_varianteffectpredictor
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80259
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80259'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80259'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [SV VCFPARSER]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for sv_vcfparser and writing script file(s) to: /path_to/case/analysis/scripts/case/sv_vcfparser/sv_vcfparser_case.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script sv_vcfparser data files will be written to: /path_to/case/analysis/case/sv_vcfparser
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80260
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80260'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80260'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [SV RANKVARIANT]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for sv_rankvariant and writing script file(s) to: /path_to/case/analysis/scripts/case/sv_rankvariant/sv_rankvariant_case.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script sv_rankvariant data files will be written to: /path_to/case/analysis/case/sv_rankvariant
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80261
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80261'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80261'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [SV REFORMAT]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for sv_reformat and writing script file(s) to: /path_to/case/analysis/scripts/case/sv_reformat/sv_reformat_case.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script sv_reformat data files will be written to: /path_to/case/analysis/case/sv_reformat
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80262
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80262'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80262'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [VCF2CYTOSURE AR]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for vcf2cytosure_ar and writing script file(s) to: /path_to/case/analysis/scripts/case/vcf2cytosure_ar/vcf2cytosure_ar_case.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script vcf2cytosure_ar data files will be written to: /path_to/case/analysis/case/vcf2cytosure_ar
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80263
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80263'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80263'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - [GATK HAPLOTYPECALLER]
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for gatk_haplotypecaller and writing script file(s) to: /path_to/case/analysis/scripts/father/gatk_haplotypecaller/gatk_haplotypecaller_father.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script gatk_haplotypecaller data files will be written to: /path_to/case/analysis/father/gatk_haplotypecaller
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script submitted, job id: 80264
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To check status of job, please run 'squeue -j 80264'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - To cancel job, please run 'scancel 80264'
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Creating sbatch script for gatk_haplotypecaller and writing script file(s) to: /path_to/case/analysis/scripts/child/gatk_haplotypecaller/gatk_haplotypecaller_child.0.sh
+[INFO] 2019/07/04 10:47:18 MIP_ANALYSE - Sbatch script gatk_haplotypecaller data files will be written to: /path_to/case/analysis/child/gatk_haplotypecaller
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80265
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80265'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80265'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_haplotypecaller and writing script file(s) to: /path_to/case/analysis/scripts/mother/gatk_haplotypecaller/gatk_haplotypecaller_mother.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_haplotypecaller data files will be written to: /path_to/case/analysis/mother/gatk_haplotypecaller
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80266
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80266'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80266'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [GATK GENOTYPEGVCFS]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Wrote: /path_to/case/analysis/case/gatk_genotypegvcfs/case.fam
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80267
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80267'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80267'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.1.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80268
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80268'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80268'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.2.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80269
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80269'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80269'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.3.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80270
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80270'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80270'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.4.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80271
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80271'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80271'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.5.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80272
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80272'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80272'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.6.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80273
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80273'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80273'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.7.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80274
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80274'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80274'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.8.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80275
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80275'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80275'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.9.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80276
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80276'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80276'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.10.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80277
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80277'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80277'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.11.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80278
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80278'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80278'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.12.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80279
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80279'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80279'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.13.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80280
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80280'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80280'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.14.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80281
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80281'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80281'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.15.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80282
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80282'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80282'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.16.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80283
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80283'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80283'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.17.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80284
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80284'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80284'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.18.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80285
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80285'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80285'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.19.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80286
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80286'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80286'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.20.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80287
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80287'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80287'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.21.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80288
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80288'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80288'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.22.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80289
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80289'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80289'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.23.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80290
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80290'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80290'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_genotypegvcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_genotypegvcfs/gatk_genotypegvcfs_case.24.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_genotypegvcfs data files will be written to: /path_to/case/analysis/case/gatk_genotypegvcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80291
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80291'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80291'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [GATK GATHERVCFS]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_gathervcfs and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_gathervcfs/gatk_gathervcfs_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_gathervcfs data files will be written to: /path_to/case/analysis/case/gatk_gathervcfs
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80292
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80292'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80292'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [GATK VARIANTRECALIBRATION]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_variantrecalibration and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_variantrecalibration/gatk_variantrecalibration_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_variantrecalibration data files will be written to: /path_to/case/analysis/case/gatk_variantrecalibration
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Wrote: /path_to/case/analysis/case/gatk_variantrecalibration/case.fam
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80293
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80293'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80293'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [GATK COMBINEVARIANTCALLSETS]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_combinevariantcallsets and writing script file(s) to: /path_to/case/analysis/scripts/case/gatk_combinevariantcallsets/gatk_combinevariantcallsets_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_combinevariantcallsets data files will be written to: /path_to/case/analysis/case/gatk_combinevariantcallsets
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80294
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80294'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80294'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [PEDDY AR]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for peddy_ar and writing script file(s) to: /path_to/case/analysis/scripts/case/peddy_ar/peddy_ar_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script peddy_ar data files will be written to: /path_to/case/analysis/case/peddy_ar
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80295
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80295'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80295'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [PLINK]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for plink and writing script file(s) to: /path_to/case/analysis/scripts/case/plink/plink_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script plink data files will be written to: /path_to/case/analysis/case/plink
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80296
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80296'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80296'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [VARIANT INTEGRITY AR]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for variant_integrity_ar and writing script file(s) to: /path_to/case/analysis/scripts/case/variant_integrity_ar/variant_integrity_ar_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script variant_integrity_ar data files will be written to: /path_to/case/analysis/case/variant_integrity_ar
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80297
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80297'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80297'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [GATK VARIANTEVALALL]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_variantevalall and writing script file(s) to: /path_to/case/analysis/scripts/father/gatk_variantevalall/gatk_variantevalall_father.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_variantevalall data files will be written to: /path_to/case/analysis/father/gatk_variantevalall
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80298
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80298'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80298'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_variantevalall and writing script file(s) to: /path_to/case/analysis/scripts/child/gatk_variantevalall/gatk_variantevalall_child.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_variantevalall data files will be written to: /path_to/case/analysis/child/gatk_variantevalall
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80299
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80299'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80299'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for gatk_variantevalall and writing script file(s) to: /path_to/case/analysis/scripts/mother/gatk_variantevalall/gatk_variantevalall_mother.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script gatk_variantevalall data files will be written to: /path_to/case/analysis/mother/gatk_variantevalall
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80300
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80300'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80300'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [PREPAREFORVARIANTANNOTATIONBLOCK]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for prepareforvariantannotationblock and writing script file(s) to: /path_to/case/analysis/scripts/case/prepareforvariantannotationblock/prepareforvariantannotationblock_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script prepareforvariantannotationblock data files will be written to: /path_to/case/analysis/case/prepareforvariantannotationblock
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80301
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80301'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80301'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [RHOCALL AR]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for rhocall_ar and writing script file(s) to: /path_to/case/analysis/scripts/case/rhocall_ar/rhocall_ar_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script rhocall_ar data files will be written to: /path_to/case/analysis/case/rhocall_ar
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80302
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80302'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80302'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [VT AR]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for vt_ar and writing script file(s) to: /path_to/case/analysis/scripts/case/vt_ar/vt_ar_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script vt_ar data files will be written to: /path_to/case/analysis/case/vt_ar
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80303
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80303'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80303'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [FREQUENCY FILTER]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for frequency_filter and writing script file(s) to: /path_to/case/analysis/scripts/case/frequency_filter/frequency_filter_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script frequency_filter data files will be written to: /path_to/case/analysis/case/frequency_filter
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80304
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80304'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80304'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [CADD AR]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for cadd_ar and writing script file(s) to: /path_to/case/analysis/scripts/case/cadd_ar/cadd_ar_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script cadd_ar data files will be written to: /path_to/case/analysis/case/cadd_ar
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80305
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80305'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80305'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [VARIANTEFFECTPREDICTOR]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for varianteffectpredictor and writing script file(s) to: /path_to/case/analysis/scripts/case/varianteffectpredictor/varianteffectpredictor_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script varianteffectpredictor data files will be written to: /path_to/case/analysis/case/varianteffectpredictor
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80306
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80306'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80306'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [VCFPARSER AR]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for vcfparser_ar and writing script file(s) to: /path_to/case/analysis/scripts/case/vcfparser_ar/vcfparser_ar_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script vcfparser_ar data files will be written to: /path_to/case/analysis/case/vcfparser_ar
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script submitted, job id: 80307
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To check status of job, please run 'squeue -j 80307'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - To cancel job, please run 'scancel 80307'
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - [SNPEFF]
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Creating sbatch script for snpeff and writing script file(s) to: /path_to/case/analysis/scripts/case/snpeff/snpeff_case.0.sh
+[INFO] 2019/07/04 10:47:19 MIP_ANALYSE - Sbatch script snpeff data files will be written to: /path_to/case/analysis/case/snpeff
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script submitted, job id: 80308
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To check status of job, please run 'squeue -j 80308'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To cancel job, please run 'scancel 80308'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - [RANKVARIANT]
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Creating sbatch script for rankvariant and writing script file(s) to: /path_to/case/analysis/scripts/case/rankvariant/rankvariant_case.0.sh
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script rankvariant data files will be written to: /path_to/case/analysis/case/rankvariant
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script submitted, job id: 80309
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To check status of job, please run 'squeue -j 80309'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To cancel job, please run 'scancel 80309'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - [ENDVARIANTANNOTATIONBLOCK]
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Creating sbatch script for endvariantannotationblock and writing script file(s) to: /path_to/case/analysis/scripts/case/endvariantannotationblock/endvariantannotationblock_case.0.sh
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script endvariantannotationblock data files will be written to: /path_to/case/analysis/case/endvariantannotationblock
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script submitted, job id: 80310
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To check status of job, please run 'squeue -j 80310'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To cancel job, please run 'scancel 80310'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - [GATK VARIANTEVALEXOME]
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Creating sbatch script for gatk_variantevalexome and writing script file(s) to: /path_to/case/analysis/scripts/father/gatk_variantevalexome/gatk_variantevalexome_father.0.sh
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script gatk_variantevalexome data files will be written to: /path_to/case/analysis/father/gatk_variantevalexome
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script submitted, job id: 80311
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To check status of job, please run 'squeue -j 80311'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To cancel job, please run 'scancel 80311'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Creating sbatch script for gatk_variantevalexome and writing script file(s) to: /path_to/case/analysis/scripts/child/gatk_variantevalexome/gatk_variantevalexome_child.0.sh
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script gatk_variantevalexome data files will be written to: /path_to/case/analysis/child/gatk_variantevalexome
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script submitted, job id: 80312
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To check status of job, please run 'squeue -j 80312'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To cancel job, please run 'scancel 80312'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Creating sbatch script for gatk_variantevalexome and writing script file(s) to: /path_to/case/analysis/scripts/mother/gatk_variantevalexome/gatk_variantevalexome_mother.0.sh
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script gatk_variantevalexome data files will be written to: /path_to/case/analysis/mother/gatk_variantevalexome
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script submitted, job id: 80313
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To check status of job, please run 'squeue -j 80313'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To cancel job, please run 'scancel 80313'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - [QCCOLLECT AR]
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Creating sbatch script for qccollect_ar and writing script file(s) to: /path_to/case/analysis/scripts/case/qccollect_ar/qccollect_ar_case.0.sh
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script qccollect_ar data files will be written to: /path_to/case/analysis/case/qccollect_ar
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script submitted, job id: 80314
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To check status of job, please run 'squeue -j 80314'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To cancel job, please run 'scancel 80314'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - [MULTIQC AR]
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Creating sbatch script for multiqc_ar and writing script file(s) to: /path_to/case/analysis/scripts/case/multiqc_ar/multiqc_ar_case.0.sh
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script multiqc_ar data files will be written to: /path_to/case/analysis/case/multiqc_ar
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script submitted, job id: 80315
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To check status of job, please run 'squeue -j 80315'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To cancel job, please run 'scancel 80315'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - [ANALYSISRUNSTATUS]
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Creating sbatch script for analysisrunstatus and writing script file(s) to: /path_to/case/analysis/scripts/case/analysisrunstatus/analysisrunstatus_case.0.sh
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script analysisrunstatus data files will be written to: /path_to/case/analysis/case/analysisrunstatus
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script submitted, job id: 80316
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To check status of job, please run 'squeue -j 80316'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To cancel job, please run 'scancel 80316'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - [SACCT]
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Creating sbatch script for sacct and writing script file(s) to: /path_to/case/analysis/scripts/case/sacct/sacct_case.0.sh
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script sacct data files will be written to: /path_to/case/analysis/case/sacct
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Sbatch script submitted, job id: 80317
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To check status of job, please run 'squeue -j 80317'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - To cancel job, please run 'scancel 80317'
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Wrote: /path_to/case/analysis/case_qc_sample_info.yaml
+[INFO] 2019/07/04 10:47:20 MIP_ANALYSE - Wrote: /path_to/case/analysis/mip_log/2019-07-04/slurm_job_ids_2019-07-04T10:47:15.yaml

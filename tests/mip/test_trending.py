@@ -20,44 +20,43 @@ def test_parse_mip_analysis(files_raw) -> dict:
 
     trend_data = trending.parse_mip_analysis(mip_config_raw, qcmetrics_raw, sampleinfo_raw)
 
-    ## Build dict for family return data
+    # Build dict for family return data
     trend_test_data = {
-        'family': 'family',
-        'genome_build': 'GRCh37',
-        'mip_version': 'v6.0.0',
-        'rank_model_version': '1.20',
-        'sv_rank_model_version': '1.2'
+        'case': 'case',
+        'genome_build': 'grch37',
+        'mip_version': 'v7.1.0',
+        'rank_model_version': '1.25'
     }
 
     # Check returns from def
     for key, value in trend_test_data.items():
         assert trend_data[key] == value
 
-    ## Check sample id
-    assert 'sample' in trend_data['sample_ids']
+    # Check sample id
+    assert 'mother' in trend_data['sample_ids']
 
-    ## Build dict for sample return data
+    # Build dict for sample return data
     trend_test_sample_data = {
         'at_dropout': {
-            'sample': 0.126963,
+            'mother': '1.716704',
             },
         'analysis_sex': {
-            'sample': 'female',
+            'mother': 'female',
             },
         'duplicates': {
-            'sample': 13.2719986683768,
+            'mother': 3.7952329122913104,
             },
         'insert_size_standard_deviation': {
-            'sample': 89.871783,
+            'mother': 94.353778,
             },
         'mapped_reads': {
-            'sample': 98.50732625744484,
+            'mother': 99.74176575073072,
             },
         'median_insert_size': {
-            'sample': 413,
+            'mother': '409',
             },
         'gc_dropout': {
-            'sample': 3.956909,
+            'mother': '0.214813',
             },
     }
 
