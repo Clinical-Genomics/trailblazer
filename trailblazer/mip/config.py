@@ -16,7 +16,7 @@ class SampleSchema(Schema):
     sample_id = fields.Str(required=True)
     analysis_type = fields.Str(
         required=True,
-        validate=validate.OneOf(choices=['wes', 'wgs', 'tga'])
+        validate=validate.OneOf(choices=['wes', 'wgs', 'tga', 'wts'])
     )
     father = fields.Str(default='0')
     mother = fields.Str(default='0')
