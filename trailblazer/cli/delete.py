@@ -28,7 +28,7 @@ def delete(context, force, yes, analysis_id):
             print(click.style(f"{analysis_obj.family}: already deleted", fg='red'))
             context.abort()
 
-        if Path(analysis_obj.out_dir).exists():
+        if Path(analysis_obj.out_dir).exists() or force:
             root_dir = context.obj['store'].families_dir
             family_dir = analysis_obj.out_dir
             if not force and (len(family_dir) <= len(root_dir) or root_dir not in family_dir):
