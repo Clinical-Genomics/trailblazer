@@ -31,6 +31,24 @@ def parse_config(data: dict) -> dict:
     }
 
 
+def parse_sampleinfo_light(data: dict) -> dict:
+    """Parse MIP sample info file and retrieve mip_version, date, and status
+
+    Args:
+        data (dict): raw YAML input from MIP qc sample info file
+
+    Returns:
+        dict: {'version': str, 'date': str, 'is_finished': str}
+
+    """
+    outdata = {
+        'date': data['analysis_date'],
+        'version': data['mip_version'],
+        'is_finished': True if data['analysisrunstatus'] == 'finished' else False
+    }
+
+    return outdata
+
 def parse_sampleinfo(data: dict) -> dict:
     """Parse MIP sample info file.
 
@@ -40,7 +58,6 @@ def parse_sampleinfo(data: dict) -> dict:
     Returns:
         dict: parsed data
     """
-
     genome_build = data['human_genome_build']
     genome_build_str = f"{genome_build['source']}{genome_build['version']}"
     if 'sv_combinevariantcallsets' in data['recipe']:

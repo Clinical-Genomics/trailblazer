@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Test MIP files"""
 
+import dateutil
+
 from trailblazer.mip import files
 
 
@@ -39,6 +41,32 @@ def test_parse_config(files_raw) -> dict:
     # Check returns from def
     for key, value in config_test_data.items():
         assert config_data[key] == value
+
+
+def test_parse_sampleinfo_light(files_raw):
+    """
+    Args:
+    files_raw (dict): With dicts from files
+    """
+
+    # GIVEN sampleinfo input from a finished analysis
+    sampleinfo_raw = files_raw['sampleinfo']
+
+    # WHEN parsing the MIP output sampleinfo
+    sampleinfo_data = files.parse_sampleinfo_light(sampleinfo_raw)
+
+    # THEN it should work
+    assert isinstance(sampleinfo_data, dict)
+
+    # THEN it should mark the run as "finished"
+    assert sampleinfo_data['is_finished'] is True
+
+    # THEN date should be set
+    assert sampleinfo_data['date'] == dateutil.parser.parse('2019-07-05T10:12:03')
+
+    # THEN version should be set
+    assert sampleinfo_data['version'] == 'v7.1.0'
+
 
 
 def test_parse_sampleinfo(files_raw):

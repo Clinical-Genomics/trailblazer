@@ -26,7 +26,7 @@ class LogAnalysis(object):
             raise MissingFileError(sampleinfo_path)
         with sampleinfo_path.open() as stream:
             sampleinfo_raw = ruamel.yaml.safe_load(stream)
-        sampleinfo_data = files_api.parse_sampleinfo(sampleinfo_raw)
+        sampleinfo_data = files_api.parse_sampleinfo_light(sampleinfo_raw)
         sacct_path = Path(sacct if sacct else f"{config_data['log_path']}.status")
         if not sacct_path.exists():
             raise MissingFileError(sacct_path)
