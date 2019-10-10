@@ -43,4 +43,5 @@ def delete(context, force, yes, analysis_id):
                 print(click.style(f"analysis deleted: {analysis_obj.family}", fg='blue'))
         else:
             print(click.style(f"analysis output doesn't exist: {analysis_obj.out_dir}", fg='red'))
+            print(click.style("use '--force' to override"))
             context.abort()
