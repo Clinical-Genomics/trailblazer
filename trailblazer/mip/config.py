@@ -38,18 +38,47 @@ class ConfigSchema(Schema):
     samples = fields.List(fields.Nested(SampleSchema), required=True)
 
 
+class SampleSchemaRNA(Schema):
+    sample_id = fields.Str(required=True)
+    analysis_type = fields.Str(
+        required=True,
+        validate=validate.OneOf(choices=['wts'])
+    )
+    father = fields.Str(default='0')
+    mother = fields.Str(default='0')
+    phenotype = fields.Str(
+        required=True,
+        validate=validate.OneOf(choices=['affected', 'unaffected', 'unknown'])
+    )
+    sex = fields.Str(
+        required=True,
+        validate=validate.OneOf(choices=['male', 'female', 'unknown'])
+    )
+    expected_coverage = fields.Float()
+    capture_kit = fields.Str(default=DEFAULT_CAPTURE_KIT)
+
+
+class ConfigSchemaRNA(Schema):
+    case = fields.Str(required=True)
+    default_gene_panels = fields.List(fields.Str(), required=True)
+    samples = fields.List(fields.Nested(SampleSchemaRNA), required=True)
+
+
 class ConfigHandler:
 
-    def make_config(self, data: dict):
+    def make_config(self, data: dict, pipeline: str = None):
         """Make a MIP config."""
-        self.validate_config(data)
+        self.validate_config(data, pipeline)
         config_data = self.prepare_config(data)
         return config_data
 
     @staticmethod
-    def validate_config(data: dict) -> dict:
+    def validate_config(data: dict, pipeline: str = None) -> dict:
         """Convert to MIP config format."""
-        errors = ConfigSchema().validate(data)
+        if pipeline == 'mip-rna':
+            errors = ConfigSchemaRNA().validate(data)
+        else:
+            errors = ConfigSchema().validate(data)
         if errors:
             for field, messages in errors.items():
                 if isinstance(messages, dict):
