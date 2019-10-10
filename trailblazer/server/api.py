@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import datetime
+
 from flask import abort, g, Blueprint, jsonify, make_response, request
 from google.auth import jwt
 
@@ -76,5 +78,8 @@ def me():
 @blueprint.route('/aggregate/jobs')
 def aggregate_jobs():
     """Return stats about jobs."""
-    data = store.aggregate_failed()
+    days_back = int(request.args.get('days_back', 31))
+    one_month_ago = datetime.datetime.now() - datetime.timedelta(days=days_back)
+
+    data = store.aggregate_failed(one_month_ago)
     return jsonify(jobs=data)

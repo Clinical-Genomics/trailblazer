@@ -3,7 +3,7 @@
     <Navbar />
 
     <b-container class="mt-4">
-      <h4 class="mb-3">Top failed job categories</h4>
+      <h4 class="mb-3">Top failed job categories last 31 days</h4>
 
       <b-list-group>
         <b-list-group-item
