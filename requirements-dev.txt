@@ -1,4 +1,4 @@
-pytest>=3.6   # due to  pytest-cov, pytest-flask
+pytest>=3.6                 # due to  pytest-cov, pytest-flask
 pytest-cov
 pytest-flask
 coveralls
@@ -9,3 +9,4 @@ yamllint
 docutils
 html-linter
 tidy
+six>=1.12                   # due to astroid 2.3.1
