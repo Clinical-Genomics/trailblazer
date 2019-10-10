@@ -10,7 +10,7 @@ import click
 @click.argument('analysis_id', type=int)
 @click.pass_context
 def delete(context, force, yes, analysis_id):
-    """Delete an analysis log from the database."""
+    """Mark analysis as deleted in db and remove analysis folder on disk."""
     analysis_obj = context.obj['store'].analysis(analysis_id)
     if analysis_obj is None:
         print(click.style('analysis log not found', fg='red'))
