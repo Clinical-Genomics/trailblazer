@@ -80,15 +80,53 @@ def test_is_running(sample_store, family, expected_bool):
 
 
 def test_aggregate_jobs(sample_store):
+
     # GIVEN a store with some analyses
     assert sample_store.analyses().count() > 0
     all_jobs = sample_store.jobs().count()
     assert all_jobs == 2
+
     # WHEN aggregating data on failed jobs
     jobs_data = sample_store.aggregate_failed()
+
     # THEN it should return a list of dicts per job type with count
     assert isinstance(jobs_data, list)
+
     # ... it should exclude "cancelled" jobs
     assert len(jobs_data) == 1
     assert jobs_data[0]['name'] == 'samtools_mpileup'
     assert jobs_data[0]['count'] == 1
+
+
+def test_aggregate_jobs_since_forever_date(sample_store):
+
+    # GIVEN a store with some analyses
+    assert sample_store.analyses().count() > 0
+    all_jobs = sample_store.jobs().count()
+    assert all_jobs == 2
+    # a date a gazillion days back
+    date_since = datetime.datetime.now() - datetime.timedelta(days=9999)
+
+    # WHEN aggregating data on failed jobs
+    jobs_data = sample_store.aggregate_failed(date_since)
+
+    # THEN it should return a list of dicts per job type with count
+    assert len(jobs_data) == 1
+    assert jobs_data[0]['name'] == 'samtools_mpileup'
+    assert jobs_data[0]['count'] == 1
+
+
+def test_aggregate_jobs_since_yesterday(sample_store):
+
+    # GIVEN a store with some analyses
+    assert sample_store.analyses().count() > 0
+    all_jobs = sample_store.jobs().count()
+    assert all_jobs == 2
+    # a date a gazillion days back
+    date_since = datetime.datetime.now() - datetime.timedelta(days=1)
+
+    # WHEN aggregating data on failed jobs
+    jobs_data = sample_store.aggregate_failed(date_since)
+
+    # THEN it should return a list of dicts per job type with count
+    assert len(jobs_data) == 0
