@@ -10,8 +10,9 @@ LOG = logging.getLogger(__name__)
 @click.command()
 @click.option('-y', '--yes', is_flag=True, help='skip manual confirmations')
 @click.option('-d', '--days-ago', default=14, help='days ago analyses were started')
+@click.option('-f', '--force', is_flag=True, help='skip sanity checks')
 @click.pass_context
-def clean(context, days_ago, yes):
+def clean(context, days_ago, yes, force):
     """Clean up files from "old" analyses runs."""
     number_of_days_ago = dt.datetime.now() - dt.timedelta(days=days_ago)
     analyses = context.obj['store'].analyses(
@@ -26,4 +27,4 @@ def clean(context, days_ago, yes):
             print(click.style(f"{analysis_obj.family}: family has been re-started", fg='yellow'))
         else:
             print(f"delete analysis: {analysis_obj.family} ({analysis_obj.id})")
-            context.invoke(delete, analysis_id=analysis_obj.id, yes=yes)
+            context.invoke(delete, analysis_id=analysis_obj.id, yes=yes, force=force)
