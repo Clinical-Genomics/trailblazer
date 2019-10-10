@@ -75,10 +75,10 @@ def me():
     return jsonify(**g.current_user.to_dict())
 
 
-@blueprint.route('/aggregate/jobs/<int:days_back>', methods=['GET'])
-def aggregate_jobs(days_back: int = 31):
+@blueprint.route('/aggregate/jobs')
+def aggregate_jobs():
     """Return stats about jobs."""
-
+    days_back = int(request.args.get('days_back', 31))
     one_month_ago = datetime.datetime.now() - datetime.timedelta(days=days_back)
 
     data = store.aggregate_failed(one_month_ago)
