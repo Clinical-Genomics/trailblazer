@@ -11,7 +11,6 @@ from . import models
 
 
 class BaseHandler:
-
     User = models.User
     Analysis = models.Analysis
     Job = models.Job
@@ -32,8 +31,9 @@ class BaseHandler:
         )
         return query.first()
 
-    def analyses(self, *, family: str=None, query: str=None, status: str=None, deleted: bool=None,
-                 temp: bool=False, before: dt.datetime=None, is_visible: bool=None):
+    def analyses(self, *, family: str = None, query: str = None, status: str = None,
+                 deleted: bool = None,
+                 temp: bool = False, before: dt.datetime = None, is_visible: bool = None):
         """Fetch analyses form the database."""
         analysis_query = self.Analysis.query
         if family:
@@ -74,7 +74,7 @@ class BaseHandler:
         """Return metadata entry."""
         return self.Info.query.first()
 
-    def add_pending(self, family: str, email: str=None) -> models.Analysis:
+    def add_pending(self, family: str, email: str = None) -> models.Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
         new_log = self.Analysis(family=family, status='pending', started_at=started_at)
@@ -92,12 +92,20 @@ class BaseHandler:
         """Fetch a user from the database."""
         return self.User.query.filter_by(email=email).first()
 
-    def aggregate_failed(self) -> List:
+    def aggregate_failed(self, since_when: dt.date = None) -> List:
         """Count the number of failed jobs per category (name)."""
+
         categories = self.session.query(
             self.Job.name.label('name'),
             sqa.func.count(self.Job.id).label('count')
-        ).filter(self.Job.status != 'cancelled').group_by(self.Job.name).all()
+        ).filter(self.Job.status != 'cancelled')
+
+        if since_when:
+            categories = categories.filter(self.Job.started_at > since_when)
+
+        categories = categories.group_by(
+            self.Job.name).all()
+
         data = [{'name': category.name, 'count': category.count} for category in categories]
         return data
 
