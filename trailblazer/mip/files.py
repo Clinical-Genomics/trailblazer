@@ -69,10 +69,9 @@ def parse_sampleinfo(data: dict) -> dict:
         'date': data['analysis_date'],
         'case': data['case'],
         'genome_build': genome_build_str,
-        'rank_model_version': data['recipe']['genmod']['rank_model']['version'],
-        'sv_rank_model_version': data['recipe']['sv_genmod']['sv_rank_model']['version'],
         'is_finished': True if data['analysisrunstatus'] == 'finished' else False,
-        'pedigree_path': data['pedigree_minimal'],
+        'multiqc_html': data['recipe']['multiqc'][data['case'] + '_html']['path'],
+        'multiqc_json': data['recipe']['multiqc'][data['case'] + '_json']['path'],
         'peddy': {
             'ped': (data['recipe']['peddy_ar']['peddy']['path'] if
                     'peddy_ar' in data['recipe'] else None),
@@ -81,14 +80,17 @@ def parse_sampleinfo(data: dict) -> dict:
             'sex_check': (data['recipe']['peddy_ar']['sex_check']['path'] if
                           'peddy_ar' in data['recipe'] else None),
         },
+        'pedigree': data['pedigree_file']['path'],
+        'pedigree_path': data['pedigree_minimal'],
         'qcmetrics_path': data['recipe']['qccollect_ar']['path'],
+        'rank_model_version': data['recipe']['genmod']['rank_model']['version'],
         'samples': [],
         'snv': {
             'bcf': data['most_complete_bcf']['path'],
             'clinical_vcf': data['vcf_binary_file']['clinical']['path'],
             'research_vcf': data['vcf_binary_file']['research']['path'],
         },
-        'sv_combinevariantcallsets_path': sv_combinevariantcallsets_path,
+        'str_vcf': data['recipe'].get('expansionhunter', {}).get('path'),
         'sv': {
             'bcf': data['recipe']['sv_combinevariantcallsets'].get('sv_bcf_file', {}).get('path'),
             'clinical_vcf': (data['sv_vcf_binary_file']['clinical']['path'] if
@@ -97,14 +99,19 @@ def parse_sampleinfo(data: dict) -> dict:
             'research_vcf': (data['sv_vcf_binary_file']['research']['path'] if
                              'sv_vcf_binary_file' in data else None),
         },
+        'sv_rank_model_version': data['recipe']['sv_genmod']['sv_rank_model']['version'],
+        'sv_combinevariantcallsets_path': sv_combinevariantcallsets_path,
         'version': data['mip_version'],
-        'str_vcf': data['recipe'].get('expansionhunter', {}).get('path')
+        'version_collect': data['recipe']['version_collect_ar']['path'],
     }
 
     for sample_id, sample_data in data['sample'].items():
         sample = {
             'id': sample_id,
             'bam': sample_data['most_complete_bam']['path'],
+            # chromograph is only for wgs and trio data
+            'chromograph': (sample_data['recipe']['chromograph_ar']['path']  if 'chromograph_ar' in sample_data['recipe']
+                             else None),
             'sambamba': list(sample_data['recipe']['sambamba_depth'].values())[0]['path'],
             'sex': sample_data['sex'],
             # subsample mt is only for wgs data

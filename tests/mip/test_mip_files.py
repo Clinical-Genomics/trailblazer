@@ -93,11 +93,15 @@ def test_parse_sampleinfo(files_raw):
     sampleinfo_test_data = {
         'case': 'case',
         'genome_build': 'grch37',
+        'multiqc_html': '/path_to/case/case/multiqc_ar/multiqc_report.html',
+        'multiqc_json': '/path_to/case/case/multiqc_ar/multiqc_data/multiqc_data.json',
+        'pedigree': '/path_to/cases/case/case_pedigree.yaml',
         'pedigree_path': '/path_to/case/case.fam',
         'qcmetrics_path': '/path_to/case/case_qc_metrics.yaml',
         'sv_combinevariantcallsets_path':
             '/path_to/case/case/sv_combinevariantcallsets/case_comb.vcf',
         'version': 'v7.1.0',
+        'version_collect': '/path_to/case/case/version_collect_ar/case_vcol.yaml',
         }
 
     # Check returns from def 1
@@ -107,10 +111,11 @@ def test_parse_sampleinfo(files_raw):
     # Sample data
     # Build dict for sample return data
     sampleinfo_test_sample_data = {
-        'bam': '/path_to/case/mother/gatk_baserecalibration/mother_lanes_1_sorted_md_brecal.bam',
+        'bam': '/path_to/case/mother/gatk_baserecalibration/mother_lanes_1_sorted_md_brecal.cram',
         'chanjo_sexcheck': (
             '/path_to/case/mother/chanjo_sexcheck/mother_lanes_1_sorted_md_brecal_sex.tsv'),
         'id': 'mother',
+        'chromograph': '/path_to/case/mother/chromograph_ar/mother_lanes_1234_sorted_md_brecal_tcov_chromograph.tar.gz',
         'sambamba': ('/path_to/case/mother/sambamba_depth'
                      '/mother_lanes_1_sorted_md_brecal_coverage.bed'),
         'sex': 'female',
