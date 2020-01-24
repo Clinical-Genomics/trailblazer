@@ -108,7 +108,7 @@ def parse_sampleinfo(data: dict) -> dict:
     for sample_id, sample_data in data['sample'].items():
         sample = {
             'id': sample_id,
-            'bam': sample_data['most_complete_bam']['path'],
+            'cram': sample_data['most_complete_bam']['path'],
             # chromograph is only for wgs and trio data
             'chromograph': (sample_data['recipe']['chromograph_ar']['path']  if 'chromograph_ar' in sample_data['recipe']
                              else None),

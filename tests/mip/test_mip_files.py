@@ -111,7 +111,7 @@ def test_parse_sampleinfo(files_raw):
     # Sample data
     # Build dict for sample return data
     sampleinfo_test_sample_data = {
-        'bam': '/path_to/case/mother/gatk_baserecalibration/mother_lanes_1_sorted_md_brecal.cram',
+        'cram': '/path_to/case/mother/gatk_baserecalibration/mother_lanes_1_sorted_md_brecal.cram',
         'chanjo_sexcheck': (
             '/path_to/case/mother/chanjo_sexcheck/mother_lanes_1_sorted_md_brecal_sex.tsv'),
         'id': 'mother',
