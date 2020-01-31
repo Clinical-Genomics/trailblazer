@@ -151,11 +151,22 @@ def user(context, name, email):
 
 @base.command()
 @click.option('-j', '--jobs', is_flag=True, help='only print job ids')
-@click.argument('analysis_id', type=int)
+@click.argument('analysis_id', type=int, required=False)
+@click.option('-c', '--case', 'case_id', type=str, help="cancel latest running analysis of case")
 @click.pass_context
-def cancel(context, jobs, analysis_id):
+def cancel(context, jobs, analysis_id=None, case_id=None):
+
     """Cancel all jobs in a run."""
-    analysis_obj = context.obj['store'].analysis(analysis_id)
+    if analysis_id:
+        analysis_obj = context.obj['store'].analysis(analysis_id)
+    elif case_id:
+        analyses = context.obj['store'].analyses(family=case_id, status="running")
+        if not analyses or not len(analyses.all()) == 1:
+            click.echo(click.style(f'{len(analyses.all())} running analyses found, 1 expected',
+                       fg='yellow'))
+            context.abort()
+        analysis_obj = analyses.first()
+
     if analysis_obj is None:
         click.echo('analysis not found')
         context.abort()
