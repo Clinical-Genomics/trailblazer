@@ -163,7 +163,7 @@ def cancel(context, jobs, analysis_id=None, case_id=None):
         analyses = context.obj['store'].analyses(family=case_id, status="running")
         if not analyses or not len(analyses.all()) == 1:
             click.echo(click.style(f'{len(analyses.all())} running analyses found, 1 expected',
-                       fg='yellow'))
+                                   fg='yellow'))
             context.abort()
         analysis_obj = analyses.first()
 
