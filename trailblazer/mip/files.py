@@ -136,11 +136,6 @@ def parse_qcmetrics(metrics: dict) -> dict:
         dict: parsed data
     """
     data = {
-        'versions': {
-            'gatk': metrics['recipe']['gatk']['version'],
-            'manta': metrics['recipe'].get('manta', {}).get('version'),
-            'vep': metrics['recipe'].get('varianteffectpredictor', {}).get('version'),
-        },
         'samples': [],
     }
 

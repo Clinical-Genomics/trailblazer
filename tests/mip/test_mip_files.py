@@ -192,18 +192,6 @@ def test_parse_qcmetrics(files_raw):
     # THEN it should work ;-)
     assert isinstance(qcmetrics_data, dict)
 
-    # Version data
-    # Build dict for version return data
-    qcmetrics_test_version_data = {
-        'gatk': '3.8',
-        'manta': '1.5.0',
-        'vep': 'v95',
-        }
-
-    # Check returns from def
-    for key, value in qcmetrics_test_version_data.items():
-        assert qcmetrics_data['versions'][key] == value
-
     # Sample data
     # Build dict for sample return data
     qcmetrics_test_sample_data = {
