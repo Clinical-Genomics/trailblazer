@@ -33,7 +33,7 @@
       onSignIn () {
         this.$googleAuth().directAccess()
         this.$googleAuth().signIn(googleUser => {
-          const idToken = googleUser.Zi.id_token
+          const idToken = googleUser.uc.id_token
           this.$store.dispatch('login', { token: idToken })
           this.$router.push('dashboard')
         }, error => {
