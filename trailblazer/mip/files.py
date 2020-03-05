@@ -50,7 +50,7 @@ def parse_sampleinfo_light(data: dict) -> dict:
     return outdata
 
 
-def get_sample_date(data: dict) -> str:
+def get_sampleinfo_date(data: dict) -> str:
     """Get MIP sample info date.
 
     Args:
