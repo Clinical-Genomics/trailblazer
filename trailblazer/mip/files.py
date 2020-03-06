@@ -49,6 +49,20 @@ def parse_sampleinfo_light(data: dict) -> dict:
 
     return outdata
 
+
+def get_sampleinfo_date(data: dict) -> str:
+    """Get MIP sample info date.
+
+    Args:
+        data (dict): raw YAML input from MIP qc sample info file
+
+    Returns:
+        str: analysis date
+    """
+
+    return data['analysis_date']
+
+
 def parse_sampleinfo(data: dict) -> dict:
     """Parse MIP sample info file.
 
