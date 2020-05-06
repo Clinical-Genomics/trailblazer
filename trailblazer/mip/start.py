@@ -24,10 +24,11 @@ class MipCli(object):
 
     """Wrapper around MIP command line interface."""
 
-    def __init__(self, script, pipeline):
+    def __init__(self, script, pipeline, conda_env):
         """Initialize MIP command line interface."""
         self.script = script
         self.pipeline = pipeline
+        self.conda_env = conda_env
 
     def __call__(self, config, case, **kwargs):
         """Execute the pipeline."""
@@ -55,12 +56,8 @@ class MipCli(object):
     def execute(self, command):
         """Start a new MIP run."""
 
-        """
-        Remove the default SIGPIPE handler
-        https://blog.nelhage.com/2010/02/a-very-subtle-bug/
-        """
-        process = subprocess.Popen(
-            command,
-            preexec_fn=lambda: signal.signal(signal.SIGPIPE, signal.SIG_DFL)
-        )
+        command.insert(0, f"bash -c 'conda activate {self.conda_env}; ")
+        command.append("'")
+
+        process = subprocess.run(" ".join(command), shell=True)
         return process
