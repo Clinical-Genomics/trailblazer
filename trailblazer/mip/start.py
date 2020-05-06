@@ -56,7 +56,7 @@ class MipCli(object):
     def execute(self, command):
         """Start a new MIP run."""
 
-        command.insert(0, f"bash -c 'conda activate {self.conda_env}; ")
+        command.insert(0, f"bash -c 'source activate {self.conda_env}; ")
         command.append("'")
 
         process = subprocess.run(" ".join(command), shell=True)
