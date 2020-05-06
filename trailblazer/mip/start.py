@@ -35,7 +35,6 @@ class MipCli(object):
         command = self.build_command(case, config, **kwargs)
         LOG.debug(' '.join(command))
         process = self.execute(command)
-        process.wait()
         if process.returncode != 0:
             raise MipStartError('error starting analysis, check the output')
         return process
