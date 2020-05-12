@@ -80,7 +80,7 @@ def log_cmd(context, sampleinfo, sacct, quiet, config):
 @click.pass_context
 def start(context, mip_config, email, priority, dryrun, command, start_with, case):
     """Start a new analysis."""
-    mip_cli = MipCli(context.obj['script'], context.obj['pipeline'])
+    mip_cli = MipCli(context.obj['script'], context.obj['pipeline'], context.obj['conda_env'])
     mip_config = mip_config or context.obj['mip_config']
     email = email or environ_email()
     kwargs = dict(config=mip_config, case=case, priority=priority,
