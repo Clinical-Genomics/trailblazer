@@ -7,7 +7,7 @@ matrix:
     - name: "Coverage"
       install:
         - pip install cython
-        - pip install . -r requirements-dev.txt
+        - pip install . -r requirements-dev.txt pytest-cov coveralls
       script: coverage run --branch --omit="*.html" --source "$(basename "$PWD")" setup.py test
       after_success: coveralls
 
@@ -71,7 +71,7 @@ matrix:
     - name: "Code formatting"
       if: type = pull_request
       install: pip install black
-      script: git --no-pager diff --name-only --diff-filter=AM $TRAVIS_COMMIT_RANGE | grep -F ".py" | xargs black --check --diff
+      script: git --no-pager diff --name-only --diff-filter=AM $TRAVIS_COMMIT_RANGE | grep -F ".py" | xargs black --check -l 100
 
     - name: "Pylint score"
       if: type = pull_request
@@ -80,7 +80,9 @@ matrix:
 
     - name: "Linting"
       if: type = pull_request
-      install: pip install -r requirements-dev.txt
+      install:
+        - pip install -r requirements-dev.txt git-lint pylint pycodestyle yamllint html-linter
+        - sudo apt-get install -y tidy
       script: git reset --soft ${TRAVIS_COMMIT_RANGE%...*} && git lint
 
 notifications:
