@@ -36,7 +36,8 @@ class MipCli(object):
         LOG.debug(' '.join(command))
         process = self.execute(command)
         if process.returncode != 0:
-            raise MipStartError('error starting analysis, check the output')
+            raise MipStartError(f"Error starting analysis: "
+                                f"{subprocess.CalledProcessError.stderr}")
         return process
 
     def build_command(self, case, config, **kwargs):
@@ -58,5 +59,5 @@ class MipCli(object):
         command.insert(0, f"bash -c 'source activate {self.conda_env}; ")
         command.append("'")
 
-        process = subprocess.run(" ".join(command), shell=True)
+        process = subprocess.run(" ".join(command), shell=True, check=True)
         return process
