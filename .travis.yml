@@ -1,63 +1,92 @@
 dist: xenial
+language: python
+cache: pip
+
 matrix:
   include:
-    - language: node_js
+    - name: "Coverage"
+      install:
+        - pip install cython
+        - pip install . -r requirements-dev.txt coveralls pytest-cov "coverage<5" "python-coveralls>=2.9.3"
+      script: coverage run --branch --omit="*.html" --source "$(basename "$PWD")" setup.py test
+      after_success: coveralls
+
+    - name: "Tests on python 3.6 (Clinical-db)"
+      if: type = pull_request
+      python: "3.6.2"   # version in prod170926
+      install: pip install . -r requirements-dev.txt
+      script: pytest
+
+    - name: "Tests on python 3.7 (Hasta)"
+      if: type = pull_request
+      python: "3.7.1"   # version in P_main
+      install: pip install . -r requirements-dev.txt
+      script: pytest
+
+    - name: "Package install"
+      if: type = pull_request
+      install: python setup.py install
+      script: pip check
+
+    - name: "Node.js & Nuxt"
+      if: type = pull_request
+      language: node_js
       node_js: 8
       cache:
         yarn: true
-        directories:
-          - nuxt/node_modules
-
-      before_install:
-        - cd nuxt
-
+        directories: nuxt/node_modules
+      before_install: cd nuxt
       install:
-        - yarn install; yarn build --universal
-
-    - language: python
-      python:
-        - '3.6'
-      cache: pip
-
-      before_install:
-        - pip install git-lint pylint pycodestyle yamllint docutils html-linter
-        - git reset --soft ${TRAVIS_COMMIT_RANGE%...*} && git lint
-
-      install:
-        - pip install -q -r requirements-dev.txt .
-
+        - yarn install
+        - yarn build --universal
       script:
-        - py.test -v tests/*
-        - pip check
+        - yarn lint
+        - yarn test
 
-    - language: python
-      python:
-        - '3.7'
-      cache: pip
-
-      before_install:
-        - pip install git-lint pylint pycodestyle yamllint docutils html-linter
-        - git reset --soft ${TRAVIS_COMMIT_RANGE%...*} && git lint
-
+    - name: "Development dependencies"
+      if: type = pull_request
       install:
-        - pip install -q -r requirements-dev.txt .
+        - pip install cython
+        - pip install . -r requirements-dev.txt
+      script: pip check
 
-      script:
-        - coverage run --source "$(basename "$PWD")" setup.py test
-        - pip check
+    - name: "Production dependencies on python 3.6 (Clinical-db)"
+      if: type = pull_request
+      python: "3.6.2"             # version in prod170926
+      install:
+        - pip install pip==9.0.1  # pip version in prod170926
+        - pip install cython
+        - pip install .
+      script: pip check
 
-      after_success: coveralls
+    - name: "Production dependencies on python 3.7 (Hasta)"
+      if: type = pull_request
+      python: "3.7.1"           # version in P_main
+      install:
+        - pip install pip==18.1  # pip version in P_main
+        - pip install cython
+        - pip install .
+      script: pip check
 
+    - name: "Code formatting"
+      if: type = pull_request
+      install: pip install black
+      script: git --no-pager diff --name-only --diff-filter=AM $TRAVIS_COMMIT_RANGE | grep -F ".py" | xargs black --check -l 100
+
+    - name: "Pylint score"
+      if: type = pull_request
+      install: pip install pylint . -r requirements-dev.txt
+      script: bash <(curl https://raw.githubusercontent.com/Clinical-Genomics/snippets/master/check_pylint_score.sh)
+
+    - name: "Linting"
+      if: type = pull_request
+      install:
+        - pip install -r requirements-dev.txt git-lint pylint pycodestyle yamllint html-linter
+        - sudo apt-get install -y tidy
+      script: git reset --soft ${TRAVIS_COMMIT_RANGE%...*} && git lint
 
 notifications:
-  email: false
-
-deploy:
-- provider: pypi
-  user: robinandeer
-  password:
-    secure: SXvkMHpg5sXUDIqje6mwoZ2j5I6m1NtXMcRRhPu+u0UfnELt3YePsjkFK05VlMyI+6OHU6OzGQTmSprRbB5OUcWhj+6HMh/svlVUePxOfLJW3VBm/eQF/zUwre5TlwdvzGAcjU43lP/KzGzM7ZL9xaLC1SW3zS+UMtUqBNuHypMlr8IOodxca7QdBiHn8JCcX01MkiufsH3seKql6ljA2sK0tD8+4ZmVSYYi7Ce2DkqI0Ar9ggFWJmcUYFqeiyL+UNZDpZQdytPzJykG1oE0ys+EzlkAlZHLLY3TQVdEyQo6BWwNg5jwKHHFKaowfDXp1TGxLHqTC4PNKh8mrfqLKyUGFxyqFP+YyhDfch0fsovZDFd4r9VuLCanRl9fufqHFJFFWCkabJA8q45sVRm9NBWSxUvOs8pmezxel90p8FGU1nzVjlo+N5uoScWCI1qN1jnCKByCV6fhjsHXbdoVQg05VrVt/zFq75LRn3WKQiQy/qfQ9hMhoQsBdxfvpegjzgd/sueEW1MHeds6jL+6+RuFnlvmc6M2ZpO1JGFEHarAXFMpZQWOaO6Ha4R4U1oDJHOFMwiFLXh4NjtpOPSZdXqu4Hbxyi18pfrPVM/GDJJ6fWBZaXkCX5lZPVecW0ISKd0YA/5qui4OytkXlYK89WCs9R3xUi/6QtbdhM1hFnI=
-  on:
-    tags: true
-    distributions: sdist bdist_wheel
-    repo: Clinical-Genomics/trailblazer
+  email:
+    if: branch = master AND NOT type = push
+    on_success: never
+    on_failure: always
