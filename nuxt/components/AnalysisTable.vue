@@ -47,6 +47,8 @@
               Unhide
             </b-btn>
           </b-button-group>
+        </template>
+        <template slot="failed_jobs" slot-scope="field">
           <div
             v-for="job in field.item.failed_jobs"
             :key="job.id"
