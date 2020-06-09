@@ -30,7 +30,7 @@
       }
     },
     async fetch ({ store, app }) {
-      await store.dispatch('fetchAnalyses', { perPage: 500 })
+      await store.dispatch('fetchAnalyses', { perPage: 500, failedJob: params.failedJob })
     },
     computed: {
       ...mapGetters([ 'allAnalyses' ])

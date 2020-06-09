@@ -44,19 +44,18 @@ class BaseHandler:
         temp: bool = False,
         before: dt.datetime = None,
         is_visible: bool = None,
+        failed_job: str = None,
     ):
         """Fetch analyses form the database."""
         analysis_query = self.Analysis.query
         if family:
             analysis_query = analysis_query.filter_by(family=family)
         elif query:
-            analysis_query.join(self.Analysis.failed_jobs)
             analysis_query = analysis_query.filter(
                 sqa.or_(
                     self.Analysis.family.like(f"%{query}%"),
                     self.Analysis.status.like(f"%{query}%"),
                     self.Analysis.comment.like(f"%{query}%"),
-                    self.Job.name == query,
                 )
             )
         if status:
@@ -69,6 +68,8 @@ class BaseHandler:
             analysis_query = analysis_query.filter(self.Analysis.started_at < before)
         if is_visible is not None:
             analysis_query = analysis_query.filter_by(is_visible=is_visible)
+        if failed_job:
+            analysis_query.join(self.Analysis.failed_jobs).filter_by(self.Job.name == failed_job)
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
     def analysis(self, analysis_id: int) -> models.Analysis:
