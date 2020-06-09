@@ -56,7 +56,7 @@ class BaseHandler:
                     self.Analysis.family.like(f"%{query}%"),
                     self.Analysis.status.like(f"%{query}%"),
                     self.Analysis.comment.like(f"%{query}%"),
-                    self.Job.name.like(f"%{query}%"),
+                    self.Job.name == query,
                 )
             )
         if status:
