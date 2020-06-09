@@ -32,8 +32,7 @@ def analyses():
     page = int(request.args.get('page', 1))
     query = store.analyses(status=request.args.get('status'),
                            query=request.args.get('query'),
-                           is_visible=request.args.get('is_visible') == 'true' or None,
-                           failed_job=request.args.get('failed_job'))
+                           is_visible=request.args.get('is_visible') == 'true' or None)
 
     query_page = query.paginate(page, per_page=per_page)
     data = []

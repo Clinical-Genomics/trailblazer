@@ -10,9 +10,7 @@
           v-for="job in failedJobs"
           :key="job.id"
           class="d-flex justify-content-between align-items-center">
-          <nuxt-link :to="{ name: '/analyses', params: { failedJob: job.name }}">
-            {{ job.name }}
-          </nuxt-link>
+          <h6 class="mb-0">{{ job.name }}</h6>
           <b-badge>{{ job.count }}</b-badge>
         </b-list-group-item>
       </b-list-group>
