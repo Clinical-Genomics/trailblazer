@@ -5,7 +5,7 @@
         <div class="ml-auto d-flex align-items-center">
           <SpinKit v-if="isLoading" class="mr-3" />
           <b-form @submit.prevent="queryAnalyses">
-            <b-form-input v-model="query" placeholder="search family, status" />
+            <b-form-input v-model="query" placeholder="search family, status, comment" />
           </b-form>
         </div>
       </slot>

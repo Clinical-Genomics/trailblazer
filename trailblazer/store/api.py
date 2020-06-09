@@ -55,7 +55,11 @@ class BaseHandler:
                 sqa.or_(
                     self.Analysis.family.like(f"%{query}%"),
                     self.Analysis.status.like(f"%{query}%"),
-                    self.Job.name.like(f"%{query}%")
+                    self.Analysis.comment.like(f"%{query}%"),
+                    sqa.and_(
+                        self.Job.status == 'failed',
+                        self.Job.name.like(f"%{query}%"),
+                    )
                 )
             )
         if status:
