@@ -25,12 +25,7 @@
               :id="`failed-button-${field.item.id}`"
               variant="danger"
               size="sm">
-              <div
-                v-for="job in field.item.failed_jobs"
-                :key="job.id"
-                v-if="job.status === 'failed'">
-                {{ job.name }}
-              </div>
+              {{ field.item.failed_jobs }}
             </b-button>
             <b-button-group v-else-if="field.value === 'completed'">
               <b-button variant="success" size="sm">{{ field.value }}</b-button>
