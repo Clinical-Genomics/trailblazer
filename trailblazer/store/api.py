@@ -50,9 +50,12 @@ class BaseHandler:
         if family:
             analysis_query = analysis_query.filter_by(family=family)
         elif query:
+            analysis_query.join(self.Job)
             analysis_query = analysis_query.filter(
                 sqa.or_(
-                    self.Analysis.family.like(f"%{query}%"), self.Analysis.status.like(f"%{query}%")
+                    self.Analysis.family.like(f"%{query}%"),
+                    self.Analysis.status.like(f"%{query}%"),
+                    self.Job.name.like(f"%{query}%")
                 )
             )
         if status:
