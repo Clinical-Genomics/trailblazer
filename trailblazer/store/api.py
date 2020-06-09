@@ -31,6 +31,15 @@ class BaseHandler:
         )
         return query.first()
 
+    def find_analyses_with_comment(self, comment):
+        """Find a analyses containing comment."""
+        analysis_query = self.Analysis.query
+
+        analysis_query = analysis_query.filter(
+            self.Analysis.comment.like(f"%{comment}%"),
+        )
+        return analysis_query
+
     def analyses(self, *, family: str = None, query: str = None, status: str = None,
                  deleted: bool = None,
                  temp: bool = False, before: dt.datetime = None, is_visible: bool = None):

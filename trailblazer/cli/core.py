@@ -8,6 +8,7 @@ import coloredlogs
 import ruamel.yaml
 
 import trailblazer
+from trailblazer.cli.get import get
 from trailblazer.store import Store
 from trailblazer.log import LogAnalysis
 from trailblazer.mip.start import MipCli
@@ -194,3 +195,4 @@ base.add_command(delete)
 base.add_command(ls_cmd)
 base.add_command(clean)
 base.add_command(check)
+base.add_command(get)
