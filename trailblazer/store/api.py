@@ -24,34 +24,37 @@ class BaseHandler:
 
     def find_analysis(self, family, started_at, status):
         """Find a single analysis."""
-        query = self.Analysis.query.filter_by(
-            family=family,
-            started_at=started_at,
-            status=status,
-        )
+        query = self.Analysis.query.filter_by(family=family, started_at=started_at, status=status)
         return query.first()
 
     def find_analyses_with_comment(self, comment):
         """Find a analyses containing comment."""
         analysis_query = self.Analysis.query
 
-        analysis_query = analysis_query.filter(
-            self.Analysis.comment.like(f"%{comment}%"),
-        )
+        analysis_query = analysis_query.filter(self.Analysis.comment.like(f"%{comment}%"))
         return analysis_query
 
-    def analyses(self, *, family: str = None, query: str = None, status: str = None,
-                 deleted: bool = None,
-                 temp: bool = False, before: dt.datetime = None, is_visible: bool = None):
+    def analyses(
+        self,
+        *,
+        family: str = None,
+        query: str = None,
+        status: str = None,
+        deleted: bool = None,
+        temp: bool = False,
+        before: dt.datetime = None,
+        is_visible: bool = None,
+    ):
         """Fetch analyses form the database."""
         analysis_query = self.Analysis.query
         if family:
             analysis_query = analysis_query.filter_by(family=family)
         elif query:
-            analysis_query = analysis_query.filter(sqa.or_(
-                self.Analysis.family.like(f"%{query}%"),
-                self.Analysis.status.like(f"%{query}%"),
-            ))
+            analysis_query = analysis_query.filter(
+                sqa.or_(
+                    self.Analysis.family.like(f"%{query}%"), self.Analysis.status.like(f"%{query}%")
+                )
+            )
         if status:
             analysis_query = analysis_query.filter_by(status=status)
         if isinstance(deleted, bool):
@@ -86,7 +89,7 @@ class BaseHandler:
     def add_pending(self, family: str, email: str = None) -> models.Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
-        new_log = self.Analysis(family=family, status='pending', started_at=started_at)
+        new_log = self.Analysis(family=family, status="pending", started_at=started_at)
         new_log.user = self.user(email) if email else None
         self.add_commit(new_log)
         return new_log
@@ -105,17 +108,15 @@ class BaseHandler:
         """Count the number of failed jobs per category (name)."""
 
         categories = self.session.query(
-            self.Job.name.label('name'),
-            sqa.func.count(self.Job.id).label('count')
-        ).filter(self.Job.status != 'cancelled')
+            self.Job.name.label("name"), sqa.func.count(self.Job.id).label("count")
+        ).filter(self.Job.status != "cancelled")
 
         if since_when:
             categories = categories.filter(self.Job.started_at > since_when)
 
-        categories = categories.group_by(
-            self.Job.name).all()
+        categories = categories.group_by(self.Job.name).all()
 
-        data = [{'name': category.name, 'count': category.count} for category in categories]
+        data = [{"name": category.name, "count": category.count} for category in categories]
         return data
 
     def jobs(self):
@@ -124,7 +125,6 @@ class BaseHandler:
 
 
 class Store(alchy.Manager, BaseHandler, ConfigHandler):
-
     def __init__(self, uri: str, families_dir: str):
         super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=models.Model)
         self.families_dir = families_dir
