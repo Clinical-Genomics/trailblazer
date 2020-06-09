@@ -30,7 +30,7 @@
       }
     },
     async fetch ({ store, app }) {
-      await store.dispatch('fetchAnalyses', { perPage: 50 })
+      await store.dispatch('fetchAnalyses', { perPage: 500 })
     },
     computed: {
       ...mapGetters([ 'allAnalyses' ])
@@ -38,7 +38,7 @@
     methods: {
       async queryAnalyses () {
         this.isLoading = true
-        await this.$store.dispatch('fetchAnalyses', { query: this.query, perPage: 50 })
+        await this.$store.dispatch('fetchAnalyses', { query: this.query, perPage: 500 })
         this.isLoading = false
       }
     },

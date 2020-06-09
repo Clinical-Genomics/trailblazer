@@ -39,6 +39,12 @@
                 {{ job.name }}
               </div>
             </b-popover>
+            <div
+              v-for="job in field.item.failed_jobs"
+              :key="job.id"
+              v-if="job.status === 'failed'">
+              {{ job.name }}
+            </div>
             <b-button-group v-else-if="field.value === 'completed'">
               <b-button variant="success" size="sm">{{ field.value }}</b-button>
               <b-button size="sm">{{ field.item|dateDiff }}</b-button>
