@@ -27,24 +27,6 @@
               size="sm">
               {{ field.value }}
             </b-button>
-            <b-popover
-              v-if="field.value === 'failed'"
-              :target="`failed-button-${field.item.id}`"
-              triggers="hover"
-              placement="left">
-              <div
-                v-for="job in field.item.failed_jobs"
-                :key="job.id"
-                v-if="job.status === 'failed'">
-                {{ job.name }}
-              </div>
-            </b-popover>
-            <div
-              v-for="job in field.item.failed_jobs"
-              :key="job.id"
-              v-if="job.status === 'failed'">
-              {{ job.name }}
-            </div>
             <b-button-group v-else-if="field.value === 'completed'">
               <b-button variant="success" size="sm">{{ field.value }}</b-button>
               <b-button size="sm">{{ field.item|dateDiff }}</b-button>
@@ -65,6 +47,12 @@
               Unhide
             </b-btn>
           </b-button-group>
+          <div
+            v-for="job in field.item.failed_jobs"
+            :key="job.id"
+            v-if="job.status === 'failed'">
+            {{ job.name }}
+          </div>
         </template>
         <template slot="comment" slot-scope="field">
           <div class="comment-box">
