@@ -81,7 +81,7 @@ matrix:
     - name: "Linting"
       if: type = pull_request
       install:
-        - pip install -r requirements-dev.txt git-lint pylint pycodestyle yamllint html-linter
+        - pip install . -r requirements-dev.txt git-lint pylint pycodestyle yamllint html-linter
         - sudo apt-get install -y tidy
       script: git reset --soft ${TRAVIS_COMMIT_RANGE%...*} && git lint
 
