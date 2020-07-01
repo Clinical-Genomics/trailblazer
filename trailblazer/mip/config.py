@@ -80,15 +80,25 @@ class ConfigHandler:
         else:
             errors = ConfigSchema().validate(data)
         if errors:
+            hard_error = False
             for field, messages in errors.items():
                 if isinstance(messages, dict):
                     for level, sample_errors in messages.items():
-                        sample_id = data['samples'][level]['sample_id']
+                        try:
+                            sample_id = data['samples'][level]['sample_id']
+                        except KeyError:
+                            raise ConfigError('missing sample id')
+
                         for sub_field, sub_messages in sample_errors.items():
+                            if sub_messages != ["Unknown field."]:
+                                hard_error = True
                             LOG.error(f"{sample_id} -> {sub_field}: {', '.join(sub_messages)}")
                 else:
+                    hard_error = True
                     LOG.error(f"{field}: {', '.join(messages)}")
-            raise ConfigError('invalid config input', errors=errors)
+            if hard_error:
+                raise ConfigError('invalid config input', errors=errors)
+        return errors
 
     @staticmethod
     def prepare_config(data: dict) -> dict:
