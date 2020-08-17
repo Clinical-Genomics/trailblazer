@@ -10,7 +10,7 @@ from trailblazer.constants import TEMP_STATUSES
 STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error', 'canceled')
 JOB_STATUS_OPTIONS = [category.lower() for category in sacct.CATEGORIES]
 PRIORITY_OPTIONS = ('low', 'normal', 'high')
-TYPES = ('wes', 'wgs', 'rna')
+TYPES = ('wes', 'wgs', 'wts')
 
 Model = alchy.make_declarative_base(Base=alchy.ModelBase)
 
