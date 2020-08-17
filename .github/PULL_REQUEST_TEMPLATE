@@ -2,6 +2,8 @@ This PR adds/fixes ...
 
 ### How to prepare for test
 - [ ] ssh to hasta (depending on type of change)
+- [ ] activate stage: `us`
+- [ ] request trailblazer-stage on hasta: `paxa`
 - [ ] install on stage:
 `bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-trailblazer-stage.sh [THIS-BRANCH-NAME]`
 - [ ] ssh to clinical-db (depending on type of change)
@@ -26,4 +28,3 @@ Thanks for filling in who performed the code review and the test!
 - [ ] **MAJOR** - when you make incompatible API changes
 - [ ] **MINOR** - when you add functionality in a backwards compatible manner
 - [ ] **PATCH** - when you make backwards compatible bug fixes or documentation/instructions
-
