@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 
 class TrailblazerError(Exception):
 
@@ -8,10 +6,6 @@ class TrailblazerError(Exception):
 
 
 class MissingFileError(TrailblazerError):
-    pass
-
-
-class MipStartError(TrailblazerError):
     pass
 
 

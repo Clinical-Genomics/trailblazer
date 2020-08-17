@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
 import logging
-import signal
 import subprocess
-
-from trailblazer.exc import MipStartError
 
 LOG = logging.getLogger(__name__)
 
@@ -38,26 +34,4 @@ class MipCli(object):
         if process.returncode != 0:
             raise MipStartError(f"Error starting analysis: "
                                 f"{subprocess.CalledProcessError.stderr}")
-        return process
-
-    def build_command(self, case, config, **kwargs):
-        """Builds the command to execute MIP."""
-        command = [self.script, self.pipeline, case, CLI_OPTIONS['config']['option'], config]
-        for key, value in kwargs.items():
-            # enable passing in flags as "False" - shouldn't add command
-            if value:
-                command.append(CLI_OPTIONS[key]['option'])
-
-                # append value for non-flags
-                if value is not True:
-                    command.append(value)
-        return command
-
-    def execute(self, command):
-        """Start a new MIP run."""
-
-        command.insert(0, f"bash -c 'source activate {self.conda_env}; ")
-        command.append("'")
-
-        process = subprocess.run(" ".join(command), shell=True, check=True)
         return process

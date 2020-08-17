@@ -60,6 +60,9 @@ _DEVELOP/
 output/*.html
 output/*/index.html
 
+DEVELOP/
+.idea
+
 # Docs
 docs/_build
 _book/
