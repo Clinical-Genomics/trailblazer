@@ -8,7 +8,7 @@ This PR adds/fixes ...
 `bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-trailblazer-stage.sh [THIS-BRANCH-NAME]`
 - [ ] ssh to clinical-db (depending on type of change)
 - [ ] install on stage:
-`bash /home/proj/production/servers/resources/clinical-db.scilifelab.se/update-trailblazer-stage.sh [THIS-BRANCH-NAME]`
+`bash /home/proj/production/servers/resources/clinical-db.scilifelab.se/update-trailblazer-ui-stage.sh [THIS-BRANCH-NAME]`
 
 ### How to test
 - [ ] login to ...
