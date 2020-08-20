@@ -64,7 +64,7 @@ def get_rank_model_version(sample_info: dict, rank_model_type: str, step: str) -
     """Get rank model version"""
     if 'recipe' in sample_info:
         return sample_info['recipe'][step][rank_model_type]['version']
-    elif 'program' in sample_info:
+    if 'program' in sample_info:
         return sample_info['program'][step][rank_model_type]['version']
 
 def parse_sampleinfo(data: dict) -> dict:
@@ -83,13 +83,13 @@ def parse_sampleinfo(data: dict) -> dict:
         'genome_build': genome_build_str,
         'case': data['case'],
         'is_finished': True if data['analysisrunstatus'] == 'finished' else False,
-        'rank_model_version': get_rank_model_version(sample_info=data,rank_model_type='rank_model', step='genmod'),
+        'rank_model_version': get_rank_model_version(sample_info=data, rank_model_type='rank_model', step='genmod'),
         'samples': [],
-        'sv_rank_model_version': get_rank_model_version(sample_info=data,rank_model_type='sv_rank_model', step='sv_genmod'),
+        'sv_rank_model_version': get_rank_model_version(sample_info=data, rank_model_type='sv_rank_model', step='sv_genmod'),
         'version': data['mip_version'],
     }
 
-    for sample_id, sample_data in data['sample'].items():
+    for sample_id in data['sample'].items():
         sample = {
             'id': sample_id,
         }

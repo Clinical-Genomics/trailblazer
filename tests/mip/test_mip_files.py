@@ -1,7 +1,7 @@
 """Test MIP files"""
 
-import dateutil
 import copy
+import dateutil
 
 from trailblazer.mip import files
 
