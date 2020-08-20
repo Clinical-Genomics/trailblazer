@@ -97,8 +97,8 @@ def parse_sampleinfo(data: dict) -> dict:
 
     return outdata
 
-def get_plink_sexcheck(metrics: dict) -> dict:
-    """Get plink sexcheck"""
+def get_plink_samples(metrics: dict) -> dict:
+    """Get plink samples"""
     plink_sexcheck = None
     plink_samples = {}
     if 'recipe' in metrics:
@@ -126,7 +126,7 @@ def parse_qcmetrics(metrics: dict) -> dict:
         'samples': [],
     }
 
-    plink_samples = get_plink_sexcheck(metrics=metrics,)
+    plink_samples = get_plink_samples(metrics=metrics)
 
     for sample_id, sample_metrics in metrics['sample'].items():
 

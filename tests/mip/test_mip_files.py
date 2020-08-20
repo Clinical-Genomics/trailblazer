@@ -143,14 +143,14 @@ def test_parse_sampleinfo(files_raw):
 
     assert len(sampleinfo_raw['analysis_type']) == len(sampleinfo_data['samples'])
 
-def test_get_plink_sexcheck(files_raw):
+def test_get_plink_samples(files_raw):
     """ Test get plink sexcheck from qc_metrics"""
 
     # GIVEN qc metrics input from an analysis
     qcmetrics_raw = files_raw['qcmetrics']
 
     # WHEN parsing plink output in qc_metrics
-    plink_samples = files.get_plink_sexcheck(metrics=qcmetrics_raw)
+    plink_samples = files.get_plink_samples(metrics=qcmetrics_raw)
 
     expected_plink_samples = {'child': 'male',
                               'father': 'male',
@@ -159,7 +159,7 @@ def test_get_plink_sexcheck(files_raw):
     # THEN the family memebers and their gender should be returned
     assert plink_samples == expected_plink_samples
 
-def test_get_plink_sexcheck_when_program(files_raw):
+def test_get_plink_samples_when_program(files_raw):
     """ Test get plink sexcheck from qc_metrics using program key"""
 
     # GIVEN qc metrics input from an analysis
@@ -169,7 +169,7 @@ def test_get_plink_sexcheck_when_program(files_raw):
     qcmetrics_raw['program'] = qcmetrics_raw.pop('recipe')
 
     # WHEN parsing plink output in qc_metrics
-    plink_samples = files.get_plink_sexcheck(metrics=qcmetrics_raw)
+    plink_samples = files.get_plink_samples(metrics=qcmetrics_raw)
 
     expected_plink_samples = {'child': 'male',
                               'father': 'male',
