@@ -64,7 +64,7 @@ def get_rank_model_version(sample_info: dict, rank_model_type: str, step: str) -
     """Get rank model version"""
     if 'recipe' in sample_info:
         return sample_info['recipe'][step][rank_model_type]['version']
-    if 'program' in sample_info:
+    elif 'program' in sample_info:
         return sample_info['program'][step][rank_model_type]['version']
 
 def parse_sampleinfo(data: dict) -> dict:
@@ -103,7 +103,7 @@ def get_plink_sexcheck(metrics: dict) -> dict:
     plink_samples = {}
     if 'recipe' in metrics:
         plink_sexcheck = metrics['recipe'].get('plink_sexcheck', {}).get('sample_sexcheck')
-    if 'program' in metrics:
+    elif 'program' in metrics:
         plink_sexcheck = metrics['program'].get('plink_sexcheck', {}).get('sample_sexcheck')
     if isinstance(plink_sexcheck, str):
         sample_id, sex_number = plink_sexcheck.strip().split(':', 1)
