@@ -74,11 +74,6 @@ def parse_sampleinfo(data: dict) -> dict:
     """
     genome_build = data['human_genome_build']
     genome_build_str = f"{genome_build['source']}{genome_build['version']}"
-    if 'sv_combinevariantcallsets' in data['recipe']:
-        sv_combinevariantcallsets_path = \
-            (f"{data['recipe']['sv_combinevariantcallsets']['path']}")
-    else:
-        sv_combinevariantcallsets_path = ''
     outdata = {
         'date': data['analysis_date'],
         'case': data['case'],
