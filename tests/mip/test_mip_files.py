@@ -1,10 +1,11 @@
-# -*- coding: utf-8 -*-
 """Test MIP files"""
 
 import dateutil
+import copy
 
 from trailblazer.mip import files
 
+RANK_MODEL_VERSION = '1.25'
 
 def test_parse_config(files_raw) -> dict:
     """
@@ -67,7 +68,32 @@ def test_parse_sampleinfo_light(files_raw):
     # THEN version should be set
     assert sampleinfo_data['version'] == 'v7.1.0'
 
+def test_get_rank_model_version(files_raw):
+    """Test getting the rank model from sample_info file"""
 
+    # GIVEN sampleinfo input from a finished analysis
+    sampleinfo_raw = files_raw['sampleinfo']
+
+    # WHEN getting the rank_model
+    rank_model_version = files.get_rank_model_version(sample_info=sampleinfo_raw, rank_model_type='rank_model', step='genmod')
+
+    # THEN the rank model version should be returned
+    assert rank_model_version == RANK_MODEL_VERSION
+
+def test_get_rank_model_version_with_program(files_raw):
+    """Test getting the rank model from sample_info file with program key"""
+
+    # GIVEN sampleinfo input from a finished analysis
+    sampleinfo_raw = copy.copy(files_raw['sampleinfo'])
+
+    # Using old MIP style with program instead of recipe
+    sampleinfo_raw['program'] = sampleinfo_raw.pop('recipe')
+
+    # WHEN getting the rank_model
+    rank_model_version = files.get_rank_model_version(sample_info=sampleinfo_raw, rank_model_type='rank_model', step='genmod')
+
+    # THEN the rank model version should be returned
+    assert rank_model_version == RANK_MODEL_VERSION
 
 def test_parse_sampleinfo(files_raw):
     """
@@ -93,15 +119,7 @@ def test_parse_sampleinfo(files_raw):
     sampleinfo_test_data = {
         'case': 'case',
         'genome_build': 'grch37',
-        'multiqc_html': '/path_to/case/case/multiqc_ar/multiqc_report.html',
-        'multiqc_json': '/path_to/case/case/multiqc_ar/multiqc_data/multiqc_data.json',
-        'pedigree': '/path_to/cases/case/case_pedigree.yaml',
-        'pedigree_path': '/path_to/case/case.fam',
-        'qcmetrics_path': '/path_to/case/case_qc_metrics.yaml',
-        'sv_combinevariantcallsets_path':
-            '/path_to/case/case/sv_combinevariantcallsets/case_comb.vcf',
         'version': 'v7.1.0',
-        'version_collect': '/path_to/case/case/version_collect_ar/case_vcol.yaml',
         }
 
     # Check returns from def 1
@@ -111,17 +129,7 @@ def test_parse_sampleinfo(files_raw):
     # Sample data
     # Build dict for sample return data
     sampleinfo_test_sample_data = {
-        'cram': '/path_to/case/mother/gatk_baserecalibration/mother_lanes_1_sorted_md_brecal.cram',
-        'chanjo_sexcheck': (
-            '/path_to/case/mother/chanjo_sexcheck/mother_lanes_1_sorted_md_brecal_sex.tsv'),
         'id': 'mother',
-        'chromograph': '/path_to/case/mother/chromograph_ar/mother_lanes_1234_sorted_md_brecal_tcov_chromograph.tar.gz',
-        'sambamba': ('/path_to/case/mother/sambamba_depth'
-                     '/mother_lanes_1_sorted_md_brecal_coverage.bed'),
-        'sex': 'female',
-        'subsample_mt': ('/path_to/case/mother/samtools_subsample_mt'
-                         '/mother_lanes_1_sorted_md_brecal_subsample_MT.bam'),
-        'vcf2cytosure': '/path_to/case/case/vcf2cytosure_ar/case_cyto.mother.cgh',
         }
 
     # Check returns from def 2
@@ -135,47 +143,40 @@ def test_parse_sampleinfo(files_raw):
 
     assert len(sampleinfo_raw['analysis_type']) == len(sampleinfo_data['samples'])
 
-    # Snv data
-    # Build dict for snv return data
-    sampleinfo_test_snv_data = {
-        'clinical_vcf': ('/path_to/case/case/endvariantannotationblock'
-                         '/case_gatkcomb_rhocall_vt_frqf_cadd_vep_parsed_snpeff_ranked.selected'
-                         '.vcf.gz'),
-        'research_vcf': ('/path_to/case/case/endvariantannotationblock'
-                         '/case_gatkcomb_rhocall_vt_frqf_cadd_vep_parsed_snpeff_ranked.vcf.gz'),
-        'bcf': '/path_to/case/case/gatk_combinevariantcallsets/case_gatkcomb.bcf',
-        }
+def test_get_plink_sexcheck(files_raw):
+    """ Test get plink sexcheck from qc_metrics"""
 
-    # Check returns from def 3
-    for key, value in sampleinfo_test_snv_data.items():
-        assert sampleinfo_data['snv'][key] == value
+    # GIVEN qc metrics input from an analysis
+    qcmetrics_raw = files_raw['qcmetrics']
 
-    # SV data
-    # Build dict for sv return data
-    sampleinfo_test_sv_data = {
-        'clinical_vcf': ('/path_to/case/case/sv_reformat/case_comb_ann_vep_parsed_ranked.selected'
-                         '.vcf.gz'),
-        'research_vcf': '/path_to/case/case/sv_reformat/case_comb_ann_vep_parsed_ranked.vcf.gz',
-        'bcf': '/path_to/case/case/sv_combinevariantcallsets/case_comb.bcf',
-        'merged': '/path_to/case/case/sv_combinevariantcallsets/case_comb.vcf',
-        }
+    # WHEN parsing plink output in qc_metrics
+    plink_samples = files.get_plink_sexcheck(metrics=qcmetrics_raw)
 
-    # Check returns from def 4
-    for key, value in sampleinfo_test_sv_data.items():
-        assert sampleinfo_data['sv'][key] == value
+    expected_plink_samples = {'child': 'male',
+                              'father': 'male',
+                              'mother': 'female',
+                              }
+    # THEN the family memebers and their gender should be returned
+    assert plink_samples == expected_plink_samples
 
-    # Peddy data
-    # Build dict for peddy return data
-    sampleinfo_test_peddy_data = {
-        'ped_check': '/path_to/case/case/peddy_ar/case_gatkcomb.ped_check.csv',
-        'ped': '/path_to/case/case/peddy_ar/case_gatkcomb.peddy.ped',
-        'sex_check': '/path_to/case/case/peddy_ar/case_gatkcomb.sex_check.csv',
-        }
+def test_get_plink_sexcheck_when_program(files_raw):
+    """ Test get plink sexcheck from qc_metrics using program key"""
 
-    # Check returns from def 5
-    for key, value in sampleinfo_test_peddy_data.items():
-        assert sampleinfo_data['peddy'][key] == value
+    # GIVEN qc metrics input from an analysis
+    qcmetrics_raw = copy.copy(files_raw['qcmetrics'])
 
+    # Using old MIP style with program instead of recipe
+    qcmetrics_raw['program'] = qcmetrics_raw.pop('recipe')
+
+    # WHEN parsing plink output in qc_metrics
+    plink_samples = files.get_plink_sexcheck(metrics=qcmetrics_raw)
+
+    expected_plink_samples = {'child': 'male',
+                              'father': 'male',
+                              'mother': 'female',
+                              }
+    # THEN the family memebers and their gender should be returned
+    assert plink_samples == expected_plink_samples
 
 def test_parse_qcmetrics(files_raw):
     """
