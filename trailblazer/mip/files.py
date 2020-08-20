@@ -17,7 +17,7 @@ def parse_config(data: dict) -> dict:
     """
     return {
         'email': data.get('email'),
-        'case': data['case_id'],
+        'case': data['case_id'] if 'case_id' in data else data['family_id'],
         'samples': [{
             'id': sample_id,
             'type': analysis_type,
