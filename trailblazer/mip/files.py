@@ -103,7 +103,7 @@ def get_plink_samples(metrics: dict) -> dict:
     plink_samples = {}
     if 'recipe' in metrics:
         plink_sexcheck = metrics['recipe'].get('plink_sexcheck', {}).get('sample_sexcheck')
-    elif 'program' in metrics:
+    elif 'program' in metrics:    # for MIP<7
         plink_sexcheck = metrics['program'].get('plink_sexcheck', {}).get('sample_sexcheck')
     if isinstance(plink_sexcheck, str):
         sample_id, sex_number = plink_sexcheck.strip().split(':', 1)
