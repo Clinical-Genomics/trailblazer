@@ -64,7 +64,7 @@ def get_rank_model_version(sample_info: dict, rank_model_type: str, step: str) -
     """Get rank model version"""
     if 'recipe' in sample_info:
         return sample_info['recipe'][step][rank_model_type]['version']
-    if 'program' in sample_info:
+    elif 'program' in sample_info:    # for MIP<7
         return sample_info['program'][step][rank_model_type]['version']
 
 def parse_sampleinfo(data: dict) -> dict:
