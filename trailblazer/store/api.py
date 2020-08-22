@@ -80,7 +80,7 @@ class BaseHandler:
     def is_running(self, family: str) -> bool:
         """Check if an analysis is currently running/pending for a family."""
         latest_analysis = self.analyses(family=family).first()
-        if latest_analysis.status in TEMP_STATUSES:
+        if latest_analysis and latest_analysis.status in TEMP_STATUSES:
             return True
         return False
 
