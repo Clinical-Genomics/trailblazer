@@ -6,7 +6,7 @@ import alchy
 import sqlalchemy as sqa
 
 from trailblazer.mip.config import ConfigHandler
-from trailblazer.constants import TEMP_STATUSES
+from trailblazer.constants import ONGOING_STATUSES
 from . import models
 
 
@@ -60,7 +60,7 @@ class BaseHandler:
         if isinstance(deleted, bool):
             analysis_query = analysis_query.filter_by(is_deleted=deleted)
         if temp:
-            analysis_query = analysis_query.filter(self.Analysis.status.in_(TEMP_STATUSES))
+            analysis_query = analysis_query.filter(self.Analysis.status.in_(ONGOING_STATUSES))
         if before:
             analysis_query = analysis_query.filter(self.Analysis.started_at < before)
         if is_visible is not None:
@@ -80,7 +80,7 @@ class BaseHandler:
     def is_running(self, family: str) -> bool:
         """Check if an analysis is currently running/pending for a family."""
         latest_analysis = self.analyses(family=family).first()
-        if latest_analysis and latest_analysis.status in TEMP_STATUSES:
+        if latest_analysis and latest_analysis.status in ONGOING_STATUSES:
             return True
         return False
 
