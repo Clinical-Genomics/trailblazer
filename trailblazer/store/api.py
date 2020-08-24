@@ -6,7 +6,7 @@ import alchy
 import sqlalchemy as sqa
 
 from trailblazer.mip.config import ConfigHandler
-from trailblazer.constants import ONGOING_STATUSES
+from trailblazer.constants import FAILED_STATUS, ONGOING_STATUSES
 from . import models
 
 
@@ -77,10 +77,17 @@ class BaseHandler:
         metadata.updated_at = dt.datetime.now()
         self.commit()
 
-    def is_running(self, family: str) -> bool:
-        """Check if an analysis is currently running/pending for a family."""
+    def is_ongoing(self, family: str) -> bool:
+        """Check if an analysis is ongoing for a family"""
         latest_analysis = self.analyses(family=family).first()
         if latest_analysis and latest_analysis.status in ONGOING_STATUSES:
+            return True
+        return False
+
+    def is_failed(self, family: str) -> bool:
+        """Check if an analysis is failed for a family"""
+        latest_analysis = self.analyses(family=family).first()
+        if latest_analysis and latest_analysis.status == FAILED_STATUS:
             return True
         return False
 

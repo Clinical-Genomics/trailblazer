@@ -69,15 +69,29 @@ def test_analysis(sample_store):
     ('politesnake', False),  # failed
     ('gentlebird', True),    # pending
 ])
-def test_is_running(sample_store, family, expected_bool):
+def test_is_ongoing(sample_store, family, expected_bool):
     # GIVEN an analysis
     analysis_objs = sample_store.analyses(family=family).first()
     assert analysis_objs is not None
-    # WHEN checking if the family has a running analysis
-    is_running = sample_store.is_running(family)
+    # WHEN checking if the family has an ongoing analysis status
+    is_ongoing = sample_store.is_ongoing(family)
     # THEN it should return the expected result
-    assert is_running is expected_bool
+    assert is_ongoing is expected_bool
 
+@pytest.mark.parametrize('family, expected_bool', [
+    ('crazygoat', False),     # running
+    ('nicemouse', False),    # completed
+    ('politesnake', True),  # failed
+    ('gentlebird', False),    # pending
+])
+def test_is_failed(sample_store, family, expected_bool):
+    # GIVEN an analysis
+    analysis_objs = sample_store.analyses(family=family).first()
+    assert analysis_objs is not None
+    # WHEN checking if the family has a failed analysis status
+    is_failed = sample_store.is_failed(family)
+    # THEN it should return the expected result
+    assert is_failed is expected_bool
 
 def test_aggregate_jobs(sample_store):
 
