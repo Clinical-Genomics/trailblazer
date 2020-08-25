@@ -62,10 +62,9 @@ def get_sampleinfo_date(data: dict) -> str:
 
 def get_rank_model_version(sample_info: dict, rank_model_type: str, step: str) -> str:
     """Get rank model version"""
-    if 'recipe' in sample_info:
-        return sample_info['recipe'][step][rank_model_type]['version']
-    elif 'program' in sample_info:    # for MIP<7
-        return sample_info['program'][step][rank_model_type]['version']
+    for key in ('recipe', 'program'):
+        if key in sample_info:
+            return sample_info[key][step][rank_model_type]['version']
 
 def parse_sampleinfo(data: dict) -> dict:
     """Parse MIP sample info file.
