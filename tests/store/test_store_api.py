@@ -69,12 +69,12 @@ def test_analysis(sample_store):
     ('politesnake', False),  # failed
     ('gentlebird', True),    # pending
 ])
-def test_is_ongoing(sample_store, family, expected_bool):
+def test_is_latest_analysis_ongoing(sample_store, family, expected_bool):
     # GIVEN an analysis
     analysis_objs = sample_store.analyses(family=family).first()
     assert analysis_objs is not None
     # WHEN checking if the family has an ongoing analysis status
-    is_ongoing = sample_store.is_ongoing(family)
+    is_ongoing = sample_store.is_latest_analysis_ongoing(family)
     # THEN it should return the expected result
     assert is_ongoing is expected_bool
 
@@ -84,12 +84,12 @@ def test_is_ongoing(sample_store, family, expected_bool):
     ('politesnake', True),  # failed
     ('gentlebird', False),    # pending
 ])
-def test_is_failed(sample_store, family, expected_bool):
+def test_is_latest_analysis_failed(sample_store, family, expected_bool):
     # GIVEN an analysis
     analysis_objs = sample_store.analyses(family=family).first()
     assert analysis_objs is not None
     # WHEN checking if the family has a failed analysis status
-    is_failed = sample_store.is_failed(family)
+    is_failed = sample_store.is_latest_analysis_failed(family)
     # THEN it should return the expected result
     assert is_failed is expected_bool
 
@@ -99,12 +99,12 @@ def test_is_failed(sample_store, family, expected_bool):
     ('politesnake', False),  # failed
     ('gentlebird', False),    # pending
 ])
-def test_is_completed(sample_store, family, expected_bool):
+def test_is_latest_analysis_completed(sample_store, family, expected_bool):
     # GIVEN an analysis
     analysis_objs = sample_store.analyses(family=family).first()
     assert analysis_objs is not None
     # WHEN checking if the family has a failed analysis status
-    is_failed = sample_store.is_completed(family)
+    is_failed = sample_store.is_latest_analysis_completed(family)
     # THEN it should return the expected result
     assert is_failed is expected_bool
 
