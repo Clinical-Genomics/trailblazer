@@ -24,7 +24,7 @@ def test_track_update(store):
 def test_add_user(store):
     # GIVEN an empty database
     assert store.User.query.first() is None
-    name, email = 'Paul T. Anderson', 'paul.anderson@magnolia.com'
+    name, email = "Paul T. Anderson", "paul.anderson@magnolia.com"
     # WHEN adding a new user
     new_user = store.add_user(name, email)
     # THEN it should be stored in the database
@@ -33,7 +33,7 @@ def test_add_user(store):
 
 def test_user(store):
     # GIVEN a database with a user
-    name, email = 'Paul T. Anderson', 'paul.anderson@magnolia.com'
+    name, email = "Paul T. Anderson", "paul.anderson@magnolia.com"
     store.add_user(name, email)
     assert store.User.query.filter_by(email=email).first().email == email
     # WHEN querying for a user
@@ -42,7 +42,7 @@ def test_user(store):
     assert user_obj.email == email
 
     # WHEN querying for a user that doesn't exist
-    user_obj = store.user('this_is_a_made_up_email@fake_example.com')
+    user_obj = store.user("this_is_a_made_up_email@fake_example.com")
     # THEN it should return as None
     assert user_obj is None
 
@@ -63,12 +63,15 @@ def test_analysis(sample_store):
     assert analysis_obj is None
 
 
-@pytest.mark.parametrize('family, expected_bool', [
-    ('crazygoat', True),     # running
-    ('nicemouse', False),    # completed
-    ('politesnake', False),  # failed
-    ('gentlebird', True),    # pending
-])
+@pytest.mark.parametrize(
+    "family, expected_bool",
+    [
+        ("crazygoat", True),  # running
+        ("nicemouse", False),  # completed
+        ("politesnake", False),  # failed
+        ("gentlebird", True),  # pending
+    ],
+)
 def test_is_latest_analysis_ongoing(sample_store, family, expected_bool):
     # GIVEN an analysis
     analysis_objs = sample_store.analyses(family=family).first()
@@ -78,12 +81,16 @@ def test_is_latest_analysis_ongoing(sample_store, family, expected_bool):
     # THEN it should return the expected result
     assert is_ongoing is expected_bool
 
-@pytest.mark.parametrize('family, expected_bool', [
-    ('crazygoat', False),     # running
-    ('nicemouse', False),    # completed
-    ('politesnake', True),  # failed
-    ('gentlebird', False),    # pending
-])
+
+@pytest.mark.parametrize(
+    "family, expected_bool",
+    [
+        ("crazygoat", False),  # running
+        ("nicemouse", False),  # completed
+        ("politesnake", True),  # failed
+        ("gentlebird", False),  # pending
+    ],
+)
 def test_is_latest_analysis_failed(sample_store, family, expected_bool):
     # GIVEN an analysis
     analysis_objs = sample_store.analyses(family=family).first()
@@ -93,12 +100,16 @@ def test_is_latest_analysis_failed(sample_store, family, expected_bool):
     # THEN it should return the expected result
     assert is_failed is expected_bool
 
-@pytest.mark.parametrize('family, expected_bool', [
-    ('crazygoat', False),     # running
-    ('nicemouse', True),    # completed
-    ('politesnake', False),  # failed
-    ('gentlebird', False),    # pending
-])
+
+@pytest.mark.parametrize(
+    "family, expected_bool",
+    [
+        ("crazygoat", False),  # running
+        ("nicemouse", True),  # completed
+        ("politesnake", False),  # failed
+        ("gentlebird", False),  # pending
+    ],
+)
 def test_is_latest_analysis_completed(sample_store, family, expected_bool):
     # GIVEN an analysis
     analysis_objs = sample_store.analyses(family=family).first()
@@ -108,12 +119,16 @@ def test_is_latest_analysis_completed(sample_store, family, expected_bool):
     # THEN it should return the expected result
     assert is_failed is expected_bool
 
-@pytest.mark.parametrize('family, expected_status', [
-    ('crazygoat', 'running'),
-    ('nicemouse', 'completed'),
-    ('politesnake', 'failed'),
-    ('gentlebird', 'pending'),
-])
+
+@pytest.mark.parametrize(
+    "family, expected_status",
+    [
+        ("crazygoat", "running"),
+        ("nicemouse", "completed"),
+        ("politesnake", "failed"),
+        ("gentlebird", "pending"),
+    ],
+)
 def test_get_latest_analysis_status(sample_store, family, expected_status):
     # GIVEN an analysis
     analysis_objs = sample_store.analyses(family=family).first()
@@ -122,6 +137,7 @@ def test_get_latest_analysis_status(sample_store, family, expected_status):
     status = sample_store.get_latest_analysis_status(family)
     # THEN it should return the expected result
     assert status is expected_status
+
 
 def test_aggregate_jobs(sample_store):
 
@@ -138,8 +154,8 @@ def test_aggregate_jobs(sample_store):
 
     # ... it should exclude "cancelled" jobs
     assert len(jobs_data) == 1
-    assert jobs_data[0]['name'] == 'samtools_mpileup'
-    assert jobs_data[0]['count'] == 1
+    assert jobs_data[0]["name"] == "samtools_mpileup"
+    assert jobs_data[0]["count"] == 1
 
 
 def test_aggregate_jobs_since_forever_date(sample_store):
@@ -156,8 +172,8 @@ def test_aggregate_jobs_since_forever_date(sample_store):
 
     # THEN it should return a list of dicts per job type with count
     assert len(jobs_data) == 1
-    assert jobs_data[0]['name'] == 'samtools_mpileup'
-    assert jobs_data[0]['count'] == 1
+    assert jobs_data[0]["name"] == "samtools_mpileup"
+    assert jobs_data[0]["count"] == 1
 
 
 def test_aggregate_jobs_since_yesterday(sample_store):

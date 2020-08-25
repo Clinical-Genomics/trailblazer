@@ -7,10 +7,10 @@ from sqlalchemy import Column, ForeignKey, orm, types, UniqueConstraint
 from trailblazer.mip import sacct
 from trailblazer.constants import ONGOING_STATUSES
 
-STATUS_OPTIONS = ('pending', 'running', 'completed', 'failed', 'error', 'canceled')
+STATUS_OPTIONS = ("pending", "running", "completed", "failed", "error", "canceled")
 JOB_STATUS_OPTIONS = [category.lower() for category in sacct.CATEGORIES]
-PRIORITY_OPTIONS = ('low', 'normal', 'high')
-TYPES = ('wes', 'wgs', 'rna')
+PRIORITY_OPTIONS = ("low", "normal", "high")
+TYPES = ("wes", "wgs", "rna")
 
 Model = alchy.make_declarative_base(Base=alchy.ModelBase)
 
@@ -19,7 +19,7 @@ class Info(Model):
 
     """Keep track of meta data."""
 
-    __tablename__ = 'info'
+    __tablename__ = "info"
 
     id = Column(types.Integer, primary_key=True)
     created_at = Column(types.DateTime, default=datetime.datetime.now)
@@ -28,7 +28,7 @@ class Info(Model):
 
 class User(Model):
 
-    __tablename__ = 'user'
+    __tablename__ = "user"
 
     id = Column(types.Integer, primary_key=True)
     google_id = Column(types.String(128), unique=True)
@@ -37,21 +37,22 @@ class User(Model):
     avatar = Column(types.Text)
     created_at = Column(types.DateTime, default=datetime.datetime.now)
 
-    runs = orm.relationship('Analysis', backref='user')
+    runs = orm.relationship("Analysis", backref="user")
 
     @property
     def first_name(self) -> str:
         """First part of name."""
-        return self.name.split(' ')[0]
+        return self.name.split(" ")[0]
 
 
 class Analysis(Model):
 
     """Analysis record."""
 
-    __tablename__ = 'analysis'
-    __table_args__ = (UniqueConstraint('family', 'started_at', 'status',
-                                       name='_uc_family_start_status'),)
+    __tablename__ = "analysis"
+    __table_args__ = (
+        UniqueConstraint("family", "started_at", "status", name="_uc_family_start_status"),
+    )
 
     id = Column(types.Integer, primary_key=True)
     family = Column(types.String(128), nullable=False)
@@ -69,9 +70,9 @@ class Analysis(Model):
     is_visible = Column(types.Boolean, default=True)
     type = Column(types.Enum(*TYPES))
     user_id = Column(ForeignKey(User.id))
-    progress = Column(types.Float, default=0.)
+    progress = Column(types.Float, default=0.0)
 
-    failed_jobs = orm.relationship('Job', backref='analysis')
+    failed_jobs = orm.relationship("Job", backref="analysis")
 
     @property
     def has_ongoing_status(self):
@@ -83,10 +84,10 @@ class Job(Model):
 
     """Represent a step in the pipeline."""
 
-    __tablename__ = 'job'
+    __tablename__ = "job"
 
     id = Column(types.Integer, primary_key=True)
-    analysis_id = Column(ForeignKey(Analysis.id, ondelete='CASCADE'), nullable=False)
+    analysis_id = Column(ForeignKey(Analysis.id, ondelete="CASCADE"), nullable=False)
     slurm_id = Column(types.Integer)
     name = Column(types.String(64))
     context = Column(types.String(64))
