@@ -77,23 +77,28 @@ class BaseHandler:
         metadata.updated_at = dt.datetime.now()
         self.commit()
 
-    def is_ongoing(self, family: str) -> bool:
-        """Check if an analysis is ongoing for a family"""
-        latest_analysis = self.analyses(family=family).first()
+    def is_latest_analysis_ongoing(self, case_id: str) -> bool:
+        """Check if the latest analysis is ongoing for a case_id"""
+        latest_analysis = self.analyses(family=case_id).first()
         if latest_analysis and latest_analysis.status in ONGOING_STATUSES:
             return True
         return False
 
-    def is_failed(self, family: str) -> bool:
-        """Check if an analysis is failed for a family"""
-        latest_analysis = self.analyses(family=family).first()
+    def is_latest_analysis_failed(self, case_id: str) -> bool:
+        """Check if the latest analysis is failed for a case_id"""
+        latest_analysis = self.analyses(family=case_id).first()
         if latest_analysis and latest_analysis.status == FAILED_STATUS:
             return True
         return False
 
-    def is_completed(self, family: str) -> bool:
-        """Check if an analysis is completed for a family"""
-        latest_analysis = self.analyses(family=family).first()
+    def get_latest_analysis_status(self, case_id: str) -> str:
+        """Get latest analysis status for a case_id"""
+        latest_analysis = self.analyses(family=case_id).first()
+        return latest_analysis.status
+
+    def is_latest_analysis_completed(self, case_id: str) -> bool:
+        """Check if the latest analysis is completed for a case_id"""
+        latest_analysis = self.analyses(family=case_id).first()
         if latest_analysis and latest_analysis.status == COMPLETED_STATUS:
             return True
         return False
