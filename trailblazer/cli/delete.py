@@ -18,7 +18,7 @@ def delete(context, force, yes, analysis_id):
 
     print(click.style(f"{analysis_obj.family}: {analysis_obj.status}"))
 
-    if analysis_obj.is_ongoing:
+    if analysis_obj.has_ongoing_status:
         if yes or click.confirm(f"remove analysis log?"):
             analysis_obj.delete()
             context.obj['store'].commit()

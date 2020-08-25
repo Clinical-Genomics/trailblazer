@@ -74,8 +74,8 @@ class Analysis(Model):
     failed_jobs = orm.relationship('Job', backref='analysis')
 
     @property
-    def is_ongoing(self):
-        """Check if the log is for a ongoing status: 'running|'pending'"""
+    def has_ongoing_status(self):
+        """Check if the log has an ongoing status: 'running|'pending'"""
         return self.status in ONGOING_STATUSES
 
 
