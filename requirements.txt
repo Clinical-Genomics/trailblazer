@@ -8,13 +8,12 @@ tabulate
 python-dateutil
 
 # server
-Flask
+Flask>=1.1.1                # versioned due to setup.py install misselecting Flask-SQLAlchemy otherwise
 Flask-Alchy
 Flask-SQLAlchemy==2.1
 Flask-CORS
 Flask-Reverse-Proxy
 google-auth
-pytest-flask
 
 # misc
 pymysql

@@ -126,6 +126,8 @@ recipe:
       path: /path_to/case/case/varianteffectpredictor/info/varianteffectpredictor_case.1.stderr.txt
   vcfparser_ar:
     path: /path_to/case/case/vcfparser_ar/case_gatkcomb_rhocall_vt_frqf_cadd_vep_parsed.3.vcf
+  version_collect_ar:
+    path: /path_to/case/case/version_collect_ar/case_vcol.yaml
   vt_ar:
     path: /path_to/case/case/vt_ar/info/vt_ar_case.0.0.1.stderr.txt
 sample:
@@ -159,7 +161,7 @@ sample:
         sequence_length: '151'
         sequence_run_type: paired-end
     most_complete_bam:
-      path: /path_to/case/father/gatk_baserecalibration/father_lanes_1_sorted_md_brecal.bam
+      path: /path_to/case/father/gatk_baserecalibration/father_lanes_1_sorted_md_brecal.cram
     mother: '0'
     phenotype: unaffected
     recipe:
@@ -174,6 +176,8 @@ sample:
           log:
             path: /path_to/case/father/chanjo_sexcheck/father_lanes_1_sorted_md_brecal_sex_chanjo_sexcheck.log
           path: /path_to/case/father/chanjo_sexcheck/father_lanes_1_sorted_md_brecal_sex.tsv
+      chromograph_ar:
+          path: /path_to/case/father/chromograph_ar/father_lanes_1234_sorted_md_brecal_tcov_chromograph.tar.gz
       collecthsmetrics:
         father_lanes_1_sorted_md_brecal_collecthsmetrics:
           path: /path_to/case/father/picardtools_collecthsmetrics/father_lanes_1_sorted_md_brecal_collecthsmetrics
@@ -251,7 +255,7 @@ sample:
         sequence_length: '151'
         sequence_run_type: paired-end
     most_complete_bam:
-      path: /path_to/case/child/gatk_baserecalibration/child_lanes_1_sorted_md_brecal.bam
+      path: /path_to/case/child/gatk_baserecalibration/child_lanes_1_sorted_md_brecal.cram
     mother: mother
     phenotype: affected
     recipe:
@@ -266,6 +270,8 @@ sample:
           log:
             path: /path_to/case/child/chanjo_sexcheck/child_lanes_1_sorted_md_brecal_sex_chanjo_sexcheck.log
           path: /path_to/case/child/chanjo_sexcheck/child_lanes_1_sorted_md_brecal_sex.tsv
+      chromograph_ar:
+          path: /path_to/case/child/chromograph_ar/child_lanes_1234_sorted_md_brecal_tcov_chromograph.tar.gz
       collecthsmetrics:
         child_lanes_1_sorted_md_brecal_collecthsmetrics:
           path: /path_to/case/child/picardtools_collecthsmetrics/child_lanes_1_sorted_md_brecal_collecthsmetrics
@@ -343,7 +349,7 @@ sample:
         sequence_length: '151'
         sequence_run_type: paired-end
     most_complete_bam:
-      path: /path_to/case/mother/gatk_baserecalibration/mother_lanes_1_sorted_md_brecal.bam
+      path: /path_to/case/mother/gatk_baserecalibration/mother_lanes_1_sorted_md_brecal.cram
     mother: '0'
     phenotype: unaffected
     recipe:
@@ -358,6 +364,8 @@ sample:
           log:
             path: /path_to/case/mother/chanjo_sexcheck/mother_lanes_1_sorted_md_brecal_sex_chanjo_sexcheck.log
           path: /path_to/case/mother/chanjo_sexcheck/mother_lanes_1_sorted_md_brecal_sex.tsv
+      chromograph_ar:
+          path: /path_to/case/mother/chromograph_ar/mother_lanes_1234_sorted_md_brecal_tcov_chromograph.tar.gz
       collecthsmetrics:
         mother_lanes_1_sorted_md_brecal_collecthsmetrics:
           path: /path_to/case/mother/picardtools_collecthsmetrics/mother_lanes_1_sorted_md_brecal_collecthsmetrics
