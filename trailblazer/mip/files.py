@@ -116,7 +116,8 @@ def parse_sampleinfo(data: dict) -> dict:
         'sv_rank_model_version': data['recipe']['sv_genmod']['sv_rank_model']['version'],
         'sv_combinevariantcallsets_path': sv_combinevariantcallsets_path,
         'version': data['mip_version'],
-        'version_collect': data['recipe']['version_collect_ar']['path'],
+        'version_collect': (data['recipe']['version_collect_ar']['path']  if
+                             'version_collect_ar' in data['recipe'] else None),
     }
 
     for sample_id, sample_data in data['sample'].items():
