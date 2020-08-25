@@ -49,7 +49,8 @@ TRASH*
 _DEVELOP/
 .vscode/
 
-# Develop
+
+# Development
 .idea/
 
 # SublimeText: workspace files are user-specific
