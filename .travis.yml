@@ -31,7 +31,7 @@ matrix:
     - name: "Node.js & Nuxt"
       if: type = pull_request
       language: node_js
-      node_js: 8
+      node_js: 10
       cache:
         yarn: true
         directories: nuxt/node_modules
