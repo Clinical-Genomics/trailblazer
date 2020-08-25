@@ -6,7 +6,7 @@ import alchy
 import sqlalchemy as sqa
 
 from trailblazer.mip.config import ConfigHandler
-from trailblazer.constants import FAILED_STATUS, ONGOING_STATUSES
+from trailblazer.constants import COMPLETED_STATUS, FAILED_STATUS, ONGOING_STATUSES
 from . import models
 
 
@@ -88,6 +88,13 @@ class BaseHandler:
         """Check if an analysis is failed for a family"""
         latest_analysis = self.analyses(family=family).first()
         if latest_analysis and latest_analysis.status == FAILED_STATUS:
+            return True
+        return False
+
+    def is_completed(self, family: str) -> bool:
+        """Check if an analysis is completed for a family"""
+        latest_analysis = self.analyses(family=family).first()
+        if latest_analysis and latest_analysis.status == COMPLETED_STATUS:
             return True
         return False
 

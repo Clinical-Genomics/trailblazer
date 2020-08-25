@@ -93,6 +93,21 @@ def test_is_failed(sample_store, family, expected_bool):
     # THEN it should return the expected result
     assert is_failed is expected_bool
 
+@pytest.mark.parametrize('family, expected_bool', [
+    ('crazygoat', False),     # running
+    ('nicemouse', True),    # completed
+    ('politesnake', False),  # failed
+    ('gentlebird', False),    # pending
+])
+def test_is_completed(sample_store, family, expected_bool):
+    # GIVEN an analysis
+    analysis_objs = sample_store.analyses(family=family).first()
+    assert analysis_objs is not None
+    # WHEN checking if the family has a failed analysis status
+    is_failed = sample_store.is_completed(family)
+    # THEN it should return the expected result
+    assert is_failed is expected_bool
+
 def test_aggregate_jobs(sample_store):
 
     # GIVEN a store with some analyses
