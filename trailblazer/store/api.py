@@ -6,7 +6,7 @@ import alchy
 import sqlalchemy as sqa
 
 from trailblazer.mip.config import ConfigHandler
-from trailblazer.constants import TEMP_STATUSES
+from trailblazer.constants import COMPLETED_STATUS, FAILED_STATUS, ONGOING_STATUSES
 from . import models
 
 
@@ -60,7 +60,7 @@ class BaseHandler:
         if isinstance(deleted, bool):
             analysis_query = analysis_query.filter_by(is_deleted=deleted)
         if temp:
-            analysis_query = analysis_query.filter(self.Analysis.status.in_(TEMP_STATUSES))
+            analysis_query = analysis_query.filter(self.Analysis.status.in_(ONGOING_STATUSES))
         if before:
             analysis_query = analysis_query.filter(self.Analysis.started_at < before)
         if is_visible is not None:
@@ -77,10 +77,31 @@ class BaseHandler:
         metadata.updated_at = dt.datetime.now()
         self.commit()
 
-    def is_running(self, family: str) -> bool:
-        """Check if an analysis is currently running/pending for a family."""
-        latest_analysis = self.analyses(family=family).first()
-        return latest_analysis and latest_analysis.status in TEMP_STATUSES
+    def is_latest_analysis_ongoing(self, case_id: str) -> bool:
+        """Check if the latest analysis is ongoing for a case_id"""
+        latest_analysis = self.analyses(family=case_id).first()
+        if latest_analysis and latest_analysis.status in ONGOING_STATUSES:
+            return True
+        return False
+
+    def is_latest_analysis_failed(self, case_id: str) -> bool:
+        """Check if the latest analysis is failed for a case_id"""
+        latest_analysis = self.analyses(family=case_id).first()
+        if latest_analysis and latest_analysis.status == FAILED_STATUS:
+            return True
+        return False
+
+    def get_latest_analysis_status(self, case_id: str) -> str:
+        """Get latest analysis status for a case_id"""
+        latest_analysis = self.analyses(family=case_id).first()
+        return latest_analysis.status
+
+    def is_latest_analysis_completed(self, case_id: str) -> bool:
+        """Check if the latest analysis is completed for a case_id"""
+        latest_analysis = self.analyses(family=case_id).first()
+        if latest_analysis and latest_analysis.status == COMPLETED_STATUS:
+            return True
+        return False
 
     def info(self) -> models.Info:
         """Return metadata entry."""
