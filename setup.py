@@ -68,9 +68,8 @@ setup(
     # Versions should comply with PEP440. For a discussion on
     # single-sourcing the version across setup.py and the project code,
     # see http://packaging.python.org/en/latest/tutorial.html#version
-    version='6.7.2',
-
-    description=('Track MIP analyses.'),
+    version='6.8.0',
+    description=('Track analyses.'),
     long_description=__doc__,
     # What does your project relate to? Separate with spaces.
     keywords='analysis development',
