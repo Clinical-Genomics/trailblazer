@@ -99,7 +99,7 @@ deploy:
     password:
       secure: "3ohgy8UVFno7gTgTKKdcmzw9xZUsKEjF7Qnjnmx5lbpcR8nBvbpy7RiLtADCyn8bd2cv1jSmwoyxtm+HvL4HnO6u5FUv3FOPo7Nqr8bHuvcepcu7fLR6P0OoMyAwujs2T/Rmk0Q0YYBxuXGYUNkttqGGHDZfgOtP7Xxg0bvR4Wgbb5MDkE8VFWS/xc8465Wa7EvZUsjD/EAqS3UXrhCpohueHaN1IGlto2fBowpMn2vdSYJYlBf+VVFRte5TzMxc2Qj4yixIcnRtCLWqwI/0fz4ctckWCSBbSusXcA45RYnBCx+QbScNvAi8t95RuJMQfnx1SonJis7CmZCykjgGZpUZTLDd0dxHL9+MZl4If/t5bZWwYToi4fCS3XnFsDSyJUyylGPoBZKyRGdK0+nhR3Np4Qeffo9dgq+NSFzv29zEQFyamNkllmX94tNGevx9TPhbAswec+r4Pv6r67hadQpZVwYy07bI+XuKDapihrGcuu3vUdMjpRJdI9Pb1DJfOh827JPFWVoVTLin+pAQpBh1mg0IFD60NLutCOLI3S/bfzUEn/nPNEcggkdLOq+GthqJYx+a0eEpr/hQ+OZtyCaVWhZWzQVltRA9BUjZH3pXHzBlwI52FI+3YyAL5piRGv6OjViefr44LqD4hHmj61yl5Ou4l0g7iBlvXJ0BPxI="
     on:
-      # tags: true
-      branch: feat/deploy_to_pypi
+      tags: true
+      branch: master
       distributions: "sdist bdist_wheel"
       repo: Clinical-Genomics/trailblazer
