@@ -15,14 +15,15 @@ FATHER_PCT_TARGET_BASES_20X = 0.916531
 FATHER_PCT_TARGET_BASES_50X = 0.004152
 FATHER_PCT_TARGET_BASES_100X = 0.000118
 FATHER_MEAN_TARGET_COVERAGE = 29.027266
-FATHER_STRAND_BALANCE = 0.501377
 FATHER_STANDARD_DEVIATION = 88.653614
+FATHER_STRAND_BALANCE = 0.501377
 
 MOTHER_AT_DROPOUT = 1.716704
 MOTHER_FRACTION_DUPLICATES = 0.0379523291229131
 MOTHER_GC_DROPOUT = 0.214813
 MOTHER_MEDIAN_INSERT_SIZE = 409
 MOTHER_MEAN_TARGET_COVERAGE = 28.643247
+MOTHER_STANDARD_DEVIATION = 94.353778
 MOTHER_STRAND_BALANCE = 0.50162
 RANK_MODEL_VERSION = '1.25'
 
@@ -365,7 +366,7 @@ def test_parse_qcmetrics(files_raw: dict):
     # WHEN parsing qc metric data
     qcmetrics_data = files.parse_qcmetrics(qcmetrics_raw)
 
-    # THEN it should work return a dict
+    # THEN it should return a dict
     assert isinstance(qcmetrics_data, dict)
 
     # Sample data
@@ -374,7 +375,7 @@ def test_parse_qcmetrics(files_raw: dict):
         'at_dropout': MOTHER_AT_DROPOUT,
         'duplicates': MOTHER_FRACTION_DUPLICATES,
         'id': 'mother',
-        'insert_size_standard_deviation': 94.353778,
+        'insert_size_standard_deviation': MOTHER_STANDARD_DEVIATION,
         'gc_dropout': MOTHER_GC_DROPOUT,
         'mapped': 0.9974176575073073,
         'median_insert_size': MOTHER_MEDIAN_INSERT_SIZE,
