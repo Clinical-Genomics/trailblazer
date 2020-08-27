@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-"""Parse the MIP config file."""
-from typing import TextIO
-import csv
+"""Parse the MIP config, qc_metric and qc_sampleinfo file."""
 
-PED_SEX_MAP = {1: 'male', 2: 'female', 0: 'unknown'}
+
+PED_SEX_MAP = {1: "male", 2: "female", 0: "unknown"}
 
 
 def parse_config(data: dict) -> dict:
@@ -16,18 +14,18 @@ def parse_config(data: dict) -> dict:
         dict: parsed data
     """
     return {
-        'email': data.get('email'),
-        'case': data['case_id'],
-        'samples': [{
-            'id': sample_id,
-            'type': analysis_type,
-        } for sample_id, analysis_type in data['analysis_type'].items()],
-        'config_path': data['config_file_analysis'],
-        'is_dryrun': True if 'dry_run_all' in data else False,
-        'log_path': data['log_file'],
-        'out_dir': data['outdata_dir'],
-        'priority': data['slurm_quality_of_service'],
-        'sampleinfo_path': data['sample_info_file'],
+        "email": data.get("email"),
+        "case": data["case_id"] if "case_id" in data else data["family_id"],  # family_id for MIP<7
+        "samples": [
+            {"id": sample_id, "type": analysis_type}
+            for sample_id, analysis_type in data["analysis_type"].items()
+        ],
+        "config_path": data["config_file_analysis"],
+        "is_dryrun": True if "dry_run_all" in data else False,
+        "log_path": data["log_file"],
+        "out_dir": data["outdata_dir"],
+        "priority": data["slurm_quality_of_service"],
+        "sampleinfo_path": data["sample_info_file"],
     }
 
 
@@ -42,9 +40,9 @@ def parse_sampleinfo_light(data: dict) -> dict:
 
     """
     outdata = {
-        'date': data['analysis_date'],
-        'version': data['mip_version'],
-        'is_finished': True if data['analysisrunstatus'] == 'finished' else False
+        "date": data["analysis_date"],
+        "version": data["mip_version"],
+        "is_finished": True if data["analysisrunstatus"] == "finished" else False,
     }
 
     return outdata
@@ -60,7 +58,17 @@ def get_sampleinfo_date(data: dict) -> str:
         str: analysis date
     """
 
-    return data['analysis_date']
+    return data["analysis_date"]
+
+
+def get_rank_model_version(sample_info: dict, rank_model_type: str, step: str) -> str:
+    """Get rank model version"""
+    rank_model_version = None
+    for key in ("recipe", "program"):
+        if key in sample_info:
+            rank_model_version = sample_info[key][step][rank_model_type]["version"]
+            break
+    return rank_model_version
 
 
 def parse_sampleinfo(data: dict) -> dict:
@@ -72,162 +80,135 @@ def parse_sampleinfo(data: dict) -> dict:
     Returns:
         dict: parsed data
     """
-    genome_build = data['human_genome_build']
+    genome_build = data["human_genome_build"]
     genome_build_str = f"{genome_build['source']}{genome_build['version']}"
-    if 'sv_combinevariantcallsets' in data['recipe']:
-        sv_combinevariantcallsets_path = \
-            (f"{data['recipe']['sv_combinevariantcallsets']['path']}")
-    else:
-        sv_combinevariantcallsets_path = ''
     outdata = {
-        'date': data['analysis_date'],
-        'case': data['case'],
-        'genome_build': genome_build_str,
-        'is_finished': True if data['analysisrunstatus'] == 'finished' else False,
-        'multiqc_html': data['recipe']['multiqc'][data['case'] + '_html']['path'],
-        'multiqc_json': data['recipe']['multiqc'][data['case'] + '_json']['path'],
-        'peddy': {
-            'ped': (data['recipe']['peddy_ar']['peddy']['path'] if
-                    'peddy_ar' in data['recipe'] else None),
-            'ped_check': (data['recipe']['peddy_ar']['ped_check']['path'] if
-                          'peddy_ar' in data['recipe'] else None),
-            'sex_check': (data['recipe']['peddy_ar']['sex_check']['path'] if
-                          'peddy_ar' in data['recipe'] else None),
-        },
-        'pedigree': data['pedigree_file']['path'],
-        'pedigree_path': data['pedigree_minimal'],
-        'qcmetrics_path': data['recipe']['qccollect_ar']['path'],
-        'rank_model_version': data['recipe']['genmod']['rank_model']['version'],
-        'samples': [],
-        'snv': {
-            'bcf': data['most_complete_bcf']['path'],
-            'clinical_vcf': data['vcf_binary_file']['clinical']['path'],
-            'research_vcf': data['vcf_binary_file']['research']['path'],
-        },
-        'str_vcf': data['recipe'].get('expansionhunter', {}).get('path'),
-        'sv': {
-            'bcf': data['recipe']['sv_combinevariantcallsets'].get('sv_bcf_file', {}).get('path'),
-            'clinical_vcf': (data['sv_vcf_binary_file']['clinical']['path'] if
-                             'sv_vcf_binary_file' in data else None),
-            'merged': sv_combinevariantcallsets_path,
-            'research_vcf': (data['sv_vcf_binary_file']['research']['path'] if
-                             'sv_vcf_binary_file' in data else None),
-        },
-        'sv_rank_model_version': data['recipe']['sv_genmod']['sv_rank_model']['version'],
-        'sv_combinevariantcallsets_path': sv_combinevariantcallsets_path,
-        'version': data['mip_version'],
-        'version_collect': (data['recipe']['version_collect_ar']['path']  if
-                             'version_collect_ar' in data['recipe'] else None),
+        "date": data["analysis_date"],
+        "genome_build": genome_build_str,
+        "case": data["case"],
+        "is_finished": True if data["analysisrunstatus"] == "finished" else False,
+        "rank_model_version": get_rank_model_version(
+            sample_info=data, rank_model_type="rank_model", step="genmod"
+        ),
+        "samples": [],
+        "sv_rank_model_version": get_rank_model_version(
+            sample_info=data, rank_model_type="sv_rank_model", step="sv_genmod"
+        ),
+        "version": data["mip_version"],
     }
 
-    for sample_id, sample_data in data['sample'].items():
-        sample = {
-            'id': sample_id,
-            'cram': sample_data['most_complete_bam']['path'],
-            # chromograph is only for wgs and trio data
-            'chromograph': (sample_data['recipe']['chromograph_ar']['path']  if 'chromograph_ar' in sample_data['recipe']
-                             else None),
-            'sambamba': list(sample_data['recipe']['sambamba_depth'].values())[0]['path'],
-            'sex': sample_data['sex'],
-            # subsample mt is only for wgs data
-            'subsample_mt': (list(sample_data['recipe']['samtools_subsample_mt'].values())
-                             [0]['path'] if 'samtools_subsample_mt' in sample_data['recipe']
-                             else None),
-            'vcf2cytosure': list(sample_data['recipe']['vcf2cytosure'].values())[0]['path'],
-        }
-        chanjo_sexcheck = list(sample_data['recipe']['chanjo_sexcheck'].values())[0]
-        sample['chanjo_sexcheck'] = chanjo_sexcheck['path']
-        outdata['samples'].append(sample)
+    for sample_id in data["sample"].items():
+        sample = {"id": sample_id}
+        outdata["samples"].append(sample)
 
     return outdata
 
 
-def parse_qcmetrics(metrics: dict) -> dict:
-    """Parse MIP qc metrics file.
-    Args:
-        metrics (dict): raw YAML input from MIP qc metrics file
-
-    Returns:
-        dict: parsed data
-    """
-    data = {
-        'samples': [],
-    }
-
+def get_plink_samples(metrics: dict) -> dict:
+    """Get plink samples"""
+    plink_sexcheck = None
     plink_samples = {}
-    plink_sexcheck = metrics['recipe'].get('plink_sexcheck', {}).get('sample_sexcheck')
+    if "recipe" in metrics:
+        plink_sexcheck = metrics["recipe"].get("plink_sexcheck", {}).get("sample_sexcheck")
+    elif "program" in metrics:  # for MIP<7
+        plink_sexcheck = metrics["program"].get("plink_sexcheck", {}).get("sample_sexcheck")
     if isinstance(plink_sexcheck, str):
-        sample_id, sex_number = plink_sexcheck.strip().split(':', 1)
+        sample_id, sex_number = plink_sexcheck.strip().split(":", 1)
         plink_samples[sample_id] = PED_SEX_MAP.get(int(sex_number))
     elif isinstance(plink_sexcheck, list):
         for sample_raw in plink_sexcheck:
-            sample_id, sex_number = sample_raw.split(':', 1)
+            sample_id, sex_number = sample_raw.split(":", 1)
             plink_samples[sample_id] = PED_SEX_MAP.get(int(sex_number))
-
-    for sample_id, sample_metrics in metrics['sample'].items():
-
-        # Bam stats metrics
-        bam_stats = [values['bamstats'] for key, values in sample_metrics.items()
-                     if key[:-8].endswith('_lane')]
-        total_reads = sum(int(bam_stat['raw_total_sequences']) for bam_stat in bam_stats)
-        total_mapped = sum(int(bam_stat['reads_mapped']) for bam_stat in bam_stats)
-
-        # Picard metrics
-        metrics_keys = [key for key in sample_metrics.keys() if '_lanes_' in key]
-        main_key = metrics_keys[0]
-        hsmetrics_key = metrics_keys[1]
-        multimetrics_key = metrics_keys[2]
-        sex_check_key = metrics_keys[3]
-
-        hs_metrics = sample_metrics[hsmetrics_key]['collecthsmetrics']['header']['data']
-        multiple_inst_metrics = \
-            sample_metrics[multimetrics_key]['collectmultiplemetricsinsertsize']['header']['data']
-        multiple_metrics = \
-            sample_metrics[multimetrics_key]['collectmultiplemetrics']['header']['pair']
-
-        sample_data = {
-            'at_dropout': hs_metrics['AT_DROPOUT'],
-            'completeness_target': {
-                10: hs_metrics['PCT_TARGET_BASES_10X'],
-                20: hs_metrics['PCT_TARGET_BASES_20X'],
-                50: hs_metrics['PCT_TARGET_BASES_50X'],
-                100: hs_metrics['PCT_TARGET_BASES_100X'],
-            },
-            'duplicates': float(sample_metrics[main_key]['markduplicates']['fraction_duplicates']),
-            'gc_dropout': hs_metrics['GC_DROPOUT'],
-            'id': sample_id,
-            'median_insert_size':  multiple_inst_metrics['MEDIAN_INSERT_SIZE'],
-            'mapped': total_mapped / total_reads,
-            'plink_sex': plink_samples.get(sample_id),
-            'predicted_sex': sample_metrics[sex_check_key]['chanjo_sexcheck']['gender'],
-            'reads': total_reads,
-            'insert_size_standard_deviation': float(multiple_inst_metrics['STANDARD_DEVIATION']),
-            'strand_balance': float(multiple_metrics['STRAND_BALANCE']),
-            'target_coverage': float(hs_metrics['MEAN_TARGET_COVERAGE']),
-        }
-        data['samples'].append(sample_data)
-    return data
+    return plink_samples
 
 
-def parse_peddy_sexcheck(handle: TextIO):
-    """Parse Peddy sexcheck output."""
-    data = {}
-    samples = csv.DictReader(handle)
-    for sample in samples:
-        data[sample['sample_id']] = {
-            'predicted_sex': sample['predicted_sex'],
-            'het_ratio': float(sample['het_ratio']),
-            'error': True if sample['error'] == 'True' else False,
-        }
-    return data
+def set_bamstats_metrics(file_metrics: dict, sample_data: dict) -> dict:
+    """Set bamstats metrics"""
+    total_reads = sample_data["reads"] if "reads" in sample_data else 0
+    sample_data["reads"] = int(file_metrics["bamstats"]["raw_total_sequences"]) + total_reads
+
+    total_mapped = sample_data["total_mapped"] if "total_mapped" in sample_data else 0
+    sample_data["total_mapped"] = int(file_metrics["bamstats"]["reads_mapped"]) + total_mapped
+    return sample_data
 
 
-def parse_chanjo_sexcheck(handle: TextIO):
-    """Parse Chanjo sex-check output."""
-    samples = csv.DictReader(handle, delimiter='\t')
-    for sample in samples:
-        return {
-            'predicted_sex': sample['sex'],
-            'x_coverage': float(sample['#X_coverage']),
-            'y_coverage': float(sample['Y_coverage']),
-        }
+def set_chanjo_sexcheck_metrics(file_metrics: dict, sample_data: dict) -> dict:
+    """Set chanjo_sexcheck metrics"""
+    sample_data["predicted_sex"] = file_metrics["chanjo_sexcheck"]["gender"]
+    return sample_data
+
+
+def set_collecthsmetrics_metrics(file_metrics: dict, sample_data: dict) -> dict:
+    """Set collecthsmetrics metrics"""
+    hs_metrics = file_metrics["collecthsmetrics"]["header"]["data"]
+    sample_data["at_dropout"] = float(hs_metrics["AT_DROPOUT"])
+    sample_data["completeness_target"] = {
+        10: float(hs_metrics["PCT_TARGET_BASES_10X"]),
+        20: float(hs_metrics["PCT_TARGET_BASES_20X"]),
+        50: float(hs_metrics["PCT_TARGET_BASES_50X"]),
+        100: float(hs_metrics["PCT_TARGET_BASES_100X"]),
+    }
+    sample_data["gc_dropout"] = float(hs_metrics["GC_DROPOUT"])
+    sample_data["target_coverage"] = float(hs_metrics["MEAN_TARGET_COVERAGE"])
+    return sample_data
+
+
+def set_collectmultiplemetrics_metrics(file_metrics: dict, sample_data: dict) -> dict:
+    """Set collectmultiplemetrics metrics"""
+    mm_metrics = file_metrics["collectmultiplemetrics"]["header"]["pair"]
+    sample_data["strand_balance"] = float(mm_metrics["STRAND_BALANCE"])
+    return sample_data
+
+
+def set_collectmultiplemetricsinsertsize_metrics(file_metrics: dict, sample_data: dict) -> dict:
+    """Set collectmultiplemetricsinsertsize metrics"""
+    mm_insert_metrics = file_metrics["collectmultiplemetricsinsertsize"]["header"]["data"]
+    sample_data["median_insert_size"] = int(mm_insert_metrics["MEDIAN_INSERT_SIZE"])
+    sample_data["insert_size_standard_deviation"] = float(mm_insert_metrics["STANDARD_DEVIATION"])
+    return sample_data
+
+
+def set_markduplicates_metrics(file_metrics: dict, sample_data: dict) -> dict:
+    """Set markduplicates metrics"""
+    sample_data["duplicates"] = float(file_metrics["markduplicates"]["fraction_duplicates"])
+    return sample_data
+
+
+def get_sample_metrics(sample_metrics: dict, sample_data: dict) -> dict:
+    """Get tool qc metrics from sample metrics"""
+    get_metrics = {
+        "bamstats": set_bamstats_metrics,
+        "chanjo_sexcheck": set_chanjo_sexcheck_metrics,
+        "collecthsmetrics": set_collecthsmetrics_metrics,
+        "collectmultiplemetrics": set_collectmultiplemetrics_metrics,
+        "collectmultiplemetricsinsertsize": set_collectmultiplemetricsinsertsize_metrics,
+        "markduplicates": set_markduplicates_metrics,
+    }
+
+    for file_metrics in sample_metrics.values():
+
+        for tool in file_metrics:
+
+            if get_metrics.get(tool):
+                get_metrics[tool](file_metrics=file_metrics, sample_data=sample_data)
+    return sample_data
+
+
+def parse_qcmetrics(metrics: dict) -> dict:
+    """Parse MIP qc metrics file
+    Args:
+        metrics (dict): raw YAML input from MIP qc metrics file
+    Returns:
+        dict: parsed qc metrics metrics
+    """
+    qc_metric = {"samples": []}
+
+    plink_samples = get_plink_samples(metrics=metrics)
+
+    for sample_id, sample_metrics in metrics["sample"].items():
+
+        sample_data = {"id": sample_id, "plink_sex": plink_samples.get(sample_id)}
+        sample_data = get_sample_metrics(sample_metrics=sample_metrics, sample_data=sample_data)
+        sample_data["mapped"] = sample_data["total_mapped"] / sample_data["reads"]
+        qc_metric["samples"].append(sample_data)
+    return qc_metric
