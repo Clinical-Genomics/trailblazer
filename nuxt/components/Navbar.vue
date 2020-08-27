@@ -1,5 +1,5 @@
 <template>
-  <b-navbar sticky toggleable>
+  <b-navbar sticky toggleable="sm">
     <b-nav-toggle target="nav_collapse"></b-nav-toggle>
 
     <nuxt-link class="navbar-brand" to="/">Trailblazer</nuxt-link>

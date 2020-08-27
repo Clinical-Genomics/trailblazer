@@ -2,67 +2,67 @@
   <div>
     <div class="table-reponsive">
         <b-table hover :items="analyses" :fields="fields">
-        <template slot="family" slot-scope="field">
-          <nuxt-link :to="{ name: 'analyses-id', params: { id: field.item.id }}">
-            {{ field.value }}
+        <template #cell(family)="data">
+          <nuxt-link :to="{ name: 'analyses-id', params: { id: data.item.id }}">
+            {{ data.value }}
           </nuxt-link>
-          <span v-if="field.item.priority === 'high'" class="badge badge-info">prio</span>
+          <span v-if="data.item.priority === 'high'" class="badge badge-info">prio</span>
         </template>
-        <template slot="started_at" slot-scope="field">
-          {{ field.value | formatDate }}
+        <template #cell(started_at)="data">
+          {{ data.value | formatDate }}
         </template>
-        <template slot="user" slot-scope="field">
-          <span v-if="field.value">{{ field.value.name }}</span>
+        <template #cell(user)="data">
+          <span v-if="data.value">{{ data.value.name }}</span>
         </template>
-        <template slot="status" slot-scope="field">
-          <b-progress v-if="field.value === 'running'"
-                      :value="field.item.progress"
+        <template #cell(status)="data">
+          <b-progress v-if="data.value === 'running'"
+                      :value="data.item.progress"
                       :max="1"
                       show-progress />
           <b-button-group v-else>
             <b-button
-              v-if="field.value === 'failed'"
-              :id="`failed-button-${field.item.id}`"
+              v-if="data.value === 'failed'"
+              :id="`failed-button-${data.item.id}`"
               variant="danger"
               size="sm">
-              {{ field.value }}
+              {{ data.value }}
             </b-button>
             <b-popover
-              v-if="field.value === 'failed'"
-              :target="`failed-button-${field.item.id}`"
+              v-if="data.value === 'failed'"
+              :target="`failed-button-${data.item.id}`"
               triggers="hover"
               placement="left">
               <div
-                v-for="job in field.item.failed_jobs"
+                v-for="job in data.item.failed_jobs"
                 :key="job.id"
                 v-if="job.status === 'failed'">
                 {{ job.name }}
               </div>
             </b-popover>
-            <b-button-group v-else-if="field.value === 'completed'">
-              <b-button variant="success" size="sm">{{ field.value }}</b-button>
-              <b-button size="sm">{{ field.item|dateDiff }}</b-button>
+            <b-button-group v-else-if="data.value === 'completed'">
+              <b-button variant="success" size="sm">{{ data.value }}</b-button>
+              <b-button size="sm">{{ data.item|dateDiff }}</b-button>
             </b-button-group>
-            <b-btn variant="info" size="sm" v-else>{{ field.value }}</b-btn>
+            <b-btn variant="info" size="sm" v-else>{{ data.value }}</b-btn>
             <b-btn
-              v-if="field.item.is_visible"
+              v-if="data.item.is_visible"
               variant="warning"
               size="sm"
-              @click="hideAnalysis({ analysisId: field.item.id })">
+              @click="hideAnalysis({ analysisId: data.item.id })">
               Hide
             </b-btn>
             <b-btn
               v-else
               variant="info"
               size="sm"
-              @click="unHideAnalysis({ analysisId: field.item.id })">
+              @click="unHideAnalysis({ analysisId: data.item.id })">
               Unhide
             </b-btn>
           </b-button-group>
         </template>
-        <template slot="comment" slot-scope="field">
+        <template #cell(comment)="data">
           <div class="comment-box">
-            <CommentBox @saved="saveComment" :message="field.value" :parentId="field.item.id" />
+            <CommentBox @saved="saveComment" :message="data.value" :parentId="data.item.id" />
           </div>
         </template>
       </b-table>
@@ -80,31 +80,16 @@
     props: ['analyses'],
     data () {
       return {
-        fields: {
-          family: {
-            label: 'Family',
-            sortable: true
-          },
-          started_at: {
-            label: 'Started'
-          },
-          version: {
-            label: 'Version'
-          },
-          type: {
-            label: 'Type'
-          },
-          user: {
-            label: 'User'
-          },
-          status: {
-            label: 'Status',
-            sortable: true
-          },
-          comment: {
-            label: 'Comment'
-          }
-        }
+        fields:
+          [
+          { key: 'family', label: 'Family', sortable: true },
+          { key: 'started_at', label: 'Started' },
+          { key: 'version', label: 'Version' },
+          { key: 'type', label: 'Type' },
+          { key: 'user', label: 'User' },
+          { key: 'status', label: 'Status', sortable: true },
+          { key: 'comment', label: 'Comment' }
+        ]
       }
     },
     methods: {
