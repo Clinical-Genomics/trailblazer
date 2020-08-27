@@ -5,6 +5,25 @@ import dateutil
 
 from trailblazer.mip import files
 
+
+FATHER_AT_DROPOUT = 2.673848
+FATHER_FRACTION_DUPLICATES = 0.0400685961424888
+FATHER_GC_DROPOUT = 0.198037
+FATHER_MEDIAN_INSERT_SIZE = 393
+FATHER_PCT_TARGET_BASES_10X = 0.987132
+FATHER_PCT_TARGET_BASES_20X = 0.916531
+FATHER_PCT_TARGET_BASES_50X = 0.004152
+FATHER_PCT_TARGET_BASES_100X = 0.000118
+FATHER_MEAN_TARGET_COVERAGE = 29.027266
+FATHER_STRAND_BALANCE = 0.501377
+FATHER_STANDARD_DEVIATION = 88.653614
+
+MOTHER_AT_DROPOUT = 1.716704
+MOTHER_FRACTION_DUPLICATES = 0.0379523291229131
+MOTHER_GC_DROPOUT = 0.214813
+MOTHER_MEDIAN_INSERT_SIZE = 409
+MOTHER_MEAN_TARGET_COVERAGE = 28.643247
+MOTHER_STRAND_BALANCE = 0.50162
 RANK_MODEL_VERSION = '1.25'
 
 def test_parse_config(files_raw) -> dict:
@@ -44,7 +63,7 @@ def test_parse_config(files_raw) -> dict:
         assert config_data[key] == value
 
 
-def test_parse_sampleinfo_light(files_raw):
+def test_parse_sampleinfo_light(files_raw: dict):
     """
     Args:
     files_raw (dict): With dicts from files
@@ -68,7 +87,7 @@ def test_parse_sampleinfo_light(files_raw):
     # THEN version should be set
     assert sampleinfo_data['version'] == 'v7.1.0'
 
-def test_get_rank_model_version(files_raw):
+def test_get_rank_model_version(files_raw: dict):
     """Test getting the rank model from sample_info file"""
 
     # GIVEN sampleinfo input from a finished analysis
@@ -80,7 +99,7 @@ def test_get_rank_model_version(files_raw):
     # THEN the rank model version should be returned
     assert rank_model_version == RANK_MODEL_VERSION
 
-def test_get_rank_model_version_with_program(files_raw):
+def test_get_rank_model_version_with_program(files_raw: dict):
     """Test getting the rank model from sample_info file with program key"""
 
     # GIVEN sampleinfo input from a finished analysis
@@ -95,7 +114,7 @@ def test_get_rank_model_version_with_program(files_raw):
     # THEN the rank model version should be returned
     assert rank_model_version == RANK_MODEL_VERSION
 
-def test_parse_sampleinfo(files_raw):
+def test_parse_sampleinfo(files_raw: dict):
     """
     Args:
     files_raw (dict): With dicts from files
@@ -143,7 +162,7 @@ def test_parse_sampleinfo(files_raw):
 
     assert len(sampleinfo_raw['analysis_type']) == len(sampleinfo_data['samples'])
 
-def test_get_plink_samples(files_raw):
+def test_get_plink_samples(files_raw: dict):
     """ Test get plink sexcheck from qc_metrics"""
 
     # GIVEN qc metrics input from an analysis
@@ -159,7 +178,7 @@ def test_get_plink_samples(files_raw):
     # THEN the family memebers and their gender should be returned
     assert plink_samples == expected_plink_samples
 
-def test_get_plink_samples_when_program(files_raw):
+def test_get_plink_samples_when_program(files_raw: dict):
     """ Test get plink sexcheck from qc_metrics using program key"""
 
     # GIVEN qc metrics input from an analysis
@@ -175,10 +194,166 @@ def test_get_plink_samples_when_program(files_raw):
                               'father': 'male',
                               'mother': 'female',
                               }
-    # THEN the family memebers and their gender should be returned
+    # THEN the family members and their gender should be returned
     assert plink_samples == expected_plink_samples
 
-def test_parse_qcmetrics(files_raw):
+def test_set_bamstats_metrics_single_bamstat():
+    """Test setting bam stats from qc_metrics when single bamstat entry"""
+    # GIVEN 2 bamstats file metrics for a sample
+    file_metric = {"bamstats": {
+        "raw_total_sequences": 2,
+        "reads_mapped": 1,},
+    }
+    sample_data = {}
+
+    # WHEN setting bamstats metrics
+    sample_data = files.set_bamstats_metrics(file_metrics=file_metric, sample_data=sample_data)
+
+    expected_sample_data = {"reads": 2,
+                            "total_mapped": 1,
+                            }
+    # THEN return duplicates in sample data for file metric
+    assert sample_data == expected_sample_data
+
+def test_set_bamstats_metrics_mutiple_bamstat():
+    """Test setting bam stats from qc_metrics when multiple bamstat entry"""
+    # GIVEN 2 bamstats file metrics for a sample
+    sample_metric = {"file_1": {
+        "bamstats": {
+        "raw_total_sequences": 2,
+        "reads_mapped": 1,},
+    },
+        "file_2": {
+            "bamstats": {
+                "raw_total_sequences": 1,
+                "reads_mapped": 2, },
+        },
+    }
+    sample_data = {}
+
+    for file_metric in sample_metric:
+        # WHEN setting bamstats metrics
+        sample_data = files.set_bamstats_metrics(file_metrics=sample_metric[file_metric], sample_data=sample_data)
+
+    expected_sample_data = {"reads": 3,
+                            "total_mapped": 3,
+                            }
+    # THEN return duplicates in sample data for file metric
+    assert sample_data == expected_sample_data
+
+def test_set_chanjo_sexcheck_metrics(files_raw: dict):
+    """Test setting gender from file metric for chanjo_sexcheck"""
+    # GIVEN qc metrics input from an analysis
+    qcmetrics_raw = files_raw["qcmetrics"]
+
+    # Isolating to a single file_metric i.e. markduplicates
+    sample_metrics = qcmetrics_raw["sample"]["father"]["father_lanes_1_sorted_md_brecal_sex"]
+    sample_data = {}
+
+    # WHEN setting sample metric for file
+    sample_data = files.set_chanjo_sexcheck_metrics(file_metrics=sample_metrics, sample_data=sample_data)
+
+    expected_sample_data = {"predicted_sex": 'male',
+                            }
+    # THEN return duplicates in sample data for file metric
+    assert sample_data == expected_sample_data
+
+def test_set_collecthsmetrics_metrics(files_raw: dict):
+    """Test setting hsmetrics metrics from file metric for collecthsmetrics"""
+    # GIVEN qc metrics input from an analysis
+    qcmetrics_raw = files_raw["qcmetrics"]
+
+    # Isolating to a single file_metric i.e. markduplicates
+    sample_metrics = qcmetrics_raw["sample"]["father"]["father_lanes_1_sorted_md_brecal_collecthsmetrics"]
+    sample_data = {}
+
+    # WHEN setting sample metric for file
+    sample_data = files.set_collecthsmetrics_metrics(file_metrics=sample_metrics, sample_data=sample_data)
+
+    expected_sample_data = {"at_dropout": FATHER_AT_DROPOUT,
+                           "completeness_target": { 10: FATHER_PCT_TARGET_BASES_10X,
+                                                    20: FATHER_PCT_TARGET_BASES_20X,
+                                                    50: FATHER_PCT_TARGET_BASES_50X,
+                                                    100: FATHER_PCT_TARGET_BASES_100X,
+                                                    },
+                            "gc_dropout": FATHER_GC_DROPOUT,
+                            "target_coverage": FATHER_MEAN_TARGET_COVERAGE,
+    }
+    # THEN return duplicates in sample data for file metric
+    assert sample_data == expected_sample_data
+
+def test_set_collectmultiplemetrics_metrics(files_raw: dict):
+    """Test setting multiple metrics from file metric for collectmultiplemetrics"""
+    # GIVEN qc metrics input from an analysis
+    qcmetrics_raw = files_raw["qcmetrics"]
+
+    # Isolating to a single file_metric i.e. collectmultiplemetrics
+    sample_metrics = qcmetrics_raw["sample"]["father"]["father_lanes_1_sorted_md_brecal_collectmultiplemetrics"]
+    sample_data = {}
+
+    # WHEN setting sample metric for file
+    sample_data = files.set_collectmultiplemetrics_metrics(file_metrics=sample_metrics, sample_data=sample_data)
+
+    expected_sample_data = {"strand_balance": FATHER_STRAND_BALANCE,
+    }
+    # THEN return duplicates in sample data for file metric
+    assert sample_data == expected_sample_data
+
+def test_set_collectmultiplemetricsinsertsize_metrics(files_raw: dict):
+    """Test setting multiple metrics from file metric for collectmultiplemetricsinsertsize"""
+    # GIVEN qc metrics input from an analysis
+    qcmetrics_raw = files_raw["qcmetrics"]
+
+    # Isolating to a single file_metric i.e. collectmultiplemetricsinsertsize
+    sample_metrics = qcmetrics_raw["sample"]["father"]["father_lanes_1_sorted_md_brecal_collectmultiplemetrics"]
+    sample_data = {}
+
+    # WHEN setting sample metric for file
+    sample_data = files.set_collectmultiplemetricsinsertsize_metrics(file_metrics=sample_metrics, sample_data=sample_data)
+
+    expected_sample_data = {"median_insert_size": FATHER_MEDIAN_INSERT_SIZE,
+                            "insert_size_standard_deviation": FATHER_STANDARD_DEVIATION,
+    }
+    # THEN return duplicates in sample data for file metric
+    assert sample_data == expected_sample_data
+
+def test_set_markduplicates_metrics(files_raw: dict):
+    """Test setting duplicates metrics from file metric for markduplicates"""
+    # GIVEN qc metrics input from an analysis
+    qcmetrics_raw = files_raw["qcmetrics"]
+
+    # Isolating to a single file_metric i.e. markduplicates
+    sample_metrics = qcmetrics_raw["sample"]["father"]["father_lanes_1_sorted_md"]
+    sample_data = {}
+
+    # WHEN setting sample metric for file
+    sample_data = files.set_markduplicates_metrics(file_metrics=sample_metrics, sample_data=sample_data)
+
+    expected_sample_data = {"duplicates": FATHER_FRACTION_DUPLICATES,
+                            }
+    # THEN return duplicates in sample data for file metric
+    assert sample_data == expected_sample_data
+
+def test_get_sample_metrics(files_raw: dict):
+    """Test getting sample data for duplicates from file metrics for markduplicates"""
+    # GIVEN qc metrics input from an analysis
+    qcmetrics_raw = files_raw["qcmetrics"]
+
+    # Isolating to a single file_metric i.e. markduplicates
+    sample_metrics = {"father_lanes_1_sorted_md": qcmetrics_raw["sample"]["father"]["father_lanes_1_sorted_md"],
+                      }
+    sample_data = {}
+
+    # WHEN getting sample metric for file
+    sample_data = files.get_sample_metrics(sample_metrics=sample_metrics, sample_data=sample_data)
+
+    expected_sample_data = {"duplicates": FATHER_FRACTION_DUPLICATES,
+                            }
+    # THEN return duplicates in sample data for file metric
+    assert sample_data == expected_sample_data
+
+
+def test_parse_qcmetrics(files_raw: dict):
     """
     Args:
     files_raw (dict): With dicts from files
@@ -187,27 +362,27 @@ def test_parse_qcmetrics(files_raw):
     # GIVEN qc metrics input from an analysis
     qcmetrics_raw = files_raw['qcmetrics']
 
-    # WHEN parsing it
+    # WHEN parsing qc metric data
     qcmetrics_data = files.parse_qcmetrics(qcmetrics_raw)
 
-    # THEN it should work ;-)
+    # THEN it should work return a dict
     assert isinstance(qcmetrics_data, dict)
 
     # Sample data
     # Build dict for sample return data
     qcmetrics_test_sample_data = {
-        'at_dropout': '1.716704',
-        'duplicates': 0.0379523291229131,
+        'at_dropout': MOTHER_AT_DROPOUT,
+        'duplicates': MOTHER_FRACTION_DUPLICATES,
         'id': 'mother',
         'insert_size_standard_deviation': 94.353778,
-        'gc_dropout': '0.214813',
+        'gc_dropout': MOTHER_GC_DROPOUT,
         'mapped': 0.9974176575073073,
-        'median_insert_size': '409',
+        'median_insert_size': MOTHER_MEDIAN_INSERT_SIZE,
         'plink_sex': 'female',
         'predicted_sex': 'female',
         'reads': 600006004,
-        'strand_balance': 0.50162,
-        'target_coverage': 28.643247,
+        'strand_balance': MOTHER_STRAND_BALANCE,
+        'target_coverage': MOTHER_MEAN_TARGET_COVERAGE,
         }
 
     # Check returns from def
@@ -222,10 +397,10 @@ def test_parse_qcmetrics(files_raw):
     # Sample coverage data
     # Build dict for sample coverage return data
     qcmetrics_test_sample_cov_data = {
-        10: '0.98974',
-        20: '0.935455',
-        50: '0.002685',
-        100: '0.000101',
+        10: 0.98974,
+        20: 0.935455,
+        50: 0.002685,
+        100: 0.000101,
         }
 
     # Check returns from def
