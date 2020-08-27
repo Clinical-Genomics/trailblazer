@@ -4,6 +4,14 @@
 PED_SEX_MAP = {1: "male", 2: "female", 0: "unknown"}
 
 
+def get_case_from_config(config: dict) -> str:
+    """Get case id from config"""
+    if "case_id" in config:
+        return config["case_id"]
+    if "family_id" in config:  # family for MIP<7
+        return config["family_id"]
+
+
 def parse_config(data: dict) -> dict:
     """Parse MIP config file.
 
@@ -15,7 +23,7 @@ def parse_config(data: dict) -> dict:
     """
     return {
         "email": data.get("email"),
-        "case": data["case_id"] if "case_id" in data else data["family_id"],  # family_id for MIP<7
+        "case": get_case_from_config(config=data),
         "samples": [
             {"id": sample_id, "type": analysis_type}
             for sample_id, analysis_type in data["analysis_type"].items()
@@ -61,6 +69,14 @@ def get_sampleinfo_date(data: dict) -> str:
     return data["analysis_date"]
 
 
+def get_case_from_sampleinfo(sample_info: dict) -> str:
+    """Get case id from sampleinfo"""
+    if "case" in sample_info:
+        return sample_info["case"]
+    if "family" in sample_info:  # family for MIP<7
+        return sample_info["family"]
+
+
 def get_rank_model_version(sample_info: dict, rank_model_type: str, step: str) -> str:
     """Get rank model version"""
     rank_model_version = None
@@ -85,7 +101,7 @@ def parse_sampleinfo(data: dict) -> dict:
     outdata = {
         "date": data["analysis_date"],
         "genome_build": genome_build_str,
-        "case": data["case"],
+        "case": get_case_from_sampleinfo(sample_info=data),
         "is_finished": True if data["analysisrunstatus"] == "finished" else False,
         "rank_model_version": get_rank_model_version(
             sample_info=data, rank_model_type="rank_model", step="genmod"
