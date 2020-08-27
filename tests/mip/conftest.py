@@ -1,3 +1,4 @@
+"""MIP specific fixtures"""
 import pytest
 
 from trailblazer.mip import sacct
@@ -6,6 +7,7 @@ from trailblazer.mip import start
 
 @pytest.fixture(scope='session')
 def failed_sacct_jobs():
+    """Get failed jobs ids"""
     with open('tests/fixtures/sacct/failed.log.status') as stream:
         sacct_jobs = sacct.parse_sacct(stream)
     return sacct_jobs
@@ -13,13 +15,14 @@ def failed_sacct_jobs():
 
 @pytest.fixture(scope='session')
 def mip_cli():
+    """Generate a mip CLI object"""
     _mip_cli = start.MipCli(script='test/fake_mip.pl', pipeline='rd_dna', conda_env='dummy_env')
     return _mip_cli
 
 @pytest.fixture(scope='session')
 def mip_meta_data() -> dict:
+    """Define MIP meta data metrics"""
     return {
-        "FATHER_AT_DROPOUT": 2.673848,
         "FATHER_AT_DROPOUT": 2.673848,
         "FATHER_FRACTION_DUPLICATES": 0.0400685961424888,
         "FATHER_GC_DROPOUT": 0.198037,

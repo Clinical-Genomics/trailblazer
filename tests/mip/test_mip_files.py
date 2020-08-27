@@ -250,11 +250,12 @@ def test_set_collecthsmetrics_metrics(files_raw: dict, mip_meta_data: dict):
     sample_data = files.set_collecthsmetrics_metrics(file_metrics=sample_metrics, sample_data=sample_data)
 
     expected_sample_data = {"at_dropout": mip_meta_data["FATHER_AT_DROPOUT"],
-                           "completeness_target": { 10: mip_meta_data["FATHER_PCT_TARGET_BASES_10X"],
-                                                    20: mip_meta_data["FATHER_PCT_TARGET_BASES_20X"],
-                                                    50: mip_meta_data["FATHER_PCT_TARGET_BASES_50X"],
-                                                    100: mip_meta_data["FATHER_PCT_TARGET_BASES_100X"],
-                                                    },
+                           "completeness_target": {
+                                            10: mip_meta_data["FATHER_PCT_TARGET_BASES_10X"],
+                                            20: mip_meta_data["FATHER_PCT_TARGET_BASES_20X"],
+                                            50: mip_meta_data["FATHER_PCT_TARGET_BASES_50X"],
+                                            100: mip_meta_data["FATHER_PCT_TARGET_BASES_100X"],
+                                            },
                             "gc_dropout": mip_meta_data["FATHER_GC_DROPOUT"],
                             "target_coverage": mip_meta_data["FATHER_MEAN_TARGET_COVERAGE"],
     }
