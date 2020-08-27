@@ -10,6 +10,7 @@ def get_case_from_config(config: dict) -> str:
         return config["case_id"]
     if "family_id" in config:  # family for MIP<7
         return config["family_id"]
+    return None
 
 
 def parse_config(data: dict) -> dict:
@@ -75,6 +76,7 @@ def get_case_from_sampleinfo(sample_info: dict) -> str:
         return sample_info["case"]
     if "family" in sample_info:  # family for MIP<7
         return sample_info["family"]
+    return None
 
 
 def get_rank_model_version(sample_info: dict, rank_model_type: str, step: str) -> str:
