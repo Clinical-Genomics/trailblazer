@@ -212,7 +212,7 @@ def test_set_bamstats_metrics_single_bamstat():
     expected_sample_data = {"reads": 2,
                             "total_mapped": 1,
                             }
-    # THEN return duplicates in sample data for file metric
+    # THEN return bam stats metrics in sample data for file metric
     assert sample_data == expected_sample_data
 
 def test_set_bamstats_metrics_mutiple_bamstat():
@@ -238,7 +238,7 @@ def test_set_bamstats_metrics_mutiple_bamstat():
     expected_sample_data = {"reads": 3,
                             "total_mapped": 3,
                             }
-    # THEN return duplicates in sample data for file metric
+    # THEN return bam stats metrics in sample data for file metric
     assert sample_data == expected_sample_data
 
 def test_set_chanjo_sexcheck_metrics(files_raw: dict):
@@ -255,7 +255,7 @@ def test_set_chanjo_sexcheck_metrics(files_raw: dict):
 
     expected_sample_data = {"predicted_sex": 'male',
                             }
-    # THEN return duplicates in sample data for file metric
+    # THEN return predicted sex in sample data for file metric
     assert sample_data == expected_sample_data
 
 def test_set_collecthsmetrics_metrics(files_raw: dict):
@@ -279,7 +279,7 @@ def test_set_collecthsmetrics_metrics(files_raw: dict):
                             "gc_dropout": FATHER_GC_DROPOUT,
                             "target_coverage": FATHER_MEAN_TARGET_COVERAGE,
     }
-    # THEN return duplicates in sample data for file metric
+    # THEN return hs metrics in sample data for file metric
     assert sample_data == expected_sample_data
 
 def test_set_collectmultiplemetrics_metrics(files_raw: dict):
@@ -296,7 +296,7 @@ def test_set_collectmultiplemetrics_metrics(files_raw: dict):
 
     expected_sample_data = {"strand_balance": FATHER_STRAND_BALANCE,
     }
-    # THEN return duplicates in sample data for file metric
+    # THEN return strand balance in sample data for file metric
     assert sample_data == expected_sample_data
 
 def test_set_collectmultiplemetricsinsertsize_metrics(files_raw: dict):
@@ -314,7 +314,7 @@ def test_set_collectmultiplemetricsinsertsize_metrics(files_raw: dict):
     expected_sample_data = {"median_insert_size": FATHER_MEDIAN_INSERT_SIZE,
                             "insert_size_standard_deviation": FATHER_STANDARD_DEVIATION,
     }
-    # THEN return duplicates in sample data for file metric
+    # THEN return insert size metrics in sample data for file metric
     assert sample_data == expected_sample_data
 
 def test_set_markduplicates_metrics(files_raw: dict):
