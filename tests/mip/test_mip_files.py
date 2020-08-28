@@ -6,6 +6,30 @@ import dateutil
 from trailblazer.mip import files
 
 
+def test_get_case_from_config_when_case_id():
+    """Test getting the case id from mip config"""
+    # GIVEN a case id
+    config = {"case_id": "crazygoat"}
+
+    # WHEN getting case from config dict
+    case = files.get_case_from_config(config=config)
+
+    # THEN return case
+    assert case == "crazygoat"
+
+
+def test_get_case_from_config_when_family_id():
+    """Test getting the case id from mip config"""
+    # GIVEN a case id
+    config = {"family_id": "crazygoat"}
+
+    # WHEN getting case from config dict
+    case = files.get_case_from_config(config=config)
+
+    # THEN return case
+    assert case == "crazygoat"
+
+
 def test_parse_config(files_raw) -> dict:
     """
     Args:
@@ -99,6 +123,30 @@ def test_get_rank_model_version_with_program(files_raw: dict, mip_meta_data: dic
 
     # THEN the rank model version should be returned
     assert rank_model_version == mip_meta_data["RANK_MODEL_VERSION"]
+
+
+def test_get_case_from_sampleinfo_when_case():
+    """Test getting the case id from mip sampleinfo file"""
+    # GIVEN a case id
+    config = {"case": "crazygoat"}
+
+    # WHEN getting case from config dict
+    case = files.get_case_from_sampleinfo(sample_info=config)
+
+    # THEN return case
+    assert case == "crazygoat"
+
+
+def test_get_case_from_sampleinfo_when_family():
+    """Test getting the case id from mip sampleinfo file"""
+    # GIVEN a case id
+    config = {"family": "crazygoat"}
+
+    # WHEN getting case from config dict
+    case = files.get_case_from_sampleinfo(sample_info=config)
+
+    # THEN return case
+    assert case == "crazygoat"
 
 
 def test_parse_sampleinfo(files_raw: dict):
