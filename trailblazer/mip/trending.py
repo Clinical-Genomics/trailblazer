@@ -25,8 +25,8 @@ def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw
 
 
 def _add_rank_model_version(outdata, sampleinfo_data):
-    outdata['sv_rank_model_version'] = sampleinfo_data['sv_rank_model_version']
-    outdata['rank_model_version'] = sampleinfo_data['rank_model_version']
+    outdata["sv_rank_model_version"] = sampleinfo_data["sv_rank_model_version"]
+    outdata["rank_model_version"] = sampleinfo_data["rank_model_version"]
 
 
 def _qc_sample_info(outdata, sampleinfo_raw):
@@ -48,11 +48,11 @@ def _config(mip_config_raw, outdata):
 
 
 def _add_genome_build(outdata, sampleinfo_data):
-    outdata['genome_build'] = sampleinfo_data['genome_build']
+    outdata["genome_build"] = sampleinfo_data["genome_build"]
 
 
 def _add_mip_version(outdata, sampleinfo_data):
-    outdata['mip_version'] = sampleinfo_data['version']
+    outdata["mip_version"] = sampleinfo_data["version"]
 
 
 def _parse_qc_sample_info_file(sampleinfo_raw):
@@ -61,7 +61,7 @@ def _parse_qc_sample_info_file(sampleinfo_raw):
 
 
 def _add_sample_level_info_from_qc_metric_file(outdata, qcmetrics_data):
-    for sample_data in qcmetrics_data['samples']:
+    for sample_data in qcmetrics_data["samples"]:
         _add_duplicate_reads(outdata, sample_data)
         _add_mapped_reads(outdata, sample_data)
         _add_predicted_sex(outdata, sample_data)
@@ -70,27 +70,29 @@ def _add_sample_level_info_from_qc_metric_file(outdata, qcmetrics_data):
 
 
 def _add_dropout_rates(outdata, sample_data):
-    outdata['at_dropout'][sample_data['id']] = sample_data['at_dropout']
-    outdata['gc_dropout'][sample_data['id']] = sample_data['gc_dropout']
+    outdata["at_dropout"][sample_data["id"]] = sample_data["at_dropout"]
+    outdata["gc_dropout"][sample_data["id"]] = sample_data["gc_dropout"]
 
 
 def _add_insert_size_metrics(outdata, sample_data):
-    outdata['median_insert_size'][sample_data['id']] = sample_data['median_insert_size']
-    outdata['insert_size_standard_deviation'][sample_data['id']] = sample_data['insert_size_standard_deviation']
+    outdata["median_insert_size"][sample_data["id"]] = sample_data["median_insert_size"]
+    outdata["insert_size_standard_deviation"][sample_data["id"]] = sample_data[
+        "insert_size_standard_deviation"
+    ]
 
 
 def _add_predicted_sex(outdata, sample_data):
-    outdata['analysis_sex'][sample_data['id']] = sample_data['predicted_sex']
+    outdata["analysis_sex"][sample_data["id"]] = sample_data["predicted_sex"]
 
 
 def _add_mapped_reads(outdata, sample_data):
-    mapped_reads_percent = sample_data['mapped'] * 100
-    outdata['mapped_reads'][sample_data['id']] = mapped_reads_percent
+    mapped_reads_percent = sample_data["mapped"] * 100
+    outdata["mapped_reads"][sample_data["id"]] = mapped_reads_percent
 
 
 def _add_duplicate_reads(outdata, sample_data):
-    duplicates_percent = sample_data['duplicates'] * 100
-    outdata['duplicates'][sample_data['id']] = duplicates_percent
+    duplicates_percent = sample_data["duplicates"] * 100
+    outdata["duplicates"][sample_data["id"]] = duplicates_percent
 
 
 def _parse_qc_metric_file_into_dict(qcmetrics_raw):
@@ -105,27 +107,27 @@ def _parse_raw_mip_config_into_dict(mip_config_raw):
 
 def _define_output_dict():
     outdata = {
-        'analysis_sex': {},
-        'at_dropout': {},
-        'case': None,
-        'duplicates': {},
-        'gc_dropout': {},
-        'genome_build': None,
-        'rank_model_version': None,
-        'insert_size_standard_deviation': {},
-        'mapped_reads': {},
-        'median_insert_size': {},
-        'mip_version': None,
-        'sample_ids': [],
+        "analysis_sex": {},
+        "at_dropout": {},
+        "case": None,
+        "duplicates": {},
+        "gc_dropout": {},
+        "genome_build": None,
+        "rank_model_version": None,
+        "insert_size_standard_deviation": {},
+        "mapped_reads": {},
+        "median_insert_size": {},
+        "mip_version": None,
+        "sample_ids": [],
     }
 
     return outdata
 
 
 def _add_all_samples_from_mip_config(config_data, outdata):
-    for sample_data in config_data['samples']:
-        outdata['sample_ids'].append(sample_data['id'])
+    for sample_data in config_data["samples"]:
+        outdata["sample_ids"].append(sample_data["id"])
 
 
 def _add_case_id(config_data, outdata):
-    outdata['case'] = config_data['case']
+    outdata["case"] = config_data["case"]
