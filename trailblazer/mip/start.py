@@ -43,7 +43,13 @@ class MipCli(object):
 
     def build_command(self, case, config, **kwargs):
         """Builds the command to execute MIP."""
-        command = [self.script, self.pipeline, case, CLI_OPTIONS["config"]["option"], config]
+        command = [
+            self.script,
+            self.pipeline,
+            case,
+            CLI_OPTIONS["config"]["option"],
+            config,
+        ]
         for key, value in kwargs.items():
             # enable passing in flags as "False" - shouldn't add command
             if value:

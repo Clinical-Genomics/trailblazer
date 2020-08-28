@@ -21,11 +21,17 @@ NEW_OPTIONS = ("pending", "running", "completed", "failed", "error")
 
 def upgrade():
     op.alter_column(
-        "analysis", "status", existing_type=types.Enum(*OLD_OPTIONS), type_=types.Enum(*NEW_OPTIONS)
+        "analysis",
+        "status",
+        existing_type=types.Enum(*OLD_OPTIONS),
+        type_=types.Enum(*NEW_OPTIONS),
     )
 
 
 def downgrade():
     op.alter_column(
-        "analysis", "status", existing_type=types.Enum(*NEW_OPTIONS), type_=types.Enum(*OLD_OPTIONS)
+        "analysis",
+        "status",
+        existing_type=types.Enum(*NEW_OPTIONS),
+        type_=types.Enum(*OLD_OPTIONS),
     )

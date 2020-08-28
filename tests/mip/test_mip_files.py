@@ -182,7 +182,11 @@ def test_parse_sampleinfo(files_raw: dict):
     # More in-depth testing
     # Family data
     # Build dict for family return data
-    sampleinfo_test_data = {"case": "case", "genome_build": "grch37", "version": "v7.1.0"}
+    sampleinfo_test_data = {
+        "case": "case",
+        "genome_build": "grch37",
+        "version": "v7.1.0",
+    }
 
     # Check returns from def 1
     for key, value in sampleinfo_test_data.items():

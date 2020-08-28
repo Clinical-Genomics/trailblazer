@@ -117,7 +117,9 @@ class LogAnalysis(object):
     def build(self, run_data: dict) -> models.Analysis:
         """Build a new Analysis object."""
         existing_run = self.store.find_analysis(
-            family=run_data["case"], started_at=run_data["started_at"], status=run_data["status"]
+            family=run_data["case"],
+            started_at=run_data["started_at"],
+            status=run_data["status"],
         )
         if existing_run:
             return None

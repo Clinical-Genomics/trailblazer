@@ -52,7 +52,8 @@ class BaseHandler:
         elif query:
             analysis_query = analysis_query.filter(
                 sqa.or_(
-                    self.Analysis.family.like(f"%{query}%"), self.Analysis.status.like(f"%{query}%")
+                    self.Analysis.family.like(f"%{query}%"),
+                    self.Analysis.status.like(f"%{query}%"),
                 )
             )
         if status:
