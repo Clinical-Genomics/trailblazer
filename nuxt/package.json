@@ -1,8 +1,8 @@
 {
   "name": "trailblazer",
-  "version": "6.5.0",
+  "version": "6.8.3",
   "description": "Trailblazer web UI",
-  "author": "Robin Andeer <robin.andeer@gmail.com>",
+  "author": "Clinical Genomics support@clinicalgenomics.se",
   "private": true,
   "scripts": {
     "dev": "nuxt",
@@ -20,19 +20,20 @@
     "bootstrap-vue": "^2.0.0-rc.11",
     "js-cookie": "^2.2.0",
     "jwt-decode": "^2.2.0",
-    "nuxt": "^1.0.0-rc11",
-    "vue-google-auth": "^1.0.5"
+    "nuxt": "2.x.x",
+    "vue-google-auth": "1.x.x"
   },
   "devDependencies": {
-    "babel-eslint": "8.x.x",
-    "eslint": "4.x.x",
+    "babel-eslint": "10.x.x",
+    "eslint": "7.x.x",
     "eslint-config-standard": "10.x.x",
-    "eslint-loader": "1.x.x",
-    "eslint-plugin-html": "3.x.x",
+    "eslint-loader": "4.x.x",
+    "eslint-plugin-html": "6.x.x",
     "eslint-plugin-import": "2.x.x",
     "eslint-plugin-node": "5.x.x",
     "eslint-plugin-promise": "3.x.x",
-    "eslint-plugin-standard": "3.x.x"
+    "eslint-plugin-standard": "3.x.x",
+    "eslint-plugin-vue": "7.0.0-beta.2"
   },
   "resolutions": {
     "axios": "^0.18.1",
@@ -41,7 +42,6 @@
     "jquery": "^3.4.0",
     "mem": "^4.0.0",
     "popper.js": "^1.14.3",
-    "serialize-javascript": "^2.1.1",
     "set-value": "^2.0.1",
     "webpack-bundle-analyzer": "^3.3.2"
   }

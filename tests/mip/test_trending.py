@@ -38,7 +38,7 @@ def test_parse_mip_analysis(files_raw) -> dict:
     # Build dict for sample return data
     trend_test_sample_data = {
         'at_dropout': {
-            'mother': '1.716704',
+            'mother': 1.716704,
             },
         'analysis_sex': {
             'mother': 'female',
@@ -53,10 +53,10 @@ def test_parse_mip_analysis(files_raw) -> dict:
             'mother': 99.74176575073072,
             },
         'median_insert_size': {
-            'mother': '409',
+            'mother': 409,
             },
         'gc_dropout': {
-            'mother': '0.214813',
+            'mother': 0.214813,
             },
     }
 
