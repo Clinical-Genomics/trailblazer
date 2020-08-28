@@ -76,7 +76,9 @@ def sample_store(store):
     for analysis_data in sample_data["analyses"]:
         analysis_data["user"] = store.user(analysis_data["user"])
         failed_jobs = analysis_data.get("failed_jobs", [])
-        analysis_data["failed_jobs"] = [store.Job(**job_data) for job_data in failed_jobs]
+        analysis_data["failed_jobs"] = [
+            store.Job(**job_data) for job_data in failed_jobs
+        ]
         store.add(store.Analysis(**analysis_data))
     store.commit()
     store.add_pending(family="gentlebird", email="tom.cruise@magnolia.com")

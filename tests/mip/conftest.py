@@ -16,7 +16,9 @@ def failed_sacct_jobs():
 @pytest.fixture(scope="session")
 def mip_cli():
     """Generate a mip CLI object"""
-    _mip_cli = start.MipCli(script="test/fake_mip.pl", pipeline="rd_dna", conda_env="dummy_env")
+    _mip_cli = start.MipCli(
+        script="test/fake_mip.pl", pipeline="rd_dna", conda_env="dummy_env"
+    )
     return _mip_cli
 
 

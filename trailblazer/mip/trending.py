@@ -4,7 +4,9 @@
 from trailblazer.mip import files
 
 
-def parse_mip_analysis(mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw: dict) -> dict:
+def parse_mip_analysis(
+    mip_config_raw: dict, qcmetrics_raw: dict, sampleinfo_raw: dict
+) -> dict:
     """Parse the output analysis files from MIP for adding info
     to trend database
 

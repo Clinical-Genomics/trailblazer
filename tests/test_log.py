@@ -32,7 +32,9 @@ def test_call(store, log_analysis, files):
 
     # WHEN adding a new analysis log entry
     with Path(files["config"]).open() as config_stream:
-        new_run = log_analysis(config_stream, sampleinfo=files["sampleinfo"], sacct=files["sacct"])
+        new_run = log_analysis(
+            config_stream, sampleinfo=files["sampleinfo"], sacct=files["sacct"]
+        )
 
     # THEN it should add the analysis log
     assert store.analyses(family=new_run.family).first() == new_run
@@ -44,10 +46,14 @@ def test_call_twice(store, log_analysis, files):
 
     # WHEN adding a new analysis log entry twice
     with Path(files["config"]).open() as config_stream:
-        log_analysis(config_stream, sampleinfo=files["sampleinfo"], sacct=files["sacct"])
+        log_analysis(
+            config_stream, sampleinfo=files["sampleinfo"], sacct=files["sacct"]
+        )
     first_analysis = store.analyses().first()
     with Path(files["config"]).open() as config_stream:
-        new_run = log_analysis(config_stream, sampleinfo=files["sampleinfo"], sacct=files["sacct"])
+        new_run = log_analysis(
+            config_stream, sampleinfo=files["sampleinfo"], sacct=files["sacct"]
+        )
 
     # THEN it should skip adding the duplicate log to the database
     assert new_run is None
@@ -85,13 +91,19 @@ def test_parse_sacct(files_data):
     sacct_jobs = files_data["sacct"]
     analysis_end = datetime.datetime(2019, 7, 4, 23, 16, 54)
     # WHEN parsing them for info
-    jobs_count = len(sacct_jobs)  # TODO: see code in _call_ in class LogAnalysis for proper
+    jobs_count = len(
+        sacct_jobs
+    )  # TODO: see code in _call_ in class LogAnalysis for proper
     # jobs_count calculation
-    sacct_data, last_job_end = log.LogAnalysis._parse_sacct(sacct_jobs, jobs_count=jobs_count)
+    sacct_data, last_job_end = log.LogAnalysis._parse_sacct(
+        sacct_jobs, jobs_count=jobs_count
+    )
 
     # THEN it should return info about the jobs in general
     assert sacct_data["jobs"] == len(sacct_jobs)
-    assert sacct_data["completed_jobs"] + len(sacct_data["failed_jobs"]) == len(sacct_jobs)
+    assert sacct_data["completed_jobs"] + len(sacct_data["failed_jobs"]) == len(
+        sacct_jobs
+    )
 
     # ... and correctly determine the end of the last job
     assert last_job_end == analysis_end
@@ -127,7 +139,9 @@ def test_parse(files_data):
     sampleinfo_data = files_data["sampleinfo"]
     sacct_jobs = files_data["sacct"]
     # WHEN parsing log-information
-    run_data = log.LogAnalysis.parse(config_data, sampleinfo_data, sacct_jobs, jobs=None)
+    run_data = log.LogAnalysis.parse(
+        config_data, sampleinfo_data, sacct_jobs, jobs=None
+    )
     # THEN it should have parsed out a completed date
     assert run_data["status"] == "completed"
     assert isinstance(run_data["completed_at"], datetime.datetime)
