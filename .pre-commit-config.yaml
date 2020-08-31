@@ -3,4 +3,3 @@ repos:
     rev: 20.8b0
     hooks:
       - id: black
-        args: [--line-length=100]

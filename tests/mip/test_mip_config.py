@@ -19,7 +19,11 @@ def test_validate_config():
         capture_kit="agilent_sureselect_cre.v1",
     )
 
-    config = dict(case="a_case", default_gene_panels=["a_panel"], samples=[sample],)
+    config = dict(
+        case="a_case",
+        default_gene_panels=["a_panel"],
+        samples=[sample],
+    )
 
     # WHEN validating the config
     errors = tb_config.ConfigHandler.validate_config(config)
@@ -45,7 +49,11 @@ def test_validate_config_invalid_analysis_type():
         capture_kit="agilent_sureselect_cre.v1",
     )
 
-    config = dict(case="a_case", default_gene_panels=["a_panel"], samples=[sample],)
+    config = dict(
+        case="a_case",
+        default_gene_panels=["a_panel"],
+        samples=[sample],
+    )
 
     # WHEN validating the config
     with pytest.raises(ConfigError):
@@ -71,7 +79,11 @@ def test_validate_config_unknown_field():
         capture_kit="agilent_sureselect_cre.v1",
     )
 
-    config = dict(case="a_case", default_gene_panels=["a_panel"], samples=[sample],)
+    config = dict(
+        case="a_case",
+        default_gene_panels=["a_panel"],
+        samples=[sample],
+    )
 
     # WHEN validating the config
     errors = tb_config.ConfigHandler.validate_config(config)
@@ -100,7 +112,11 @@ def test_validate_config_unknown_field_and_missing_sample_id():
         capture_kit="agilent_sureselect_cre.v1",
     )
 
-    config = dict(case="a_case", default_gene_panels=["a_panel"], samples=[sample],)
+    config = dict(
+        case="a_case",
+        default_gene_panels=["a_panel"],
+        samples=[sample],
+    )
 
     # WHEN validating the config
     with pytest.raises(ConfigError):
@@ -126,7 +142,11 @@ def test_validate_config_unknown_field_and_invalid_analysis_type():
         capture_kit="agilent_sureselect_cre.v1",
     )
 
-    config = dict(case="a_case", default_gene_panels=["a_panel"], samples=[sample],)
+    config = dict(
+        case="a_case",
+        default_gene_panels=["a_panel"],
+        samples=[sample],
+    )
 
     # WHEN validating the config
     with pytest.raises(ConfigError):
