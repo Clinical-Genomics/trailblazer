@@ -30,6 +30,8 @@ jobs:
         pip install pytest-cov coveralls
 
     - name: Test with pytest & Coveralls
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
       run: |
         pytest --cov=trailblazer/
         coveralls
