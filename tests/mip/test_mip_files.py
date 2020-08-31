@@ -30,6 +30,18 @@ def test_get_case_from_config_when_family_id():
     assert case == "crazygoat"
 
 
+def test_get_case_from_config_when_no_id():
+    """Test getting the case id from mip config"""
+    # GIVEN a faulty case id
+    config = {"not_a_case_id": "anonymous"}
+
+    # WHEN getting case from config dict
+    case = files.get_case_from_config(config=config)
+
+    # THEN return case
+    assert case == None
+
+
 def test_parse_config(files_raw) -> dict:
     """
     Args:
@@ -147,6 +159,18 @@ def test_get_case_from_sampleinfo_when_family():
 
     # THEN return case
     assert case == "crazygoat"
+
+
+def test_get_case_from_sampleinfo_when_no_id():
+    """Test getting the case id from mip config"""
+    # GIVEN a faulty case id
+    config = {"not_a_case": "anonymous"}
+
+    # WHEN getting case from config dict
+    case = files.get_case_from_sampleinfo(sample_info=config)
+
+    # THEN return case
+    assert case == None
 
 
 def test_parse_sampleinfo(files_raw: dict):
