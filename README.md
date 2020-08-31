@@ -45,6 +45,12 @@ cd trailblazer
 pip install --editable .
 ```
 
+Files will be blacked automatically with each push to github. If you would like to automatically [Black][black] format your commits on your local machine:
+
+```
+pre-commit install
+```
+
 ## Contributing
 
 Trailblazer is using github flow branching model as described in our [development manual][development manual].
@@ -148,6 +154,7 @@ Start MIP from Trailblazer. It's only a thin wrapper around the MIP command line
 trailblazer start family4 --priority high
 ```
 
+[black]: https://black.readthedocs.io/en/stable/
 [mip]: https://github.com/clinical-genomics/MIP
 [pypi]: https://pypi.python.org/pypi/trailblazer/
 
