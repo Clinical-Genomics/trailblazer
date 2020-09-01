@@ -30,6 +30,18 @@ def test_get_case_from_config_when_family_id():
     assert case == "crazygoat"
 
 
+def test_get_case_from_config_when_no_id():
+    """Test getting the case id from mip config"""
+    # GIVEN a faulty case id
+    config = {"not_a_case_id": "anonymous"}
+
+    # WHEN getting case from config dict
+    case = files.get_case_from_config(config=config)
+
+    # THEN return case
+    assert case == None
+
+
 def test_parse_config(files_raw) -> dict:
     """
     Args:
@@ -149,6 +161,18 @@ def test_get_case_from_sampleinfo_when_family():
     assert case == "crazygoat"
 
 
+def test_get_case_from_sampleinfo_when_no_id():
+    """Test getting the case id from mip config"""
+    # GIVEN a faulty case id
+    config = {"not_a_case": "anonymous"}
+
+    # WHEN getting case from config dict
+    case = files.get_case_from_sampleinfo(sample_info=config)
+
+    # THEN return case
+    assert case == None
+
+
 def test_parse_sampleinfo(files_raw: dict):
     """
     Args:
@@ -170,7 +194,11 @@ def test_parse_sampleinfo(files_raw: dict):
     # More in-depth testing
     # Family data
     # Build dict for family return data
-    sampleinfo_test_data = {"case": "case", "genome_build": "grch37", "version": "v7.1.0"}
+    sampleinfo_test_data = {
+        "case": "case",
+        "genome_build": "grch37",
+        "version": "v7.1.0",
+    }
 
     # Check returns from def 1
     for key, value in sampleinfo_test_data.items():
@@ -230,7 +258,9 @@ def test_set_bamstats_metrics_single_bamstat():
     sample_data = {}
 
     # WHEN setting bamstats metrics
-    sample_data = files.set_bamstats_metrics(file_metrics=file_metric, sample_data=sample_data)
+    sample_data = files.set_bamstats_metrics(
+        file_metrics=file_metric, sample_data=sample_data
+    )
 
     expected_sample_data = {"reads": 2, "total_mapped": 1}
     # THEN return bam stats metrics in sample data for file metric
@@ -263,7 +293,9 @@ def test_set_chanjo_sexcheck_metrics(files_raw: dict):
     qcmetrics_raw = files_raw["qcmetrics"]
 
     # Isolating to a single file_metric i.e. markduplicates
-    sample_metrics = qcmetrics_raw["sample"]["father"]["father_lanes_1_sorted_md_brecal_sex"]
+    sample_metrics = qcmetrics_raw["sample"]["father"][
+        "father_lanes_1_sorted_md_brecal_sex"
+    ]
     sample_data = {}
 
     # WHEN setting sample metric for file
@@ -328,7 +360,9 @@ def test_set_collectmultiplemetrics_metrics(files_raw: dict, mip_meta_data: dict
     assert sample_data == expected_sample_data
 
 
-def test_set_collectmultiplemetricsinsertsize_metrics(files_raw: dict, mip_meta_data: dict):
+def test_set_collectmultiplemetricsinsertsize_metrics(
+    files_raw: dict, mip_meta_data: dict
+):
     """Test setting multiple metrics from file metric for collectmultiplemetricsinsertsize"""
     # GIVEN qc metrics input from an analysis
     qcmetrics_raw = files_raw["qcmetrics"]
@@ -378,12 +412,16 @@ def test_get_sample_metrics(files_raw: dict, mip_meta_data: dict):
 
     # Isolating to a single file_metric i.e. markduplicates
     sample_metrics = {
-        "father_lanes_1_sorted_md": qcmetrics_raw["sample"]["father"]["father_lanes_1_sorted_md"]
+        "father_lanes_1_sorted_md": qcmetrics_raw["sample"]["father"][
+            "father_lanes_1_sorted_md"
+        ]
     }
     sample_data = {}
 
     # WHEN getting sample metric for file
-    sample_data = files.get_sample_metrics(sample_metrics=sample_metrics, sample_data=sample_data)
+    sample_data = files.get_sample_metrics(
+        sample_metrics=sample_metrics, sample_data=sample_data
+    )
 
     expected_sample_data = {"duplicates": mip_meta_data["FATHER_FRACTION_DUPLICATES"]}
     # THEN return duplicates in sample data for file metric

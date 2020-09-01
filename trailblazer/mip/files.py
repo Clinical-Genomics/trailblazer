@@ -127,9 +127,13 @@ def get_plink_samples(metrics: dict) -> dict:
     plink_sexcheck = None
     plink_samples = {}
     if "recipe" in metrics:
-        plink_sexcheck = metrics["recipe"].get("plink_sexcheck", {}).get("sample_sexcheck")
+        plink_sexcheck = (
+            metrics["recipe"].get("plink_sexcheck", {}).get("sample_sexcheck")
+        )
     elif "program" in metrics:  # for MIP<7
-        plink_sexcheck = metrics["program"].get("plink_sexcheck", {}).get("sample_sexcheck")
+        plink_sexcheck = (
+            metrics["program"].get("plink_sexcheck", {}).get("sample_sexcheck")
+        )
     if isinstance(plink_sexcheck, str):
         sample_id, sex_number = plink_sexcheck.strip().split(":", 1)
         plink_samples[sample_id] = PED_SEX_MAP.get(int(sex_number))
@@ -143,10 +147,14 @@ def get_plink_samples(metrics: dict) -> dict:
 def set_bamstats_metrics(file_metrics: dict, sample_data: dict) -> dict:
     """Set bamstats metrics"""
     total_reads = sample_data["reads"] if "reads" in sample_data else 0
-    sample_data["reads"] = int(file_metrics["bamstats"]["raw_total_sequences"]) + total_reads
+    sample_data["reads"] = (
+        int(file_metrics["bamstats"]["raw_total_sequences"]) + total_reads
+    )
 
     total_mapped = sample_data["total_mapped"] if "total_mapped" in sample_data else 0
-    sample_data["total_mapped"] = int(file_metrics["bamstats"]["reads_mapped"]) + total_mapped
+    sample_data["total_mapped"] = (
+        int(file_metrics["bamstats"]["reads_mapped"]) + total_mapped
+    )
     return sample_data
 
 
@@ -178,17 +186,25 @@ def set_collectmultiplemetrics_metrics(file_metrics: dict, sample_data: dict) ->
     return sample_data
 
 
-def set_collectmultiplemetricsinsertsize_metrics(file_metrics: dict, sample_data: dict) -> dict:
+def set_collectmultiplemetricsinsertsize_metrics(
+    file_metrics: dict, sample_data: dict
+) -> dict:
     """Set collectmultiplemetricsinsertsize metrics"""
-    mm_insert_metrics = file_metrics["collectmultiplemetricsinsertsize"]["header"]["data"]
+    mm_insert_metrics = file_metrics["collectmultiplemetricsinsertsize"]["header"][
+        "data"
+    ]
     sample_data["median_insert_size"] = int(mm_insert_metrics["MEDIAN_INSERT_SIZE"])
-    sample_data["insert_size_standard_deviation"] = float(mm_insert_metrics["STANDARD_DEVIATION"])
+    sample_data["insert_size_standard_deviation"] = float(
+        mm_insert_metrics["STANDARD_DEVIATION"]
+    )
     return sample_data
 
 
 def set_markduplicates_metrics(file_metrics: dict, sample_data: dict) -> dict:
     """Set markduplicates metrics"""
-    sample_data["duplicates"] = float(file_metrics["markduplicates"]["fraction_duplicates"])
+    sample_data["duplicates"] = float(
+        file_metrics["markduplicates"]["fraction_duplicates"]
+    )
     return sample_data
 
 
@@ -226,7 +242,9 @@ def parse_qcmetrics(metrics: dict) -> dict:
     for sample_id, sample_metrics in metrics["sample"].items():
 
         sample_data = {"id": sample_id, "plink_sex": plink_samples.get(sample_id)}
-        sample_data = get_sample_metrics(sample_metrics=sample_metrics, sample_data=sample_data)
+        sample_data = get_sample_metrics(
+            sample_metrics=sample_metrics, sample_data=sample_data
+        )
         sample_data["mapped"] = sample_data["total_mapped"] / sample_data["reads"]
         qc_metric["samples"].append(sample_data)
     return qc_metric
