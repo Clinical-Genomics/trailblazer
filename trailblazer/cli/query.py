@@ -16,7 +16,7 @@ def query(context):
 def check_analysis_running(context, case_id):
     """Responds whether analysis is ongoing"""
     response = context.obj["api"].is_latest_analysis_ongoing(case_id=case_id)
-    sys.stdout(response)
+    print(response)
     sys.exit(0)
 
 
@@ -49,7 +49,7 @@ def has_analysis_started(context, case_id):
         response = False
     elif analysis.status in started_statuses:
         response = True
-    sys.stdout(response)
+    print(response)
 
 
 @query.command("get-analysis-status")
@@ -57,4 +57,4 @@ def has_analysis_started(context, case_id):
 @click.pass_context
 def get_analysis_status(context, case_id):
     response = context.obj["api"].get_analysis_status(family=case_id)
-    sys.stdout(response)
+    print(response)
