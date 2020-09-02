@@ -5,7 +5,6 @@ import datetime as dt
 import alchy
 import sqlalchemy as sqa
 
-from trailblazer.mip.config import ConfigHandler
 from trailblazer.constants import COMPLETED_STATUS, FAILED_STATUS, ONGOING_STATUSES
 from . import models
 
@@ -154,7 +153,7 @@ class BaseHandler:
         return self.Job.query
 
 
-class Store(alchy.Manager, BaseHandler, ConfigHandler):
+class Store(alchy.Manager, BaseHandler):
     def __init__(self, uri: str, families_dir: str):
         super(Store, self).__init__(
             config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=models.Model
