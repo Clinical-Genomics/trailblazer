@@ -6,7 +6,7 @@ import ruamel.yaml
 
 @click.group("query", invoke_without_command=True)
 @click.pass_context
-def query(context, config, database, root, log_level):
+def query(context):
     context.obj["api"] = TrailblazerAPI(context.obj["database"], context.obj["root"])
 
 
