@@ -22,15 +22,9 @@ def clean(context, days_ago, yes, force):
     )
     for analysis_obj in analyses:
         LOG.debug(f"checking analysis: {analysis_obj.family} ({analysis_obj.id})")
-        latest_analysis = (
-            context.obj["store"].analyses(family=analysis_obj.family).first()
-        )
+        latest_analysis = context.obj["store"].analyses(family=analysis_obj.family).first()
         if analysis_obj != latest_analysis:
-            print(
-                click.style(
-                    f"{analysis_obj.family}: family has been re-started", fg="yellow"
-                )
-            )
+            print(click.style(f"{analysis_obj.family}: family has been re-started", fg="yellow"))
         else:
             print(f"delete analysis: {analysis_obj.family} ({analysis_obj.id})")
             context.invoke(delete, analysis_id=analysis_obj.id, yes=yes, force=force)

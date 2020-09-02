@@ -31,9 +31,7 @@ def parse_reqs(req_path="./requirements.txt"):
     install_requires = []
     with codecs.open(req_path, "r") as handle:
         # remove comments and empty lines
-        lines = (
-            line.strip() for line in handle if line.strip() and not line.startswith("#")
-        )
+        lines = (line.strip() for line in handle if line.strip() and not line.startswith("#"))
         for line in lines:
             # check for nested requirements files
             if line.startswith("-r"):

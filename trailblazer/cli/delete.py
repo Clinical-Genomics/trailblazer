@@ -31,14 +31,8 @@ def delete(context, force, yes, analysis_id):
         if Path(analysis_obj.out_dir).exists() or force:
             root_dir = context.obj["store"].families_dir
             family_dir = analysis_obj.out_dir
-            if not force and (
-                len(family_dir) <= len(root_dir) or root_dir not in family_dir
-            ):
-                print(
-                    click.style(
-                        f"unknown analysis output dir: {analysis_obj.out_dir}", fg="red"
-                    )
-                )
+            if not force and (len(family_dir) <= len(root_dir) or root_dir not in family_dir):
+                print(click.style(f"unknown analysis output dir: {analysis_obj.out_dir}", fg="red"))
                 print(click.style("use '--force' to override"))
                 context.abort()
 
@@ -46,14 +40,8 @@ def delete(context, force, yes, analysis_id):
                 shutil.rmtree(analysis_obj.out_dir, ignore_errors=True)
                 analysis_obj.is_deleted = True
                 context.obj["store"].commit()
-                print(
-                    click.style(f"analysis deleted: {analysis_obj.family}", fg="blue")
-                )
+                print(click.style(f"analysis deleted: {analysis_obj.family}", fg="blue"))
         else:
-            print(
-                click.style(
-                    f"analysis output doesn't exist: {analysis_obj.out_dir}", fg="red"
-                )
-            )
+            print(click.style(f"analysis output doesn't exist: {analysis_obj.out_dir}", fg="red"))
             print(click.style("use '--force' to override"))
             context.abort()
