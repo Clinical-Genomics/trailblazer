@@ -4,7 +4,7 @@ import sys
 import ruamel.yaml
 
 
-@click.group("query")
+@click.group("query", invoke_without_command=True)
 @click.option("-c", "--config", type=click.File())
 @click.option("-d", "--database", help="path/URI of the SQL database")
 @click.option("-r", "--root", help="families root directory")
@@ -17,7 +17,7 @@ def query(context, config, database, root, log_level):
     context.obj["api"] = TrailblazerAPI(context.obj["database"], context.obj["root"])
 
 
-@query.command
+@query.command("check-analysis-running")
 @click.argument("case_id", type=str)
 @click.pass_context
 def check_analysis_running(context, case_id):
@@ -27,7 +27,7 @@ def check_analysis_running(context, case_id):
     sys.exit(0)
 
 
-@query.command
+@query.command("mark-analyses-deleted")
 @click.argument("case_id", type=str)
 @click.pass_context
 def mark_analyses_deleted(context, case_id):
@@ -38,7 +38,7 @@ def mark_analyses_deleted(context, case_id):
     sys.exit(0)
 
 
-@query.command
+@query.command("add-pending-analysis")
 @click.argument("case_id", type=str)
 @click.pass_context
 def add_pending_analysis(context, case_id: str, email: str):
@@ -46,7 +46,7 @@ def add_pending_analysis(context, case_id: str, email: str):
     sys.exit(0)
 
 
-@query.command
+@query.command("has-analysis-started")
 @click.argument("case_id", type=str)
 @click.pass_context
 def has_analysis_started(context, case_id):
@@ -59,7 +59,7 @@ def has_analysis_started(context, case_id):
     sys.stdout(response)
 
 
-@query.command
+@query.command("get-analysis-status")
 @click.argument("case_id", type=str)
 @click.pass_context
 def get_analysis_status(context, case_id):
