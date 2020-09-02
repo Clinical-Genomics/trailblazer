@@ -5,15 +5,8 @@ import ruamel.yaml
 
 
 @click.group("query", invoke_without_command=True)
-@click.option("-c", "--config", type=click.File())
-@click.option("-d", "--database", help="path/URI of the SQL database")
-@click.option("-r", "--root", help="families root directory")
-@click.option("-l", "--log-level", default="INFO")
 @click.pass_context
 def query(context, config, database, root, log_level):
-    context.obj = ruamel.yaml.safe_load(config) if config else {}
-    context.obj["database"] = database or context.obj.get("database")
-    context.obj["root"] = root or context.obj.get("root")
     context.obj["api"] = TrailblazerAPI(context.obj["database"], context.obj["root"])
 
 
