@@ -1,4 +1,4 @@
-name: TB production install clinical-db
+name: TB production install hasta
 
 on: ["push", "pull_request"]
 
@@ -14,17 +14,17 @@ jobs:
     - uses: actions/checkout@v2
 
 
-    - name: Set up Python 3.6
+    - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
-        python-version: 3.6.7    # Python version in prod170926 is 3.6.2, but is not available in actions
+        python-version: 3.7.5    # Python version in P_main is 3.7.1, but is not available in actions
 
-    - name: Test install on clinical-db
+    - name: Test install on hasta
       run: |
-        pip install pip==9.0.1
+        pip install pip==18.1
         pip install .
         pip check
-    - name: Test install dev on clinical-db
+    - name: Test install dev on hasta
       run: |
         pip install . -r requirements-dev.txt
         pip check
