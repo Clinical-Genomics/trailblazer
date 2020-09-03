@@ -17,7 +17,7 @@ jobs:
     - name: Set up Python 3.6
       uses: actions/setup-python@v2
       with:
-        python-version: 3.6.2    # version in prod170926
+        python-version: 3.6.7    # Python version in prod170926 is 3.6.2, but is not available in actions
 
     - name: Test install on clinical-db
       run: |
