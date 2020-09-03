@@ -20,6 +20,7 @@ from setuptools import find_packages, setup
 AUTHOR = "henrik.stranneheim"
 DESCRIPTION = "Trailblazer is a tool to manage and track state of analyses"
 EMAIL = "henrik.stranneheim@scilifelab.se"
+HERE = os.path.abspath(os.path.dirname(__file__))
 NAME = "trailblazer"
 
 
