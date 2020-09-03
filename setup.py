@@ -11,6 +11,7 @@ See the GitHub repo for documentation:
 """
 
 import codecs
+import io
 import os
 
 # Always prefer setuptools over distutils
