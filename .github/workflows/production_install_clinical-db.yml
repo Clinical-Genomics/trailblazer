@@ -22,7 +22,9 @@ jobs:
     - name: Test install on clinical-db
       run: |
         pip install pip==9.0.1
-        pip install cython
         pip install .
         pip check
-
+    - name: Test install dev on clinical-db
+      run: |
+        pip install . -r requirements-dev.txt
+        pytest
