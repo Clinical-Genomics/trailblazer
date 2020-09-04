@@ -56,6 +56,19 @@ def get_analysisrunstatus(sample_info: dict) -> bool:
     return False
 
 
+def get_sampleinfo_date(data: dict) -> str:
+    """Get MIP sample info date
+
+    Args:
+        data (dict): raw YAML input from MIP qc sample info file
+
+    Returns:
+        str: analysis date
+    """
+
+    return data["analysis_date"]
+
+
 def parse_sampleinfo_light(data: dict) -> dict:
     """Parse MIP sample info file and retrieve mip_version, date, and status
 
@@ -67,25 +80,12 @@ def parse_sampleinfo_light(data: dict) -> dict:
 
     """
     outdata = {
-        "date": data["analysis_date"],
+        "date": get_sampleinfo_date(data=data),
         "version": data["mip_version"],
         "is_finished": get_analysisrunstatus(sample_info=data),
     }
 
     return outdata
-
-
-def get_sampleinfo_date(data: dict) -> str:
-    """Get MIP sample info date.
-
-    Args:
-        data (dict): raw YAML input from MIP qc sample info file
-
-    Returns:
-        str: analysis date
-    """
-
-    return data["analysis_date"]
 
 
 def get_case_from_sampleinfo(sample_info: dict) -> str:
@@ -123,7 +123,7 @@ def parse_sampleinfo(data: dict) -> dict:
         dict: parsed data
     """
     outdata = {
-        "date": data["analysis_date"],
+        "date": get_sampleinfo_date(data=data),
         "genome_build": get_genome_build(sample_info=data),
         "case": get_case_from_sampleinfo(sample_info=data),
         "is_finished": get_analysisrunstatus(sample_info=data),

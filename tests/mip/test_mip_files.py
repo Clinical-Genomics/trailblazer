@@ -15,7 +15,7 @@ from trailblazer.mip import files
         ({"not_a_case_id": "anonymous"}, None),
     ],
 )
-def test_get_case_from_config_when_case_id(config: dict, expected_case: str):
+def test_get_case_from_config(config: dict, expected_case: str):
     """Test getting the case id from mip config"""
     # GIVEN a case id or family id
 
@@ -129,6 +129,20 @@ def test_get_analysisrunstatus(sample_info: dict, expected_bool: bool):
     assert is_finished == expected_bool
 
 
+def test_get_sampleinfo_date():
+    """Test getting the case id from mip config"""
+    # GIVEN a date
+    sample_info = {
+        "analysis_date": "1999-12-31",
+    }
+
+    # WHEN getting date from sample info
+    date = files.get_sampleinfo_date(data=sample_info)
+
+    # THEN return analysis date
+    assert date == "1999-12-31"
+
+
 def test_parse_sampleinfo_light(files_raw: dict):
     """
     Args:
@@ -195,7 +209,7 @@ def test_get_rank_model_version_with_program(files_raw: dict, mip_meta_data: dic
         ({"not_a_case": "anonymous"}, None),
     ],
 )
-def test_get_case_from_sampleinfo_when_case(sample_info: dict, expected_case: str):
+def test_get_case_from_sampleinfo(sample_info: dict, expected_case: str):
     """Test getting the case or family from mip sampleinfo file"""
     # GIVEN a case or family
 
