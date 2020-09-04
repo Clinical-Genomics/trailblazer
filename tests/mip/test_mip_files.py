@@ -2,47 +2,69 @@
 
 import copy
 import dateutil
+import pytest
 
 from trailblazer.mip import files
 
 
-def test_get_case_from_config_when_case_id():
+@pytest.mark.parametrize(
+    "config, expected_case",
+    [
+        ({"case_id": "crazygoat"}, "crazygoat"),
+        ({"family_id": "crazygoat"}, "crazygoat"),
+        ({"not_a_case_id": "anonymous"}, None),
+    ],
+)
+def test_get_case_from_config_when_case_id(config: dict, expected_case: str):
     """Test getting the case id from mip config"""
-    # GIVEN a case id
-    config = {"case_id": "crazygoat"}
+    # GIVEN a case id or family id
 
     # WHEN getting case from config dict
     case = files.get_case_from_config(config=config)
 
     # THEN return case
-    assert case == "crazygoat"
+    assert case == expected_case
 
 
-def test_get_case_from_config_when_family_id():
-    """Test getting the case id from mip config"""
-    # GIVEN a case id
-    config = {"family_id": "crazygoat"}
+@pytest.mark.parametrize(
+    "config, expected_bool",
+    [
+        ({"dry_run_all": 1}, True),
+        ({"not_a_dry_run": 1}, False),
+    ],
+)
+def test_get_dry_run_all(config: dict, expected_bool: bool):
+    """Test getting the dry_run_all from mip config"""
+    # GIVEN a dry run mip analysis
 
-    # WHEN getting case from config dict
-    case = files.get_case_from_config(config=config)
+    # WHEN getting dry_run_all from config dict
+    is_dry_run = files.get_dry_run_all(config=config)
 
-    # THEN return case
-    assert case == "crazygoat"
-
-
-def test_get_case_from_config_when_no_id():
-    """Test getting the case id from mip config"""
-    # GIVEN a faulty case id
-    config = {"not_a_case_id": "anonymous"}
-
-    # WHEN getting case from config dict
-    case = files.get_case_from_config(config=config)
-
-    # THEN return case
-    assert case == None
+    # THEN return true
+    assert is_dry_run == expected_bool
 
 
-def test_parse_config(files_raw) -> dict:
+def test_get_sample_data_from_config():
+    """Test getting sample data from mip config"""
+    # GIVEN sample data from a mip analysis config
+    config = {
+        "analysis_type": {"sample_1": "wgs"},
+    }
+
+    # WHEN getting sample data from config dict
+    sample_data = files.get_sample_data_from_config(config=config)
+
+    expected_sample_data = [
+        {
+            "id": "sample_1",
+            "type": "wgs",
+        }
+    ]
+    # THEN return true
+    assert sample_data == expected_sample_data
+
+
+def test_parse_config(files_raw: dict) -> dict:
     """
     Args:
     files_raw (dict): With dicts from files
@@ -54,29 +76,57 @@ def test_parse_config(files_raw) -> dict:
     # WHEN parsing the MIP output config
     config_data = files.parse_config(config_raw)
 
-    # THEN it should work
+    # THEN it return a dict
     assert isinstance(config_data, dict)
 
-    # THEN it should work and the dry run check should be "yes"
+    # THEN the dry run is True
     assert config_data["is_dryrun"] is True
 
-    # ... and should include all samples
+    # THEN the number of samples and analysis_types should be equal
     assert len(config_raw["analysis_type"]) == len(config_data["samples"])
 
-    # Build dict for return data
-    config_test_data = {
-        "config_path": "/path_to/cases/case/analysis/case_config.yaml",
-        "email": "test.person@test.se",
+    expected_config_data = {
         "case": "case",
+        "config_path": "/path_to/cases/case/analysis/case_config.yaml",
+        "is_dryrun": True,
+        "email": "test.person@test.se",
         "log_path": "tests/fixtures/case/mip_2019-07-04T10:47:15.log",
-        "sampleinfo_path": "/path_to/cases/case/analysis/case_qc_sample_info.yaml",
         "out_dir": "/path_to/cases/case/analysis",
         "priority": "normal",
+        "sampleinfo_path": "/path_to/cases/case/analysis/case_qc_sample_info.yaml",
     }
 
-    # Check returns from def
-    for key, value in config_test_data.items():
+    # Then config data should be set
+    for key, value in expected_config_data.items():
         assert config_data[key] == value
+
+
+@pytest.mark.parametrize(
+    "sample_info, expected_bool",
+    [
+        (
+            {
+                "analysisrunstatus": "finished",
+            },
+            True,
+        ),
+        (
+            {
+                "analysisrunstatus": "notfinished",
+            },
+            False,
+        ),
+    ],
+)
+def test_get_analysisrunstatus(sample_info: dict, expected_bool: bool):
+    """Test getting analysis run status from mip config"""
+    # GIVEN a run status from a sample_info file
+
+    # WHEN getting sample data from config dict
+    is_finished = files.get_analysisrunstatus(sample_info=sample_info)
+
+    # THEN return true
+    assert is_finished == expected_bool
 
 
 def test_parse_sampleinfo_light(files_raw: dict):
@@ -91,10 +141,10 @@ def test_parse_sampleinfo_light(files_raw: dict):
     # WHEN parsing the MIP output sampleinfo
     sampleinfo_data = files.parse_sampleinfo_light(sampleinfo_raw)
 
-    # THEN it should work
+    # THEN it should return a dict
     assert isinstance(sampleinfo_data, dict)
 
-    # THEN it should mark the run as "finished"
+    # THEN is_finished should be true
     assert sampleinfo_data["is_finished"] is True
 
     # THEN date should be set
@@ -137,43 +187,43 @@ def test_get_rank_model_version_with_program(files_raw: dict, mip_meta_data: dic
     assert rank_model_version == mip_meta_data["RANK_MODEL_VERSION"]
 
 
-def test_get_case_from_sampleinfo_when_case():
-    """Test getting the case id from mip sampleinfo file"""
-    # GIVEN a case id
-    config = {"case": "crazygoat"}
+@pytest.mark.parametrize(
+    "sample_info, expected_case",
+    [
+        ({"case": "crazygoat"}, "crazygoat"),
+        ({"family": "crazygoat"}, "crazygoat"),
+        ({"not_a_case": "anonymous"}, None),
+    ],
+)
+def test_get_case_from_sampleinfo_when_case(sample_info: dict, expected_case: str):
+    """Test getting the case or family from mip sampleinfo file"""
+    # GIVEN a case or family
 
     # WHEN getting case from config dict
-    case = files.get_case_from_sampleinfo(sample_info=config)
+    case = files.get_case_from_sampleinfo(sample_info=sample_info)
 
     # THEN return case
-    assert case == "crazygoat"
+    assert case == expected_case
 
 
-def test_get_case_from_sampleinfo_when_family():
-    """Test getting the case id from mip sampleinfo file"""
-    # GIVEN a case id
-    config = {"family": "crazygoat"}
+def test_get_genome_build(mip_meta_data: dict):
+    """Test getting sample data from mip config"""
+    # GIVEN human genome build in sample info
+    sample_info = {
+        "human_genome_build": {
+            "source": mip_meta_data["GENOME_BUILD_SOURCE"],
+            "version": mip_meta_data["GENOME_BUILD_VERSION"],
+        },
+    }
 
-    # WHEN getting case from config dict
-    case = files.get_case_from_sampleinfo(sample_info=config)
+    # WHEN getting sample data from config dict
+    genome_build = files.get_genome_build(sample_info=sample_info)
 
-    # THEN return case
-    assert case == "crazygoat"
-
-
-def test_get_case_from_sampleinfo_when_no_id():
-    """Test getting the case id from mip config"""
-    # GIVEN a faulty case id
-    config = {"not_a_case": "anonymous"}
-
-    # WHEN getting case from config dict
-    case = files.get_case_from_sampleinfo(sample_info=config)
-
-    # THEN return case
-    assert case == None
+    # THEN return genome build (source and version)
+    assert genome_build == "grch37"
 
 
-def test_parse_sampleinfo(files_raw: dict):
+def test_parse_sampleinfo(files_raw: dict, mip_meta_data: dict):
     """
     Args:
     files_raw (dict): With dicts from files
@@ -185,70 +235,35 @@ def test_parse_sampleinfo(files_raw: dict):
     # WHEN parsing the MIP output sampleinfo
     sampleinfo_data = files.parse_sampleinfo(sampleinfo_raw)
 
-    # THEN it should work
+    # THEN it should return a dict
     assert isinstance(sampleinfo_data, dict)
 
-    # THEN it should mark the run as "finished"
+    # THEN is_finished should be True
     assert sampleinfo_data["is_finished"] is True
 
-    # More in-depth testing
-    # Family data
-    # Build dict for family return data
-    sampleinfo_test_data = {
+    expected_sampleinfo_data = {
         "case": "case",
         "genome_build": "grch37",
         "version": "v7.1.0",
     }
 
-    # Check returns from def 1
-    for key, value in sampleinfo_test_data.items():
+    # Then sampleinfo case data should be set
+    for key, value in expected_sampleinfo_data.items():
         assert sampleinfo_data[key] == value
 
-    # Sample data
-    # Build dict for sample return data
-    sampleinfo_test_sample_data = {"id": "mother"}
+    expected_sampleinfo_sample_data = {"id": "mother"}
 
-    # Check returns from def 2
-    for key, value in sampleinfo_test_sample_data.items():
+    # Then sampleinfo sample data should be set
+    for key, value in expected_sampleinfo_sample_data.items():
         for sample_data in sampleinfo_data["samples"]:
 
-            if sample_data["id"] != sampleinfo_test_sample_data["id"]:
+            if sample_data["id"] != expected_sampleinfo_sample_data["id"]:
                 continue
 
             assert sample_data[key] == value
 
+    # THEN the number of samples and analysis_types should be equal
     assert len(sampleinfo_raw["analysis_type"]) == len(sampleinfo_data["samples"])
-
-
-def test_get_plink_samples(files_raw: dict):
-    """ Test get plink sexcheck from qc_metrics"""
-
-    # GIVEN qc metrics input from an analysis
-    qcmetrics_raw = files_raw["qcmetrics"]
-
-    # WHEN parsing plink output in qc_metrics
-    plink_samples = files.get_plink_samples(metrics=qcmetrics_raw)
-
-    expected_plink_samples = {"child": "male", "father": "male", "mother": "female"}
-    # THEN the family memebers and their gender should be returned
-    assert plink_samples == expected_plink_samples
-
-
-def test_get_plink_samples_when_program(files_raw: dict):
-    """ Test get plink sexcheck from qc_metrics using program key"""
-
-    # GIVEN qc metrics input from an analysis
-    qcmetrics_raw = copy.copy(files_raw["qcmetrics"])
-
-    # Using old MIP style with program instead of recipe
-    qcmetrics_raw["program"] = qcmetrics_raw.pop("recipe")
-
-    # WHEN parsing plink output in qc_metrics
-    plink_samples = files.get_plink_samples(metrics=qcmetrics_raw)
-
-    expected_plink_samples = {"child": "male", "father": "male", "mother": "female"}
-    # THEN the family members and their gender should be returned
-    assert plink_samples == expected_plink_samples
 
 
 def test_set_bamstats_metrics_single_bamstat():
@@ -445,7 +460,7 @@ def test_parse_qcmetrics(files_raw: dict, mip_meta_data: dict):
 
     # Sample data
     # Build dict for sample return data
-    qcmetrics_test_sample_data = {
+    expected_qcmetrics_sample_data = {
         "at_dropout": mip_meta_data["MOTHER_AT_DROPOUT"],
         "duplicates": mip_meta_data["MOTHER_FRACTION_DUPLICATES"],
         "id": "mother",
@@ -453,36 +468,33 @@ def test_parse_qcmetrics(files_raw: dict, mip_meta_data: dict):
         "gc_dropout": mip_meta_data["MOTHER_GC_DROPOUT"],
         "mapped": mip_meta_data["MOTHER_MAPPED"],
         "median_insert_size": mip_meta_data["MOTHER_MEDIAN_INSERT_SIZE"],
-        "plink_sex": "female",
         "predicted_sex": "female",
         "reads": mip_meta_data["MOTHER_RAW_TOTAL_SEQUENCES"],
         "strand_balance": mip_meta_data["MOTHER_STRAND_BALANCE"],
         "target_coverage": mip_meta_data["MOTHER_MEAN_TARGET_COVERAGE"],
     }
 
-    # Check returns from def
-    for key, value in qcmetrics_test_sample_data.items():
+    # THEN qcmetrics sample metrics should be set
+    for key, value in expected_qcmetrics_sample_data.items():
         for sample_data in qcmetrics_data["samples"]:
 
-            if sample_data["id"] != qcmetrics_test_sample_data["id"]:
+            if sample_data["id"] != expected_qcmetrics_sample_data["id"]:
                 continue
 
             assert sample_data[key] == value
 
-    # Sample coverage data
-    # Build dict for sample coverage return data
-    qcmetrics_test_sample_cov_data = {
+    expected_qcmetrics_sample_cov_data = {
         10: mip_meta_data["MOTHER_PCT_TARGET_BASES_10X"],
         20: mip_meta_data["MOTHER_PCT_TARGET_BASES_20X"],
         50: mip_meta_data["MOTHER_PCT_TARGET_BASES_50X"],
         100: mip_meta_data["MOTHER_PCT_TARGET_BASES_100X"],
     }
 
-    # Check returns from def
-    for key, value in qcmetrics_test_sample_cov_data.items():
+    # THEN qcmetrics sample coverage metrics should be set
+    for key, value in expected_qcmetrics_sample_cov_data.items():
         for sample_data in qcmetrics_data["samples"]:
 
-            if sample_data["id"] != qcmetrics_test_sample_data["id"]:
+            if sample_data["id"] != expected_qcmetrics_sample_data["id"]:
                 continue
 
             assert sample_data["completeness_target"][key] == value
