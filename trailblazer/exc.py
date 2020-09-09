@@ -13,3 +13,6 @@ class MissingFileError(TrailblazerError):
 class MipStartError(TrailblazerError):
     pass
 
+
+class ConfigError(TrailblazerError):
+    pass
