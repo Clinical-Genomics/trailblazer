@@ -59,12 +59,3 @@ class MipCli(object):
                 if value is not True:
                     command.append(value)
         return command
-
-    def execute(self, command):
-        """Start a new MIP run."""
-
-        command.insert(0, f"bash -c 'source activate {self.conda_env}; ")
-        command.append("'")
-
-        process = subprocess.run(" ".join(command), shell=True, check=True)
-        return process
