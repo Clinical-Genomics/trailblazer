@@ -1,7 +1,6 @@
-"""Parse the MIP config, qc_metric and qc_sampleinfo file."""
+"""Parse the MIP config, qc_metric and qc_sampleinfo file"""
 
-
-PED_SEX_MAP = {1: "male", 2: "female", 0: "unknown"}
+from typing import List
 
 
 def get_case_from_config(config: dict) -> str:
@@ -13,8 +12,23 @@ def get_case_from_config(config: dict) -> str:
     return None
 
 
+def get_dry_run_all(config: dict) -> bool:
+    """Get dry_run_all from config"""
+    if "dry_run_all" in config:
+        return True
+    return False
+
+
+def get_sample_data_from_config(config: dict) -> List[dict]:
+    """Get sample data from config"""
+    samples = []
+    for sample_id, analysis_type in config["analysis_type"].items():
+        samples.append({"id": sample_id, "type": analysis_type})
+    return samples
+
+
 def parse_config(data: dict) -> dict:
-    """Parse MIP config file.
+    """Parse MIP config file
 
     Args:
         data (dict): raw YAML input from MIP analysis config file
@@ -25,17 +39,34 @@ def parse_config(data: dict) -> dict:
     return {
         "email": data.get("email"),
         "case": get_case_from_config(config=data),
-        "samples": [
-            {"id": sample_id, "type": analysis_type}
-            for sample_id, analysis_type in data["analysis_type"].items()
-        ],
+        "samples": get_sample_data_from_config(config=data),
         "config_path": data["config_file_analysis"],
-        "is_dryrun": True if "dry_run_all" in data else False,
+        "is_dryrun": get_dry_run_all(config=data),
         "log_path": data["log_file"],
         "out_dir": data["outdata_dir"],
         "priority": data["slurm_quality_of_service"],
         "sampleinfo_path": data["sample_info_file"],
     }
+
+
+def get_analysisrunstatus(sample_info: dict) -> bool:
+    """Get analysis run status from sample info"""
+    if sample_info["analysisrunstatus"] == "finished":
+        return True
+    return False
+
+
+def get_sampleinfo_date(data: dict) -> str:
+    """Get MIP sample info date
+
+    Args:
+        data (dict): raw YAML input from MIP qc sample info file
+
+    Returns:
+        str: analysis date
+    """
+
+    return data["analysis_date"]
 
 
 def parse_sampleinfo_light(data: dict) -> dict:
@@ -49,25 +80,12 @@ def parse_sampleinfo_light(data: dict) -> dict:
 
     """
     outdata = {
-        "date": data["analysis_date"],
+        "date": get_sampleinfo_date(data=data),
         "version": data["mip_version"],
-        "is_finished": True if data["analysisrunstatus"] == "finished" else False,
+        "is_finished": get_analysisrunstatus(sample_info=data),
     }
 
     return outdata
-
-
-def get_sampleinfo_date(data: dict) -> str:
-    """Get MIP sample info date.
-
-    Args:
-        data (dict): raw YAML input from MIP qc sample info file
-
-    Returns:
-        str: analysis date
-    """
-
-    return data["analysis_date"]
 
 
 def get_case_from_sampleinfo(sample_info: dict) -> str:
@@ -89,6 +107,12 @@ def get_rank_model_version(sample_info: dict, rank_model_type: str, step: str) -
     return rank_model_version
 
 
+def get_genome_build(sample_info: dict) -> str:
+    """Get genome build"""
+    genome_build = sample_info["human_genome_build"]
+    return f"{genome_build['source']}{genome_build['version']}"
+
+
 def parse_sampleinfo(data: dict) -> dict:
     """Parse MIP sample info file.
 
@@ -98,13 +122,11 @@ def parse_sampleinfo(data: dict) -> dict:
     Returns:
         dict: parsed data
     """
-    genome_build = data["human_genome_build"]
-    genome_build_str = f"{genome_build['source']}{genome_build['version']}"
     outdata = {
-        "date": data["analysis_date"],
-        "genome_build": genome_build_str,
+        "date": get_sampleinfo_date(data=data),
+        "genome_build": get_genome_build(sample_info=data),
         "case": get_case_from_sampleinfo(sample_info=data),
-        "is_finished": True if data["analysisrunstatus"] == "finished" else False,
+        "is_finished": get_analysisrunstatus(sample_info=data),
         "rank_model_version": get_rank_model_version(
             sample_info=data, rank_model_type="rank_model", step="genmod"
         ),
@@ -120,28 +142,6 @@ def parse_sampleinfo(data: dict) -> dict:
         outdata["samples"].append(sample)
 
     return outdata
-
-
-def get_plink_samples(metrics: dict) -> dict:
-    """Get plink samples"""
-    plink_sexcheck = None
-    plink_samples = {}
-    if "recipe" in metrics:
-        plink_sexcheck = (
-            metrics["recipe"].get("plink_sexcheck", {}).get("sample_sexcheck")
-        )
-    elif "program" in metrics:  # for MIP<7
-        plink_sexcheck = (
-            metrics["program"].get("plink_sexcheck", {}).get("sample_sexcheck")
-        )
-    if isinstance(plink_sexcheck, str):
-        sample_id, sex_number = plink_sexcheck.strip().split(":", 1)
-        plink_samples[sample_id] = PED_SEX_MAP.get(int(sex_number))
-    elif isinstance(plink_sexcheck, list):
-        for sample_raw in plink_sexcheck:
-            sample_id, sex_number = sample_raw.split(":", 1)
-            plink_samples[sample_id] = PED_SEX_MAP.get(int(sex_number))
-    return plink_samples
 
 
 def set_bamstats_metrics(file_metrics: dict, sample_data: dict) -> dict:
@@ -237,11 +237,11 @@ def parse_qcmetrics(metrics: dict) -> dict:
     """
     qc_metric = {"samples": []}
 
-    plink_samples = get_plink_samples(metrics=metrics)
-
     for sample_id, sample_metrics in metrics["sample"].items():
 
-        sample_data = {"id": sample_id, "plink_sex": plink_samples.get(sample_id)}
+        sample_data = {
+            "id": sample_id,
+        }
         sample_data = get_sample_metrics(
             sample_metrics=sample_metrics, sample_data=sample_data
         )
