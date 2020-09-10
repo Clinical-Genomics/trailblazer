@@ -16,7 +16,9 @@ def failed_sacct_jobs():
 @pytest.fixture(scope="session")
 def mip_cli():
     """Generate a mip CLI object"""
-    _mip_cli = start.MipCli(script="test/fake_mip.pl", pipeline="rd_dna", conda_env="dummy_env")
+    _mip_cli = start.MipCli(
+        script="test/fake_mip.pl", pipeline="rd_dna", conda_env="dummy_env"
+    )
     return _mip_cli
 
 
@@ -35,6 +37,8 @@ def mip_meta_data() -> dict:
         "FATHER_MEAN_TARGET_COVERAGE": 29.027266,
         "FATHER_STANDARD_DEVIATION": 88.653614,
         "FATHER_STRAND_BALANCE": 0.501377,
+        "GENOME_BUILD_SOURCE": "grch",
+        "GENOME_BUILD_VERSION": 37,
         "MOTHER_AT_DROPOUT": 1.716704,
         "MOTHER_FRACTION_DUPLICATES": 0.0379523291229131,
         "MOTHER_GC_DROPOUT": 0.214813,

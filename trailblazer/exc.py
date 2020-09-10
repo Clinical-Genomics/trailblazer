@@ -15,6 +15,4 @@ class MipStartError(TrailblazerError):
 
 
 class ConfigError(TrailblazerError):
-    def __init__(self, message, errors=None):
-        self.message = message
-        self.errors = errors
+    pass
