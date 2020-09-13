@@ -78,7 +78,9 @@ def parse_sampleinfo_light(data: dict) -> dict:
     Returns:
         dict: {'version': str, 'date': str, 'is_finished': str}
 
+
     """
+
     outdata = {
         "date": get_sampleinfo_date(data=data),
         "version": data["mip_version"],
