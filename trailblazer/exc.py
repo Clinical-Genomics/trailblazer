@@ -5,7 +5,3 @@ class TrailblazerError(Exception):
 
 class MissingFileError(TrailblazerError):
     pass
-
-
-class ConfigError(TrailblazerError):
-    pass
