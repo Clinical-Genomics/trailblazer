@@ -1,9 +1,9 @@
 """Parse the MIP config, qc_metric and qc_sampleinfo file"""
 
-from typing import List
+from typing import List, Optional
 
 
-def get_case_from_config(config: dict) -> str:
+def get_case_from_config(config: dict) -> Optional[str]:
     """Get case id from config"""
     if "case_id" in config:
         return config["case_id"]

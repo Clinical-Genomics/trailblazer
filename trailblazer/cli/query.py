@@ -1,7 +1,6 @@
 import click
 from trailblazer.store.api import Store as TrailblazerAPI
 import sys
-import ruamel.yaml
 
 
 @click.group("query", invoke_without_command=True)
@@ -33,9 +32,11 @@ def mark_analyses_deleted(context, case_id):
 
 @query.command("add-pending-analysis")
 @click.argument("case_id", type=str)
+@click.argument("email", type=str)
 @click.pass_context
-def add_pending_analysis(context, case_id: str, email: str):
+def add_pending_analysis(context, case_id: str, email: str = None):
     context.obj["api"].add_pending(case_id=case_id, email=email)
+    print(context.obj["api"].analyses(family=case_id).first())
     sys.exit(0)
 
 
