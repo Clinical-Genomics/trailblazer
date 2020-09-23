@@ -1,6 +1,6 @@
 {
   "name": "trailblazer",
-  "version": "8.0.0",
+  "version": "8.1.0",
   "description": "Trailblazer web UI",
   "author": "Clinical Genomics support@clinicalgenomics.se",
   "private": true,
@@ -33,7 +33,7 @@
     "eslint-plugin-node": "5.x.x",
     "eslint-plugin-promise": "3.x.x",
     "eslint-plugin-standard": "3.x.x",
-    "eslint-plugin-vue": "8.0.0-beta.2"
+    "eslint-plugin-vue": "8.1.0-beta.2"
   },
   "resolutions": {
     "axios": "^0.18.1",
