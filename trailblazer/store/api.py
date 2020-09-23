@@ -166,7 +166,7 @@ class BaseHandler:
             old_analysis.is_deleted = True
         self.commit()
 
-    # Duplicate
+    # Duplicate/redundant needed for backwards compatibility for now
     def add_pending_analysis(self, case_id: str, email: str = None) -> None:
         """ Add analysis as pending"""
         self.add_pending(case_id, email)
@@ -183,7 +183,7 @@ class BaseHandler:
         """Call internal Trailblazer MIP API."""
         return files.parse_qcmetrics(data)
 
-    # Duplicate
+    # Duplicate/redundant needed for backwards compatibility for now
     def is_analysis_ongoing(self, case_id: str) -> bool:
         """Call internal Trailblazer API"""
         return self.is_latest_analysis_ongoing(case_id=case_id)
@@ -193,12 +193,12 @@ class BaseHandler:
         """Call internal Trailblazer API"""
         return self.is_latest_analysis_failed(case_id=case_id)
 
-    # Duplicate
+    # Duplicate/redundant needed for backwards compatibility for now
     def is_analysis_completed(self, case_id: str) -> bool:
         """Call internal Trailblazer API"""
         return self.is_latest_analysis_completed(case_id=case_id)
 
-    # Duplicate
+    # Duplicate/redundant needed for backwards compatibility for now
     def get_analysis_status(self, case_id: str) -> str:
         """Call internal Trailblazer API"""
         return self.get_latest_analysis_status(case_id=case_id)
