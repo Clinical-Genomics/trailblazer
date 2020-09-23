@@ -16,9 +16,7 @@ class LogAnalysis(object):
     def __init__(self, store: Store):
         self.store = store
 
-    def __call__(
-        self, config_stream: List[str], sampleinfo: str = None, sacct: str = None
-    ):
+    def __call__(self, config_stream: List[str], sampleinfo: str = None, sacct: str = None):
         """Add a new analysis log."""
         config_raw = ruamel.yaml.safe_load(config_stream)
         config_data = files_api.parse_config(config_raw)
