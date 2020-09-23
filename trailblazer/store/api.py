@@ -28,18 +28,14 @@ class BaseHandler:
 
     def find_analysis(self, family, started_at, status):
         """Find a single analysis."""
-        query = self.Analysis.query.filter_by(
-            family=family, started_at=started_at, status=status
-        )
+        query = self.Analysis.query.filter_by(family=family, started_at=started_at, status=status)
         return query.first()
 
     def find_analyses_with_comment(self, comment):
         """Find a analyses containing comment."""
         analysis_query = self.Analysis.query
 
-        analysis_query = analysis_query.filter(
-            self.Analysis.comment.like(f"%{comment}%")
-        )
+        analysis_query = analysis_query.filter(self.Analysis.comment.like(f"%{comment}%"))
         return analysis_query
 
     def analyses(
@@ -69,9 +65,7 @@ class BaseHandler:
         if isinstance(deleted, bool):
             analysis_query = analysis_query.filter_by(is_deleted=deleted)
         if temp:
-            analysis_query = analysis_query.filter(
-                self.Analysis.status.in_(ONGOING_STATUSES)
-            )
+            analysis_query = analysis_query.filter(self.Analysis.status.in_(ONGOING_STATUSES))
         if before:
             analysis_query = analysis_query.filter(self.Analysis.started_at < before)
         if is_visible is not None:
@@ -149,9 +143,7 @@ class BaseHandler:
 
         categories = categories.group_by(self.Job.name).all()
 
-        data = [
-            {"name": category.name, "count": category.count} for category in categories
-        ]
+        data = [{"name": category.name, "count": category.count} for category in categories]
         return data
 
     def jobs(self):
@@ -237,9 +229,7 @@ class BaseHandler:
             self.commit()
 
     @staticmethod
-    def get_trending(
-        mip_config_raw: str, qcmetrics_raw: str, sampleinfo_raw: dict
-    ) -> dict:
+    def get_trending(mip_config_raw: str, qcmetrics_raw: str, sampleinfo_raw: dict) -> dict:
         """Get trending data for a MIP analysis"""
         return trending.parse_mip_analysis(
             mip_config_raw=mip_config_raw,
@@ -263,7 +253,5 @@ class BaseHandler:
 
 class Store(alchy.Manager, BaseHandler):
     def __init__(self, uri: str, families_dir: str):
-        super(Store, self).__init__(
-            config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=models.Model
-        )
+        super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=models.Model)
         self.families_dir = families_dir
