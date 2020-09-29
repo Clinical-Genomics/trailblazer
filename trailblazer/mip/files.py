@@ -1,9 +1,9 @@
 """Parse the MIP config, qc_metric and qc_sampleinfo file"""
 
-from typing import List
+from typing import List, Optional
 
 
-def get_case_from_config(config: dict) -> str:
+def get_case_from_config(config: dict) -> Optional[str]:
     """Get case id from config"""
     if "case_id" in config:
         return config["case_id"]
@@ -78,7 +78,9 @@ def parse_sampleinfo_light(data: dict) -> dict:
     Returns:
         dict: {'version': str, 'date': str, 'is_finished': str}
 
+
     """
+
     outdata = {
         "date": get_sampleinfo_date(data=data),
         "version": data["mip_version"],
@@ -147,14 +149,10 @@ def parse_sampleinfo(data: dict) -> dict:
 def set_bamstats_metrics(file_metrics: dict, sample_data: dict) -> dict:
     """Set bamstats metrics"""
     total_reads = sample_data["reads"] if "reads" in sample_data else 0
-    sample_data["reads"] = (
-        int(file_metrics["bamstats"]["raw_total_sequences"]) + total_reads
-    )
+    sample_data["reads"] = int(file_metrics["bamstats"]["raw_total_sequences"]) + total_reads
 
     total_mapped = sample_data["total_mapped"] if "total_mapped" in sample_data else 0
-    sample_data["total_mapped"] = (
-        int(file_metrics["bamstats"]["reads_mapped"]) + total_mapped
-    )
+    sample_data["total_mapped"] = int(file_metrics["bamstats"]["reads_mapped"]) + total_mapped
     return sample_data
 
 
@@ -186,25 +184,17 @@ def set_collectmultiplemetrics_metrics(file_metrics: dict, sample_data: dict) ->
     return sample_data
 
 
-def set_collectmultiplemetricsinsertsize_metrics(
-    file_metrics: dict, sample_data: dict
-) -> dict:
+def set_collectmultiplemetricsinsertsize_metrics(file_metrics: dict, sample_data: dict) -> dict:
     """Set collectmultiplemetricsinsertsize metrics"""
-    mm_insert_metrics = file_metrics["collectmultiplemetricsinsertsize"]["header"][
-        "data"
-    ]
+    mm_insert_metrics = file_metrics["collectmultiplemetricsinsertsize"]["header"]["data"]
     sample_data["median_insert_size"] = int(mm_insert_metrics["MEDIAN_INSERT_SIZE"])
-    sample_data["insert_size_standard_deviation"] = float(
-        mm_insert_metrics["STANDARD_DEVIATION"]
-    )
+    sample_data["insert_size_standard_deviation"] = float(mm_insert_metrics["STANDARD_DEVIATION"])
     return sample_data
 
 
 def set_markduplicates_metrics(file_metrics: dict, sample_data: dict) -> dict:
     """Set markduplicates metrics"""
-    sample_data["duplicates"] = float(
-        file_metrics["markduplicates"]["fraction_duplicates"]
-    )
+    sample_data["duplicates"] = float(file_metrics["markduplicates"]["fraction_duplicates"])
     return sample_data
 
 
@@ -242,9 +232,7 @@ def parse_qcmetrics(metrics: dict) -> dict:
         sample_data = {
             "id": sample_id,
         }
-        sample_data = get_sample_metrics(
-            sample_metrics=sample_metrics, sample_data=sample_data
-        )
+        sample_data = get_sample_metrics(sample_metrics=sample_metrics, sample_data=sample_data)
         sample_data["mapped"] = sample_data["total_mapped"] / sample_data["reads"]
         qc_metric["samples"].append(sample_data)
     return qc_metric

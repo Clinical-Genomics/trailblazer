@@ -38,9 +38,7 @@ def base(context, config, database, root, log_level):
 
 
 @base.command("log")
-@click.option(
-    "-s", "--sampleinfo", type=click.Path(exists=True), help="sample info file"
-)
+@click.option("-s", "--sampleinfo", type=click.Path(exists=True), help="sample info file")
 @click.option("-a", "--sacct", type=click.Path(exists=True), help="sacct job info file")
 @click.option("-q", "--quiet", is_flag=True, help="supress outputs")
 @click.argument("config", type=click.File())
@@ -54,16 +52,10 @@ def log_cmd(context, sampleinfo, sacct, quiet, config):
     try:
         new_run = log_analysis(config, sampleinfo=sampleinfo, sacct=sacct)
     except MissingFileError as error:
-        click.echo(
-            click.style(f"Skipping, missing Sacct file: {error.message}", fg="red")
-        )
+        click.echo(click.style(f"Skipping, missing Sacct file: {error.message}", fg="red"))
         return
     except KeyError as error:
-        print(
-            click.style(
-                f"unexpected output, missing key: {error.args[0]} in {config}", fg="red"
-            )
-        )
+        print(click.style(f"unexpected output, missing key: {error.args[0]} in {config}", fg="red"))
         return
     if new_run is None:
         if not quiet:
@@ -90,9 +82,7 @@ def init(context, reset, force):
         context.abort()
 
     context.obj["store"].setup()
-    message = (
-        f"Success! New tables: {', '.join(context.obj['store'].engine.table_names())}"
-    )
+    message = f"Success! New tables: {', '.join(context.obj['store'].engine.table_names())}"
     click.echo(click.style(message, fg="green"))
 
 

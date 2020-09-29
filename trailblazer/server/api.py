@@ -40,12 +40,8 @@ def analyses():
     data = []
     for analysis_obj in query_page.items:
         analysis_data = analysis_obj.to_dict()
-        analysis_data["user"] = (
-            analysis_obj.user.to_dict() if analysis_obj.user else None
-        )
-        analysis_data["failed_jobs"] = [
-            job_obj.to_dict() for job_obj in analysis_obj.failed_jobs
-        ]
+        analysis_data["user"] = analysis_obj.user.to_dict() if analysis_obj.user else None
+        analysis_data["failed_jobs"] = [job_obj.to_dict() for job_obj in analysis_obj.failed_jobs]
         data.append(analysis_data)
 
     return jsonify(analyses=data)

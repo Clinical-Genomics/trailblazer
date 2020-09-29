@@ -51,9 +51,7 @@ class Analysis(Model):
 
     __tablename__ = "analysis"
     __table_args__ = (
-        UniqueConstraint(
-            "family", "started_at", "status", name="_uc_family_start_status"
-        ),
+        UniqueConstraint("family", "started_at", "status", name="_uc_family_start_status"),
     )
 
     id = Column(types.Integer, primary_key=True)
