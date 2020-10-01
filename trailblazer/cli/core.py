@@ -10,7 +10,6 @@ import trailblazer
 from trailblazer.cli.get import get
 from trailblazer.exc import MissingFileError
 from trailblazer.log import LogAnalysis
-from trailblazer.mip.files import parse_config
 from trailblazer.mip.miplog import job_ids
 from trailblazer.store import Store
 from .clean import clean
@@ -132,11 +131,8 @@ def cancel(context, jobs, analysis_id):
         context.abort()
 
     config_path = Path(analysis_obj.config_path)
-    with config_path.open() as config_stream:
-        config_raw = ruamel.yaml.safe_load(config_stream)
-    config_data = parse_config(config_raw)
-
-    log_path = Path(f"{config_data['log_path']}")
+    config_data = ruamel.yaml.safe_load(open(config_path))
+    log_path = Path(config_data.get("log_path"))
     if not log_path.exists():
         click.echo(f"missing MIP log file: {log_path}")
         context.abort()

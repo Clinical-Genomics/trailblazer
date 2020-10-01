@@ -7,7 +7,7 @@ from click.testing import CliRunner
 import ruamel.yaml
 
 from trailblazer.cli import base
-from trailblazer.mip import sacct, files as files_api
+from trailblazer.mip import sacct
 from trailblazer.log import LogAnalysis
 from trailblazer.store import Store
 
@@ -46,9 +46,9 @@ def files_raw(files):
 @pytest.fixture(scope="session")
 def files_data(files_raw):
     return {
-        "config": files_api.parse_config(files_raw["config"]),
-        "sampleinfo": files_api.parse_sampleinfo(files_raw["sampleinfo"]),
-        "qcmetrics": files_api.parse_qcmetrics(files_raw["qcmetrics"]),
+        "config": files_raw["config"],
+        "sampleinfo": files_raw["sampleinfo"],
+        "qcmetrics": files_raw["qcmetrics"],
         "sacct": sacct.parse_sacct(files_raw["sacct"]),
     }
 
@@ -79,7 +79,7 @@ def sample_store(store):
         analysis_data["failed_jobs"] = [store.Job(**job_data) for job_data in failed_jobs]
         store.add(store.Analysis(**analysis_data))
     store.commit()
-    store.add_pending(family="gentlebird", email="tom.cruise@magnolia.com")
+    store.add_pending_analysis(family="gentlebird", email="tom.cruise@magnolia.com")
     yield store
 
 

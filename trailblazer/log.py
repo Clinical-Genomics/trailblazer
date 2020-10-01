@@ -5,7 +5,7 @@ from typing import List
 
 import ruamel.yaml
 
-from trailblazer.mip import sacct as sacct_api, files as files_api, miplog
+from trailblazer.mip import sacct as sacct_api, miplog
 from trailblazer.store import models, Store
 from trailblazer.exc import MissingFileError
 
@@ -18,20 +18,19 @@ class LogAnalysis(object):
 
     def __call__(self, config_stream: List[str], sampleinfo: str = None, sacct: str = None):
         """Add a new analysis log."""
-        config_raw = ruamel.yaml.safe_load(config_stream)
-        config_data = files_api.parse_config(config_raw)
+        config_data = ruamel.yaml.safe_load(config_stream)
         sampleinfo_path = Path(sampleinfo or config_data["sampleinfo_path"])
         if not sampleinfo_path.exists():
             raise MissingFileError(sampleinfo_path)
         with sampleinfo_path.open() as stream:
             sampleinfo_raw = ruamel.yaml.safe_load(stream)
-        sampleinfo_data = files_api.parse_sampleinfo_light(sampleinfo_raw)
-        sacct_path = Path(sacct if sacct else f"{config_data['log_path']}.status")
+        sampleinfo_data = sampleinfo_raw
+        sacct_path = Path(sacct if sacct else f"{config_data['log_file']}.status")
         if not sacct_path.exists():
             raise MissingFileError(sacct_path)
         with sacct_path.open() as stream:
             sacct_jobs = sacct_api.parse_sacct(stream)
-        with Path(config_data["log_path"]).open() as stream:
+        with Path(config_data["log_file"]).open() as stream:
             jobs = len(miplog.job_ids(stream))
         run_data = self.parse(config_data, sampleinfo_data, sacct_jobs, jobs=jobs)
         self._delete_temp_logs(run_data["case"])
@@ -51,15 +50,15 @@ class LogAnalysis(object):
         cls, config_data: dict, sampleinfo_data: dict, sacct_jobs: List[dict], jobs: int
     ) -> dict:
         """Parse information about a run."""
-        analysis_types = [sample["type"] for sample in config_data["samples"]]
+        analysis_types = list(config_data["analysis_type"].values())
         run_data = {
             "user": config_data["email"],
-            "case": config_data["case"],
-            "priority": config_data["priority"],
-            "started_at": sampleinfo_data["date"],
-            "version": sampleinfo_data["version"],
-            "out_dir": config_data["out_dir"],
-            "config_path": config_data["config_path"],
+            "case": config_data["case_id"],
+            "priority": config_data["slurm_quality_of_service"],
+            "started_at": sampleinfo_data["analysis_date"],
+            "version": sampleinfo_data["mip_version"],
+            "out_dir": config_data["outdata_dir"],
+            "config_path": config_data["config_file_analysis"],
             "type": cls._get_analysis_type(analysis_types),
         }
 
@@ -67,7 +66,7 @@ class LogAnalysis(object):
         run_data.update(sacct_data)
 
         run_data["status"] = cls.get_status(
-            sampleinfo_data["is_finished"], len(run_data["failed_jobs"])
+            sampleinfo_data["analysisrunstatus"], len(run_data["failed_jobs"])
         )
         if run_data["status"] == "completed":
             run_data["completed_at"] = last_job_end

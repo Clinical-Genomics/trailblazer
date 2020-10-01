@@ -5,7 +5,6 @@ from pathlib import Path
 import pytest
 
 from trailblazer import log, exc
-from trailblazer.log import LogAnalysis
 
 
 @pytest.mark.parametrize(
