@@ -77,7 +77,6 @@ class BaseHandler:
 
     def analyses(
         self,
-        *,
         case_id: str = None,
         query: str = None,
         status: str = None,
