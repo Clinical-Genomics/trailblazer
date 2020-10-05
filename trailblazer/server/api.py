@@ -91,4 +91,4 @@ def aggregate_jobs():
 def query_get_latest_analysis():
     content = request.json
     result = store.get_latest_analysis(case_id=content.get("case_id"))
-    return jsonify(content.get("case_id"))
+    return jsonify(result)
