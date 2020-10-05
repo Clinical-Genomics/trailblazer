@@ -8,7 +8,12 @@ import shutil
 import alchy
 import sqlalchemy as sqa
 
-from trailblazer.constants import COMPLETED_STATUS, FAILED_STATUS, ONGOING_STATUSES
+from trailblazer.constants import (
+    STARTED_STATUSES,
+    ONGOING_STATUSES,
+    FAILED_STATUS,
+    COMPLETED_STATUS,
+)
 from trailblazer.store import models
 
 
@@ -36,11 +41,11 @@ class BaseHandler:
         metadata.updated_at = dt.datetime.now()
         self.commit()
 
-    def find_analysis(self, family, started_at, status):
+    def find_analysis(self, case_id, started_at, status):
         """
         used in LOG
         Find a single analysis."""
-        query = self.Analysis.query.filter_by(family=family, started_at=started_at, status=status)
+        query = self.Analysis.query.filter_by(family=case_id, started_at=started_at, status=status)
         return query.first()
 
     def find_analyses_with_comment(self, comment):
@@ -73,20 +78,24 @@ class BaseHandler:
     def analyses(
         self,
         *,
-        family: str = None,
+        case_id: str = None,
         query: str = None,
         status: str = None,
         deleted: bool = None,
         temp: bool = False,
         before: dt.datetime = None,
         is_visible: bool = None,
+        family: str = None,
     ):
         """
         used by REST +> CG
         Fetch analyses from the database."""
+        if not case_id:
+            case_id = family
+
         analysis_query = self.Analysis.query
-        if family:
-            analysis_query = analysis_query.filter_by(family=family)
+        if case_id:
+            analysis_query = analysis_query.filter_by(family=case_id)
         elif query:
             analysis_query = analysis_query.filter(
                 sqa.or_(
@@ -145,22 +154,15 @@ class BaseHandler:
 
     def has_latest_analysis_started(self, case_id: str) -> bool:
         """Check if analysis has started"""
-        statuses = ("ongoing", "failed", "completed")
-        get_analysis_status = {
-            "ongoing": self.is_latest_analysis_ongoing,
-            "failed": self.is_latest_analysis_failed,
-            "completed": self.is_latest_analysis_completed,
-        }
-        for status in statuses:
-            has_started = get_analysis_status[status](case_id=case_id)
-            if has_started:
-                return True
+        latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
+        if latest_analysis_status in STARTED_STATUSES:
+            return True
         return False
 
-    def add_pending_analysis(self, family: str, email: str = None) -> models.Analysis:
+    def add_pending_analysis(self, case_id: str, email: str = None) -> models.Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
-        new_log = self.Analysis(family=family, status="pending", started_at=started_at)
+        new_log = self.Analysis(family=case_id, status="pending", started_at=started_at)
         new_log.user = self.user(email) if email else None
         self.add_commit(new_log)
         return new_log
@@ -185,11 +187,13 @@ class BaseHandler:
             old_analysis.is_deleted = True
         self.commit()
 
-    def delete_analysis(self, family: str, date: dt.datetime):
+    def delete_analysis(self, case_id: str, started_at: dt.datetime):
         """Delete the analysis output."""
-        if self.analyses(family=family, temp=True).count() > 0:
+        if self.analyses(family=case_id, temp=True).count() > 0:
             raise ValueError("analysis for family already running")
-        analysis_obj = self.find_analysis(family, date, "completed")
+        analysis_obj = self.find_analysis(
+            case_id=case_id, started_at=started_at, status="completed"
+        )
         if not analysis_obj.is_deleted:
             analysis_path = Path(analysis_obj.out_dir).parent
             shutil.rmtree(analysis_path, ignore_errors=True)

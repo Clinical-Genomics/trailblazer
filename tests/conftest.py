@@ -74,12 +74,13 @@ def sample_store(store):
     for user_data in sample_data["users"]:
         store.add_user(user_data["name"], user_data["email"])
     for analysis_data in sample_data["analyses"]:
+        analysis_data["case_id"] = analysis_data["family"]
         analysis_data["user"] = store.user(analysis_data["user"])
         failed_jobs = analysis_data.get("failed_jobs", [])
         analysis_data["failed_jobs"] = [store.Job(**job_data) for job_data in failed_jobs]
         store.add(store.Analysis(**analysis_data))
     store.commit()
-    store.add_pending_analysis(family="gentlebird", email="tom.cruise@magnolia.com")
+    store.add_pending_analysis(case_id="gentlebird", email="tom.cruise@magnolia.com")
     yield store
 
 

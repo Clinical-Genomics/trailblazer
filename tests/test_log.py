@@ -34,7 +34,7 @@ def test_call(store, log_analysis, files):
         new_run = log_analysis(config_stream, sampleinfo=files["sampleinfo"], sacct=files["sacct"])
 
     # THEN it should add the analysis log
-    assert store.analyses(family=new_run.family).first() == new_run
+    assert store.analyses(case_id=new_run.family).first() == new_run
 
 
 def test_call_twice(store, log_analysis, files):
@@ -50,8 +50,8 @@ def test_call_twice(store, log_analysis, files):
 
     # THEN it should skip adding the duplicate log to the database
     assert new_run is None
-    assert store.analyses(family=first_analysis.family).count() == 1
-    assert store.analyses(family=first_analysis.family).first() == first_analysis
+    assert store.analyses(case_id=first_analysis.family).count() == 1
+    assert store.analyses(case_id=first_analysis.family).first() == first_analysis
 
 
 def test_call_with_missing_files(log_analysis, files):

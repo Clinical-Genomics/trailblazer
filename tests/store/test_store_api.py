@@ -74,10 +74,10 @@ def test_analysis(sample_store):
 )
 def test_is_latest_analysis_ongoing(sample_store, family, expected_bool):
     # GIVEN an analysis
-    analysis_objs = sample_store.analyses(family=family).first()
+    analysis_objs = sample_store.analyses(case_id=family).first()
     assert analysis_objs is not None
     # WHEN checking if the family has an ongoing analysis status
-    is_ongoing = sample_store.is_latest_analysis_ongoing(family)
+    is_ongoing = sample_store.is_latest_analysis_ongoing(case_id=family)
     # THEN it should return the expected result
     assert is_ongoing is expected_bool
 
@@ -93,10 +93,10 @@ def test_is_latest_analysis_ongoing(sample_store, family, expected_bool):
 )
 def test_is_latest_analysis_failed(sample_store, family, expected_bool):
     # GIVEN an analysis
-    analysis_objs = sample_store.analyses(family=family).first()
+    analysis_objs = sample_store.analyses(case_id=family).first()
     assert analysis_objs is not None
     # WHEN checking if the family has a failed analysis status
-    is_failed = sample_store.is_latest_analysis_failed(family)
+    is_failed = sample_store.is_latest_analysis_failed(case_id=family)
     # THEN it should return the expected result
     assert is_failed is expected_bool
 
@@ -112,10 +112,10 @@ def test_is_latest_analysis_failed(sample_store, family, expected_bool):
 )
 def test_is_latest_analysis_completed(sample_store, family, expected_bool):
     # GIVEN an analysis
-    analysis_objs = sample_store.analyses(family=family).first()
+    analysis_objs = sample_store.analyses(case_id=family).first()
     assert analysis_objs is not None
     # WHEN checking if the family has a failed analysis status
-    is_failed = sample_store.is_latest_analysis_completed(family)
+    is_failed = sample_store.is_latest_analysis_completed(case_id=family)
     # THEN it should return the expected result
     assert is_failed is expected_bool
 
@@ -131,10 +131,10 @@ def test_is_latest_analysis_completed(sample_store, family, expected_bool):
 )
 def test_get_latest_analysis_status(sample_store, family, expected_status):
     # GIVEN an analysis
-    analysis_objs = sample_store.analyses(family=family).first()
+    analysis_objs = sample_store.analyses(case_id=family).first()
     assert analysis_objs is not None
     # WHEN checking if the family has an analysis status
-    status = sample_store.get_latest_analysis_status(family)
+    status = sample_store.get_latest_analysis_status(case_id=family)
     # THEN it should return the expected result
     assert status is expected_status
 

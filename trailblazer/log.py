@@ -41,7 +41,7 @@ class LogAnalysis(object):
 
     def _delete_temp_logs(self, family_name: str):
         """Delete temporary logs for the current family."""
-        for temp_log in self.store.analyses(family=family_name, temp=True):
+        for temp_log in self.store.analyses(case_id=family_name, temp=True):
             log.debug(f"delete temporary log: {temp_log.id} - {temp_log.status}")
             temp_log.delete()
 
@@ -116,7 +116,7 @@ class LogAnalysis(object):
     def build(self, run_data: dict) -> models.Analysis:
         """Build a new Analysis object."""
         existing_run = self.store.find_analysis(
-            family=run_data["case"],
+            case_id=run_data["case"],
             started_at=run_data["started_at"],
             status=run_data["status"],
         )
