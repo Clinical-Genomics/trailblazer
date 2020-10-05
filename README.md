@@ -1,13 +1,12 @@
-# Trailblazer [![Coverage Status][coveralls-image]][coveralls-url]
+# Trailblazer [![Build Status][travis-image]][travis-url] [![Coverage Status][coveralls-image]][coveralls-url]
 
 ### Automate, monitor, and simplify running the [MIP][mip] analysis pipeline
 
 Trailblazer is a tool that aims to provide:
 
 - a Python interface to interact with MIP in an automated fashion
+- a monitoring web UI to help you keep track of the status of multiple runs
 - a limited command line interface to simplify running MIP using an opinionated setup
-
-[Here][Trailblazer-UI] you can find a simple web UI for Trailblazer that helps you keep track of the status of multiple runs
 
 ### Todo
 
@@ -158,9 +157,9 @@ trailblazer start family4 --priority high
 [black]: https://black.readthedocs.io/en/stable/
 [mip]: https://github.com/clinical-genomics/MIP
 [pypi]: https://pypi.python.org/pypi/trailblazer/
-[Trailblazer-UI]: https://github.com/Clinical-Genomics/trailblazer-ui
 
-
+[travis-url]: https://travis-ci.org/Clinical-Genomics/trailblazer
+[travis-image]: https://img.shields.io/travis/Clinical-Genomics/trailblazer.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/Clinical-Genomics/trailblazer
 [coveralls-image]: https://img.shields.io/coveralls/Clinical-Genomics/trailblazer.svg?style=flat-square
 [development manual]: http://www.clinicalgenomics.se/development/dev/githubflow/
