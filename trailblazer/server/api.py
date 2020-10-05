@@ -93,4 +93,4 @@ def query():
     content = request.json
     command = cmd_table[list(content.keys())[0]]
     result = command(**content[command])
-    return jsonify(result)
+    return jsonify(command)
