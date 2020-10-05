@@ -91,6 +91,7 @@ def aggregate_jobs():
 def query():
     cmd_table = {"get_latest_analysis": store.get_latest_analysis}
     content = request.json
-    command = cmd_table[list(content.keys())[0]]
-    result = command(**content[command])
-    return jsonify(command)
+    command_str = list(content.keys())[0]
+    command = cmd_table[command_str]
+    result = command(**content[command_str])
+    return jsonify(result)
