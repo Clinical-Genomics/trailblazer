@@ -87,11 +87,8 @@ def aggregate_jobs():
     return jsonify(jobs=data)
 
 
-@blueprint.route("/query", methods=["POST"])
-def query():
-    cmd_table = {"get_latest_analysis": store.get_latest_analysis}
+@blueprint.route("/query/get_latest_analysis", methods=["POST"])
+def query_get_latest_analysis():
     content = request.json
-    command_str = list(content.keys())[0]
-    command = cmd_table[command_str]
-    result = command(**content[command_str])
+    result = store.get_latest_analysis(case_id=content.get("case_id"))
     return jsonify(result)
