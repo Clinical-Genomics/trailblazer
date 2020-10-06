@@ -149,7 +149,7 @@ def post_delete_analysis():
 def post_mark_analyses_deleted():
     content = request.json
     old_analyses = store.mark_analyses_deleted(case_id=content.get("case_id"))
-    data = [analysis_obj for analysis_obj in old_analyses]
+    data = [analysis_obj.to_dict() for analysis_obj in old_analyses]
     if data:
         return jsonify(*data), 201
     return jsonify(None), 201
