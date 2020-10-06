@@ -80,28 +80,6 @@ class Analysis(Model):
         """Check if the log has an ongoing status: 'running|'pending'"""
         return self.status in ONGOING_STATUSES
 
-    def __repr__(self):
-        return json.dumps(
-            {
-                "id": self.id,
-                "family": self.family,
-                "version": self.version,
-                "logged_at": self.logged_at,
-                "started_at": self.started_at,
-                "completed_at": self.completed_at,
-                "status": self.status,
-                "priority": self.priority,
-                "out_dir": self.out_dir,
-                "config_path": self.config_path,
-                "comment": self.comment,
-                "is_deleted": self.is_deleted,
-                "is_visible": self.is_visible,
-                "type": self.type,
-                "user_id": self.user_id,
-                "progress": self.progress,
-            }
-        )
-
 
 class Job(Model):
 
