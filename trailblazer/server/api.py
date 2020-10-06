@@ -104,7 +104,7 @@ def post_query_analyses():
         family=content.get("family"),
     )
     data = [analysis_obj.to_dict() for analysis_obj in query_analyses]
-    return Response(jsonify(*data), status=200, mimetype="application/json")
+    return jsonify(*data), 200
 
 
 @blueprint.route("/get-latest-analysis", methods=["POST"])
@@ -113,8 +113,8 @@ def post_get_latest_analysis():
     analysis_obj = store.get_latest_analysis(case_id=content.get("case_id"))
     if analysis_obj:
         data = analysis_obj.to_dict()
-        return Response(response=jsonify(**data), status=200)
-    return Response(response=jsonify(None), status=200)
+        return jsonify(**data), 200
+    return jsonify(None), 200
 
 
 @blueprint.route("/find-analysis", methods=["POST"])
