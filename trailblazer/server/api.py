@@ -113,8 +113,8 @@ def post_get_latest_analysis():
     analysis_obj = store.get_latest_analysis(case_id=content.get("case_id"))
     if analysis_obj:
         data = analysis_obj.to_dict()
-        return Response(jsonify(**data), status=200, mimetype="application/json")
-    return Response(jsonify(None), status=200, mimetype="application/json")
+        return Response(response=jsonify(**data), status=200)
+    return Response(response=jsonify(None), status=200)
 
 
 @blueprint.route("/find-analysis", methods=["POST"])
