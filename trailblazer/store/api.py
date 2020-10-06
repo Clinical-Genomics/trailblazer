@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """Store backend in Trailblazer"""
-from typing import List
+from typing import List, Optional
 import datetime as dt
 from pathlib import Path
 import shutil
 
 import alchy
+from alchy import Query
 import sqlalchemy as sqa
 
 from trailblazer.constants import (
@@ -85,7 +86,7 @@ class BaseHandler:
         before: dt.datetime = None,
         is_visible: bool = None,
         family: str = None,
-    ):
+    ) -> Query:
         """
         used by REST +> CG
         Fetch analyses from the database."""
@@ -114,14 +115,14 @@ class BaseHandler:
             analysis_query = analysis_query.filter_by(is_visible=is_visible)
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def analysis(self, analysis_id: int) -> models.Analysis:
+    def analysis(self, analysis_id: int) -> Optional[models.Analysis]:
         """
         used by REST
         Get a single analysis by id."""
         return self.Analysis.query.get(analysis_id)
 
-    def get_latest_analysis(self, case_id: str) -> models.Analysis:
-        latest_analysis = self.analyses(family=case_id).first()
+    def get_latest_analysis(self, case_id: str) -> Optional[models.Analysis]:
+        latest_analysis = self.analyses(case_id=case_id).one_or_none()
         return latest_analysis
 
     def get_latest_analysis_status(self, case_id: str) -> str:
@@ -146,7 +147,7 @@ class BaseHandler:
 
     def is_latest_analysis_completed(self, case_id: str) -> bool:
         """Check if the latest analysis is completed for a case_id"""
-        latest_analysis = self.analyses(family=case_id).first()
+        latest_analysis = self.analyses(case_id=case_id).first()
         if latest_analysis and latest_analysis.status == COMPLETED_STATUS:
             return True
         return False
@@ -180,32 +181,36 @@ class BaseHandler:
         """Return all jobs in the database."""
         return self.Job.query
 
-    def mark_analyses_deleted(self, case_id: str) -> None:
+    def mark_analyses_deleted(self, case_id: str) -> Query:
         """ mark analyses connected to a case as deleted """
-        for old_analysis in self.analyses(family=case_id):
-            old_analysis.is_deleted = True
+        old_analyses = self.analyses(case_id=case_id)
+        if old_analyses.count() > 0:
+            for old_analysis in old_analyses:
+                old_analysis.is_deleted = True
         self.commit()
+        return old_analyses
 
-    def delete_analysis(self, case_id: str, started_at: dt.datetime):
+    def delete_analysis(self, case_id: str, started_at: dt.datetime) -> Optional[models.Analysis]:
         """Delete the analysis output."""
-        if self.analyses(family=case_id, temp=True).count() > 0:
+        if self.analyses(case_id=case_id, temp=True).count() > 0:
             raise ValueError("analysis for family already running")
         analysis_obj = self.find_analysis(
             case_id=case_id, started_at=started_at, status="completed"
         )
-        if not analysis_obj.is_deleted:
+        if analysis_obj and not analysis_obj.is_deleted:
             analysis_path = Path(analysis_obj.out_dir).parent
             shutil.rmtree(analysis_path, ignore_errors=True)
             analysis_obj.is_deleted = True
             self.commit()
+        return analysis_obj
 
-    def get_family_root_dir(self, family_id: str):
+    def get_family_root_dir(self, case_id: str):
         """Get path for a case"""
-        return Path(self.families_dir) / family_id
+        return Path(self.families_dir) / case_id
 
     def get_latest_logged_analysis(self, case_id: str):
         """Get the the analysis with the latest logged_at date"""
-        return self.analyses(family=case_id).order_by(models.Analysis.logged_at.desc())
+        return self.analyses(case_id=case_id).order_by(models.Analysis.logged_at.desc())
 
 
 class Store(alchy.Manager, BaseHandler):

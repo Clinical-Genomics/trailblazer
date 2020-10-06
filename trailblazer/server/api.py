@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from flask import abort, g, Blueprint, jsonify, make_response, request
+from flask import abort, g, Blueprint, jsonify, make_response, request, Response
 from google.auth import jwt
 
 from trailblazer.server.ext import store
@@ -87,9 +87,78 @@ def aggregate_jobs():
     return jsonify(jobs=data)
 
 
-@blueprint.route("/query-get-latest-analysis", methods=["POST"])
-def query_get_latest_analysis():
+# CG REST INTERFACE ###
+
+
+@blueprint.route("/query-analyses", methods=["POST"])
+def post_query_analyses():
+    content = request.json
+    query_analyses = store.analyses(
+        case_id=content.get("case_id"),
+        query=content.get("query"),
+        status=content.get("status"),
+        deleted=content.get("deleted"),
+        temp=content.get("temp"),
+        before=content.get("before"),
+        is_visible=content.get("visible"),
+        family=content.get("family"),
+    )
+    data = [analysis_obj.to_dict() for analysis_obj in query_analyses]
+    return Response(jsonify(*data), status=200, mimetype="application/json")
+
+
+@blueprint.route("/get-latest-analysis", methods=["POST"])
+def post_get_latest_analysis():
     content = request.json
     analysis_obj = store.get_latest_analysis(case_id=content.get("case_id"))
+    if analysis_obj:
+        data = analysis_obj.to_dict()
+        return Response(jsonify(**data), status=200, mimetype="application/json")
+    return Response(jsonify(None), status=200, mimetype="application/json")
+
+
+@blueprint.route("/find-analysis", methods=["POST"])
+def post_find_analysis():
+    content = request.json
+    analysis_obj = store.find_analysis(
+        case_id=content.get("case_id"),
+        started_at=content.get("started_at"),
+        status=content.get("started"),
+    )
+    if analysis_obj:
+        data = analysis_obj.to_dict()
+        return Response(jsonify(**data), status=200, mimetype="application/json")
+    return Response(jsonify(None), status=200, mimetype="application/json")
+
+
+@blueprint.route("/delete-analysis", methods=["POST"])
+def post_delete_analysis():
+    content = request.json
+    try:
+        analysis_obj = store.delete_analysis(
+            case_id=content.get("case_id"), started_at=content.get("started_at")
+        )
+        data = analysis_obj.to_dict()
+        return Response(jsonify(**data), 201, mimetype="application/json")
+    except Exception as e:
+        return Response(jsonify(f"Exception: {e}"), 409, mimetype="application/json")
+
+
+@blueprint.route("/mark-analyses-deleted", methods=["POST"])
+def post_mark_analyses_deleted():
+    content = request.json
+    old_analyses = store.mark_analyses_deleted(case_id=content.get("case_id"))
+    data = [analysis_obj for analysis_obj in old_analyses]
+    if data:
+        return Response(jsonify(*data), 201, mimetype="application/json")
+    return Response(jsonify(None), 201, mimetype="application/json")
+
+
+@blueprint.route("/add-pending-analysis", methods=["POST"])
+def post_add_pending_analysis():
+    content = request.json
+    analysis_obj = store.add_pending_analysis(
+        case_id=content.get("case_id"), email=content.get("email")
+    )
     data = analysis_obj.to_dict()
-    return jsonify(**data)
+    return Response(jsonify(**data), 201, mimetype="application/json")
