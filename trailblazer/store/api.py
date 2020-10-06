@@ -122,7 +122,7 @@ class BaseHandler:
         return self.Analysis.query.get(analysis_id)
 
     def get_latest_analysis(self, case_id: str) -> Optional[models.Analysis]:
-        latest_analysis = self.analyses(case_id=case_id).one_or_none()
+        latest_analysis = self.analyses(case_id=case_id).first()
         return latest_analysis
 
     def get_latest_analysis_status(self, case_id: str) -> str:
