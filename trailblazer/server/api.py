@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+from dateutil.parser import parse as parse_datestr
 
 from flask import abort, g, Blueprint, jsonify, make_response, request, Response
 from google.auth import jwt
@@ -99,7 +100,7 @@ def post_query_analyses():
         status=content.get("status"),
         deleted=content.get("deleted"),
         temp=content.get("temp"),
-        before=content.get("before"),
+        before=parse_datestr(content.get("before")) if content.get("before") else None,
         is_visible=content.get("visible"),
         family=content.get("family"),
     )
@@ -122,13 +123,13 @@ def post_find_analysis():
     content = request.json
     analysis_obj = store.find_analysis(
         case_id=content.get("case_id"),
-        started_at=content.get("started_at"),
-        status=content.get("started"),
+        started_at=parse_datestr(content.get("started_at")),
+        status=content.get("status"),
     )
     if analysis_obj:
         data = analysis_obj.to_dict()
-        return Response(jsonify(**data), status=200, mimetype="application/json")
-    return Response(jsonify(None), status=200, mimetype="application/json")
+        return jsonify(**data), 200
+    return jsonify(None), 200
 
 
 @blueprint.route("/delete-analysis", methods=["POST"])
@@ -136,12 +137,12 @@ def post_delete_analysis():
     content = request.json
     try:
         analysis_obj = store.delete_analysis(
-            case_id=content.get("case_id"), started_at=content.get("started_at")
+            case_id=content.get("case_id"), started_at=parse_datestr(content.get("started_at"))
         )
         data = analysis_obj.to_dict()
-        return Response(jsonify(**data), 201, mimetype="application/json")
+        return jsonify(**data), 201
     except Exception as e:
-        return Response(jsonify(f"Exception: {e}"), 409, mimetype="application/json")
+        return jsonify(f"Exception: {e}"), 409
 
 
 @blueprint.route("/mark-analyses-deleted", methods=["POST"])
@@ -150,8 +151,8 @@ def post_mark_analyses_deleted():
     old_analyses = store.mark_analyses_deleted(case_id=content.get("case_id"))
     data = [analysis_obj for analysis_obj in old_analyses]
     if data:
-        return Response(jsonify(*data), 201, mimetype="application/json")
-    return Response(jsonify(None), 201, mimetype="application/json")
+        return jsonify(*data), 201
+    return jsonify(None), 201
 
 
 @blueprint.route("/add-pending-analysis", methods=["POST"])
@@ -161,4 +162,4 @@ def post_add_pending_analysis():
         case_id=content.get("case_id"), email=content.get("email")
     )
     data = analysis_obj.to_dict()
-    return Response(jsonify(**data), 201, mimetype="application/json")
+    return jsonify(**data), 201
