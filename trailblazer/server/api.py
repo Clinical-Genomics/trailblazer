@@ -2,12 +2,19 @@
 import datetime
 from dateutil.parser import parse as parse_datestr
 
-from flask import abort, g, Blueprint, jsonify, make_response, request, Response
+from flask import abort, g, Blueprint, jsonify, make_response, request
 from google.auth import jwt
 
 from trailblazer.server.ext import store
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
+
+
+def stringify_timestamps(data: dict) -> dict:
+    for key, val in data.items():
+        if isinstance(val, datetime.datetime):
+            data[key] = str(val)
+    return data
 
 
 @blueprint.before_request
@@ -104,7 +111,7 @@ def post_query_analyses():
         is_visible=content.get("visible"),
         family=content.get("family"),
     )
-    data = [analysis_obj.to_dict() for analysis_obj in query_analyses]
+    data = [stringify_timestamps(analysis_obj.to_dict()) for analysis_obj in query_analyses]
     return jsonify(*data), 200
 
 
@@ -113,7 +120,7 @@ def post_get_latest_analysis():
     content = request.json
     analysis_obj = store.get_latest_analysis(case_id=content.get("case_id"))
     if analysis_obj:
-        data = analysis_obj.to_dict()
+        data = stringify_timestamps(analysis_obj.to_dict())
         return jsonify(**data), 200
     return jsonify(None), 200
 
@@ -127,7 +134,7 @@ def post_find_analysis():
         status=content.get("status"),
     )
     if analysis_obj:
-        data = analysis_obj.to_dict()
+        data = stringify_timestamps(analysis_obj.to_dict())
         return jsonify(**data), 200
     return jsonify(None), 200
 
@@ -139,7 +146,7 @@ def post_delete_analysis():
         analysis_obj = store.delete_analysis(
             case_id=content.get("case_id"), started_at=parse_datestr(content.get("started_at"))
         )
-        data = analysis_obj.to_dict()
+        data = stringify_timestamps(analysis_obj.to_dict())
         return jsonify(**data), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
@@ -149,7 +156,7 @@ def post_delete_analysis():
 def post_mark_analyses_deleted():
     content = request.json
     old_analyses = store.mark_analyses_deleted(case_id=content.get("case_id"))
-    data = [analysis_obj.to_dict() for analysis_obj in old_analyses]
+    data = [stringify_timestamps(analysis_obj.to_dict()) for analysis_obj in old_analyses]
     if data:
         return jsonify(*data), 201
     return jsonify(None), 201
@@ -161,5 +168,5 @@ def post_add_pending_analysis():
     analysis_obj = store.add_pending_analysis(
         case_id=content.get("case_id"), email=content.get("email")
     )
-    data = analysis_obj.to_dict()
+    data = stringify_timestamps(analysis_obj.to_dict())
     return jsonify(**data), 201
