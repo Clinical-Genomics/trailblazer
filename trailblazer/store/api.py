@@ -191,25 +191,19 @@ class BaseHandler:
         self.commit()
         return old_analyses
 
-    def delete_analysis(self, case_id: str, started_at: dt.datetime) -> Optional[models.Analysis]:
+    def delete_analysis(self, case_id: str, force: bool = False) -> Optional[models.Analysis]:
         """Delete the analysis output."""
-        if self.analyses(case_id=case_id, temp=True).count() > 0:
+        if not force and self.analyses(case_id=case_id, temp=True).count() > 0:
             raise TrailblazerError("Analysis for family is currently running")
-        analysis_obj = self.find_analysis(
-            case_id=case_id, started_at=started_at, status="completed"
-        )
-        if not analysis_obj or analysis_obj.is_deleted:
-            raise TrailblazerError("Analysis not found or has already been deleted")
-
+        analysis_obj = self.analyses(case_id=case_id).first()
+        if not analysis_obj:
+            raise TrailblazerError("Analysis not found")
         analysis_path = Path(analysis_obj.out_dir).parent
+        if not analysis_path.is_dir():
+            raise TrailblazerError("Analysis directory already deleted")
         shutil.rmtree(analysis_path, ignore_errors=True)
-        analysis_obj.is_deleted = True
-        self.commit()
+        self.mark_analyses_deleted(case_id=case_id)
         return analysis_obj
-
-    def get_family_root_dir(self, case_id: str):
-        """Get path for a case"""
-        return Path(self.families_dir) / case_id
 
     def get_latest_logged_analysis(self, case_id: str):
         """Get the the analysis with the latest logged_at date"""
