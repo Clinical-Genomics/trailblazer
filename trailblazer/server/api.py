@@ -145,7 +145,7 @@ def post_delete_analysis():
     content = request.json
     try:
         analysis_obj = store.delete_analysis(
-            case_id=content.get("case_id"), started_at=parse_datestr(content.get("started_at"))
+            case_id=content.get("case_id"), force=content.get("force")
         )
         data = stringify_timestamps(analysis_obj.to_dict())
         return jsonify(**data), 201
