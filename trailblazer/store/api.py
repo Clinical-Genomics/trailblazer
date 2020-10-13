@@ -16,6 +16,7 @@ from trailblazer.constants import (
     COMPLETED_STATUS,
 )
 from trailblazer.store import models
+from trailblazer.exc import TrailblazerError
 
 
 class BaseHandler:
@@ -193,15 +194,17 @@ class BaseHandler:
     def delete_analysis(self, case_id: str, started_at: dt.datetime) -> Optional[models.Analysis]:
         """Delete the analysis output."""
         if self.analyses(case_id=case_id, temp=True).count() > 0:
-            raise ValueError("analysis for family already running")
+            raise TrailblazerError("Analysis for family is currently running")
         analysis_obj = self.find_analysis(
             case_id=case_id, started_at=started_at, status="completed"
         )
-        if analysis_obj and not analysis_obj.is_deleted:
-            analysis_path = Path(analysis_obj.out_dir).parent
-            shutil.rmtree(analysis_path, ignore_errors=True)
-            analysis_obj.is_deleted = True
-            self.commit()
+        if not analysis_obj or analysis_obj.is_deleted:
+            raise TrailblazerError("Analysis not found or has already been deleted")
+
+        analysis_path = Path(analysis_obj.out_dir).parent
+        shutil.rmtree(analysis_path, ignore_errors=True)
+        analysis_obj.is_deleted = True
+        self.commit()
         return analysis_obj
 
     def get_family_root_dir(self, case_id: str):

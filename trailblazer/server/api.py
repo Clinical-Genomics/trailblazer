@@ -11,6 +11,7 @@ blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
 
 def stringify_timestamps(data: dict) -> dict:
+    """Convert datetime into string before dumping in order to avoid information loss"""
     for key, val in data.items():
         if isinstance(val, datetime.datetime):
             data[key] = str(val)
