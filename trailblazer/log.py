@@ -115,7 +115,7 @@ class LogAnalysis(object):
 
     def build(self, run_data: dict) -> models.Analysis:
         """Build a new Analysis object."""
-        existing_run = self.store.find_analysis(
+        existing_run = self.store.get_analysis(
             case_id=run_data["case"],
             started_at=run_data["started_at"],
             status=run_data["status"],

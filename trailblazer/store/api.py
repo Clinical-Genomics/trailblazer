@@ -35,7 +35,7 @@ class BaseHandler:
         """Return metadata entry."""
         return self.Info.query.first()
 
-    def track_update(self):
+    def set_latest_update_date(self):
         """
         used in CLI
         Update the latest updated date in the database."""
@@ -43,14 +43,14 @@ class BaseHandler:
         metadata.updated_at = dt.datetime.now()
         self.commit()
 
-    def find_analysis(self, case_id, started_at, status):
+    def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> models.Analysis:
         """
         used in LOG
         Find a single analysis."""
         query = self.Analysis.query.filter_by(family=case_id, started_at=started_at, status=status)
         return query.first()
 
-    def find_analyses_with_comment(self, comment):
+    def find_analyses_with_comment(self, comment: str) -> Query:
         """
         used in CLI
         Find a analyses containing comment."""
@@ -59,7 +59,7 @@ class BaseHandler:
         analysis_query = analysis_query.filter(self.Analysis.comment.like(f"%{comment}%"))
         return analysis_query
 
-    def aggregate_failed(self, since_when: dt.date = None) -> List:
+    def aggregate_failed(self, since_when: dt.date = None) -> List[dict]:
         """
         used in FRONTEND
         Count the number of failed jobs per category (name)."""
@@ -204,10 +204,6 @@ class BaseHandler:
         shutil.rmtree(analysis_path, ignore_errors=True)
         self.mark_analyses_deleted(case_id=case_id)
         return analysis_obj
-
-    def get_latest_logged_analysis(self, case_id: str):
-        """Get the the analysis with the latest logged_at date"""
-        return self.analyses(case_id=case_id).order_by(models.Analysis.logged_at.desc())
 
 
 class Store(alchy.Manager, BaseHandler):

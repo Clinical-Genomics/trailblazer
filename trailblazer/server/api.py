@@ -129,7 +129,7 @@ def post_get_latest_analysis():
 @blueprint.route("/find-analysis", methods=["POST"])
 def post_find_analysis():
     content = request.json
-    analysis_obj = store.find_analysis(
+    analysis_obj = store.get_analysis(
         case_id=content.get("case_id"),
         started_at=parse_datestr(content.get("started_at")),
         status=content.get("status"),

@@ -97,7 +97,7 @@ def scan(context, root_dir):
         with config_file.open() as stream:
             context.invoke(log_cmd, config=stream, quiet=True)
 
-    context.obj["store"].track_update()
+    context.obj["store"].set_latest_update_date()
 
 
 @base.command()

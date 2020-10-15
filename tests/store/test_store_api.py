@@ -16,7 +16,7 @@ def test_track_update(store):
     # GIVEN a store which is empty apart from the initialized info entry
     assert store.info().updated_at is None
     # WHEN updating the last updated date
-    store.track_update()
+    store.set_latest_update_date()
     # THEN it should update info entry with the current date
     assert isinstance(store.info().updated_at, datetime.datetime)
 
