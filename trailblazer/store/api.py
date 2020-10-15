@@ -37,23 +37,23 @@ class BaseHandler:
 
     def track_update(self):
         """
-        used in CLI
-        Update the latest updated date in the database."""
+        Used in CLI
+        Update the latest updated date in the database"""
         metadata = self.info()
         metadata.updated_at = dt.datetime.now()
         self.commit()
 
     def find_analysis(self, case_id, started_at, status):
         """
-        used in LOG
-        Find a single analysis."""
+        Used in LOG
+        Find a single analysis"""
         query = self.Analysis.query.filter_by(family=case_id, started_at=started_at, status=status)
         return query.first()
 
     def find_analyses_with_comment(self, comment):
         """
-        used in CLI
-        Find a analyses containing comment."""
+        Used in CLI
+        Find a analyses containing comment"""
         analysis_query = self.Analysis.query
 
         analysis_query = analysis_query.filter(self.Analysis.comment.like(f"%{comment}%"))
@@ -61,8 +61,8 @@ class BaseHandler:
 
     def aggregate_failed(self, since_when: dt.date = None) -> List:
         """
-        used in FRONTEND
-        Count the number of failed jobs per category (name)."""
+        Used in FRONTEND
+        Count the number of failed jobs per category (name)"""
 
         categories = self.session.query(
             self.Job.name.label("name"),
@@ -89,8 +89,8 @@ class BaseHandler:
         family: str = None,
     ) -> Query:
         """
-        used by REST +> CG
-        Fetch analyses from the database."""
+        Used by REST +> CG
+        Fetch analyses from the database"""
         if not case_id:
             case_id = family
 
@@ -118,8 +118,8 @@ class BaseHandler:
 
     def analysis(self, analysis_id: int) -> Optional[models.Analysis]:
         """
-        used by REST
-        Get a single analysis by id."""
+        Used by REST
+        Get a single analysis by id"""
         return self.Analysis.query.get(analysis_id)
 
     def get_latest_analysis(self, case_id: str) -> Optional[models.Analysis]:
@@ -192,9 +192,9 @@ class BaseHandler:
         return old_analyses
 
     def delete_analysis(self, case_id: str, force: bool = False) -> Optional[models.Analysis]:
-        """Delete the analysis output."""
+        """Delete the analysis output"""
         if not force and self.analyses(case_id=case_id, temp=True).count() > 0:
-            raise TrailblazerError("Analysis for family is currently running")
+            raise TrailblazerError("Analysis for case is currently running")
         analysis_obj = self.analyses(case_id=case_id).first()
         if not analysis_obj:
             raise TrailblazerError("Analysis not found")
