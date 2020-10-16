@@ -138,7 +138,7 @@ def post_find_analysis():
     if analysis_obj:
         data = stringify_timestamps(analysis_obj.to_dict())
         return jsonify(**data), 200
-    return jsonify(None), 200
+    return None, 200
 
 
 @blueprint.route("/delete-analysis", methods=["POST"])
@@ -161,7 +161,7 @@ def post_mark_analyses_deleted():
     data = [stringify_timestamps(analysis_obj.to_dict()) for analysis_obj in old_analyses]
     if data:
         return jsonify(*data), 201
-    return jsonify(None), 201
+    return None, 201
 
 
 @blueprint.route("/add-pending-analysis", methods=["POST"])
