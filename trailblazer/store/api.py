@@ -200,9 +200,10 @@ class BaseHandler:
             raise TrailblazerError(
                 f"Analysis for {analysis_obj.family} is currently running! Use --force flag to delete anyway."
             )
-        analysis_path = Path(analysis_obj.out_dir).parent
-        if analysis_path.is_dir():
-            shutil.rmtree(analysis_path, ignore_errors=True)
+        if analysis_obj.out_dir:
+            analysis_path = Path(analysis_obj.out_dir).parent
+            if analysis_path.is_dir():
+                shutil.rmtree(analysis_path, ignore_errors=True)
         analysis_obj.delete()
         self.mark_analyses_deleted(case_id=analysis_obj.family)
 
