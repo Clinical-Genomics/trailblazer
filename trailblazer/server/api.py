@@ -144,11 +144,8 @@ def post_find_analysis():
 def post_delete_analysis():
     content = request.json
     try:
-        analysis_obj = store.delete_analysis(
-            analysis_id=content.get("analysis_id"), force=content.get("force")
-        )
-        data = stringify_timestamps(analysis_obj.to_dict())
-        return jsonify(**data), 201
+        store.delete_analysis(analysis_id=content.get("analysis_id"), force=content.get("force"))
+        return jsonify(None), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
 
