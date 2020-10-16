@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import json
 from dateutil.parser import parse as parse_datestr
 
 from flask import abort, g, Blueprint, jsonify, make_response, request
@@ -123,7 +124,7 @@ def post_get_latest_analysis():
     if analysis_obj:
         data = stringify_timestamps(analysis_obj.to_dict())
         return jsonify(**data), 200
-    return jsonify(None), 200
+    return None, 200
 
 
 @blueprint.route("/find-analysis", methods=["POST"])
