@@ -37,23 +37,23 @@ class BaseHandler:
 
     def set_latest_update_date(self):
         """
-        Used in CLI
-        Update the latest updated date in the database"""
+        used in CLI
+        Update the latest updated date in the database."""
         metadata = self.info()
         metadata.updated_at = dt.datetime.now()
         self.commit()
 
     def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> models.Analysis:
         """
-        Used in LOG
-        Find a single analysis"""
+        used in LOG
+        Find a single analysis."""
         query = self.Analysis.query.filter_by(family=case_id, started_at=started_at, status=status)
         return query.first()
 
     def find_analyses_with_comment(self, comment: str) -> Query:
         """
-        Used in CLI
-        Find a analyses containing comment"""
+        used in CLI
+        Find a analyses containing comment."""
         analysis_query = self.Analysis.query
 
         analysis_query = analysis_query.filter(self.Analysis.comment.like(f"%{comment}%"))
@@ -61,8 +61,8 @@ class BaseHandler:
 
     def aggregate_failed(self, since_when: dt.date = None) -> List[dict]:
         """
-        Used in FRONTEND
-        Count the number of failed jobs per category (name)"""
+        used in FRONTEND
+        Count the number of failed jobs per category (name)."""
 
         categories = self.session.query(
             self.Job.name.label("name"),
@@ -89,8 +89,8 @@ class BaseHandler:
         family: str = None,
     ) -> Query:
         """
-        Used by REST +> CG
-        Fetch analyses from the database"""
+        used by REST +> CG
+        Fetch analyses from the database."""
         if not case_id:
             case_id = family
 
@@ -118,8 +118,8 @@ class BaseHandler:
 
     def analysis(self, analysis_id: int) -> Optional[models.Analysis]:
         """
-        Used by REST
-        Get a single analysis by id"""
+        used by REST
+        Get a single analysis by id."""
         return self.Analysis.query.get(analysis_id)
 
     def get_latest_analysis(self, case_id: str) -> Optional[models.Analysis]:
@@ -191,19 +191,20 @@ class BaseHandler:
         self.commit()
         return old_analyses
 
-    def delete_analysis(self, case_id: str, force: bool = False) -> Optional[models.Analysis]:
-        """Delete the analysis output"""
-        if not force and self.analyses(case_id=case_id, temp=True).count() > 0:
-            raise TrailblazerError("Analysis for case is currently running")
-        analysis_obj = self.analyses(case_id=case_id).first()
+    def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
+        """Delete the analysis output."""
+        analysis_obj = self.analysis(analysis_id=analysis_id)
         if not analysis_obj:
             raise TrailblazerError("Analysis not found")
+        if not force and self.analyses(case_id=analysis_obj.family, temp=True).count() > 0:
+            raise TrailblazerError(
+                f"Analysis for {analysis_obj.family} is currently running! Use --force flag to delete anyway."
+            )
         analysis_path = Path(analysis_obj.out_dir).parent
-        if not analysis_path.is_dir():
-            raise TrailblazerError("Analysis directory already deleted")
-        shutil.rmtree(analysis_path, ignore_errors=True)
-        self.mark_analyses_deleted(case_id=case_id)
-        return analysis_obj
+        if analysis_path.is_dir():
+            shutil.rmtree(analysis_path, ignore_errors=True)
+        analysis_obj.delete()
+        self.mark_analyses_deleted(case_id=analysis_obj.family)
 
 
 class Store(alchy.Manager, BaseHandler):
