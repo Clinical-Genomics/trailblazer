@@ -2,8 +2,13 @@
 """Store backend in Trailblazer"""
 from typing import List, Optional
 import datetime as dt
+from dateutil.parser import parse as parse_datestr
 from pathlib import Path
 import shutil
+from ruamel.yaml import safe_load
+import subprocess
+import pandas as pd
+import io
 
 import alchy
 from alchy import Query
@@ -160,10 +165,26 @@ class BaseHandler:
             return True
         return False
 
-    def add_pending_analysis(self, case_id: str, email: str = None) -> models.Analysis:
+    def add_pending_analysis(
+        self,
+        case_id: str,
+        type: str,
+        config_path: str,
+        out_dir: str,
+        priority: str,
+        email: str = None,
+    ) -> models.Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
-        new_log = self.Analysis(family=case_id, status="pending", started_at=started_at)
+        new_log = self.Analysis(
+            family=case_id,
+            status="pending",
+            started_at=started_at,
+            type=type,
+            config_path=config_path,
+            out_dir=out_dir,
+            priority=priority,
+        )
         new_log.user = self.user(email) if email else None
         self.add_commit(new_log)
         return new_log
@@ -206,6 +227,66 @@ class BaseHandler:
                 shutil.rmtree(analysis_path, ignore_errors=True)
         analysis_obj.delete()
         self.mark_analyses_deleted(case_id=analysis_obj.family)
+
+    @staticmethod
+    def parse_sacct(job_id_file: str, case_id: str) -> pd.DataFrame:
+        job_id_dict = safe_load(open(job_id_file))
+        submitted_jobs = job_id_dict[case_id]
+        jobs_string = ",".join(submitted_jobs)
+        squeue_response = subprocess.check_output(
+            ["squeue", "-j", jobs_string, "-h", "--states=all", "-o", "%A %j %T %l %M %S"]
+        )
+        parsed_df = pd.read_csv(
+            io.BytesIO(squeue_response),
+            sep=" ",
+            header=None,
+            names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
+        )
+        return parsed_df
+
+    def update_status(self):
+        ongoing_analyses = self.analyses(temp=True)
+        for analysis_obj in ongoing_analyses:
+            try:
+                jobs_dataframe = self.parse_sacct(
+                    job_id_file=analysis_obj.config_path, case_id=analysis_obj.family
+                )
+                status_distribution = round(
+                    jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
+                )
+                analysis_obj.progress = status_distribution.get("COMPLETED", 0.0)
+                analysis_obj.failed_jobs = [
+                    self.Job(
+                        slurm_id=val.get("id"),
+                        name=val.get("step"),
+                        status=val.get("status"),
+                        started_at=parse_datestr(val.get("started")),
+                        elapsed=(
+                            parse_datestr(val.get("elapsed", "0:0:0")) - parse_datestr("0:0:0")
+                        ).seconds,
+                    )
+                    for ind, val in jobs_dataframe.iterrows()
+                ]
+                if status_distribution.get("FAILED"):
+                    if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):
+                        analysis_obj.status = "error"
+                        analysis_obj.comment = (
+                            f"WARNING! Analysis still running with failed steps: "
+                            f"{list(jobs_dataframe[jobs_dataframe.status == 'FAILED'])}"
+                        )
+                    else:
+                        analysis_obj.status = "failed"
+                elif status_distribution.get("COMPLETED") == 1.0:
+                    analysis_obj.status = "completed"
+                elif status_distribution.get("CANCELLED") and not (
+                    status_distribution.get("RUNNING") or status_distribution.get("PENDING")
+                ):
+                    analysis_obj.status = "canceled"
+            except Exception as e:
+                analysis_obj.status = "failed"
+                analysis_obj.comment = f"Error tracking case - {e}"
+            finally:
+                self.commit()
 
 
 class Store(alchy.Manager, BaseHandler):

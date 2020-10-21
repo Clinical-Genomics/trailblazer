@@ -163,8 +163,16 @@ def post_mark_analyses_deleted():
 @blueprint.route("/add-pending-analysis", methods=["POST"])
 def post_add_pending_analysis():
     content = request.json
-    analysis_obj = store.add_pending_analysis(
-        case_id=content.get("case_id"), email=content.get("email")
-    )
-    data = stringify_timestamps(analysis_obj.to_dict())
-    return jsonify(**data), 201
+    try:
+        analysis_obj = store.add_pending_analysis(
+            case_id=content.get("case_id"),
+            email=content.get("email"),
+            type=content.get("type"),
+            config_path=content.get("config_path"),
+            out_dir=content.get("out_dir"),
+            priority=content.get("priority"),
+        )
+        data = stringify_timestamps(analysis_obj.to_dict())
+        return jsonify(**data), 201
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409

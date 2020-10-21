@@ -6,6 +6,7 @@ SQLAlchemy
 marshmallow
 tabulate
 python-dateutil
+pandas
 
 # server
 Flask>=1.1.1                # versioned due to setup.py install misselecting Flask-SQLAlchemy otherwise
