@@ -21,7 +21,7 @@ from trailblazer.constants import (
     COMPLETED_STATUS,
 )
 from trailblazer.store import models
-from trailblazer.exc import TrailblazerError
+from trailblazer.exc import TrailblazerError, EmptySqueueError
 
 
 class BaseHandler:
@@ -255,7 +255,7 @@ class BaseHandler:
             names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
         )
         if len(parsed_df) == 0:
-            raise TrailblazerError("No jobs found in SLURM registry")
+            raise EmptySqueueError("No jobs found in SLURM registry")
         return parsed_df
 
     def parse_jobs(self, jobs_dataframe: pd.DataFrame) -> List[models.Job]:
@@ -309,11 +309,14 @@ class BaseHandler:
                     analysis_obj.status = "canceled"
                 elif status_distribution.get("RUNNING"):
                     analysis_obj.status = "running"
+            except EmptySqueueError as e:
+                analysis_obj.status = "failed"
+                analysis_obj.comment = e.message
             except Exception as e:
                 analysis_obj.status = "error"
                 analysis_obj.comment = f"Error tracking case - {e}"
-                analysis_obj.logged_at = dt.datetime.now()
             finally:
+                analysis_obj.logged_at = dt.datetime.now()
                 self.commit()
 
 

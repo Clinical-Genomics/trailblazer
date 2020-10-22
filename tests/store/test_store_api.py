@@ -190,3 +190,10 @@ def test_aggregate_jobs_since_yesterday(sample_store):
 
     # THEN it should return a list of dicts per job type with count
     assert len(jobs_data) == 0
+
+
+def test_update(sample_store):
+    analysis_obj = sample_store.get_latest_analysis("crackpanda")
+    assert analysis_obj.status == "running"
+    sample_store.update_run_status()
+    assert analysis_obj.status == "failed"

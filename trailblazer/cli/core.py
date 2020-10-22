@@ -9,8 +9,6 @@ import ruamel.yaml
 import trailblazer
 from trailblazer.cli.get import get
 from trailblazer.store import Store
-from .clean import clean
-from .delete import delete
 from .ls import ls_cmd
 
 LOG = logging.getLogger(__name__)
@@ -115,7 +113,5 @@ def cancel(context, jobs, analysis_id):
         click.echo("cancelled analysis successfully!")
 
 
-base.add_command(delete)
 base.add_command(ls_cmd)
-base.add_command(clean)
 base.add_command(get)

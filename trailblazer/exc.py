@@ -8,3 +8,7 @@ class TrailblazerError(Exception):
 
 class MissingFileError(TrailblazerError):
     pass
+
+
+class EmptySqueueError(TrailblazerError):
+    pass

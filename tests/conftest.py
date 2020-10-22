@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pytest
+import subprocess
 
 from functools import partial
 from click.testing import CliRunner
@@ -7,6 +8,19 @@ import ruamel.yaml
 
 from trailblazer.cli import base
 from trailblazer.store import Store
+
+
+class MockStore(Store):
+    @staticmethod
+    def query_slurm(job_id_file: str, case_id: str) -> bytes:
+        slurm_dict = {
+            "blazinginsect": "tests/fixtures/sacct/blazinginsect_sacct",
+            "crackpanda": "tests/fixtures/sacct/crackpanda_sacct",
+            "escapegoat": "tests/fixtures/sacct/escapegoat_sacct",
+            "lateraligator": "tests/fixtures/sacct/lateraligator_sacct",
+            "nicemice": "tests/fixtures/sacct/nicemice_sacct",
+        }
+        return subprocess.check_output(["cat", slurm_dict.get(case_id)])
 
 
 @pytest.fixture
@@ -22,7 +36,7 @@ def invoke_cli(cli_runner):
 
 @pytest.yield_fixture(scope="function")
 def store():
-    _store = Store(uri="sqlite://")
+    _store = MockStore(uri="sqlite://")
     _store.setup()
     yield _store
     _store.drop_all()
