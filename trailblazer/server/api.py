@@ -176,3 +176,9 @@ def post_add_pending_analysis():
         return jsonify(**data), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
+
+
+@blueprint.route("/update", methods=["POST"])
+def post_update_analyses():
+    store.update_status()
+    return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), 201

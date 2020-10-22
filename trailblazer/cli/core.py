@@ -8,9 +8,6 @@ import ruamel.yaml
 
 import trailblazer
 from trailblazer.cli.get import get
-from trailblazer.exc import MissingFileError
-from trailblazer.log import LogAnalysis
-from trailblazer.mip.miplog import job_ids
 from trailblazer.store import Store
 from .clean import clean
 from .delete import delete
@@ -36,34 +33,6 @@ def base(context, config, database, root, log_level):
     context.obj["store"] = Store(context.obj["database"], context.obj["root"])
 
 
-@base.command("log")
-@click.option("-s", "--sampleinfo", type=click.Path(exists=True), help="sample info file")
-@click.option("-a", "--sacct", type=click.Path(exists=True), help="sacct job info file")
-@click.option("-q", "--quiet", is_flag=True, help="supress outputs")
-@click.argument("config", type=click.File())
-@click.pass_context
-def log_cmd(context, sampleinfo, sacct, quiet, config):
-    """Log an analysis.
-
-    CONFIG: MIP config file for an analysis
-    """
-    log_analysis = LogAnalysis(context.obj["store"])
-    try:
-        new_run = log_analysis(config, sampleinfo=sampleinfo, sacct=sacct)
-    except MissingFileError as error:
-        click.echo(click.style(f"Skipping, missing Sacct file: {error.message}", fg="red"))
-        return
-    except KeyError as error:
-        print(click.style(f"unexpected output, missing key: {error.args[0]} in {config}", fg="red"))
-        return
-    if new_run is None:
-        if not quiet:
-            click.echo(click.style("Analysis already logged", fg="yellow"))
-    else:
-        message = f"New log added: {new_run.family} ({new_run.id}) - {new_run.status}"
-        click.echo(click.style(message, fg="green"))
-
-
 @base.command()
 @click.option("--reset", is_flag=True, help="reset database before setting up tables")
 @click.option("--force", is_flag=True, help="bypass manual confirmations")
@@ -86,18 +55,10 @@ def init(context, reset, force):
 
 
 @base.command()
-@click.argument("root_dir", type=click.Path(exists=True), required=False)
 @click.pass_context
-def scan(context, root_dir):
+def scan(context):
     """Scan a directory for analyses."""
-    root_dir = root_dir or context.obj["root"]
-    config_files = Path(root_dir).glob("*/analysis/*_config.yaml")
-    for config_file in config_files:
-        LOG.debug("found analysis config: %s", config_file)
-        with config_file.open() as stream:
-            context.invoke(log_cmd, config=stream, quiet=True)
-
-    context.obj["store"].set_latest_update_date()
+    context.obj["store"].update_status()
 
 
 @base.command()

@@ -244,6 +244,20 @@ class BaseHandler:
         )
         return parsed_df
 
+    def parse_jobs(self, jobs_dataframe: pd.DataFrame) -> List[models.Job]:
+        return [
+            self.Job(
+                slurm_id=val.get("id"),
+                name=val.get("step"),
+                status=val.get("status").lower(),
+                started_at=parse_datestr(val.get("started")) if val.get("started") else None,
+                elapsed=(
+                    parse_datestr(val.get("elapsed", "0:0:0")) - parse_datestr("0:0:0")
+                ).seconds,
+            )
+            for ind, val in jobs_dataframe.iterrows()
+        ]
+
     def update_status(self):
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
@@ -255,18 +269,7 @@ class BaseHandler:
                     jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
                 )
                 analysis_obj.progress = status_distribution.get("COMPLETED", 0.0)
-                analysis_obj.failed_jobs = [
-                    self.Job(
-                        slurm_id=val.get("id"),
-                        name=val.get("step"),
-                        status=val.get("status"),
-                        started_at=parse_datestr(val.get("started")),
-                        elapsed=(
-                            parse_datestr(val.get("elapsed", "0:0:0")) - parse_datestr("0:0:0")
-                        ).seconds,
-                    )
-                    for ind, val in jobs_dataframe.iterrows()
-                ]
+                analysis_obj.failed_jobs = self.parse_jobs(jobs_dataframe=jobs_dataframe)
                 if status_distribution.get("FAILED"):
                     if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):
                         analysis_obj.status = "error"
@@ -276,20 +279,25 @@ class BaseHandler:
                         )
                     else:
                         analysis_obj.status = "failed"
-                elif status_distribution.get("COMPLETED") == 1.0:
+                        analysis_obj.comment = (
+                            f"Failed steps: "
+                            f"{list(jobs_dataframe[jobs_dataframe.status == 'FAILED'])}"
+                        )
+
+                elif status_distribution.get("COMPLETED") == 1:
                     analysis_obj.status = "completed"
                 elif status_distribution.get("CANCELLED") and not (
                     status_distribution.get("RUNNING") or status_distribution.get("PENDING")
                 ):
                     analysis_obj.status = "canceled"
             except Exception as e:
-                analysis_obj.status = "failed"
+                analysis_obj.status = "error"
                 analysis_obj.comment = f"Error tracking case - {e}"
+                analysis_obj.logged_at = dt.datetime.now()
             finally:
                 self.commit()
 
 
 class Store(alchy.Manager, BaseHandler):
-    def __init__(self, uri: str, families_dir: str):
+    def __init__(self, uri: str):
         super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=models.Model)
-        self.families_dir = families_dir
