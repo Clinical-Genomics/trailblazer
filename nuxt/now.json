@@ -1,8 +1,0 @@
-{
-  "name": "Trailblazer",
-  "description": "Trailblazer analysis tracker interface",
-  "alias": [
-    "trailblazer.now.sh"
-  ],
-  "public": true
-}
