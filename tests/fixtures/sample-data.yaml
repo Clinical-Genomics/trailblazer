@@ -16,32 +16,54 @@ analyses:
     type: wgs
     user: paul.anderson@magnolia.com
     progress: .54
+    data_analysis: MIP
 
   - family: nicemice
     version: v3.5.0
     started_at: 2017-06-17T12:11:42
     completed_at: 2017-06-18T12:11:44
     status: completed
+    priority: high
     out_dir: fixtures/runs/nicemouse/analysis
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
+    data_analysis: MIP
 
   - family: lateraligator
     version: v4.2.0
     started_at: 2017-06-15T11:00:42
     status: failed
+    priority: low
     out_dir: fixtures/runs/politesnake/analysis
     config_path: fixtures/runs/politesnake/analysis/politesnake_config.yaml
     type: wes
     user: tom.cruise@magnolia.com
+    data_analysis: MIP
+    failed_jobs:
+      - slurm_id: 453223
+        name: samtools_mpileup
+        context: politesnake
+        started_at: 2017-06-15T13:00:02
+        elapsed: 1560
+        status: failed
+      - slurm_id: 453224
+        name: qccollect
+        context: politesnake
+        status: cancelled
+      - slurm_id: 453200
+        name: nofail
+        context: politesnake
+        status: pending
 
   - family: escapedgoat
     version: v3.6.0
     started_at: 2017-06-17T12:11:42
     completed_at: 2017-06-18T12:11:44
-    status: completed
+    status: pending
+    priority: normal
     out_dir: fixtures/runs/nicemouse/analysis
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
+    data_analysis: MIP

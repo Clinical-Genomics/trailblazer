@@ -66,13 +66,13 @@ def test_analysis(sample_store):
 @pytest.mark.parametrize(
     "family, expected_bool",
     [
-        ("crazygoat", True),  # running
-        ("nicemouse", False),  # completed
-        ("politesnake", False),  # failed
-        ("gentlebird", True),  # pending
+        ("blazinginsect", True),  # running
+        ("nicemice", False),  # completed
+        ("lateraligator", False),  # failed
+        ("escapedgoat", True),  # pending
     ],
 )
-def test_is_latest_analysis_ongoing(sample_store, family, expected_bool):
+def test_is_latest_analysis_ongoing(sample_store, family: str, expected_bool: bool):
     # GIVEN an analysis
     analysis_objs = sample_store.analyses(case_id=family).first()
     assert analysis_objs is not None
@@ -85,13 +85,13 @@ def test_is_latest_analysis_ongoing(sample_store, family, expected_bool):
 @pytest.mark.parametrize(
     "family, expected_bool",
     [
-        ("crazygoat", False),  # running
-        ("nicemouse", False),  # completed
-        ("politesnake", True),  # failed
-        ("gentlebird", False),  # pending
+        ("blazinginsect", False),  # running
+        ("nicemice", False),  # completed
+        ("lateraligator", True),  # failed
+        ("escapedgoat", False),  # pending
     ],
 )
-def test_is_latest_analysis_failed(sample_store, family, expected_bool):
+def test_is_latest_analysis_failed(sample_store, family: str, expected_bool: bool):
     # GIVEN an analysis
     analysis_objs = sample_store.analyses(case_id=family).first()
     assert analysis_objs is not None
@@ -104,13 +104,13 @@ def test_is_latest_analysis_failed(sample_store, family, expected_bool):
 @pytest.mark.parametrize(
     "family, expected_bool",
     [
-        ("crazygoat", False),  # running
-        ("nicemouse", True),  # completed
-        ("politesnake", False),  # failed
-        ("gentlebird", False),  # pending
+        ("blazinginsect", False),  # running
+        ("nicemice", True),  # completed
+        ("lateraligator", False),  # failed
+        ("escapedgoat", False),  # pending
     ],
 )
-def test_is_latest_analysis_completed(sample_store, family, expected_bool):
+def test_is_latest_analysis_completed(sample_store, family: str, expected_bool: bool):
     # GIVEN an analysis
     analysis_objs = sample_store.analyses(case_id=family).first()
     assert analysis_objs is not None
@@ -123,13 +123,13 @@ def test_is_latest_analysis_completed(sample_store, family, expected_bool):
 @pytest.mark.parametrize(
     "family, expected_status",
     [
-        ("crazygoat", "running"),
-        ("nicemouse", "completed"),
-        ("politesnake", "failed"),
-        ("gentlebird", "pending"),
+        ("blazinginsect", "running"),  # running
+        ("nicemice", "completed"),  # completed
+        ("lateraligator", "failed"),  # failed
+        ("escapedgoat", "pending"),  # pending
     ],
 )
-def test_get_latest_analysis_status(sample_store, family, expected_status):
+def test_get_latest_analysis_status(sample_store, family: str, expected_status: str):
     # GIVEN an analysis
     analysis_objs = sample_store.analyses(case_id=family).first()
     assert analysis_objs is not None
@@ -144,7 +144,7 @@ def test_aggregate_jobs(sample_store):
     # GIVEN a store with some analyses
     assert sample_store.analyses().count() > 0
     all_jobs = sample_store.jobs().count()
-    assert all_jobs == 2
+    assert all_jobs == 3
 
     # WHEN aggregating data on failed jobs
     jobs_data = sample_store.aggregate_failed()
@@ -163,7 +163,7 @@ def test_aggregate_jobs_since_forever_date(sample_store):
     # GIVEN a store with some analyses
     assert sample_store.analyses().count() > 0
     all_jobs = sample_store.jobs().count()
-    assert all_jobs == 2
+    assert all_jobs == 3
     # a date a gazillion days back
     date_since = datetime.datetime.now() - datetime.timedelta(days=9999)
 
@@ -181,7 +181,7 @@ def test_aggregate_jobs_since_yesterday(sample_store):
     # GIVEN a store with some analyses
     assert sample_store.analyses().count() > 0
     all_jobs = sample_store.jobs().count()
-    assert all_jobs == 2
+    assert all_jobs == 3
     # a date a gazillion days back
     date_since = datetime.datetime.now() - datetime.timedelta(days=1)
 

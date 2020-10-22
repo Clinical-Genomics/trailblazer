@@ -72,7 +72,7 @@ class BaseHandler:
         categories = self.session.query(
             self.Job.name.label("name"),
             sqa.func.count(self.Job.id).label("count"),
-        ).filter(self.Job.status != "cancelled")
+        ).filter(self.Job.status == "failed")
 
         if since_when:
             categories = categories.filter(self.Job.started_at > since_when)

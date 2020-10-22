@@ -40,5 +40,4 @@ def sample_store(store):
         analysis_data["failed_jobs"] = [store.Job(**job_data) for job_data in failed_jobs]
         store.add(store.Analysis(**analysis_data))
     store.commit()
-    store.add_pending_analysis(case_id="gentlebird", email="tom.cruise@magnolia.com")
     yield store
