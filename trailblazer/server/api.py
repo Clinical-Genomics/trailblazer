@@ -171,6 +171,7 @@ def post_add_pending_analysis():
             config_path=content.get("config_path"),
             out_dir=content.get("out_dir"),
             priority=content.get("priority"),
+            data_analysis=content.get("data_analysis"),
         )
         data = stringify_timestamps(analysis_obj.to_dict())
         return jsonify(**data), 201
@@ -178,7 +179,7 @@ def post_add_pending_analysis():
         return jsonify(f"Exception: {e}"), 409
 
 
-@blueprint.route("/update", methods=["POST"])
+@blueprint.route("/update")
 def post_update_analyses():
-    store.update_status()
+    store.update_run_status()
     return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), 201

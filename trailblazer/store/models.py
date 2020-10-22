@@ -74,6 +74,7 @@ class Analysis(Model):
     type = Column(types.Enum(*TYPES))
     user_id = Column(ForeignKey(User.id))
     progress = Column(types.Float, default=0.0)
+    data_analysis = Column(types.String(32))
 
     failed_jobs = orm.relationship("Job", backref="analysis")
 

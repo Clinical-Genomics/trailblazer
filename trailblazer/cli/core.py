@@ -30,7 +30,7 @@ def base(context, config, database, root, log_level):
     context.obj = ruamel.yaml.safe_load(config) if config else {}
     context.obj["database"] = database or context.obj.get("database")
     context.obj["root"] = root or context.obj.get("root")
-    context.obj["store"] = Store(context.obj["database"], context.obj["root"])
+    context.obj["store"] = Store(context.obj["database"])
 
 
 @base.command()
@@ -58,7 +58,7 @@ def init(context, reset, force):
 @click.pass_context
 def scan(context):
     """Scan a directory for analyses."""
-    context.obj["store"].update_status()
+    context.obj["store"].update_run_status()
 
 
 @base.command()

@@ -173,6 +173,7 @@ class BaseHandler:
         out_dir: str,
         priority: str,
         email: str = None,
+        data_analysis: str = None,
     ) -> models.Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
@@ -184,6 +185,7 @@ class BaseHandler:
             config_path=config_path,
             out_dir=out_dir,
             priority=priority,
+            data_analysis=data_analysis,
         )
         new_log.user = self.user(email) if email else None
         self.add_commit(new_log)
@@ -229,22 +231,35 @@ class BaseHandler:
         self.mark_analyses_deleted(case_id=analysis_obj.family)
 
     @staticmethod
-    def parse_sacct(job_id_file: str, case_id: str) -> pd.DataFrame:
+    def query_slurm(job_id_file: str, case_id: str) -> bytes:
+        """Args:
+        job_id_file: Path to slurm id .YAML file as string
+        case_id: Unique internal case identifier which is expected to by the only item in the .YAML dict"""
         job_id_dict = safe_load(open(job_id_file))
         submitted_jobs = job_id_dict[case_id]
         jobs_string = ",".join(submitted_jobs)
         squeue_response = subprocess.check_output(
             ["squeue", "-j", jobs_string, "-h", "--states=all", "-o", "%A %j %T %l %M %S"]
         )
+        return squeue_response
+
+    @staticmethod
+    def parse_squeue_to_df(squeue_response: bytes) -> pd.DataFrame:
+        """Reads queue response into a pandas dataframe for easy parsing.
+        Raises:
+            TrailblazerError: when no entries were returned by squeue command"""
         parsed_df = pd.read_csv(
             io.BytesIO(squeue_response),
             sep=" ",
             header=None,
             names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
         )
+        if len(parsed_df) == 0:
+            raise TrailblazerError("No jobs found in SLURM registry")
         return parsed_df
 
     def parse_jobs(self, jobs_dataframe: pd.DataFrame) -> List[models.Job]:
+        """Parses job dataframe and creates job objects"""
         return [
             self.Job(
                 slurm_id=val.get("id"),
@@ -258,12 +273,14 @@ class BaseHandler:
             for ind, val in jobs_dataframe.iterrows()
         ]
 
-    def update_status(self):
+    def update_run_status(self):
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
             try:
-                jobs_dataframe = self.parse_sacct(
-                    job_id_file=analysis_obj.config_path, case_id=analysis_obj.family
+                jobs_dataframe = self.parse_squeue_to_df(
+                    self.query_slurm(
+                        job_id_file=analysis_obj.config_path, case_id=analysis_obj.family
+                    )
                 )
                 status_distribution = round(
                     jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
@@ -290,6 +307,8 @@ class BaseHandler:
                     status_distribution.get("RUNNING") or status_distribution.get("PENDING")
                 ):
                     analysis_obj.status = "canceled"
+                elif status_distribution.get("RUNNING"):
+                    analysis_obj.status = "running"
             except Exception as e:
                 analysis_obj.status = "error"
                 analysis_obj.comment = f"Error tracking case - {e}"

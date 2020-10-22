@@ -17,7 +17,7 @@ import sqlalchemy as sa
 from sqlalchemy.sql import text
 from sqlalchemy.orm import sessionmaker
 
-from trailblazer.store import api, Analysis
+from trailblazer.store.models import Analysis
 
 Session = sessionmaker()
 
