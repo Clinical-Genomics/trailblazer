@@ -225,14 +225,15 @@ class BaseHandler:
         analysis_obj = self.analysis(analysis_id=analysis_id)
         if not analysis_obj:
             raise TrailblazerError("Analysis not found")
-        if not force and self.analyses(case_id=analysis_obj.family, temp=True).count() > 0:
+        self.update_run_status(analysis_id)
+        if not force and analysis_obj.status in ONGOING_STATUSES:
             raise TrailblazerError(
                 f"Analysis for {analysis_obj.family} is currently running! Use --force flag to delete anyway."
             )
         LOG.info(f"Deleting analysis {analysis_id} for case {analysis_obj.family}")
         self.cancel_analysis(analysis_id)
         analysis_obj.delete()
-        self.mark_analyses_deleted(case_id=analysis_obj.family)
+        self.commit()
 
     @staticmethod
     def query_slurm(job_id_file: str, case_id: str) -> bytes:
@@ -252,14 +253,14 @@ class BaseHandler:
         """Reads queue response into a pandas dataframe for easy parsing.
         Raises:
             TrailblazerError: when no entries were returned by squeue command"""
+        if not squeue_response:
+            raise EmptySqueueError("No jobs found in SLURM registry")
         parsed_df = pd.read_csv(
             io.BytesIO(squeue_response),
             sep=" ",
             header=None,
             names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
         )
-        if len(parsed_df) == 0:
-            raise EmptySqueueError("No jobs found in SLURM registry")
         return parsed_df
 
     def update_jobs(self, analysis_obj: models.Analysis, jobs_dataframe: pd.DataFrame) -> None:
@@ -318,15 +319,15 @@ class BaseHandler:
             elif status_distribution.get("RUNNING"):
                 analysis_obj.status = "running"
             self.update_jobs(analysis_obj=analysis_obj, jobs_dataframe=jobs_dataframe)
-        except Exception as e:
-            analysis_obj.status = "failed"
-            analysis_obj.comment = f"Error logging case - {e}"
-        finally:
             analysis_obj.logged_at = dt.datetime.now()
-            self.commit()
             LOG.info(
                 f"Updated status {analysis_obj.family} - {analysis_obj.id}: {analysis_obj.status} "
             )
+            self.commit()
+        except Exception as e:
+            analysis_obj.status = "failed"
+            analysis_obj.comment = f"Error logging case - {e}"
+            self.commit()
 
     @staticmethod
     def cancel_slurm_job(slurm_id: int) -> None:
@@ -337,29 +338,20 @@ class BaseHandler:
         analysis_obj = self.analysis(analysis_id=analysis_id)
         if not analysis_obj:
             raise TrailblazerError(f"Analysis {analysis_id} does not exist")
+
+        self.update_run_status(analysis_id)
         if analysis_obj.status not in ONGOING_STATUSES:
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
 
-        try:
-            jobs_dataframe = self.parse_squeue_to_df(
-                self.query_slurm(job_id_file=analysis_obj.config_path, case_id=analysis_obj.family)
-            )
-            slurm_id_list = list(
-                jobs_dataframe[jobs_dataframe.status == any(["RUNNING", "PENDING"])]
-            )
-            for slurm_id in slurm_id_list:
-                LOG.info(f"Cancelling job {slurm_id}")
-                self.cancel_slurm_job(slurm_id)
-            LOG.info(
-                f"Case {analysis_obj.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
-            )
-        except EmptySqueueError:
-            LOG.info(
-                f"Case {analysis_obj.family} - Analysis {analysis_id}: no ongoing jobs to cancel!"
-            )
-        finally:
-            analysis_obj.status = "canceled"
-            self.commit()
+        for job_obj in analysis_obj.failed_jobs:
+            if job_obj.status in ["RUNNING", "PENDING"]:
+                LOG.info(f"Cancelling job {job_obj.slurm_id} - {job_obj.name}")
+                self.cancel_slurm_job(job_obj.slurm_id)
+        LOG.info(
+            f"Case {analysis_obj.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
+        )
+        analysis_obj.status = "canceled"
+        self.commit()
 
 
 class Store(alchy.Manager, BaseHandler):

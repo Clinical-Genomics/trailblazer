@@ -68,6 +68,6 @@ def sample_store(store):
     yield store
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def trailblazer_context(sample_store):
     return {"trailblazer": sample_store}

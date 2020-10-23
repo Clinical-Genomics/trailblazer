@@ -67,7 +67,7 @@ def user(context, name, email):
         new_user = context.obj["trailblazer"].add_user(name, email)
         LOG.info(f"New user added: {email} ({new_user.id})")
     else:
-        LOG.warning("User not found")
+        LOG.error("User not found")
 
 
 @base.command()
@@ -75,7 +75,10 @@ def user(context, name, email):
 @click.pass_context
 def cancel(context, analysis_id):
     """Cancel all jobs in a run."""
-    context.obj["trailblazer"].cancel_analysis(analysis_id=analysis_id)
+    try:
+        context.obj["trailblazer"].cancel_analysis(analysis_id=analysis_id)
+    except Exception as e:
+        LOG.error(e)
 
 
 @base.command()
