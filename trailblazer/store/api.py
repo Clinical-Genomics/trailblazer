@@ -230,6 +230,7 @@ class BaseHandler:
                 f"Analysis for {analysis_obj.family} is currently running! Use --force flag to delete anyway."
             )
         LOG.info(f"Deleting analysis {analysis_id} for case {analysis_obj.family}")
+        self.cancel_analysis(analysis_id)
         analysis_obj.delete()
         self.mark_analyses_deleted(case_id=analysis_obj.family)
 
@@ -261,10 +262,13 @@ class BaseHandler:
             raise EmptySqueueError("No jobs found in SLURM registry")
         return parsed_df
 
-    def parse_jobs(self, jobs_dataframe: pd.DataFrame) -> List[models.Job]:
+    def update_jobs(self, analysis_obj: models.Analysis, jobs_dataframe: pd.DataFrame) -> None:
         """Parses job dataframe and creates job objects"""
-        return [
+        for job_obj in analysis_obj.failed_jobs:
+            job_obj.delete()
+        analysis_obj.failed_jobs = [
             self.Job(
+                analysis_id=analysis_obj.id,
                 slurm_id=val.get("id"),
                 name=val.get("step"),
                 status=val.get("status").lower(),
@@ -276,51 +280,53 @@ class BaseHandler:
             for ind, val in jobs_dataframe.iterrows()
         ]
 
-    def update_run_status(self):
+    def update_ongoing_analyses(self) -> None:
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
-            try:
-                jobs_dataframe = self.parse_squeue_to_df(
-                    self.query_slurm(
-                        job_id_file=analysis_obj.config_path, case_id=analysis_obj.family
-                    )
-                )
-                status_distribution = round(
-                    jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
-                )
-                analysis_obj.progress = status_distribution.get("COMPLETED", 0.0)
-                analysis_obj.failed_jobs = self.parse_jobs(jobs_dataframe=jobs_dataframe)
-                if status_distribution.get("FAILED"):
-                    if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):
-                        analysis_obj.status = "error"
-                        analysis_obj.comment = (
-                            f"WARNING! Analysis still running with failed steps: "
-                            f"{list(jobs_dataframe[jobs_dataframe.status == 'FAILED'])}"
-                        )
-                    else:
-                        analysis_obj.status = "failed"
-                        analysis_obj.comment = (
-                            f"Failed steps: "
-                            f"{list(jobs_dataframe[jobs_dataframe.status == 'FAILED'])}"
-                        )
+            self.update_run_status(analysis_id=analysis_obj.id)
 
-                elif status_distribution.get("COMPLETED") == 1:
-                    analysis_obj.status = "completed"
-                elif status_distribution.get("CANCELLED") and not (
-                    status_distribution.get("RUNNING") or status_distribution.get("PENDING")
-                ):
-                    analysis_obj.status = "canceled"
-                elif status_distribution.get("RUNNING"):
-                    analysis_obj.status = "running"
-            except EmptySqueueError as e:
-                analysis_obj.status = "failed"
-                analysis_obj.comment = e.message
-            except Exception as e:
-                analysis_obj.status = "error"
-                analysis_obj.comment = f"Error logging case - {e}"
-            finally:
-                analysis_obj.logged_at = dt.datetime.now()
-                self.commit()
+    def update_run_status(self, analysis_id: int) -> None:
+        analysis_obj = self.analysis(analysis_id)
+        try:
+            jobs_dataframe = self.parse_squeue_to_df(
+                self.query_slurm(job_id_file=analysis_obj.config_path, case_id=analysis_obj.family)
+            )
+            status_distribution = round(
+                jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
+            )
+            analysis_obj.progress = status_distribution.get("COMPLETED", 0.0)
+            if status_distribution.get("FAILED") or status_distribution.get("TIMEOUT"):
+                if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):
+                    analysis_obj.status = "error"
+                    analysis_obj.comment = (
+                        f"WARNING! Analysis still running with failed steps: "
+                        f"{ ', '.join(list(jobs_dataframe[jobs_dataframe.status == 'FAILED']))}"
+                    )
+                else:
+                    analysis_obj.status = "failed"
+                    analysis_obj.comment = (
+                        f"Failed steps: "
+                        f"{', '.join(list(jobs_dataframe[jobs_dataframe.status == 'FAILED']))}"
+                    )
+
+            elif status_distribution.get("COMPLETED") == 1:
+                analysis_obj.status = "completed"
+            elif status_distribution.get("CANCELLED") and not (
+                status_distribution.get("RUNNING") or status_distribution.get("PENDING")
+            ):
+                analysis_obj.status = "canceled"
+            elif status_distribution.get("RUNNING"):
+                analysis_obj.status = "running"
+            self.update_jobs(analysis_obj=analysis_obj, jobs_dataframe=jobs_dataframe)
+        except Exception as e:
+            analysis_obj.status = "failed"
+            analysis_obj.comment = f"Error logging case - {e}"
+        finally:
+            analysis_obj.logged_at = dt.datetime.now()
+            self.commit()
+            LOG.info(
+                f"Updated status {analysis_obj.family} - {analysis_obj.id}: {analysis_obj.status} "
+            )
 
     @staticmethod
     def cancel_slurm_job(slurm_id: int) -> None:

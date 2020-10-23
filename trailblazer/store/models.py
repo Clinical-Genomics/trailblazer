@@ -4,15 +4,13 @@ import datetime
 import alchy
 from sqlalchemy import Column, ForeignKey, orm, types, UniqueConstraint
 
-from trailblazer.constants import ONGOING_STATUSES
-
-NORMAL_CATEGORIES = ("COMPLETED", "RUNNING", "PENDING")
-FAILED_CATEGORIES = ("FAILED", "CANCELLED", "TIMEOUT")
-CATEGORIES = NORMAL_CATEGORIES + FAILED_CATEGORIES
-STATUS_OPTIONS = ("pending", "running", "completed", "failed", "error", "canceled")
-JOB_STATUS_OPTIONS = [category.lower() for category in CATEGORIES]
-PRIORITY_OPTIONS = ("low", "normal", "high")
-TYPES = ("wes", "wgs", "rna", "panel")
+from trailblazer.constants import (
+    ONGOING_STATUSES,
+    STATUS_OPTIONS,
+    JOB_STATUS_OPTIONS,
+    PRIORITY_OPTIONS,
+    TYPES,
+)
 
 
 Model = alchy.make_declarative_base(Base=alchy.ModelBase)

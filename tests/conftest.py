@@ -11,16 +11,29 @@ from trailblazer.store import Store
 
 
 class MockStore(Store):
+    """Instance of TrailblazerAPI that mimics expected SLURM output"""
+
     @staticmethod
     def query_slurm(job_id_file: str, case_id: str) -> bytes:
         slurm_dict = {
-            "blazinginsect": "tests/fixtures/sacct/blazinginsect_sacct",
-            "crackpanda": "tests/fixtures/sacct/crackpanda_sacct",
-            "escapegoat": "tests/fixtures/sacct/escapegoat_sacct",
-            "lateraligator": "tests/fixtures/sacct/lateraligator_sacct",
-            "nicemice": "tests/fixtures/sacct/nicemice_sacct",
+            "blazinginsect": "tests/fixtures/sacct/blazinginsect_sacct",  # running
+            "crackpanda": "tests/fixtures/sacct/crackpanda_sacct",  # failed
+            "daringpidgeon": "tests/fixtures/sacct/daringpidgeon_sacct",  # failed
+            "emptydinosaur": "tests/fixtures/sacct/emptydinosaur_sacct",  # failed
+            "escapedgoat": "tests/fixtures/sacct/escapegoat_sacct",  # pending
+            "fancymole": "tests/fixtures/sacct/fancymole_sacct",  # completed
+            "happycow": "tests/fixtures/sacct/happycow_sacct",  # pending
+            "lateraligator": "tests/fixtures/sacct/lateraligator_sacct",  # failed
+            "liberatedunicorn": "tests/fixtures/sacct/liberatedunicorn_sacct",  # error
+            "nicemice": "tests/fixtures/sacct/nicemice_sacct",  # completed
+            "rarekitten": "tests/fixtures/sacct/rarekitten_sacct",  # canceled
+            "trueferret": "tests/fixtures/sacct/trueferret_sacct",  # running
         }
         return subprocess.check_output(["cat", slurm_dict.get(case_id)])
+
+    @staticmethod
+    def cancel_slurm_job(slurm_id: int) -> None:
+        return
 
 
 @pytest.fixture
@@ -50,8 +63,11 @@ def sample_store(store):
     for analysis_data in sample_data["analyses"]:
         analysis_data["case_id"] = analysis_data["family"]
         analysis_data["user"] = store.user(analysis_data["user"])
-        failed_jobs = analysis_data.get("failed_jobs", [])
-        analysis_data["failed_jobs"] = [store.Job(**job_data) for job_data in failed_jobs]
         store.add(store.Analysis(**analysis_data))
     store.commit()
     yield store
+
+
+@pytest.fixture()
+def trailblazer_context(sample_store):
+    return {"trailblazer": sample_store}

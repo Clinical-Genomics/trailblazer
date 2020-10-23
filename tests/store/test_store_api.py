@@ -74,6 +74,7 @@ def test_analysis(sample_store):
 )
 def test_is_latest_analysis_ongoing(sample_store, family: str, expected_bool: bool):
     # GIVEN an analysis
+    sample_store.update_ongoing_analyses()
     analysis_objs = sample_store.analyses(case_id=family).first()
     assert analysis_objs is not None
     # WHEN checking if the family has an ongoing analysis status
@@ -93,6 +94,7 @@ def test_is_latest_analysis_ongoing(sample_store, family: str, expected_bool: bo
 )
 def test_is_latest_analysis_failed(sample_store, family: str, expected_bool: bool):
     # GIVEN an analysis
+    sample_store.update_ongoing_analyses()
     analysis_objs = sample_store.analyses(case_id=family).first()
     assert analysis_objs is not None
     # WHEN checking if the family has a failed analysis status
@@ -112,6 +114,7 @@ def test_is_latest_analysis_failed(sample_store, family: str, expected_bool: boo
 )
 def test_is_latest_analysis_completed(sample_store, family: str, expected_bool: bool):
     # GIVEN an analysis
+    sample_store.update_ongoing_analyses()
     analysis_objs = sample_store.analyses(case_id=family).first()
     assert analysis_objs is not None
     # WHEN checking if the family has a failed analysis status
@@ -131,6 +134,7 @@ def test_is_latest_analysis_completed(sample_store, family: str, expected_bool: 
 )
 def test_get_latest_analysis_status(sample_store, family: str, expected_status: str):
     # GIVEN an analysis
+    sample_store.update_ongoing_analyses()
     analysis_objs = sample_store.analyses(case_id=family).first()
     assert analysis_objs is not None
     # WHEN checking if the family has an analysis status
@@ -139,61 +143,26 @@ def test_get_latest_analysis_status(sample_store, family: str, expected_status: 
     assert status is expected_status
 
 
-def test_aggregate_jobs(sample_store):
-
-    # GIVEN a store with some analyses
-    assert sample_store.analyses().count() > 0
-    all_jobs = sample_store.jobs().count()
-    assert all_jobs == 3
-
-    # WHEN aggregating data on failed jobs
-    jobs_data = sample_store.aggregate_failed()
-
-    # THEN it should return a list of dicts per job type with count
-    assert isinstance(jobs_data, list)
-
-    # ... it should exclude "cancelled" jobs
-    assert len(jobs_data) == 1
-    assert jobs_data[0]["name"] == "samtools_mpileup"
-    assert jobs_data[0]["count"] == 1
-
-
-def test_aggregate_jobs_since_forever_date(sample_store):
-
-    # GIVEN a store with some analyses
-    assert sample_store.analyses().count() > 0
-    all_jobs = sample_store.jobs().count()
-    assert all_jobs == 3
-    # a date a gazillion days back
-    date_since = datetime.datetime.now() - datetime.timedelta(days=9999)
-
-    # WHEN aggregating data on failed jobs
-    jobs_data = sample_store.aggregate_failed(date_since)
-
-    # THEN it should return a list of dicts per job type with count
-    assert len(jobs_data) == 1
-    assert jobs_data[0]["name"] == "samtools_mpileup"
-    assert jobs_data[0]["count"] == 1
-
-
-def test_aggregate_jobs_since_yesterday(sample_store):
-
-    # GIVEN a store with some analyses
-    assert sample_store.analyses().count() > 0
-    all_jobs = sample_store.jobs().count()
-    assert all_jobs == 3
-    # a date a gazillion days back
-    date_since = datetime.datetime.now() - datetime.timedelta(days=1)
-
-    # WHEN aggregating data on failed jobs
-    jobs_data = sample_store.aggregate_failed(date_since)
-
-    # THEN it should return a list of dicts per job type with count
-    assert len(jobs_data) == 0
-
-
-def test_update(sample_store):
-    analysis_obj = sample_store.get_latest_analysis("crackpanda")
-    assert analysis_obj.status == "running"
-    sample_store.update_run_status()
-    assert analysis_obj.status == "failed"
+@pytest.mark.parametrize(
+    "case_id, status",
+    [
+        ("blazinginsect", "running"),
+        ("crackpanda", "failed"),
+        ("daringpidgeon", "failed"),
+        ("emptydinosaur", "failed"),
+        ("escapedgoat", "pending"),
+        ("fancymole", "completed"),
+        ("happycow", "pending"),
+        ("lateraligator", "failed"),
+        ("liberatedunicorn", "error"),
+        ("nicemice", "completed"),
+        ("rarekitten", "canceled"),
+        ("trueferret", "running"),
+    ],
+)
+def test_update(sample_store, case_id, status):
+    analysis_obj = sample_store.get_latest_analysis(case_id)
+    sample_store.update_run_status(analysis_obj.id)
+    assert analysis_obj.status == status
+    sample_store.update_run_status(analysis_obj.id)
+    assert analysis_obj.status == status

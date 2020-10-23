@@ -181,8 +181,17 @@ def post_add_pending_analysis():
 
 @blueprint.route("/update")
 def update_analyses():
-    store.update_run_status()
+    store.update_ongoing_analyses()
     return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), 201
+
+
+@blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
+def update_analysis(analysis_id):
+    try:
+        store.update_run_status(analysis_id)
+        return jsonify("Success!"), 201
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409
 
 
 @blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])

@@ -50,7 +50,7 @@ def init(context, reset, force):
 @click.pass_context
 def scan(context):
     """Scan a directory for analyses."""
-    context.obj["trailblazer"].update_run_status()
+    context.obj["trailblazer"].update_ongoing_analyses()
     LOG.info("Analyses updated!")
 
 
