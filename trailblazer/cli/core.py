@@ -1,6 +1,4 @@
 import logging
-import subprocess
-from pathlib import Path
 
 import click
 import coloredlogs
@@ -42,12 +40,10 @@ def init(context, reset, force):
             click.confirm(click.style(message, fg="yellow"), abort=True)
         context.obj["trailblazer"].drop_all()
     elif existing_tables:
-        click.echo(click.style("Database already exists, use '--reset'", fg="red"))
+        LOG.warning("Database already exists, use '--reset'")
         context.abort()
-
     context.obj["trailblazer"].setup()
-    message = f"Success! New tables: {', '.join(context.obj['trailblazer'].engine.table_names())}"
-    click.echo(click.style(message, fg="green"))
+    LOG.info(f"Success! New tables: {', '.join(context.obj['trailblazer'].engine.table_names())}")
 
 
 @base.command()
@@ -55,6 +51,7 @@ def init(context, reset, force):
 def scan(context):
     """Scan a directory for analyses."""
     context.obj["trailblazer"].update_run_status()
+    LOG.info("Analyses updated!")
 
 
 @base.command()
@@ -65,12 +62,12 @@ def user(context, name, email):
     """Add a new or display information about an existing user."""
     existing_user = context.obj["trailblazer"].user(email)
     if existing_user:
-        click.echo(existing_user.to_dict())
+        LOG.info(f"Existing user found: {existing_user.to_dict()}")
     elif name:
         new_user = context.obj["trailblazer"].add_user(name, email)
-        click.echo(click.style(f"New user added: {email} ({new_user.id})", fg="green"))
+        LOG.info(f"New user added: {email} ({new_user.id})")
     else:
-        click.echo(click.style("User not found", fg="yellow"))
+        LOG.warning("User not found")
 
 
 @base.command()
