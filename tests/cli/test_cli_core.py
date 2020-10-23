@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import trailblazer
 from trailblazer.cli import base
-from trailblazer.cli.core import ls_cmd, delete, get, cancel, scan, init, user
+from trailblazer.cli.core import ls_cmd, delete, get, cancel, scan, user
+import pytest
 
 
 def test_base(cli_runner):
@@ -131,3 +132,19 @@ def test_scan(cli_runner, trailblazer_context, caplog):
             case_id="blazinginsect"
         )
         assert analysis_obj.status == "running"
+
+
+@pytest.mark.parametrize(
+    "case_id, status",
+    [
+        ("blazinginsect", "running"),
+        ("crackpanda", "failed"),
+        ("fancymole", "completed"),
+        ("happycow", "pending"),
+    ],
+)
+def test_ls(cli_runner, trailblazer_context, caplog, case_id, status):
+    trailblazer_context["trailblazer"].update_ongoing_analyses()
+    result = cli_runner.invoke(ls_cmd, ["--status", status], obj=trailblazer_context)
+    assert result.exit_code == 0
+    assert case_id in result.output
