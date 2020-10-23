@@ -18,6 +18,7 @@ from trailblazer.constants import (
     FAILED_STATUS,
     ONGOING_STATUSES,
     STARTED_STATUSES,
+    SLURM_ACTIVE_CATEGORIES,
 )
 from trailblazer.exc import EmptySqueueError, TrailblazerError
 from trailblazer.store import models
@@ -280,6 +281,7 @@ class BaseHandler:
             )
             for ind, val in jobs_dataframe.iterrows()
         ]
+        self.commit()
 
     def update_ongoing_analyses(self) -> None:
         ongoing_analyses = self.analyses(temp=True)
@@ -344,7 +346,7 @@ class BaseHandler:
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
 
         for job_obj in analysis_obj.failed_jobs:
-            if job_obj.status in ["RUNNING", "PENDING"]:
+            if job_obj.status in SLURM_ACTIVE_CATEGORIES:
                 LOG.info(f"Cancelling job {job_obj.slurm_id} - {job_obj.name}")
                 self.cancel_slurm_job(job_obj.slurm_id)
         LOG.info(

@@ -56,11 +56,15 @@ def test_cancel_not_running(cli_runner, trailblazer_context, caplog):
 def test_cancel_ongoing(cli_runner, trailblazer_context, caplog):
     with caplog.at_level("INFO"):
         trailblazer_context["trailblazer"].update_ongoing_analyses()
-        analysis_obj = trailblazer_context["trailblazer"].get_latest_analysis(case_id="escapedgoat")
+        analysis_obj = trailblazer_context["trailblazer"].get_latest_analysis(
+            case_id="blazinginsect"
+        )
+        assert analysis_obj.failed_jobs
 
         result = cli_runner.invoke(cancel, [str(analysis_obj.id)], obj=trailblazer_context)
         assert result.exit_code == 0
         assert "all ongoing jobs cancelled successfully" in caplog.text
+        assert "Cancelling" in caplog.text
         assert analysis_obj.status == "canceled"
 
 

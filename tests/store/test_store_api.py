@@ -166,3 +166,12 @@ def test_update(sample_store, case_id, status):
     assert analysis_obj.status == status
     sample_store.update_run_status(analysis_obj.id)
     assert analysis_obj.status == status
+
+
+def test_mark_analyses_deleted(sample_store):
+    case_id = "liberatedunicorn"
+    analysis_obj = sample_store.get_latest_analysis(case_id)
+    assert not analysis_obj.is_deleted
+    sample_store.mark_analyses_deleted(case_id=case_id)
+    analysis_obj = sample_store.get_latest_analysis(case_id)
+    assert analysis_obj.is_deleted
