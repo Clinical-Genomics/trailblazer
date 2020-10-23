@@ -1,27 +1,28 @@
 # -*- coding: utf-8 -*-
 """Store backend in Trailblazer"""
-from typing import List, Optional
 import datetime as dt
-from dateutil.parser import parse as parse_datestr
-from pathlib import Path
-import shutil
-from ruamel.yaml import safe_load
-import subprocess
-import pandas as pd
 import io
+import subprocess
+from typing import List, Optional
+import logging
 
 import alchy
-from alchy import Query
+import pandas as pd
 import sqlalchemy as sqa
+from alchy import Query
+from dateutil.parser import parse as parse_datestr
+from ruamel.yaml import safe_load
 
 from trailblazer.constants import (
-    STARTED_STATUSES,
-    ONGOING_STATUSES,
-    FAILED_STATUS,
     COMPLETED_STATUS,
+    FAILED_STATUS,
+    ONGOING_STATUSES,
+    STARTED_STATUSES,
 )
+from trailblazer.exc import EmptySqueueError, TrailblazerError
 from trailblazer.store import models
-from trailblazer.exc import TrailblazerError, EmptySqueueError
+
+LOG = logging.getLogger(__name__)
 
 
 class BaseHandler:
@@ -92,6 +93,7 @@ class BaseHandler:
         before: dt.datetime = None,
         is_visible: bool = None,
         family: str = None,
+        data_analysis: str = None,
     ) -> Query:
         """
         used by REST +> CG
@@ -119,6 +121,10 @@ class BaseHandler:
             analysis_query = analysis_query.filter(self.Analysis.started_at < before)
         if is_visible is not None:
             analysis_query = analysis_query.filter_by(is_visible=is_visible)
+        if data_analysis:
+            analysis_query = analysis_query.filter(
+                models.Analysis.data_analysis.ilike(f"%{data_analysis}%")
+            )
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
     def analysis(self, analysis_id: int) -> Optional[models.Analysis]:
@@ -223,10 +229,7 @@ class BaseHandler:
             raise TrailblazerError(
                 f"Analysis for {analysis_obj.family} is currently running! Use --force flag to delete anyway."
             )
-        if analysis_obj.out_dir:
-            analysis_path = Path(analysis_obj.out_dir).parent
-            if analysis_path.is_dir():
-                shutil.rmtree(analysis_path, ignore_errors=True)
+        LOG.info(f"Deleting analysis {analysis_id} for case {analysis_obj.family}")
         analysis_obj.delete()
         self.mark_analyses_deleted(case_id=analysis_obj.family)
 
@@ -314,10 +317,43 @@ class BaseHandler:
                 analysis_obj.comment = e.message
             except Exception as e:
                 analysis_obj.status = "error"
-                analysis_obj.comment = f"Error tracking case - {e}"
+                analysis_obj.comment = f"Error logging case - {e}"
             finally:
                 analysis_obj.logged_at = dt.datetime.now()
                 self.commit()
+
+    @staticmethod
+    def cancel_slurm_job(slurm_id: int) -> None:
+        process = subprocess.Popen(["scancel", str(slurm_id)])
+        process.wait()
+
+    def cancel_analysis(self, analysis_id: int) -> None:
+        analysis_obj = self.analysis(analysis_id=analysis_id)
+        if not analysis_obj:
+            raise TrailblazerError(f"Analysis {analysis_id} does not exist")
+        if analysis_obj.status not in ONGOING_STATUSES:
+            raise TrailblazerError(f"Analysis {analysis_id} is not running")
+
+        try:
+            jobs_dataframe = self.parse_squeue_to_df(
+                self.query_slurm(job_id_file=analysis_obj.config_path, case_id=analysis_obj.family)
+            )
+            slurm_id_list = list(
+                jobs_dataframe[jobs_dataframe.status == any(["RUNNING", "PENDING"])]
+            )
+            for slurm_id in slurm_id_list:
+                LOG.info(f"Cancelling job {slurm_id}")
+                self.cancel_slurm_job(slurm_id)
+            LOG.info(
+                f"Case {analysis_obj.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
+            )
+        except EmptySqueueError:
+            LOG.info(
+                f"Case {analysis_obj.family} - Analysis {analysis_id}: no ongoing jobs to cancel!"
+            )
+        finally:
+            analysis_obj.status = "canceled"
+            self.commit()
 
 
 class Store(alchy.Manager, BaseHandler):

@@ -14,11 +14,27 @@ depends_on = None
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import types
+
+OLD_OPTIONS = ("wes", "wgs", "rna")
+NEW_OPTIONS = TYPES = ("wes", "wgs", "rna", "panel")
 
 
 def upgrade():
     op.add_column("analysis", sa.Column("data_analysis", sa.String(), nullable=True))
+    op.alter_column(
+        "analysis",
+        "type",
+        existing_type=types.Enum(*OLD_OPTIONS),
+        type_=types.Enum(*NEW_OPTIONS),
+    )
 
 
 def downgrade():
     op.drop_column("analysis", "data_analysis")
+    op.alter_column(
+        "analysis",
+        "type",
+        existing_type=types.Enum(*NEW_OPTIONS),
+        type_=types.Enum(*OLD_OPTIONS),
+    )

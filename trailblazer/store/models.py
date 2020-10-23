@@ -12,7 +12,7 @@ CATEGORIES = NORMAL_CATEGORIES + FAILED_CATEGORIES
 STATUS_OPTIONS = ("pending", "running", "completed", "failed", "error", "canceled")
 JOB_STATUS_OPTIONS = [category.lower() for category in CATEGORIES]
 PRIORITY_OPTIONS = ("low", "normal", "high")
-TYPES = ("wes", "wgs", "rna")
+TYPES = ("wes", "wgs", "rna", "panel")
 
 
 Model = alchy.make_declarative_base(Base=alchy.ModelBase)
