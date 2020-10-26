@@ -20,6 +20,7 @@ def stringify_timestamps(data: dict) -> dict:
 
 @blueprint.before_request
 def before_request():
+    """Authentication that is run before processing requests to the application"""
     if request.method == "OPTIONS":
         return make_response(jsonify(ok=True), 204)
     auth_header = request.headers.get("Authorization")
@@ -103,6 +104,7 @@ def aggregate_jobs():
 
 @blueprint.route("/query-analyses", methods=["POST"])
 def post_query_analyses():
+    """Return list of analyses matching the query terms"""
     content = request.json
     query_analyses = store.analyses(
         case_id=content.get("case_id"),
@@ -121,6 +123,7 @@ def post_query_analyses():
 
 @blueprint.route("/get-latest-analysis", methods=["POST"])
 def post_get_latest_analysis():
+    """Return latest analysis entry for specified case"""
     content = request.json
     analysis_obj = store.get_latest_analysis(case_id=content.get("case_id"))
     if analysis_obj:
@@ -131,6 +134,7 @@ def post_get_latest_analysis():
 
 @blueprint.route("/find-analysis", methods=["POST"])
 def post_find_analysis():
+    """Find analysis using case_id, date, and status"""
     content = request.json
     analysis_obj = store.get_analysis(
         case_id=content.get("case_id"),
@@ -145,6 +149,9 @@ def post_find_analysis():
 
 @blueprint.route("/delete-analysis", methods=["POST"])
 def post_delete_analysis():
+    """Delete analysis using analysis_id. If analysis is ongoing, error will be raised.
+    To delete ongoing analysis, --force flag should also be passed.
+    If an ongoing analysis is deleted in ths manner, all ongoing jobs will be cancelled"""
     content = request.json
     try:
         store.delete_analysis(analysis_id=content.get("analysis_id"), force=content.get("force"))
@@ -155,6 +162,7 @@ def post_delete_analysis():
 
 @blueprint.route("/mark-analyses-deleted", methods=["POST"])
 def post_mark_analyses_deleted():
+    """Mark all analysis belonging to a case deleted"""
     content = request.json
     old_analyses = store.mark_analyses_deleted(case_id=content.get("case_id"))
     data = [stringify_timestamps(analysis_obj.to_dict()) for analysis_obj in old_analyses]
@@ -165,6 +173,7 @@ def post_mark_analyses_deleted():
 
 @blueprint.route("/add-pending-analysis", methods=["POST"])
 def post_add_pending_analysis():
+    """Add new analysis with pending status"""
     content = request.json
     try:
         analysis_obj = store.add_pending_analysis(
@@ -184,12 +193,14 @@ def post_add_pending_analysis():
 
 @blueprint.route("/update")
 def update_analyses():
+    """Update all ongoing analysis by querying SLURM"""
     store.update_ongoing_analyses()
     return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), 201
 
 
 @blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
 def update_analysis(analysis_id):
+    """Update a specific analysis"""
     try:
         store.update_run_status(analysis_id)
         return jsonify("Success!"), 201
@@ -199,6 +210,7 @@ def update_analysis(analysis_id):
 
 @blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])
 def cancel(analysis_id):
+    """Cancel an analysis and all slurm jobs associated with it"""
     try:
         store.cancel_analysis(analysis_id=analysis_id)
         return jsonify("Success!"), 201

@@ -203,7 +203,7 @@ class BaseHandler:
         """Fetch a user from the database."""
         return self.User.query.filter_by(email=email).first()
 
-    def jobs(self):
+    def jobs(self) -> Query:
         """Return all jobs in the database."""
         return self.Job.query
 
@@ -279,6 +279,7 @@ class BaseHandler:
         self.commit()
 
     def update_ongoing_analyses(self) -> None:
+        """Iterate over all analysis with ongoing status and query SLURM for current progress"""
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
             self.update_run_status(analysis_id=analysis_obj.id)
@@ -329,10 +330,12 @@ class BaseHandler:
 
     @staticmethod
     def cancel_slurm_job(slurm_id: int) -> None:
+        """Cancel slurm job by slurm job ID"""
         process = subprocess.Popen(["scancel", str(slurm_id)])
         process.wait()
 
     def cancel_analysis(self, analysis_id: int) -> None:
+        """Cancel all ongoing slurm jobs associated with the analysis, and set job status to canceled"""
         analysis_obj = self.analysis(analysis_id=analysis_id)
         if not analysis_obj:
             raise TrailblazerError(f"Analysis {analysis_id} does not exist")
