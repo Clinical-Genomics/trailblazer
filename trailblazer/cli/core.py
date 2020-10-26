@@ -7,7 +7,7 @@ from dateutil.parser import parse as parse_date
 
 import trailblazer
 from trailblazer.store import Store
-from trailblazer.store.models import STATUS_OPTIONS, ONGOING_STATUSES
+from trailblazer.store.models import STATUS_OPTIONS
 
 LOG = logging.getLogger(__name__)
 
@@ -92,36 +92,14 @@ def delete(context, analysis_id: int, force: bool):
         LOG.error(e)
 
 
-@base.command("get")
-@click.option("-c", "--comment", help="return analyses with comments containing")
-@click.pass_context
-def get(context, comment):
-    """Display recent logs for analyses."""
-    runs = context.obj["trailblazer"].find_analyses_with_comment(comment=comment).limit(100)
-    for run_obj in runs:
-        if run_obj.status == "pending":
-            message = f"{run_obj.id} | {run_obj.family} [{run_obj.status.upper()}]"
-        else:
-            message = (
-                f"{run_obj.id} | {run_obj.family} {run_obj.started_at.date()} "
-                f"[{run_obj.type.upper()}/{run_obj.status.upper()}]"
-            )
-            if run_obj.status == "running":
-                message = click.style(f"{message} - {run_obj.progress * 100}/100", fg="blue")
-            elif run_obj.status == "completed":
-                message = click.style(f"{message} - {run_obj.completed_at}", fg="green")
-            elif run_obj.status == "failed":
-                message = click.style(message, fg="red")
-
-            message += f" {run_obj.comment}"
-        click.echo(message)
-
-
 @base.command("ls")
-@click.option("-s", "--status", type=click.Choice(STATUS_OPTIONS))
-@click.option("-b", "--before", help="return analyses started before date")
+@click.option(
+    "-s", "--status", type=click.Choice(STATUS_OPTIONS), help="Find analysis with specified status"
+)
+@click.option("-b", "--before", help="Find analyses started before date")
+@click.option("-c", "--comment", help="Find analysis with comment")
 @click.pass_context
-def ls_cmd(context, before, status):
+def ls_cmd(context, before, status, comment):
     """Display recent logs for analyses."""
     runs = (
         context.obj["trailblazer"]
@@ -129,6 +107,7 @@ def ls_cmd(context, before, status):
             status=status,
             deleted=False,
             before=parse_date(before) if before else None,
+            comment=comment,
         )
         .limit(30)
     )

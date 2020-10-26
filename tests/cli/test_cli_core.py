@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import trailblazer
 from trailblazer.cli import base
-from trailblazer.cli.core import ls_cmd, delete, get, cancel, scan, user
+from trailblazer.cli.core import ls_cmd, delete, cancel, scan, user
 import pytest
 
 
@@ -12,26 +12,6 @@ def test_base(cli_runner):
     # THEN it should print the name and version of the tool only
     assert trailblazer.__title__ in result.output
     assert trailblazer.__version__ in result.output
-
-
-def test_get_dummy_comment(cli_runner, trailblazer_context):
-    """Test get with a argument that should yield no results"""
-    # GIVEN the cli
-    # WHEN running get with a comment
-    result = cli_runner.invoke(get, ["-c", "dummy-comment"], obj=trailblazer_context)
-    # THEN all analyses containing that comment should be listed
-    assert not result.output
-
-
-def test_get_expected_comment(cli_runner, trailblazer_context):
-    """Test get with a argument that should yield no results"""
-    # GIVEN the cli
-    # WHEN running get with a comment
-    failed_comment = "failed steps"
-    trailblazer_context["trailblazer"].update_ongoing_analyses()
-    result = cli_runner.invoke(get, ["-c", failed_comment], obj=trailblazer_context)
-    # THEN all analyses containing that comment should be listed
-    assert failed_comment in result.output
 
 
 def test_cancel_nonexistent(cli_runner, trailblazer_context, caplog):

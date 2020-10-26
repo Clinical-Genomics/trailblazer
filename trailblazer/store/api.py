@@ -57,15 +57,6 @@ class BaseHandler:
         query = self.Analysis.query.filter_by(family=case_id, started_at=started_at, status=status)
         return query.first()
 
-    def find_analyses_with_comment(self, comment: str) -> Query:
-        """
-        used in CLI
-        Find a analyses containing comment."""
-        analysis_query = self.Analysis.query
-
-        analysis_query = analysis_query.filter(self.Analysis.comment.like(f"%{comment}%"))
-        return analysis_query
-
     def aggregate_failed(self, since_when: dt.date = None) -> List[dict]:
         """
         used in FRONTEND
@@ -95,6 +86,7 @@ class BaseHandler:
         is_visible: bool = None,
         family: str = None,
         data_analysis: str = None,
+        comment: str = None,
     ) -> Query:
         """
         used by REST +> CG
@@ -126,6 +118,9 @@ class BaseHandler:
             analysis_query = analysis_query.filter(
                 models.Analysis.data_analysis.ilike(f"%{data_analysis}%")
             )
+        if comment:
+            analysis_query = analysis_query.filter(models.Analysis.comment.ilike(f"%{comment}%"))
+
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
     def analysis(self, analysis_id: int) -> Optional[models.Analysis]:
