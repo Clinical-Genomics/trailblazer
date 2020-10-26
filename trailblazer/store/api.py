@@ -97,7 +97,7 @@ class BaseHandler:
         analysis_query = self.Analysis.query
         if case_id:
             analysis_query = analysis_query.filter_by(family=case_id)
-        elif query:
+        if query:  # to be deprecated
             analysis_query = analysis_query.filter(
                 sqa.or_(
                     self.Analysis.family.like(f"%{query}%"),
