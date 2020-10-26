@@ -46,6 +46,7 @@ def test_cancel_ongoing(cli_runner, trailblazer_context, caplog):
         assert result.exit_code == 0
         assert "all ongoing jobs cancelled successfully" in caplog.text
         assert "Cancelling" in caplog.text
+        assert "690988" in caplog.text
         assert analysis_obj.status == "canceled"
 
 

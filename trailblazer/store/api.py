@@ -284,6 +284,7 @@ class BaseHandler:
             self.update_run_status(analysis_id=analysis_obj.id)
 
     def update_run_status(self, analysis_id: int) -> None:
+        """Query slurm for entries related to given analysis, and update the Trailblazer database"""
         analysis_obj = self.analysis(analysis_id)
         try:
             jobs_dataframe = self.parse_squeue_to_df(
