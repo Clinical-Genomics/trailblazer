@@ -55,6 +55,14 @@ def scan(context):
 
 
 @base.command()
+@click.pass_context
+def update_analysis(context, analysis_id: int):
+    """Scan a directory for analyses."""
+    context.obj["trailblazer"].update_run_status(analysis_id)
+    LOG.info(f"Analysis {analysis_id} updated!")
+
+
+@base.command()
 @click.option("--name", help="Name of new user to add")
 @click.argument("email")
 @click.pass_context
