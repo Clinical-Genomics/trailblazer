@@ -340,14 +340,14 @@ class BaseHandler:
                     f"Run finished! "
                     f"Time elapsed {round(sum([job_obj.elapsed for job_obj in analysis_obj.failed_jobs]) / 60, 1) } hours "
                 )
+            elif status_distribution.get("RUNNING"):
+                analysis_obj.status = "running"
             elif status_distribution.get("PENDING") == 1:
                 analysis_obj.status = "pending"
             elif status_distribution.get("CANCELLED") and not (
                 status_distribution.get("RUNNING") or status_distribution.get("PENDING")
             ):
                 analysis_obj.status = "canceled"
-            elif status_distribution.get("RUNNING"):
-                analysis_obj.status = "running"
 
             LOG.info(
                 f"Updated status {analysis_obj.family} - {analysis_obj.id}: {analysis_obj.status} "
