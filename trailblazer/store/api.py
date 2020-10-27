@@ -247,12 +247,18 @@ class BaseHandler:
 
     @staticmethod
     def get_time_elapsed_in_min(elapsed_string: Optional[str]) -> Optional[int]:
+        """Parse SLURM elapsed timestring into minutes"""
         if elapsed_string:
+            days = 0
+            if "-" in elapsed_string:
+                days = int(elapsed_string.split("-")[0])
+                elapsed_string = elapsed_string.split("-")[1]
             split_timestamp = elapsed_string.split(":")
             if len(split_timestamp) < 3:
                 split_timestamp = list("0" * (3 - len(split_timestamp))) + split_timestamp
             elapsed_minutes = int(
                 (parse_datestr(":".join(split_timestamp)) - parse_datestr("0:0:0")).seconds / 60
+                + days * 60
             )
             return elapsed_minutes
 
@@ -355,8 +361,7 @@ class BaseHandler:
     @staticmethod
     def cancel_slurm_job(slurm_id: int) -> None:
         """Cancel slurm job by slurm job ID"""
-        process = subprocess.Popen(["scancel", str(slurm_id)])
-        process.wait()
+        subprocess.run(["scancel", str(slurm_id)])
 
     def cancel_analysis(self, analysis_id: int) -> None:
         """Cancel all ongoing slurm jobs associated with the analysis, and set job status to canceled"""
@@ -375,8 +380,7 @@ class BaseHandler:
         LOG.info(
             f"Case {analysis_obj.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )
-        analysis_obj.status = "canceled"
-        self.commit()
+        self.update_run_status(analysis_id=analysis_id)
 
 
 class Store(alchy.Manager, BaseHandler):

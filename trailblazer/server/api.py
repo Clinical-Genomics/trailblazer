@@ -214,3 +214,13 @@ def cancel(analysis_id):
         return jsonify("Success!"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
+
+
+@blueprint.route("/delete/<int:analysis_id>", methods=["PUT"])
+def delete(analysis_id):
+    """Cancel an analysis and all slurm jobs associated with it"""
+    try:
+        store.delete_analysis(analysis_id=analysis_id, force=True)
+        return jsonify("Success!"), 201
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409
