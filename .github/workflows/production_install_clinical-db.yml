@@ -1,0 +1,31 @@
+name: TB production install clinical-db
+
+on: ["push", "pull_request"]
+
+jobs:
+
+  production-install:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    # Check out Trailblazer code
+    - uses: actions/checkout@v2
+
+
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6.7    # Python version in prod170926 is 3.6.2, but is not available in actions
+
+    - name: Test install on clinical-db
+      run: |
+        pip install pip==9.0.1
+        pip install .
+        pip check
+    - name: Test install dev on clinical-db
+      run: |
+        pip install . -r requirements-dev.txt
+        pip check
+        pytest

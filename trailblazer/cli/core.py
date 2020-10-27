@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import logging
 from pathlib import Path
 import subprocess
@@ -9,13 +8,11 @@ import ruamel.yaml
 
 import trailblazer
 from trailblazer.cli.get import get
-from trailblazer.store import Store
+from trailblazer.exc import MissingFileError
 from trailblazer.log import LogAnalysis
-from trailblazer.mip.start import MipCli
 from trailblazer.mip.files import parse_config
 from trailblazer.mip.miplog import job_ids
-from trailblazer.exc import MissingFileError, MipStartError
-from .utils import environ_email
+from trailblazer.store import Store
 from .clean import clean
 from .delete import delete
 from .ls import ls_cmd
@@ -66,45 +63,6 @@ def log_cmd(context, sampleinfo, sacct, quiet, config):
     else:
         message = f"New log added: {new_run.family} ({new_run.id}) - {new_run.status}"
         click.echo(click.style(message, fg="green"))
-
-
-@base.command()
-@click.option("-c", "--mip-config", type=click.Path(exists=True), help="MIP config")
-@click.option("-e", "--email", help="email for logging user")
-@click.option("-p", "--priority", type=click.Choice(["low", "normal", "high"]), default="normal")
-@click.option("-d", "--dryrun", is_flag=True, help="only generate SBATCH scripts")
-@click.option("--command", is_flag=True, help="only show the MIP command")
-@click.option(
-    "-sw",
-    "--start-with",
-    help="start the pipeline beginning with program,\
-                                           see format for program in mip.pl",
-)
-@click.argument("case", required=False)
-@click.pass_context
-def start(context, mip_config, email, priority, dryrun, command, start_with, case):
-    """Start a new analysis."""
-    mip_cli = MipCli(context.obj["script"], context.obj["pipeline"], context.obj["conda_env"])
-    mip_config = mip_config or context.obj["mip_config"]
-    email = email or environ_email()
-    kwargs = dict(
-        config=mip_config,
-        case=case,
-        priority=priority,
-        email=email,
-        dryrun=dryrun,
-        start_with=start_with,
-    )
-    if command:
-        mip_command = mip_cli.build_command(**kwargs)
-        click.echo(" ".join(mip_command))
-    else:
-        try:
-            mip_cli(**kwargs)
-            if not dryrun:
-                context.obj["store"].add_pending(case, email=email)
-        except MipStartError as error:
-            click.echo(click.style(error.message, fg="red"))
 
 
 @base.command()
