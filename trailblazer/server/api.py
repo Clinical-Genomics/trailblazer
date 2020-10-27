@@ -209,8 +209,11 @@ def update_analysis(analysis_id):
 @blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])
 def cancel(analysis_id):
     """Cancel an analysis and all slurm jobs associated with it"""
+    auth_header = request.headers.get("Authorization")
+    jwt_token = auth_header.split("Bearer ")[-1]
+    user_data = jwt.decode(jwt_token, verify=False)
     try:
-        store.cancel_analysis(analysis_id=analysis_id)
+        store.cancel_analysis(analysis_id=analysis_id, email=user_data["email"])
         return jsonify("Success!"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409

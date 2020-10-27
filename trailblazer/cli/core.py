@@ -8,6 +8,7 @@ from dateutil.parser import parse as parse_date
 import trailblazer
 from trailblazer.store import Store
 from trailblazer.store.models import STATUS_OPTIONS
+from trailblazer.environ import environ_email
 
 LOG = logging.getLogger(__name__)
 
@@ -65,7 +66,7 @@ def update_analysis(context, analysis_id: int):
 
 @base.command()
 @click.option("--name", help="Name of new user to add")
-@click.argument("email")
+@click.argument("email", default=environ_email())
 @click.pass_context
 def user(context, name, email):
     """Add a new or display information about an existing user."""
@@ -85,7 +86,7 @@ def user(context, name, email):
 def cancel(context, analysis_id):
     """Cancel all jobs in a run."""
     try:
-        context.obj["trailblazer"].cancel_analysis(analysis_id=analysis_id)
+        context.obj["trailblazer"].cancel_analysis(analysis_id=analysis_id, email=environ_email())
     except Exception as e:
         LOG.error(e)
 

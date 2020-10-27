@@ -372,7 +372,7 @@ class BaseHandler:
         """Cancel slurm job by slurm job ID"""
         subprocess.run(["scancel", str(slurm_id)])
 
-    def cancel_analysis(self, analysis_id: int) -> None:
+    def cancel_analysis(self, analysis_id: int, email: str = None) -> None:
         """Cancel all ongoing slurm jobs associated with the analysis, and set job status to canceled"""
         analysis_obj = self.analysis(analysis_id=analysis_id)
         if not analysis_obj:
@@ -390,7 +390,10 @@ class BaseHandler:
             f"Case {analysis_obj.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )
         analysis_obj.status = "canceled"
-        analysis_obj.comment = "Analysis cancelled manually!"
+        analysis_obj.comment = (
+            f"Analysis cancelled manually by user :"
+            f" {(self.user(email).name if self.user(email) else 'Unknown')}!"
+        )
         self.commit()
 
 
