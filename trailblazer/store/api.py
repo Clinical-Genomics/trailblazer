@@ -322,13 +322,16 @@ class BaseHandler:
                 analysis_obj.status = "canceled"
             elif status_distribution.get("RUNNING"):
                 analysis_obj.status = "running"
-            self.update_jobs(analysis_obj=analysis_obj, jobs_dataframe=jobs_dataframe)
-            analysis_obj.logged_at = dt.datetime.now()
+
             LOG.info(
                 f"Updated status {analysis_obj.family} - {analysis_obj.id}: {analysis_obj.status} "
             )
             self.commit()
+
+            self.update_jobs(analysis_obj=analysis_obj, jobs_dataframe=jobs_dataframe)
+            analysis_obj.logged_at = dt.datetime.now()
         except Exception as e:
+            LOG.error(f"Error logging case - {e}")
             analysis_obj.status = "error"
             analysis_obj.comment = f"Error logging case - {e}"
             self.commit()
