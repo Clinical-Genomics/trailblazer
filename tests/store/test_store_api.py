@@ -148,8 +148,8 @@ def test_get_latest_analysis_status(sample_store, family: str, expected_status: 
     [
         ("blazinginsect", "running"),
         ("crackpanda", "failed"),
-        ("daringpidgeon", "failed"),
-        ("emptydinosaur", "failed"),
+        ("daringpidgeon", "error"),
+        ("emptydinosaur", "error"),
         ("escapedgoat", "pending"),
         ("fancymole", "completed"),
         ("happycow", "pending"),
