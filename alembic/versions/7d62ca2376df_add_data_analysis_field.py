@@ -21,7 +21,7 @@ NEW_OPTIONS = ("wes", "wgs", "rna", "tgs", "other")
 
 
 def upgrade():
-    op.add_column("analysis", sa.Column("data_analysis", sa.String(), nullable=True))
+    op.add_column("analysis", sa.Column("data_analysis", sa.String(32), nullable=True))
     op.alter_column(
         "analysis",
         "type",
