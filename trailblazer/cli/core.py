@@ -159,6 +159,8 @@ def cancel(context, jobs, analysis_id=None, case_id=None):
         for job_id in all_jobs:
             click.echo(job_id)
     else:
+        message = f"This will cancel all {len(all_jobs)} jobs for {analysis_obj.family} on SLURM, continue?"
+        click.confirm(click.style(message, fg="yellow"), abort=True)
         for job_id in all_jobs:
             LOG.debug(f"cancelling job: {job_id}")
             process = subprocess.Popen(["scancel", job_id])
