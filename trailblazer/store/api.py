@@ -101,8 +101,8 @@ class BaseHandler:
         if query:  # to be deprecated
             analysis_query = analysis_query.filter(
                 sqa.or_(
-                    self.Analysis.family.like(f"%{query}%"),
-                    self.Analysis.status.like(f"%{query}%"),
+                    self.Analysis.family.ilike(f"%{query}%"),
+                    self.Analysis.status.ilike(f"%{query}%"),
                     self.Analysis.data_analysis.ilike(f"%{query}%"),
                 )
             )
