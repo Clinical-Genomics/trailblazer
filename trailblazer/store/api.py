@@ -276,7 +276,9 @@ class BaseHandler:
                 if isinstance(val.get("started"), str)
                 else None,
                 elapsed=int(
-                    (parse_datestr(val.get("elapsed", "0:0:0")) - parse_datestr("0:0:0")).seconds
+                    (
+                        parse_datestr(val.get("time_elapsed", "0:0:0")) - parse_datestr("0:0:0")
+                    ).seconds
                 ),
             )
             for ind, val in jobs_dataframe.iterrows()
