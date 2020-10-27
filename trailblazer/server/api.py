@@ -38,11 +38,6 @@ def before_request():
 @blueprint.route("/analyses")
 def analyses():
     """Display analyses."""
-    try:
-        store.update_ongoing_analyses()
-    except Exception:
-        pass
-
     per_page = int(request.args.get("per_page", 50))
     page = int(request.args.get("page", 1))
     query = store.analyses(
