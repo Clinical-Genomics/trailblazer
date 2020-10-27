@@ -55,10 +55,11 @@ def scan(context):
 
 
 @base.command()
+@click.argument("analysis_id")
 @click.pass_context
 def update_analysis(context, analysis_id: int):
     """Scan a directory for analyses."""
-    context.obj["trailblazer"].update_run_status(analysis_id)
+    context.obj["trailblazer"].update_run_status(analysis_id=analysis_id)
     LOG.info(f"Analysis {analysis_id} updated!")
 
 
