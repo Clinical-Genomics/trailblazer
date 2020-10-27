@@ -294,7 +294,7 @@ class BaseHandler:
             status_distribution = round(
                 jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
             )
-            analysis_obj.progress = float(status_distribution.get("COMPLETED", 0.0))
+            analysis_obj.progress = str(status_distribution.get("COMPLETED", 0.0))
             if status_distribution.get("FAILED") or status_distribution.get("TIMEOUT"):
                 if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):
                     analysis_obj.status = "error"
@@ -324,7 +324,7 @@ class BaseHandler:
             )
             self.commit()
         except Exception as e:
-            analysis_obj.status = "failed"
+            analysis_obj.status = "error"
             analysis_obj.comment = f"Error logging case - {e}"
             self.commit()
 
