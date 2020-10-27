@@ -9,4 +9,4 @@ SLURM_ACTIVE_CATEGORIES = ("running", "pending")
 STATUS_OPTIONS = ("pending", "running", "completed", "failed", "error", "canceled")
 JOB_STATUS_OPTIONS = SLURM_NORMAL_CATEGORIES + SLURM_FAILED_CATEGORIES
 PRIORITY_OPTIONS = ("low", "normal", "high")
-TYPES = ("wes", "wgs", "rna", "panel")
+TYPES = ("wes", "wgs", "rna", "tgs", "other")
