@@ -270,7 +270,7 @@ class BaseHandler:
                 slurm_id=val.get("id"),
                 name=val.get("step"),
                 status=val.get("status").lower(),
-                started_at=parse_datestr(val.get("started")) if val.get("started") else None,
+                started_at=val.get("started") if val.get("started") else None,
                 elapsed=int(
                     (parse_datestr(val.get("elapsed", "0:0:0")) - parse_datestr("0:0:0")).seconds
                 ),
