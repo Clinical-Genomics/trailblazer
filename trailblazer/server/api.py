@@ -44,8 +44,6 @@ def analyses():
         status=request.args.get("status"),
         query=request.args.get("query"),
         is_visible=request.args.get("is_visible") == "true" or None,
-        data_analysis=request.args.get("data_analysis"),
-        comment=request.args.get("comment"),
     )
 
     query_page = query.paginate(page, per_page=per_page)
