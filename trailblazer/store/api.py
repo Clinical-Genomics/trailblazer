@@ -317,6 +317,7 @@ class BaseHandler:
             status_distribution = round(
                 jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
             )
+            self.update_jobs(analysis_obj=analysis_obj, jobs_dataframe=jobs_dataframe)
             LOG.info("Status in SLURM")
             LOG.info(jobs_dataframe)
             analysis_obj.progress = float(status_distribution.get("COMPLETED", 0.0))
@@ -337,15 +338,15 @@ class BaseHandler:
             elif status_distribution.get("COMPLETED") == 1:
                 analysis_obj.status = "completed"
                 analysis_obj.comment = (
-                    f"Run finished! "
-                    f"Time elapsed {round(sum([job_obj.elapsed for job_obj in analysis_obj.failed_jobs]) / 60, 1) } "
+                    f"Run finished! Time elapsed "
+                    f"{min([job_obj.started_at for job_obj in analysis_obj.failed_jobs if job_obj.started_at]) - dt.datetime.now()} "
                     f"hours "
                 )
             elif status_distribution.get("RUNNING") or status_distribution.get("COMPLETED"):
                 analysis_obj.status = "running"
                 analysis_obj.comment = (
-                    f"Running! "
-                    f"Time elapsed {round(sum([job_obj.elapsed for job_obj in analysis_obj.failed_jobs]) / 60, 1) } "
+                    f"Running! Time elapsed "
+                    f"{min([job_obj.started_at for job_obj in analysis_obj.failed_jobs if job_obj.started_at]) - dt.datetime.now()} "
                     f"hours "
                 )
             elif status_distribution.get("PENDING") == 1:
@@ -360,7 +361,6 @@ class BaseHandler:
             )
             self.commit()
 
-            self.update_jobs(analysis_obj=analysis_obj, jobs_dataframe=jobs_dataframe)
             analysis_obj.logged_at = dt.datetime.now()
         except Exception as e:
             LOG.error(f"Error logging case - {e}")
