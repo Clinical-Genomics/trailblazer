@@ -17,7 +17,7 @@ import sqlalchemy as sa
 from sqlalchemy import types
 
 OLD_OPTIONS = ("wes", "wgs", "rna")
-NEW_OPTIONS = TYPES = ("wes", "wgs", "rna", "panel")
+NEW_OPTIONS = ("wes", "wgs", "rna", "tgs", "other")
 
 
 def upgrade():
