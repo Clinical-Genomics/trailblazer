@@ -263,6 +263,7 @@ class BaseHandler:
         """Parses job dataframe and creates job objects"""
         for job_obj in analysis_obj.failed_jobs:
             job_obj.delete()
+        self.commit()
         analysis_obj.failed_jobs = [
             self.Job(
                 analysis_id=analysis_obj.id,
