@@ -103,6 +103,7 @@ class BaseHandler:
                 sqa.or_(
                     self.Analysis.family.like(f"%{query}%"),
                     self.Analysis.status.like(f"%{query}%"),
+                    self.Analysis.data_analysis.like(f"%{query}%"),
                 )
             )
         if status:
