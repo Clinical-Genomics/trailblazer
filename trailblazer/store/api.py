@@ -311,6 +311,8 @@ class BaseHandler:
 
             elif status_distribution.get("COMPLETED") == 1:
                 analysis_obj.status = "completed"
+            elif status_distribution.get("PENDING") == 1:
+                analysis_obj.status = "pending"
             elif status_distribution.get("CANCELLED") and not (
                 status_distribution.get("RUNNING") or status_distribution.get("PENDING")
             ):
