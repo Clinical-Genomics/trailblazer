@@ -246,6 +246,17 @@ class BaseHandler:
         return squeue_response
 
     @staticmethod
+    def get_time_elapsed_in_min(elapsed_string: Optional[str]) -> Optional[int]:
+        if elapsed_string:
+            split_timestamp = elapsed_string.split(":")
+            if len(split_timestamp) < 3:
+                split_timestamp = list("0" * (3 - len(split_timestamp))) + split_timestamp
+            elapsed_minutes = int(
+                (parse_datestr(":".join(split_timestamp)) - parse_datestr("0:0:0")).seconds / 60
+            )
+            return elapsed_minutes
+
+    @staticmethod
     def parse_squeue_to_df(squeue_response: bytes) -> pd.DataFrame:
         """Reads queue response into a pandas dataframe for easy parsing.
         Raises:
@@ -258,6 +269,9 @@ class BaseHandler:
             header=None,
             na_values=["nan", "N/A", "None"],
             names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
+        )
+        parsed_df["time_elapsed"] = parsed_df["time_elapsed"].apply(
+            lambda x: Store.get_time_elapsed_in_min(x)
         )
         return parsed_df
 
@@ -275,11 +289,7 @@ class BaseHandler:
                 started_at=parse_datestr(val.get("started"))
                 if isinstance(val.get("started"), str)
                 else None,
-                elapsed=int(
-                    (
-                        parse_datestr(val.get("time_elapsed", "0:0:0")) - parse_datestr("0:0:0")
-                    ).seconds
-                ),
+                elapsed=val.get("time_elapsed"),
             )
             for ind, val in jobs_dataframe.iterrows()
         ]
