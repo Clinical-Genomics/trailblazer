@@ -271,9 +271,9 @@ class BaseHandler:
                 name=val.get("step"),
                 status=val.get("status").lower(),
                 started_at=parse_datestr(val.get("started")) if val.get("started") else None,
-                elapsed=(
-                    parse_datestr(val.get("elapsed", "0:0:0")) - parse_datestr("0:0:0")
-                ).seconds,
+                elapsed=int(
+                    (parse_datestr(val.get("elapsed", "0:0:0")) - parse_datestr("0:0:0")).seconds
+                ),
             )
             for ind, val in jobs_dataframe.iterrows()
         ]
