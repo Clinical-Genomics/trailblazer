@@ -258,16 +258,6 @@ class BaseHandler:
             header=None,
             na_values=["nan", "N/A", "None"],
             names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
-            dtype=[
-                {
-                    "id": int,
-                    "step": str,
-                    "status": str,
-                    "time_limit": str,
-                    "time_elapsed": str,
-                    "started": str,
-                }
-            ],
         )
         return parsed_df
 
@@ -308,7 +298,7 @@ class BaseHandler:
                 jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
             )
             LOG.info("Status in SLURM")
-            LOG.info(status_distribution)
+            LOG.info(jobs_dataframe)
             analysis_obj.progress = float(status_distribution.get("COMPLETED", 0.0))
             if status_distribution.get("FAILED") or status_distribution.get("TIMEOUT"):
                 if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):
