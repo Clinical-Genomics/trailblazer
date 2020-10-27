@@ -338,10 +338,16 @@ class BaseHandler:
                 analysis_obj.status = "completed"
                 analysis_obj.comment = (
                     f"Run finished! "
-                    f"Time elapsed {round(sum([job_obj.elapsed for job_obj in analysis_obj.failed_jobs]) / 60, 1) } hours "
+                    f"Time elapsed {round(sum([job_obj.elapsed for job_obj in analysis_obj.failed_jobs]) / 60, 1) } "
+                    f"hours "
                 )
-            elif status_distribution.get("RUNNING"):
+            elif status_distribution.get("RUNNING") or status_distribution.get("COMPLETED"):
                 analysis_obj.status = "running"
+                analysis_obj.comment = (
+                    f"Running! "
+                    f"Time elapsed {round(sum([job_obj.elapsed for job_obj in analysis_obj.failed_jobs]) / 60, 1) } "
+                    f"hours "
+                )
             elif status_distribution.get("PENDING") == 1:
                 analysis_obj.status = "pending"
             elif status_distribution.get("CANCELLED") and not (
