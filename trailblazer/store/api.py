@@ -294,7 +294,7 @@ class BaseHandler:
             status_distribution = round(
                 jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
             )
-            analysis_obj.progress = status_distribution.get("COMPLETED", 0.0)
+            analysis_obj.progress = float(status_distribution.get("COMPLETED", 0.0))
             if status_distribution.get("FAILED") or status_distribution.get("TIMEOUT"):
                 if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):
                     analysis_obj.status = "error"
