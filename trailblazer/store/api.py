@@ -258,6 +258,16 @@ class BaseHandler:
             header=None,
             na_values=["nan", "N/A", "None"],
             names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
+            dtype=[
+                {
+                    "id": int,
+                    "step": str,
+                    "status": str,
+                    "time_limit": str,
+                    "time_elapsed": str,
+                    "started": str,
+                }
+            ],
         )
         return parsed_df
 
@@ -272,9 +282,7 @@ class BaseHandler:
                 slurm_id=val.get("id"),
                 name=val.get("step"),
                 status=val.get("status").lower(),
-                started_at=parse_datestr(val.get("started"))
-                if (val.get("started") != np.nan)
-                else None,
+                started_at=parse_datestr(val.get("started")) if val.get("started") else None,
                 elapsed=int(
                     (parse_datestr(val.get("elapsed", "0:0:0")) - parse_datestr("0:0:0")).seconds
                 ),
