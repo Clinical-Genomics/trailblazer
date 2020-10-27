@@ -339,15 +339,13 @@ class BaseHandler:
                 analysis_obj.status = "completed"
                 analysis_obj.comment = (
                     f"Run finished! Time elapsed "
-                    f"{dt.datetime.now() - min([job_obj.started_at for job_obj in analysis_obj.failed_jobs if job_obj.started_at])} "
-                    f"hours "
+                    f"{str(dt.datetime.now() - min([job_obj.started_at for job_obj in analysis_obj.failed_jobs if job_obj.started_at])).split('.')[0]}"
                 )
             elif status_distribution.get("RUNNING") or status_distribution.get("COMPLETED"):
                 analysis_obj.status = "running"
                 analysis_obj.comment = (
                     f"Running! Time elapsed "
-                    f"{dt.datetime.now() - min([job_obj.started_at for job_obj in analysis_obj.failed_jobs if job_obj.started_at]) } "
-                    f"hours "
+                    f"{str(dt.datetime.now() - min([job_obj.started_at for job_obj in analysis_obj.failed_jobs if job_obj.started_at])).split('.')[0]}"
                 )
             elif status_distribution.get("PENDING") == 1:
                 analysis_obj.status = "pending"
