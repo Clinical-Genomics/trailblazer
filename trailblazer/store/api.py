@@ -253,7 +253,7 @@ class BaseHandler:
                     "-h",
                     "--states=all",
                     "-o",
-                    "%A %j %T %l %M %S",
+                    "%A%.50j%.50T%.50l%.50M%.50S",
                 ],
             )
         else:

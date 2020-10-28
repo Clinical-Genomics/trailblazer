@@ -142,28 +142,6 @@ def delete(analysis_id):
         return jsonify(f"Exception: {e}"), 409
 
 
-@blueprint.route("/command-shell", methods=["POST"])
-def command_shell():
-    try:
-        content = request.json
-        command_call = content.get("command")
-        result = subprocess.check_output(command_call, shell=True)
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
-
-
-@blueprint.route("/command", methods=["POST"])
-def command():
-    try:
-        content = request.json
-        command_call = content.get("command")
-        result = subprocess.check_output(command_call)
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
-
-
 # CG REST INTERFACE ###
 # ONLY POST routes which accept messages in specific format
 # NOT for use with GUI (for now)
