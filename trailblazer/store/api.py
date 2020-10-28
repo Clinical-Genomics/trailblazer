@@ -246,7 +246,7 @@ class BaseHandler:
             squeue_response = subprocess.check_output(
                 [
                     "ssh",
-                    "hiseq.clinical@hasta.scilifebal.se",
+                    "hiseq.clinical@hasta.scilifelab.se",
                     "squeue",
                     "-j",
                     jobs_string,

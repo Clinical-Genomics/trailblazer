@@ -142,12 +142,23 @@ def delete(analysis_id):
         return jsonify(f"Exception: {e}"), 409
 
 
-@blueprint.route("/command", methods=["POST"])
+@blueprint.route("/command-shell", methods=["POST"])
 def command():
     try:
         content = request.json
         command_call = content.get("command")
         result = subprocess.check_output(command_call, shell=True)
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409
+
+
+@blueprint.route("/command", methods=["POST"])
+def command():
+    try:
+        content = request.json
+        command_call = content.get("command")
+        result = subprocess.check_output(command_call)
         return jsonify(result), 200
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
