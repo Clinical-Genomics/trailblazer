@@ -257,8 +257,10 @@ class BaseHandler:
                 ],
             )
         else:
-            squeue_response = subprocess.check_output(
-                ["squeue", "-j", jobs_string, "-h", "--states=all", "-o", "%A %j %T %l %M %S"]
+            squeue_response = io.BytesIO(
+                subprocess.check_output(
+                    ["squeue", "-j", jobs_string, "-h", "--states=all", "-o", "%A %j %T %l %M %S"]
+                )
             )
         return squeue_response
 
@@ -287,7 +289,7 @@ class BaseHandler:
         if not squeue_response:
             raise EmptySqueueError("No jobs found in SLURM registry")
         parsed_df = pd.read_csv(
-            io.BytesIO(squeue_response),
+            squeue_response,
             sep=" ",
             header=None,
             na_values=["nan", "N/A", "None"],
