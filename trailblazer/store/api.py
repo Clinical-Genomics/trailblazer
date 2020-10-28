@@ -218,37 +218,53 @@ class BaseHandler:
         self.commit()
         return old_analyses
 
-    def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
+    def delete_analysis(self, analysis_id: int, force: bool = False, ssh: bool = False) -> None:
         """Delete the analysis output."""
         analysis_obj = self.analysis(analysis_id=analysis_id)
         if not analysis_obj:
             raise TrailblazerError("Analysis not found")
-        self.update_run_status(analysis_id)
+        self.update_run_status(analysis_id=analysis_id, ssh=ssh)
         if not force and analysis_obj.status in ONGOING_STATUSES:
             raise TrailblazerError(
                 f"Analysis for {analysis_obj.family} is currently running! Use --force flag to delete anyway."
             )
         LOG.info(f"Deleting analysis {analysis_id} for case {analysis_obj.family}")
-        self.cancel_analysis(analysis_id)
+        self.cancel_analysis(analysis_id=analysis_id, ssh=ssh)
         analysis_obj.delete()
         self.commit()
 
     @staticmethod
-    def query_slurm(job_id_file: str, case_id: str) -> bytes:
+    def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> bytes:
         """Args:
         job_id_file: Path to slurm id .YAML file as string
-        case_id: Unique internal case identifier which is expected to by the only item in the .YAML dict"""
+        case_id: Unique internal case identifier which is expected to by the only item in the .YAML dict
+        ssh : Whether the request is executed from hasta or clinical-db"""
         job_id_dict = safe_load(open(job_id_file))
         submitted_jobs = job_id_dict[case_id]
         jobs_string = ",".join(submitted_jobs)
-        squeue_response = subprocess.check_output(
-            ["squeue", "-j", jobs_string, "-h", "--states=all", "-o", "%A %j %T %l %M %S"]
-        )
+        if ssh:
+            squeue_response = subprocess.check_output(
+                [
+                    "ssh",
+                    "hiseq.clinical@hasta.scilifelab.se",
+                    "squeue",
+                    "-j",
+                    jobs_string,
+                    "-h",
+                    "--states=all",
+                    "-o",
+                    "%A %j %T %l %M %S",
+                ]
+            )
+        else:
+            squeue_response = subprocess.check_output(
+                ["squeue", "-j", jobs_string, "-h", "--states=all", "-o", "%A %j %T %l %M %S"]
+            )
         return squeue_response
 
     @staticmethod
     def get_time_elapsed_in_min(elapsed_string: Optional[str]) -> Optional[int]:
-        """Parse SLURM elapsed timestring into minutes"""
+        """Parse SLURM elapsed time string into minutes"""
         if elapsed_string:
             days = 0
             if "-" in elapsed_string:
@@ -302,18 +318,20 @@ class BaseHandler:
         ]
         self.commit()
 
-    def update_ongoing_analyses(self) -> None:
+    def update_ongoing_analyses(self, ssh: bool = False) -> None:
         """Iterate over all analysis with ongoing status and query SLURM for current progress"""
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
-            self.update_run_status(analysis_id=analysis_obj.id)
+            self.update_run_status(analysis_id=analysis_obj.id, ssh=ssh)
 
-    def update_run_status(self, analysis_id: int) -> None:
+    def update_run_status(self, analysis_id: int, ssh: bool) -> None:
         """Query slurm for entries related to given analysis, and update the Trailblazer database"""
         analysis_obj = self.analysis(analysis_id)
         try:
             jobs_dataframe = self.parse_squeue_to_df(
-                self.query_slurm(job_id_file=analysis_obj.config_path, case_id=analysis_obj.family)
+                self.query_slurm(
+                    job_id_file=analysis_obj.config_path, case_id=analysis_obj.family, ssh=ssh
+                )
             )
             status_distribution = round(
                 jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
@@ -368,17 +386,22 @@ class BaseHandler:
             self.commit()
 
     @staticmethod
-    def cancel_slurm_job(slurm_id: int) -> None:
+    def cancel_slurm_job(slurm_id: int, ssh: bool) -> None:
         """Cancel slurm job by slurm job ID"""
-        subprocess.run(["scancel", str(slurm_id)])
+        if ssh:
+            subprocess.Popen(
+                ["ssh", "hiseq.clinical@hasta.scilifelab.se", "scancel", str(slurm_id)]
+            )
+        else:
+            subprocess.Popen(["scancel", str(slurm_id)])
 
-    def cancel_analysis(self, analysis_id: int, email: str = None) -> None:
+    def cancel_analysis(self, analysis_id: int, email: str = None, ssh: bool = False) -> None:
         """Cancel all ongoing slurm jobs associated with the analysis, and set job status to canceled"""
         analysis_obj = self.analysis(analysis_id=analysis_id)
         if not analysis_obj:
             raise TrailblazerError(f"Analysis {analysis_id} does not exist")
 
-        self.update_run_status(analysis_id)
+        self.update_run_status(analysis_id=analysis_id, ssh=ssh)
         if analysis_obj.status not in ONGOING_STATUSES:
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
 
@@ -391,7 +414,7 @@ class BaseHandler:
         )
         analysis_obj.status = "canceled"
         analysis_obj.comment = (
-            f"Analysis cancelled manually by user :"
+            f"Analysis cancelled manually by user:"
             f" {(self.user(email).name if self.user(email) else 'Unknown')}!"
         )
         self.commit()

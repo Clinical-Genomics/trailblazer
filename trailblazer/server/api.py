@@ -40,6 +40,7 @@ def analyses():
     """Display analyses."""
     per_page = int(request.args.get("per_page", 50))
     page = int(request.args.get("page", 1))
+    store.update_ongoing_analyses(ssh=True)
     query = store.analyses(
         status=request.args.get("status"),
         query=request.args.get("query"),
@@ -192,7 +193,7 @@ def post_add_pending_analysis():
 @blueprint.route("/update")
 def update_analyses():
     """Update all ongoing analysis by querying SLURM"""
-    store.update_ongoing_analyses()
+    store.update_ongoing_analyses(ssh=True)
     return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), 201
 
 
@@ -200,7 +201,7 @@ def update_analyses():
 def update_analysis(analysis_id):
     """Update a specific analysis"""
     try:
-        store.update_run_status(analysis_id)
+        store.update_run_status(analysis_id=analysis_id, ssh=True)
         return jsonify("Success!"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
@@ -213,7 +214,7 @@ def cancel(analysis_id):
     jwt_token = auth_header.split("Bearer ")[-1]
     user_data = jwt.decode(jwt_token, verify=False)
     try:
-        store.cancel_analysis(analysis_id=analysis_id, email=user_data["email"])
+        store.cancel_analysis(analysis_id=analysis_id, email=user_data["email"], ssh=True)
         return jsonify("Success!"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
@@ -223,7 +224,7 @@ def cancel(analysis_id):
 def delete(analysis_id):
     """Cancel an analysis and all slurm jobs associated with it"""
     try:
-        store.delete_analysis(analysis_id=analysis_id, force=True)
+        store.delete_analysis(analysis_id=analysis_id, force=True, ssh=True)
         return jsonify("Success!"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
