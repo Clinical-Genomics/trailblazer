@@ -3,6 +3,7 @@ from dateutil.parser import parse as parse_datestr
 from flask import abort, g, Blueprint, jsonify, make_response, request
 from google.auth import jwt
 from typing import Dict
+import subprocess
 
 from trailblazer.server.ext import store
 
@@ -132,6 +133,17 @@ def delete(analysis_id):
     try:
         store.delete_analysis(analysis_id=analysis_id, force=True, ssh=True)
         return jsonify("Success!"), 201
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409
+
+
+@blueprint.route("/command", methods=["POST"])
+def command():
+    try:
+        content = request.json
+        command_call = content.get("command")
+        result = subprocess.check_output(command_call)
+        return jsonify(result), 200
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
 
