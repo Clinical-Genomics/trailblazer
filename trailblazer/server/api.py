@@ -143,7 +143,7 @@ def delete(analysis_id):
 
 
 @blueprint.route("/command-shell", methods=["POST"])
-def command():
+def command_shell():
     try:
         content = request.json
         command_call = content.get("command")
