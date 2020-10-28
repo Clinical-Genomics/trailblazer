@@ -96,7 +96,49 @@ def aggregate_jobs():
     return jsonify(jobs=data)
 
 
+@blueprint.route("/update")
+def update_analyses():
+    """Update all ongoing analysis by querying SLURM"""
+    store.update_ongoing_analyses(ssh=True)
+    return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), 201
+
+
+@blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
+def update_analysis(analysis_id):
+    """Update a specific analysis"""
+    try:
+        store.update_run_status(analysis_id=analysis_id, ssh=True)
+        return jsonify("Success!"), 201
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409
+
+
+@blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])
+def cancel(analysis_id):
+    """Cancel an analysis and all slurm jobs associated with it"""
+    auth_header = request.headers.get("Authorization")
+    jwt_token = auth_header.split("Bearer ")[-1]
+    user_data = jwt.decode(jwt_token, verify=False)
+    try:
+        store.cancel_analysis(analysis_id=analysis_id, email=user_data["email"], ssh=True)
+        return jsonify("Success!"), 201
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409
+
+
+@blueprint.route("/delete/<int:analysis_id>", methods=["PUT"])
+def delete(analysis_id):
+    """Cancel an analysis and all slurm jobs associated with it"""
+    try:
+        store.delete_analysis(analysis_id=analysis_id, force=True, ssh=True)
+        return jsonify("Success!"), 201
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409
+
+
 # CG REST INTERFACE ###
+# ONLY POST routes which accept messages in specific format
+# NOT for use with GUI (for now)
 
 
 @blueprint.route("/query-analyses", methods=["POST"])
@@ -184,45 +226,5 @@ def post_add_pending_analysis():
         )
         data = stringify_timestamps(analysis_obj.to_dict())
         return jsonify(**data), 201
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
-
-
-@blueprint.route("/update")
-def update_analyses():
-    """Update all ongoing analysis by querying SLURM"""
-    store.update_ongoing_analyses(ssh=True)
-    return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), 201
-
-
-@blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
-def update_analysis(analysis_id):
-    """Update a specific analysis"""
-    try:
-        store.update_run_status(analysis_id=analysis_id, ssh=True)
-        return jsonify("Success!"), 201
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
-
-
-@blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])
-def cancel(analysis_id):
-    """Cancel an analysis and all slurm jobs associated with it"""
-    auth_header = request.headers.get("Authorization")
-    jwt_token = auth_header.split("Bearer ")[-1]
-    user_data = jwt.decode(jwt_token, verify=False)
-    try:
-        store.cancel_analysis(analysis_id=analysis_id, email=user_data["email"], ssh=True)
-        return jsonify("Success!"), 201
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
-
-
-@blueprint.route("/delete/<int:analysis_id>", methods=["PUT"])
-def delete(analysis_id):
-    """Cancel an analysis and all slurm jobs associated with it"""
-    try:
-        store.delete_analysis(analysis_id=analysis_id, force=True, ssh=True)
-        return jsonify("Success!"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
