@@ -212,11 +212,10 @@ class BaseHandler:
     def mark_analyses_deleted(self, case_id: str) -> Query:
         """ mark analyses connected to a case as deleted """
         old_analyses = self.analyses(case_id=case_id)
-        if old_analyses.count() == 0:
-            return old_analyses
-        for old_analysis in old_analyses:
-            old_analysis.is_deleted = True
-        self.commit()
+        if old_analyses.count() > 0:
+            for old_analysis in old_analyses:
+                old_analysis.is_deleted = True
+            self.commit()
         return old_analyses
 
     def delete_analysis(self, analysis_id: int, force: bool = False, ssh: bool = False) -> None:
@@ -325,7 +324,7 @@ class BaseHandler:
         for analysis_obj in ongoing_analyses:
             self.update_run_status(analysis_id=analysis_obj.id, ssh=ssh)
 
-    def update_run_status(self, analysis_id: int, ssh: bool) -> None:
+    def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query slurm for entries related to given analysis, and update the Trailblazer database"""
         analysis_obj = self.analysis(analysis_id)
         try:
@@ -387,7 +386,7 @@ class BaseHandler:
             self.commit()
 
     @staticmethod
-    def cancel_slurm_job(slurm_id: int, ssh: bool) -> None:
+    def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
         """Cancel slurm job by slurm job ID"""
         if ssh:
             subprocess.Popen(

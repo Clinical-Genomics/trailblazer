@@ -2,13 +2,14 @@ import datetime
 from dateutil.parser import parse as parse_datestr
 from flask import abort, g, Blueprint, jsonify, make_response, request
 from google.auth import jwt
+from typing import Dict
 
 from trailblazer.server.ext import store
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
 
-def stringify_timestamps(data: dict) -> Dict[str,str]:
+def stringify_timestamps(data: dict) -> Dict[str, str]:
     """Convert datetime into string before dumping in order to avoid information loss"""
     for key, val in data.items():
         if isinstance(val, datetime.datetime):

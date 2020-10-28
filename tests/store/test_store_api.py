@@ -161,17 +161,25 @@ def test_get_latest_analysis_status(sample_store, family: str, expected_status: 
     ],
 )
 def test_update(sample_store, case_id, status):
+    # GIVEN an analysis
     analysis_obj = sample_store.get_latest_analysis(case_id)
+    # WHEN database is updated once
     sample_store.update_run_status(analysis_obj.id)
+    # THEN analysis status is changed to what is expected
     assert analysis_obj.status == status
+    # WHEN database is updated a second time
     sample_store.update_run_status(analysis_obj.id)
+    # THEN the status is still what is expected, and no database errors were raised
     assert analysis_obj.status == status
 
 
 def test_mark_analyses_deleted(sample_store):
+    # GIVEN case_id for a case that is not deleted
     case_id = "liberatedunicorn"
     analysis_obj = sample_store.get_latest_analysis(case_id)
     assert not analysis_obj.is_deleted
+    # WHEN running command
     sample_store.mark_analyses_deleted(case_id=case_id)
     analysis_obj = sample_store.get_latest_analysis(case_id)
+    # THEN analysis is marked deleted
     assert analysis_obj.is_deleted

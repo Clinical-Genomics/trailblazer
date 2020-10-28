@@ -14,7 +14,7 @@ class MockStore(Store):
     """Instance of TrailblazerAPI that mimics expected SLURM output"""
 
     @staticmethod
-    def query_slurm(job_id_file: str, case_id: str) -> bytes:
+    def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> bytes:
         slurm_dict = {
             "blazinginsect": "tests/fixtures/sacct/blazinginsect_sacct",  # running
             "crackpanda": "tests/fixtures/sacct/crackpanda_sacct",  # failed
@@ -32,7 +32,7 @@ class MockStore(Store):
         return subprocess.check_output(["cat", slurm_dict.get(case_id)])
 
     @staticmethod
-    def cancel_slurm_job(slurm_id: int) -> None:
+    def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
         return
 
 
@@ -49,6 +49,7 @@ def invoke_cli(cli_runner):
 
 @pytest.yield_fixture(scope="function")
 def store():
+    """Empty Trailblazer database"""
     _store = MockStore(uri="sqlite://")
     _store.setup()
     yield _store
@@ -57,6 +58,7 @@ def store():
 
 @pytest.yield_fixture(scope="function")
 def sample_store(store):
+    """A sample Trailblazer database populated with pending analyses"""
     sample_data = ruamel.yaml.safe_load(open("tests/fixtures/sample-data.yaml"))
     for user_data in sample_data["users"]:
         store.add_user(user_data["name"], user_data["email"])
@@ -70,4 +72,5 @@ def sample_store(store):
 
 @pytest.fixture(scope="function")
 def trailblazer_context(sample_store):
+    """Trailblazer context to be used in CLI"""
     return {"trailblazer": sample_store}
