@@ -401,14 +401,13 @@ class BaseHandler:
         if not analysis_obj:
             raise TrailblazerError(f"Analysis {analysis_id} does not exist")
 
-        self.update_run_status(analysis_id=analysis_id, ssh=ssh)
         if analysis_obj.status not in ONGOING_STATUSES:
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
 
         for job_obj in analysis_obj.failed_jobs:
             if job_obj.status in SLURM_ACTIVE_CATEGORIES:
                 LOG.info(f"Cancelling job {job_obj.slurm_id} - {job_obj.name}")
-                self.cancel_slurm_job(job_obj.slurm_id)
+                self.cancel_slurm_job(job_obj.slurm_id, ssh=ssh)
         LOG.info(
             f"Case {analysis_obj.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )

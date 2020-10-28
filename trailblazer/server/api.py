@@ -107,7 +107,7 @@ def update_analyses():
 def update_analysis(analysis_id):
     """Update a specific analysis"""
     try:
-        store.update_run_status(analysis_id=analysis_id, ssh=True)
+        store.update_run_status(analysis_id=analysis_id, ssh=False)
         return jsonify("Success!"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
