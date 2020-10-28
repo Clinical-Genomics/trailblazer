@@ -3,12 +3,11 @@
 import datetime as dt
 import io
 import subprocess
-from typing import List, Optional
+from typing import List, Optional, Any
 import logging
 
 import alchy
 import pandas as pd
-import numpy as np
 import sqlalchemy as sqa
 from alchy import Query
 from dateutil.parser import parse as parse_datestr
@@ -234,7 +233,7 @@ class BaseHandler:
         self.commit()
 
     @staticmethod
-    def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> bytes:
+    def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> io.BytesIO:
         """Args:
         job_id_file: Path to slurm id .YAML file as string
         case_id: Unique internal case identifier which is expected to by the only item in the .YAML dict
@@ -243,24 +242,25 @@ class BaseHandler:
         submitted_jobs = job_id_dict[case_id]
         jobs_string = ",".join(submitted_jobs)
         if ssh:
-            squeue_response = subprocess.check_output(
-                [
-                    "ssh",
-                    "hiseq.clinical@hasta.scilifelab.se",
-                    "squeue",
-                    "-j",
-                    jobs_string,
-                    "-h",
-                    "--states=all",
-                    "-o",
-                    "%A%.50j%.50T%.50l%.50M%.50S",
-                ],
+            squeue_response = "\n".join(
+                subprocess.check_output(
+                    [
+                        "ssh",
+                        "hiseq.clinical@hasta.scilifelab.se",
+                        "squeue",
+                        "-j",
+                        jobs_string,
+                        "-h",
+                        "--states=all",
+                        "-o",
+                        "%A,%j,%T,%l,%M,%S",
+                    ],
+                    universal_newlines=True,
+                ).split("\\n")[:-1]
             )
         else:
-            squeue_response = io.BytesIO(
-                subprocess.check_output(
-                    ["squeue", "-j", jobs_string, "-h", "--states=all", "-o", "%A %j %T %l %M %S"]
-                )
+            squeue_response = subprocess.check_output(
+                ["squeue", "-j", jobs_string, "-h", "--states=all", "-o", "%A,%j,%T,%l,%M,%S"]
             )
         return squeue_response
 
@@ -282,19 +282,28 @@ class BaseHandler:
             return elapsed_minutes
 
     @staticmethod
-    def parse_squeue_to_df(squeue_response: bytes) -> pd.DataFrame:
+    def parse_squeue_to_df(squeue_response: Any, ssh: bool) -> pd.DataFrame:
         """Reads queue response into a pandas dataframe for easy parsing.
         Raises:
             TrailblazerError: when no entries were returned by squeue command"""
         if not squeue_response:
             raise EmptySqueueError("No jobs found in SLURM registry")
-        parsed_df = pd.read_csv(
-            squeue_response,
-            sep=" ",
-            header=None,
-            na_values=["nan", "N/A", "None"],
-            names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
-        )
+        if ssh:
+            parsed_df = pd.read_csv(
+                io.StringIO(squeue_response),
+                sep=",",
+                header=None,
+                na_values=["nan", "N/A", "None"],
+                names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
+            )
+        else:
+            parsed_df = pd.read_csv(
+                io.BytesIO(squeue_response),
+                sep=",",
+                header=None,
+                na_values=["nan", "N/A", "None"],
+                names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
+            )
         parsed_df["time_elapsed"] = parsed_df["time_elapsed"].apply(
             lambda x: Store.get_time_elapsed_in_min(x)
         )
@@ -331,9 +340,10 @@ class BaseHandler:
         analysis_obj = self.analysis(analysis_id)
         try:
             jobs_dataframe = self.parse_squeue_to_df(
-                self.query_slurm(
+                squeue_response=self.query_slurm(
                     job_id_file=analysis_obj.config_path, case_id=analysis_obj.family, ssh=ssh
-                )
+                ),
+                ssh=ssh,
             )
             status_distribution = round(
                 jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
