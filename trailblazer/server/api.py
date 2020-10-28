@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 from dateutil.parser import parse as parse_datestr
+from multiprocessing import Process
 
 from flask import abort, g, Blueprint, jsonify, make_response, request
 from google.auth import jwt
@@ -40,7 +41,8 @@ def analyses():
     """Display analyses."""
     per_page = int(request.args.get("per_page", 50))
     page = int(request.args.get("page", 1))
-    store.update_ongoing_analyses(ssh=True)
+    process = Process(target=store.update_ongoing_analyses, args=(True,))
+    process.start()
     query = store.analyses(
         status=request.args.get("status"),
         query=request.args.get("query"),
