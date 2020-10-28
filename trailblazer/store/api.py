@@ -135,7 +135,7 @@ class BaseHandler:
         latest_analysis = self.analyses(case_id=case_id).first()
         return latest_analysis
 
-    def get_latest_analysis_status(self, case_id: str) -> str:
+    def get_latest_analysis_status(self, case_id: str) -> Optional[str]:
         """Get latest analysis status for a case_id"""
         latest_analysis = self.get_latest_analysis(case_id=case_id)
         if latest_analysis:
@@ -212,9 +212,10 @@ class BaseHandler:
     def mark_analyses_deleted(self, case_id: str) -> Query:
         """ mark analyses connected to a case as deleted """
         old_analyses = self.analyses(case_id=case_id)
-        if old_analyses.count() > 0:
-            for old_analysis in old_analyses:
-                old_analysis.is_deleted = True
+        if old_analyses.count() == 0:
+            return old_analyses
+        for old_analysis in old_analyses:
+            old_analysis.is_deleted = True
         self.commit()
         return old_analyses
 
