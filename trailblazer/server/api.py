@@ -147,7 +147,7 @@ def command():
     try:
         content = request.json
         command_call = content.get("command")
-        result = subprocess.check_output(command_call)
+        result = subprocess.check_output(command_call, shell=True)
         return jsonify(result), 200
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
