@@ -245,8 +245,6 @@ class BaseHandler:
         if ssh:
             squeue_response = subprocess.check_output(
                 [
-                    "ssh",
-                    "hiseq.clinical@hasta.scilifelab.se",
                     "squeue",
                     "-j",
                     jobs_string,
@@ -254,7 +252,8 @@ class BaseHandler:
                     "--states=all",
                     "-o",
                     "%A %j %T %l %M %S",
-                ]
+                ],
+                shell=True,
             )
         else:
             squeue_response = subprocess.check_output(
