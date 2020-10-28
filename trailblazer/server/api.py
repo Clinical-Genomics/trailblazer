@@ -4,6 +4,7 @@ from flask import abort, g, Blueprint, jsonify, make_response, request
 from google.auth import jwt
 from typing import Dict
 import subprocess
+import multiprocessing
 
 from trailblazer.server.ext import store
 
@@ -108,7 +109,11 @@ def update_analyses():
 def update_analysis(analysis_id):
     """Update a specific analysis"""
     try:
-        store.update_run_status(analysis_id=analysis_id, ssh=True)
+        process = multiprocessing.Process(
+            target=store.update_run_status, kwargs={"analysis_id": analysis_id, "ssh": True}
+        )
+        process.start()
+        # store.update_run_status(analysis_id=analysis_id, ssh=True)
         return jsonify("Success!"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
