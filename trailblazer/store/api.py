@@ -233,7 +233,7 @@ class BaseHandler:
         self.commit()
 
     @staticmethod
-    def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> io.BytesIO:
+    def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> Any:
         """Args:
         job_id_file: Path to slurm id .YAML file as string
         case_id: Unique internal case identifier which is expected to by the only item in the .YAML dict
@@ -242,7 +242,7 @@ class BaseHandler:
         submitted_jobs = job_id_dict[case_id]
         jobs_string = ",".join(submitted_jobs)
         if ssh:
-            squeue_response = "\n".join(
+            squeue_response = (
                 subprocess.check_output(
                     [
                         "ssh",
@@ -256,7 +256,9 @@ class BaseHandler:
                         "%A,%j,%T,%l,%M,%S",
                     ],
                     universal_newlines=True,
-                ).split("\\n")[:-1]
+                )
+                .strip()
+                .replace("//n", "/n")
             )
         else:
             squeue_response = subprocess.check_output(
