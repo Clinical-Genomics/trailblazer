@@ -98,10 +98,10 @@ def aggregate_jobs():
     return jsonify(jobs=data)
 
 
-@blueprint.route("/update")
+@blueprint.route("/update-all")
 def update_analyses():
     """Update all ongoing analysis by querying SLURM"""
-    process = multiprocessing.Process(target=store.update_ongoing_analyses(), kwargs={"ssh": True})
+    process = multiprocessing.Process(target=store.update_ongoing_analyses, kwargs={"ssh": True})
     process.start()
     # store.update_ongoing_analyses(ssh=True)
     return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), 201
