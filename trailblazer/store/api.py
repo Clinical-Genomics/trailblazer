@@ -347,10 +347,12 @@ class BaseHandler:
                 ),
                 ssh=ssh,
             )
+            self.update_jobs(analysis_obj=analysis_obj, jobs_dataframe=jobs_dataframe)
+
             status_distribution = round(
                 jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
             )
-            self.update_jobs(analysis_obj=analysis_obj, jobs_dataframe=jobs_dataframe)
+
             LOG.info("Status in SLURM")
             LOG.info(jobs_dataframe)
             analysis_obj.progress = float(status_distribution.get("COMPLETED", 0.0))
@@ -441,6 +443,7 @@ class BaseHandler:
         LOG.info(
             f"Case {analysis_obj.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )
+        self.update_run_status(analysis_id=analysis_id)
         analysis_obj.status = "canceled"
         analysis_obj.comment = (
             f"Analysis cancelled manually by user:"

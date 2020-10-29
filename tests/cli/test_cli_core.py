@@ -77,6 +77,7 @@ def test_cancel_ongoing(cli_runner, trailblazer_context, caplog):
         assert "690988" in caplog.text
 
         # THEN analysis status is set to cancelled
+        assert "cancelled" in analysis_obj.comment
         assert analysis_obj.status == "canceled"
 
 
