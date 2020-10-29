@@ -116,7 +116,7 @@ def update_analysis(analysis_id):
         )
         process.start()
         # store.update_run_status(analysis_id=analysis_id, ssh=True)
-        return jsonify("Success!"), 201
+        return jsonify("Success! Update request sent"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
 
@@ -128,8 +128,12 @@ def cancel(analysis_id):
     jwt_token = auth_header.split("Bearer ")[-1]
     user_data = jwt.decode(jwt_token, verify=False)
     try:
-        store.cancel_analysis(analysis_id=analysis_id, email=user_data["email"], ssh=True)
-        return jsonify("Success!"), 201
+        process = multiprocessing.Process(
+            target=store.cancel_analysis,
+            kwargs={"analysis_id": analysis_id, "email": user_data["email"], "ssh": True},
+        )
+        process.start()
+        return jsonify("Success! Cancel request sent"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
 
@@ -138,8 +142,12 @@ def cancel(analysis_id):
 def delete(analysis_id):
     """Cancel an analysis and all slurm jobs associated with it"""
     try:
-        store.delete_analysis(analysis_id=analysis_id, force=True, ssh=True)
-        return jsonify("Success!"), 201
+        process = multiprocessing.Process(
+            target=store.delete_analysis,
+            kwargs={"analysis_id": analysis_id, "force": True, "ssh": True},
+        )
+        process.start()
+        return jsonify("Success! Delete request sent!"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
 
