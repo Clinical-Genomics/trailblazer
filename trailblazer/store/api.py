@@ -370,16 +370,32 @@ class BaseHandler:
 
             elif status_distribution.get("COMPLETED") == 1:
                 analysis_obj.status = "completed"
+                elapsed_time = str(
+                    dt.datetime.now()
+                    - min(
+                        [
+                            job_obj.started_at
+                            for job_obj in analysis_obj.failed_jobs
+                            if job_obj.started_at
+                        ]
+                    )
+                )
                 analysis_obj.comment = (
-                    f"Run finished! Time elapsed "
-                    f"{str(dt.datetime.now() - min([job_obj.started_at for job_obj in analysis_obj.failed_jobs if job_obj.started_at])).split('.')[0]}"
+                    f"Run finished! Time elapsed " f"{elapsed_time.split('.')[0]}"
                 )
             elif status_distribution.get("RUNNING") or status_distribution.get("COMPLETED"):
                 analysis_obj.status = "running"
-                analysis_obj.comment = (
-                    f"Running! Time elapsed "
-                    f"{str(dt.datetime.now() - min([job_obj.started_at for job_obj in analysis_obj.failed_jobs if job_obj.started_at])).split('.')[0]}"
+                elapsed_time = str(
+                    dt.datetime.now()
+                    - min(
+                        [
+                            job_obj.started_at
+                            for job_obj in analysis_obj.failed_jobs
+                            if job_obj.started_at
+                        ]
+                    )
                 )
+                analysis_obj.comment = f"Running! Time elapsed " f"{elapsed_time.split('.')[0]}"
             elif status_distribution.get("PENDING") == 1:
                 analysis_obj.status = "pending"
             elif status_distribution.get("CANCELLED") and not (
