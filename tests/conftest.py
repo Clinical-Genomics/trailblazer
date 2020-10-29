@@ -1,15 +1,39 @@
 # -*- coding: utf-8 -*-
 import pytest
+import subprocess
 
 from functools import partial
-
 from click.testing import CliRunner
 import ruamel.yaml
 
 from trailblazer.cli import base
-from trailblazer.mip import sacct, files as files_api
-from trailblazer.log import LogAnalysis
 from trailblazer.store import Store
+
+
+class MockStore(Store):
+    """Instance of TrailblazerAPI that mimics expected SLURM output"""
+
+    @staticmethod
+    def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> bytes:
+        slurm_dict = {
+            "blazinginsect": "tests/fixtures/sacct/blazinginsect_sacct",  # running
+            "crackpanda": "tests/fixtures/sacct/crackpanda_sacct",  # failed
+            "daringpidgeon": "tests/fixtures/sacct/daringpidgeon_sacct",  # failed
+            "emptydinosaur": "tests/fixtures/sacct/emptydinosaur_sacct",  # failed
+            "escapedgoat": "tests/fixtures/sacct/escapegoat_sacct",  # pending
+            "fancymole": "tests/fixtures/sacct/fancymole_sacct",  # completed
+            "happycow": "tests/fixtures/sacct/happycow_sacct",  # pending
+            "lateraligator": "tests/fixtures/sacct/lateraligator_sacct",  # failed
+            "liberatedunicorn": "tests/fixtures/sacct/liberatedunicorn_sacct",  # error
+            "nicemice": "tests/fixtures/sacct/nicemice_sacct",  # completed
+            "rarekitten": "tests/fixtures/sacct/rarekitten_sacct",  # canceled
+            "trueferret": "tests/fixtures/sacct/trueferret_sacct",  # running
+        }
+        return subprocess.check_output(["cat", slurm_dict.get(case_id)])
+
+    @staticmethod
+    def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
+        return
 
 
 @pytest.fixture
@@ -23,46 +47,10 @@ def invoke_cli(cli_runner):
     return partial(cli_runner.invoke, base)
 
 
-@pytest.fixture(scope="session")
-def files():
-    return {
-        "config": "tests/fixtures/case/case_config.yaml",
-        "sampleinfo": "tests/fixtures/case/case_qc_sample_info.yaml",
-        "qcmetrics": "tests/fixtures/case/case_qc_metrics.yaml",
-        "sacct": "tests/fixtures/case/mip_2019-07-04T10:47:15.log.status",
-    }
-
-
-@pytest.fixture(scope="session")
-def files_raw(files):
-    return {
-        "config": ruamel.yaml.safe_load(open(files["config"])),
-        "sampleinfo": ruamel.yaml.safe_load(open(files["sampleinfo"])),
-        "qcmetrics": ruamel.yaml.safe_load(open(files["qcmetrics"])),
-        "sacct": list(open(files["sacct"])),
-    }
-
-
-@pytest.fixture(scope="session")
-def files_data(files_raw):
-    return {
-        "config": files_api.parse_config(files_raw["config"]),
-        "sampleinfo": files_api.parse_sampleinfo(files_raw["sampleinfo"]),
-        "qcmetrics": files_api.parse_qcmetrics(files_raw["qcmetrics"]),
-        "sacct": sacct.parse_sacct(files_raw["sacct"]),
-    }
-
-
-@pytest.fixture(scope="session")
-def allfailed_sacct_jobs():
-    with open("tests/fixtures/sacct/allfailed.log.status") as stream:
-        sacct_jobs = sacct.parse_sacct(stream)
-    return sacct_jobs
-
-
 @pytest.yield_fixture(scope="function")
-def store(tmpdir):
-    _store = Store(uri="sqlite://", families_dir=tmpdir)
+def store():
+    """Empty Trailblazer database"""
+    _store = MockStore(uri="sqlite://")
     _store.setup()
     yield _store
     _store.drop_all()
@@ -70,20 +58,19 @@ def store(tmpdir):
 
 @pytest.yield_fixture(scope="function")
 def sample_store(store):
+    """A sample Trailblazer database populated with pending analyses"""
     sample_data = ruamel.yaml.safe_load(open("tests/fixtures/sample-data.yaml"))
     for user_data in sample_data["users"]:
         store.add_user(user_data["name"], user_data["email"])
     for analysis_data in sample_data["analyses"]:
+        analysis_data["case_id"] = analysis_data["family"]
         analysis_data["user"] = store.user(analysis_data["user"])
-        failed_jobs = analysis_data.get("failed_jobs", [])
-        analysis_data["failed_jobs"] = [store.Job(**job_data) for job_data in failed_jobs]
         store.add(store.Analysis(**analysis_data))
     store.commit()
-    store.add_pending(family="gentlebird", email="tom.cruise@magnolia.com")
     yield store
 
 
-@pytest.fixture
-def log_analysis(store):
-    _log_analysis = LogAnalysis(store)
-    return _log_analysis
+@pytest.fixture(scope="function")
+def trailblazer_context(sample_store):
+    """Trailblazer context to be used in CLI"""
+    return {"trailblazer": sample_store}

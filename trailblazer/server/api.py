@@ -1,16 +1,27 @@
-# -*- coding: utf-8 -*-
 import datetime
-
+from dateutil.parser import parse as parse_datestr
 from flask import abort, g, Blueprint, jsonify, make_response, request
 from google.auth import jwt
+from typing import Dict
+import subprocess
+import multiprocessing
 
 from trailblazer.server.ext import store
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
 
+def stringify_timestamps(data: dict) -> Dict[str, str]:
+    """Convert datetime into string before dumping in order to avoid information loss"""
+    for key, val in data.items():
+        if isinstance(val, datetime.datetime):
+            data[key] = str(val)
+    return data
+
+
 @blueprint.before_request
 def before_request():
+    """Authentication that is run before processing requests to the application"""
     if request.method == "OPTIONS":
         return make_response(jsonify(ok=True), 204)
     auth_header = request.headers.get("Authorization")
@@ -85,3 +96,151 @@ def aggregate_jobs():
 
     data = store.aggregate_failed(one_month_ago)
     return jsonify(jobs=data)
+
+
+@blueprint.route("/update-all")
+def update_analyses():
+    """Update all ongoing analysis by querying SLURM"""
+    process = multiprocessing.Process(target=store.update_ongoing_analyses, kwargs={"ssh": True})
+    process.start()
+    # store.update_ongoing_analyses(ssh=True)
+    return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), 201
+
+
+@blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
+def update_analysis(analysis_id):
+    """Update a specific analysis"""
+    try:
+        process = multiprocessing.Process(
+            target=store.update_run_status, kwargs={"analysis_id": analysis_id, "ssh": True}
+        )
+        process.start()
+        # store.update_run_status(analysis_id=analysis_id, ssh=True)
+        return jsonify("Success! Update request sent"), 201
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409
+
+
+@blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])
+def cancel(analysis_id):
+    """Cancel an analysis and all slurm jobs associated with it"""
+    auth_header = request.headers.get("Authorization")
+    jwt_token = auth_header.split("Bearer ")[-1]
+    user_data = jwt.decode(jwt_token, verify=False)
+    try:
+        process = multiprocessing.Process(
+            target=store.cancel_analysis,
+            kwargs={"analysis_id": analysis_id, "email": user_data["email"], "ssh": True},
+        )
+        process.start()
+        return jsonify("Success! Cancel request sent"), 201
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409
+
+
+@blueprint.route("/delete/<int:analysis_id>", methods=["PUT"])
+def delete(analysis_id):
+    """Cancel an analysis and all slurm jobs associated with it"""
+    try:
+        process = multiprocessing.Process(
+            target=store.delete_analysis,
+            kwargs={"analysis_id": analysis_id, "force": True, "ssh": True},
+        )
+        process.start()
+        return jsonify("Success! Delete request sent!"), 201
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409
+
+
+# CG REST INTERFACE ###
+# ONLY POST routes which accept messages in specific format
+# NOT for use with GUI (for now)
+
+
+@blueprint.route("/query-analyses", methods=["POST"])
+def post_query_analyses():
+    """Return list of analyses matching the query terms"""
+    content = request.json
+    query_analyses = store.analyses(
+        case_id=content.get("case_id"),
+        query=content.get("query"),
+        status=content.get("status"),
+        deleted=content.get("deleted"),
+        temp=content.get("temp"),
+        before=parse_datestr(content.get("before")) if content.get("before") else None,
+        is_visible=content.get("visible"),
+        family=content.get("family"),
+        data_analysis=content.get("data_analysis"),
+    )
+    data = [stringify_timestamps(analysis_obj.to_dict()) for analysis_obj in query_analyses]
+    return jsonify(*data), 200
+
+
+@blueprint.route("/get-latest-analysis", methods=["POST"])
+def post_get_latest_analysis():
+    """Return latest analysis entry for specified case"""
+    content = request.json
+    analysis_obj = store.get_latest_analysis(case_id=content.get("case_id"))
+    if analysis_obj:
+        data = stringify_timestamps(analysis_obj.to_dict())
+        return jsonify(**data), 200
+    return jsonify(None), 200
+
+
+@blueprint.route("/find-analysis", methods=["POST"])
+def post_find_analysis():
+    """Find analysis using case_id, date, and status"""
+    content = request.json
+    analysis_obj = store.get_analysis(
+        case_id=content.get("case_id"),
+        started_at=parse_datestr(content.get("started_at")),
+        status=content.get("status"),
+    )
+    if analysis_obj:
+        data = stringify_timestamps(analysis_obj.to_dict())
+        return jsonify(**data), 200
+    return jsonify(None), 200
+
+
+@blueprint.route("/delete-analysis", methods=["POST"])
+def post_delete_analysis():
+    """Delete analysis using analysis_id. If analysis is ongoing, error will be raised.
+    To delete ongoing analysis, --force flag should also be passed.
+    If an ongoing analysis is deleted in ths manner, all ongoing jobs will be cancelled"""
+    content = request.json
+    try:
+        store.delete_analysis(analysis_id=content.get("analysis_id"), force=content.get("force"))
+        return jsonify(None), 201
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409
+
+
+@blueprint.route("/mark-analyses-deleted", methods=["POST"])
+def post_mark_analyses_deleted():
+    """Mark all analysis belonging to a case deleted"""
+    content = request.json
+    old_analyses = store.mark_analyses_deleted(case_id=content.get("case_id"))
+    data = [stringify_timestamps(analysis_obj.to_dict()) for analysis_obj in old_analyses]
+    if data:
+        return jsonify(*data), 201
+    return jsonify(None), 201
+
+
+@blueprint.route("/add-pending-analysis", methods=["POST"])
+def post_add_pending_analysis():
+    """Add new analysis with pending status"""
+    content = request.json
+    try:
+        analysis_obj = store.add_pending_analysis(
+            case_id=content.get("case_id"),
+            email=content.get("email"),
+            type=content.get("type"),
+            config_path=content.get("config_path"),
+            out_dir=content.get("out_dir"),
+            priority=content.get("priority"),
+            data_analysis=content.get("data_analysis"),
+        )
+        data = stringify_timestamps(analysis_obj.to_dict())
+        return jsonify(**data), 201
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409

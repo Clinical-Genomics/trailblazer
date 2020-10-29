@@ -1,37 +1,40 @@
-"""add new status option 'canceled'
+"""empty message
 
-Revision ID: 8786470f3a1b
-Revises: 61df280b0af6
-Create Date: 2016-10-10 11:02:26.762712
+Revision ID: 7d62ca2376df
+Revises: 0829dd9c54d7
+Create Date: 2020-10-22 11:33:34.572234
 
 """
 
 # revision identifiers, used by Alembic.
-revision = "8786470f3a1b"
-down_revision = "61df280b0af6"
+revision = "7d62ca2376df"
+down_revision = "84079287ee2f"
 branch_labels = None
 depends_on = None
 
 from alembic import op
+import sqlalchemy as sa
 from sqlalchemy import types
 
-OLD_OPTIONS = ("pending", "running", "completed", "failed", "error")
-NEW_OPTIONS = ("pending", "running", "completed", "failed", "error", "canceled")
+OLD_OPTIONS = ("wes", "wgs", "rna")
+NEW_OPTIONS = ("wes", "wgs", "rna", "tgs", "other")
 
 
 def upgrade():
+    op.add_column("analysis", sa.Column("data_analysis", sa.String(32), nullable=True))
     op.alter_column(
         "analysis",
-        "status",
+        "type",
         existing_type=types.Enum(*OLD_OPTIONS),
         type_=types.Enum(*NEW_OPTIONS),
     )
 
 
 def downgrade():
+    op.drop_column("analysis", "data_analysis")
     op.alter_column(
         "analysis",
-        "status",
+        "type",
         existing_type=types.Enum(*NEW_OPTIONS),
         type_=types.Enum(*OLD_OPTIONS),
     )

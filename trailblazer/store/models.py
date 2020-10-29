@@ -4,13 +4,14 @@ import datetime
 import alchy
 from sqlalchemy import Column, ForeignKey, orm, types, UniqueConstraint
 
-from trailblazer.mip import sacct
-from trailblazer.constants import ONGOING_STATUSES
+from trailblazer.constants import (
+    ONGOING_STATUSES,
+    STATUS_OPTIONS,
+    JOB_STATUS_OPTIONS,
+    PRIORITY_OPTIONS,
+    TYPES,
+)
 
-STATUS_OPTIONS = ("pending", "running", "completed", "failed", "error", "canceled")
-JOB_STATUS_OPTIONS = [category.lower() for category in sacct.CATEGORIES]
-PRIORITY_OPTIONS = ("low", "normal", "high")
-TYPES = ("wes", "wgs", "rna")
 
 Model = alchy.make_declarative_base(Base=alchy.ModelBase)
 
@@ -71,6 +72,7 @@ class Analysis(Model):
     type = Column(types.Enum(*TYPES))
     user_id = Column(ForeignKey(User.id))
     progress = Column(types.Float, default=0.0)
+    data_analysis = Column(types.String(32))
 
     failed_jobs = orm.relationship("Job", backref="analysis")
 

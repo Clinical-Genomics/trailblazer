@@ -1,21 +1,14 @@
 import logging
-from pathlib import Path
-import subprocess
 
 import click
 import coloredlogs
 import ruamel.yaml
+from dateutil.parser import parse as parse_date
 
 import trailblazer
-from trailblazer.cli.get import get
-from trailblazer.exc import MissingFileError
-from trailblazer.log import LogAnalysis
-from trailblazer.mip.files import parse_config
-from trailblazer.mip.miplog import job_ids
 from trailblazer.store import Store
-from .clean import clean
-from .delete import delete
-from .ls import ls_cmd
+from trailblazer.store.models import STATUS_OPTIONS
+from trailblazer.environ import environ_email
 
 LOG = logging.getLogger(__name__)
 
@@ -23,46 +16,16 @@ LOG = logging.getLogger(__name__)
 @click.group()
 @click.option("-c", "--config", type=click.File())
 @click.option("-d", "--database", help="path/URI of the SQL database")
-@click.option("-r", "--root", help="families root directory")
 @click.option("-l", "--log-level", default="INFO")
 @click.version_option(trailblazer.__version__, prog_name=trailblazer.__title__)
 @click.pass_context
-def base(context, config, database, root, log_level):
+def base(context, config, database, log_level):
     """Trailblazer - Simplify running MIP!"""
     coloredlogs.install(level=log_level)
 
     context.obj = ruamel.yaml.safe_load(config) if config else {}
     context.obj["database"] = database or context.obj.get("database")
-    context.obj["root"] = root or context.obj.get("root")
-    context.obj["store"] = Store(context.obj["database"], context.obj["root"])
-
-
-@base.command("log")
-@click.option("-s", "--sampleinfo", type=click.Path(exists=True), help="sample info file")
-@click.option("-a", "--sacct", type=click.Path(exists=True), help="sacct job info file")
-@click.option("-q", "--quiet", is_flag=True, help="supress outputs")
-@click.argument("config", type=click.File())
-@click.pass_context
-def log_cmd(context, sampleinfo, sacct, quiet, config):
-    """Log an analysis.
-
-    CONFIG: MIP config file for an analysis
-    """
-    log_analysis = LogAnalysis(context.obj["store"])
-    try:
-        new_run = log_analysis(config, sampleinfo=sampleinfo, sacct=sacct)
-    except MissingFileError as error:
-        click.echo(click.style(f"Skipping, missing Sacct file: {error.message}", fg="red"))
-        return
-    except KeyError as error:
-        print(click.style(f"unexpected output, missing key: {error.args[0]} in {config}", fg="red"))
-        return
-    if new_run is None:
-        if not quiet:
-            click.echo(click.style("Analysis already logged", fg="yellow"))
-    else:
-        message = f"New log added: {new_run.family} ({new_run.id}) - {new_run.status}"
-        click.echo(click.style(message, fg="green"))
+    context.obj["trailblazer"] = Store(context.obj["database"])
 
 
 @base.command()
@@ -71,94 +34,106 @@ def log_cmd(context, sampleinfo, sacct, quiet, config):
 @click.pass_context
 def init(context, reset, force):
     """Setup the database."""
-    existing_tables = context.obj["store"].engine.table_names()
+    existing_tables = context.obj["trailblazer"].engine.table_names()
     if force or reset:
         if existing_tables and not force:
             message = f"Delete existing tables? [{', '.join(existing_tables)}]"
             click.confirm(click.style(message, fg="yellow"), abort=True)
-        context.obj["store"].drop_all()
+        context.obj["trailblazer"].drop_all()
     elif existing_tables:
-        click.echo(click.style("Database already exists, use '--reset'", fg="red"))
+        LOG.warning("Database already exists, use '--reset'")
         context.abort()
-
-    context.obj["store"].setup()
-    message = f"Success! New tables: {', '.join(context.obj['store'].engine.table_names())}"
-    click.echo(click.style(message, fg="green"))
+    context.obj["trailblazer"].setup()
+    LOG.info(f"Success! New tables: {', '.join(context.obj['trailblazer'].engine.table_names())}")
 
 
 @base.command()
-@click.argument("root_dir", type=click.Path(exists=True), required=False)
 @click.pass_context
-def scan(context, root_dir):
+def scan(context):
     """Scan a directory for analyses."""
-    root_dir = root_dir or context.obj["root"]
-    config_files = Path(root_dir).glob("*/analysis/*_config.yaml")
-    for config_file in config_files:
-        LOG.debug("found analysis config: %s", config_file)
-        with config_file.open() as stream:
-            context.invoke(log_cmd, config=stream, quiet=True)
+    context.obj["trailblazer"].update_ongoing_analyses()
+    LOG.info("Analyses updated!")
 
-    context.obj["store"].track_update()
+
+@base.command()
+@click.argument("analysis_id")
+@click.pass_context
+def update_analysis(context, analysis_id: int):
+    """Scan a directory for analyses."""
+    context.obj["trailblazer"].update_run_status(analysis_id=analysis_id)
+    LOG.info(f"Analysis {analysis_id} updated!")
 
 
 @base.command()
 @click.option("--name", help="Name of new user to add")
-@click.argument("email")
+@click.argument("email", default=environ_email())
 @click.pass_context
 def user(context, name, email):
     """Add a new or display information about an existing user."""
-    existing_user = context.obj["store"].user(email)
+    existing_user = context.obj["trailblazer"].user(email)
     if existing_user:
-        click.echo(existing_user.to_dict())
+        LOG.info(f"Existing user found: {existing_user.to_dict()}")
     elif name:
-        new_user = context.obj["store"].add_user(name, email)
-        click.echo(click.style(f"New user added: {email} ({new_user.id})", fg="green"))
+        new_user = context.obj["trailblazer"].add_user(name, email)
+        LOG.info(f"New user added: {email} ({new_user.id})")
     else:
-        click.echo(click.style("User not found", fg="yellow"))
+        LOG.error("User not found")
 
 
 @base.command()
-@click.option("-j", "--jobs", is_flag=True, help="only print job ids")
 @click.argument("analysis_id", type=int)
 @click.pass_context
-def cancel(context, jobs, analysis_id):
+def cancel(context, analysis_id):
     """Cancel all jobs in a run."""
-    analysis_obj = context.obj["store"].analysis(analysis_id)
-    if analysis_obj is None:
-        click.echo("analysis not found")
-        context.abort()
-    elif analysis_obj.status != "running":
-        click.echo(f"analysis not running: {analysis_obj.status}")
-        context.abort()
-
-    config_path = Path(analysis_obj.config_path)
-    with config_path.open() as config_stream:
-        config_raw = ruamel.yaml.safe_load(config_stream)
-    config_data = parse_config(config_raw)
-
-    log_path = Path(f"{config_data['log_path']}")
-    if not log_path.exists():
-        click.echo(f"missing MIP log file: {log_path}")
-        context.abort()
-
-    with log_path.open() as log_stream:
-        all_jobs = job_ids(log_stream)
-
-    if jobs:
-        for job_id in all_jobs:
-            click.echo(job_id)
-    else:
-        for job_id in all_jobs:
-            LOG.debug(f"cancelling job: {job_id}")
-            process = subprocess.Popen(["scancel", job_id])
-            process.wait()
-
-        analysis_obj.status = "canceled"
-        context.obj["store"].commit()
-        click.echo("cancelled analysis successfully!")
+    try:
+        context.obj["trailblazer"].cancel_analysis(analysis_id=analysis_id, email=environ_email())
+    except Exception as e:
+        LOG.error(e)
 
 
-base.add_command(delete)
-base.add_command(ls_cmd)
-base.add_command(clean)
-base.add_command(get)
+@base.command()
+@click.option("--force", is_flag=True, help="Force delete if analysis ongoing")
+@click.argument("analysis_id", type=int)
+@click.pass_context
+def delete(context, analysis_id: int, force: bool):
+    """Delete analysis compeletely from database, and cancel all ongoing jobs"""
+    try:
+        context.obj["trailblazer"].delete_analysis(analysis_id=analysis_id, force=force)
+    except Exception as e:
+        LOG.error(e)
+
+
+@base.command("ls")
+@click.option(
+    "-s", "--status", type=click.Choice(STATUS_OPTIONS), help="Find analysis with specified status"
+)
+@click.option("-b", "--before", help="Find analyses started before date")
+@click.option("-c", "--comment", help="Find analysis with comment")
+@click.pass_context
+def ls_cmd(context, before, status, comment):
+    """Display recent logs for analyses."""
+    runs = (
+        context.obj["trailblazer"]
+        .analyses(
+            status=status,
+            deleted=False,
+            before=parse_date(before) if before else None,
+            comment=comment,
+        )
+        .limit(30)
+    )
+    for run_obj in runs:
+        if run_obj.status == "pending":
+            message = f"{run_obj.id} | {run_obj.family} [{run_obj.status.upper()}]"
+        else:
+            message = (
+                f"{run_obj.id} | {run_obj.family} {run_obj.started_at.date()} "
+                f"[{run_obj.type.upper()}/{run_obj.status.upper()}]"
+            )
+            if run_obj.status == "running":
+                message = click.style(f"{message} - {run_obj.progress * 100}/100", fg="blue")
+            elif run_obj.status == "completed":
+                message = click.style(f"{message} - {run_obj.completed_at}", fg="green")
+            elif run_obj.status == "failed":
+                message = click.style(message, fg="red")
+        click.echo(message)

@@ -1,17 +1,29 @@
 # -*- coding: utf-8 -*-
 """Store backend in Trailblazer"""
-from typing import List
 import datetime as dt
-from pathlib import Path
-import shutil
+import io
+import subprocess
+from typing import List, Optional, Any
+import logging
 
 import alchy
+import pandas as pd
 import sqlalchemy as sqa
-import ruamel
+from alchy import Query
+from dateutil.parser import parse as parse_datestr
+from ruamel.yaml import safe_load
 
-from trailblazer.constants import COMPLETED_STATUS, FAILED_STATUS, ONGOING_STATUSES
+from trailblazer.constants import (
+    COMPLETED_STATUS,
+    FAILED_STATUS,
+    ONGOING_STATUSES,
+    STARTED_STATUSES,
+    SLURM_ACTIVE_CATEGORIES,
+)
+from trailblazer.exc import EmptySqueueError, TrailblazerError
 from trailblazer.store import models
-from trailblazer.mip import files, trending
+
+LOG = logging.getLogger(__name__)
 
 
 class BaseHandler:
@@ -26,38 +38,71 @@ class BaseHandler:
         new_info = self.Info()
         self.add_commit(new_info)
 
-    def find_analysis(self, family, started_at, status):
-        """Find a single analysis."""
-        query = self.Analysis.query.filter_by(family=family, started_at=started_at, status=status)
+    def info(self) -> models.Info:
+        """Return metadata entry."""
+        return self.Info.query.first()
+
+    def set_latest_update_date(self):
+        """
+        used in CLI
+        Update the latest updated date in the database."""
+        metadata = self.info()
+        metadata.updated_at = dt.datetime.now()
+        self.commit()
+
+    def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> models.Analysis:
+        """
+        used in LOG
+        Find a single analysis."""
+        query = self.Analysis.query.filter_by(family=case_id, started_at=started_at, status=status)
         return query.first()
 
-    def find_analyses_with_comment(self, comment):
-        """Find a analyses containing comment."""
-        analysis_query = self.Analysis.query
+    def aggregate_failed(self, since_when: dt.date = None) -> List[dict]:
+        """
+        used in FRONTEND
+        Count the number of failed jobs per category (name)."""
 
-        analysis_query = analysis_query.filter(self.Analysis.comment.like(f"%{comment}%"))
-        return analysis_query
+        categories = self.session.query(
+            self.Job.name.label("name"),
+            sqa.func.count(self.Job.id).label("count"),
+        ).filter(self.Job.status == "failed")
+
+        if since_when:
+            categories = categories.filter(self.Job.started_at > since_when)
+
+        categories = categories.group_by(self.Job.name).all()
+
+        data = [{"name": category.name, "count": category.count} for category in categories]
+        return data
 
     def analyses(
         self,
-        *,
-        family: str = None,
+        case_id: str = None,
         query: str = None,
         status: str = None,
         deleted: bool = None,
         temp: bool = False,
         before: dt.datetime = None,
         is_visible: bool = None,
-    ):
-        """Fetch analyses form the database."""
+        family: str = None,
+        data_analysis: str = None,
+        comment: str = None,
+    ) -> Query:
+        """
+        used by REST +> CG
+        Fetch analyses from the database."""
+        if not case_id:
+            case_id = family
+
         analysis_query = self.Analysis.query
-        if family:
-            analysis_query = analysis_query.filter_by(family=family)
-        elif query:
+        if case_id:
+            analysis_query = analysis_query.filter_by(family=case_id)
+        if query:  # to be deprecated
             analysis_query = analysis_query.filter(
                 sqa.or_(
-                    self.Analysis.family.like(f"%{query}%"),
-                    self.Analysis.status.like(f"%{query}%"),
+                    self.Analysis.family.ilike(f"%{query}%"),
+                    self.Analysis.status.ilike(f"%{query}%"),
+                    self.Analysis.data_analysis.ilike(f"%{query}%"),
                 )
             )
         if status:
@@ -70,52 +115,81 @@ class BaseHandler:
             analysis_query = analysis_query.filter(self.Analysis.started_at < before)
         if is_visible is not None:
             analysis_query = analysis_query.filter_by(is_visible=is_visible)
+        if data_analysis:
+            analysis_query = analysis_query.filter(
+                models.Analysis.data_analysis.ilike(f"%{data_analysis}%")
+            )
+        if comment:
+            analysis_query = analysis_query.filter(models.Analysis.comment.ilike(f"%{comment}%"))
+
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def analysis(self, analysis_id: int) -> models.Analysis:
-        """Get a single analysis."""
+    def analysis(self, analysis_id: int) -> Optional[models.Analysis]:
+        """
+        used by REST
+        Get a single analysis by id."""
         return self.Analysis.query.get(analysis_id)
 
-    def track_update(self):
-        """Update the latest updated date in the database."""
-        metadata = self.info()
-        metadata.updated_at = dt.datetime.now()
-        self.commit()
+    def get_latest_analysis(self, case_id: str) -> Optional[models.Analysis]:
+        latest_analysis = self.analyses(case_id=case_id).first()
+        return latest_analysis
+
+    def get_latest_analysis_status(self, case_id: str) -> Optional[str]:
+        """Get latest analysis status for a case_id"""
+        latest_analysis = self.get_latest_analysis(case_id=case_id)
+        if latest_analysis:
+            return latest_analysis.status
 
     def is_latest_analysis_ongoing(self, case_id: str) -> bool:
         """Check if the latest analysis is ongoing for a case_id"""
-        latest_analysis = self.analyses(family=case_id).first()
-        if latest_analysis and latest_analysis.status in ONGOING_STATUSES:
+        latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
+        if latest_analysis_status in ONGOING_STATUSES:
             return True
         return False
 
     def is_latest_analysis_failed(self, case_id: str) -> bool:
         """Check if the latest analysis is failed for a case_id"""
-        latest_analysis = self.analyses(family=case_id).first()
-        if latest_analysis and latest_analysis.status == FAILED_STATUS:
+        latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
+        if latest_analysis_status == FAILED_STATUS:
             return True
         return False
 
-    def get_latest_analysis_status(self, case_id: str) -> str:
-        """Get latest analysis status for a case_id"""
-        latest_analysis = self.analyses(family=case_id).first()
-        return latest_analysis.status
-
     def is_latest_analysis_completed(self, case_id: str) -> bool:
         """Check if the latest analysis is completed for a case_id"""
-        latest_analysis = self.analyses(family=case_id).first()
+        latest_analysis = self.analyses(case_id=case_id).first()
         if latest_analysis and latest_analysis.status == COMPLETED_STATUS:
             return True
         return False
 
-    def info(self) -> models.Info:
-        """Return metadata entry."""
-        return self.Info.query.first()
+    def has_latest_analysis_started(self, case_id: str) -> bool:
+        """Check if analysis has started"""
+        latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
+        if latest_analysis_status in STARTED_STATUSES:
+            return True
+        return False
 
-    def add_pending(self, family: str, email: str = None) -> models.Analysis:
+    def add_pending_analysis(
+        self,
+        case_id: str,
+        type: str,
+        config_path: str,
+        out_dir: str,
+        priority: str,
+        email: str = None,
+        data_analysis: str = None,
+    ) -> models.Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
-        new_log = self.Analysis(family=family, status="pending", started_at=started_at)
+        new_log = self.Analysis(
+            family=case_id,
+            status="pending",
+            started_at=started_at,
+            type=type,
+            config_path=config_path,
+            out_dir=out_dir,
+            priority=priority,
+            data_analysis=data_analysis,
+        )
         new_log.user = self.user(email) if email else None
         self.add_commit(new_log)
         return new_log
@@ -130,128 +204,254 @@ class BaseHandler:
         """Fetch a user from the database."""
         return self.User.query.filter_by(email=email).first()
 
-    def aggregate_failed(self, since_when: dt.date = None) -> List:
-        """Count the number of failed jobs per category (name)."""
-
-        categories = self.session.query(
-            self.Job.name.label("name"),
-            sqa.func.count(self.Job.id).label("count"),
-        ).filter(self.Job.status != "cancelled")
-
-        if since_when:
-            categories = categories.filter(self.Job.started_at > since_when)
-
-        categories = categories.group_by(self.Job.name).all()
-
-        data = [{"name": category.name, "count": category.count} for category in categories]
-        return data
-
-    def jobs(self):
+    def jobs(self) -> Query:
         """Return all jobs in the database."""
         return self.Job.query
 
-    # CG code
-
-    def mark_analyses_deleted(self, case_id: str) -> None:
+    def mark_analyses_deleted(self, case_id: str) -> Query:
         """ mark analyses connected to a case as deleted """
-        for old_analysis in self.analyses(family=case_id):
-            old_analysis.is_deleted = True
+        old_analyses = self.analyses(case_id=case_id)
+        if old_analyses.count() > 0:
+            for old_analysis in old_analyses:
+                old_analysis.is_deleted = True
+            self.commit()
+        return old_analyses
+
+    def delete_analysis(self, analysis_id: int, force: bool = False, ssh: bool = False) -> None:
+        """Delete the analysis output."""
+        analysis_obj = self.analysis(analysis_id=analysis_id)
+        if not analysis_obj:
+            raise TrailblazerError("Analysis not found")
+        self.update_run_status(analysis_id=analysis_id, ssh=ssh)
+        if not force and analysis_obj.status in ONGOING_STATUSES:
+            raise TrailblazerError(
+                f"Analysis for {analysis_obj.family} is currently running! Use --force flag to delete anyway."
+            )
+        LOG.info(f"Deleting analysis {analysis_id} for case {analysis_obj.family}")
+        self.cancel_analysis(analysis_id=analysis_id, ssh=ssh)
+        analysis_obj.delete()
         self.commit()
 
-    # Duplicate/redundant needed for backwards compatibility for now
-    def add_pending_analysis(self, case_id: str, email: str = None) -> None:
-        """ Add analysis as pending"""
-        self.add_pending(case_id, email)
+    @staticmethod
+    def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> Any:
+        """Args:
+        job_id_file: Path to slurm id .YAML file as string
+        case_id: Unique internal case identifier which is expected to by the only item in the .YAML dict
+        ssh : Whether the request is executed from hasta or clinical-db"""
+        job_id_dict = safe_load(open(job_id_file))
+        submitted_jobs = job_id_dict[case_id]
+        jobs_string = ",".join(submitted_jobs)
+        if ssh:
+            squeue_response = (
+                subprocess.check_output(
+                    [
+                        "ssh",
+                        "hiseq.clinical@hasta.scilifelab.se",
+                        "squeue",
+                        "-j",
+                        jobs_string,
+                        "-h",
+                        "--states=all",
+                        "-o",
+                        "%A,%j,%T,%l,%M,%S",
+                    ],
+                    universal_newlines=True,
+                )
+                .strip()
+                .replace("//n", "/n")
+            )
+        else:
+            squeue_response = subprocess.check_output(
+                ["squeue", "-j", jobs_string, "-h", "--states=all", "-o", "%A,%j,%T,%l,%M,%S"]
+            )
+        return squeue_response
 
     @staticmethod
-    def get_sampleinfo(analysis: models.Analysis) -> str:
-        """Get the sample info path for an analysis."""
-        raw_data = ruamel.yaml.safe_load(Path(analysis.config_path).open())
-        data = files.parse_config(raw_data)
-        return data["sampleinfo_path"]
+    def get_time_elapsed_in_min(elapsed_string: Optional[str]) -> Optional[int]:
+        """Parse SLURM elapsed time string into minutes"""
+        if elapsed_string:
+            days = 0
+            if "-" in elapsed_string:
+                days = int(elapsed_string.split("-")[0])
+                elapsed_string = elapsed_string.split("-")[1]
+            split_timestamp = elapsed_string.split(":")
+            if len(split_timestamp) < 3:
+                split_timestamp = list("0" * (3 - len(split_timestamp))) + split_timestamp
+            elapsed_minutes = int(
+                (parse_datestr(":".join(split_timestamp)) - parse_datestr("0:0:0")).seconds / 60
+                + days * 60
+            )
+            return elapsed_minutes
 
     @staticmethod
-    def parse_qcmetrics(data: dict) -> dict:
-        """Call internal Trailblazer MIP API."""
-        return files.parse_qcmetrics(data)
+    def parse_squeue_to_df(squeue_response: Any, ssh: bool) -> pd.DataFrame:
+        """Reads queue response into a pandas dataframe for easy parsing.
+        Raises:
+            TrailblazerError: when no entries were returned by squeue command"""
+        if not squeue_response:
+            raise EmptySqueueError("No jobs found in SLURM registry")
+        if ssh:
+            parsed_df = pd.read_csv(
+                io.StringIO(squeue_response),
+                sep=",",
+                header=None,
+                na_values=["nan", "N/A", "None"],
+                names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
+            )
+        else:
+            parsed_df = pd.read_csv(
+                io.BytesIO(squeue_response),
+                sep=",",
+                header=None,
+                na_values=["nan", "N/A", "None"],
+                names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
+            )
+        parsed_df["time_elapsed"] = parsed_df["time_elapsed"].apply(
+            lambda x: Store.get_time_elapsed_in_min(x)
+        )
+        return parsed_df
 
-    # Duplicate/redundant needed for backwards compatibility for now
-    def is_analysis_ongoing(self, case_id: str) -> bool:
-        """Call internal Trailblazer API"""
-        return self.is_latest_analysis_ongoing(case_id=case_id)
+    def update_jobs(self, analysis_obj: models.Analysis, jobs_dataframe: pd.DataFrame) -> None:
+        """Parses job dataframe and creates job objects"""
+        for job_obj in analysis_obj.failed_jobs:
+            job_obj.delete()
+        self.commit()
+        analysis_obj.failed_jobs = [
+            self.Job(
+                analysis_id=analysis_obj.id,
+                slurm_id=val.get("id"),
+                name=val.get("step"),
+                status=val.get("status").lower(),
+                started_at=parse_datestr(val.get("started"))
+                if isinstance(val.get("started"), str)
+                else None,
+                elapsed=val.get("time_elapsed"),
+            )
+            for ind, val in jobs_dataframe.iterrows()
+        ]
+        self.commit()
 
-    # Duplicate
-    def is_analysis_failed(self, case_id: str) -> bool:
-        """Call internal Trailblazer API"""
-        return self.is_latest_analysis_failed(case_id=case_id)
+    def update_ongoing_analyses(self, ssh: bool = False) -> None:
+        """Iterate over all analysis with ongoing status and query SLURM for current progress"""
+        ongoing_analyses = self.analyses(temp=True)
+        for analysis_obj in ongoing_analyses:
+            self.update_run_status(analysis_id=analysis_obj.id, ssh=ssh)
 
-    # Duplicate/redundant needed for backwards compatibility for now
-    def is_analysis_completed(self, case_id: str) -> bool:
-        """Call internal Trailblazer API"""
-        return self.is_latest_analysis_completed(case_id=case_id)
+    def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
+        """Query slurm for entries related to given analysis, and update the Trailblazer database"""
+        analysis_obj = self.analysis(analysis_id)
+        try:
+            jobs_dataframe = self.parse_squeue_to_df(
+                squeue_response=self.query_slurm(
+                    job_id_file=analysis_obj.config_path, case_id=analysis_obj.family, ssh=ssh
+                ),
+                ssh=ssh,
+            )
+            self.update_jobs(analysis_obj=analysis_obj, jobs_dataframe=jobs_dataframe)
 
-    # Duplicate/redundant needed for backwards compatibility for now
-    def get_analysis_status(self, case_id: str) -> str:
-        """Call internal Trailblazer API"""
-        return self.get_latest_analysis_status(case_id=case_id)
+            status_distribution = round(
+                jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
+            )
 
-    def has_analysis_started(self, case_id: str) -> bool:
-        """Check if analysis has started"""
-        statuses = ("ongoing", "failed", "completed")
-        get_analysis_status = {
-            "ongoing": self.is_analysis_ongoing,
-            "failed": self.is_analysis_failed,
-            "completed": self.is_analysis_completed,
-        }
-        for status in statuses:
-            has_started = get_analysis_status[status](case_id=case_id)
-            if has_started:
-                return has_started
-        return False
+            LOG.info("Status in SLURM")
+            LOG.info(jobs_dataframe)
+            analysis_obj.progress = float(status_distribution.get("COMPLETED", 0.0))
+            if status_distribution.get("FAILED") or status_distribution.get("TIMEOUT"):
+                if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):
+                    analysis_obj.status = "error"
+                    analysis_obj.comment = (
+                        f"WARNING! Analysis still running with failed steps: "
+                        f"{ ', '.join(list(jobs_dataframe[jobs_dataframe.status == 'FAILED']))}"
+                    )
+                else:
+                    analysis_obj.status = "failed"
+                    analysis_obj.comment = (
+                        f"Failed steps: "
+                        f"{', '.join(list(jobs_dataframe[jobs_dataframe.status == 'FAILED']))}"
+                    )
 
-    def delete_analysis(
-        self,
-        family: str,
-        date: dt.datetime,
-        yes: bool = False,
-        dry_run: bool = False,
-    ):
-        """Delete the analysis output."""
-        if self.analyses(family=family, temp=True).count() > 0:
-            raise ValueError("analysis for family already running")
-        analysis_obj = self.find_analysis(family, date, "completed")
-        assert analysis_obj.is_deleted is False
-        analysis_path = Path(analysis_obj.out_dir).parent
+            elif status_distribution.get("COMPLETED") == 1:
+                analysis_obj.status = "completed"
+                elapsed_time = str(
+                    dt.datetime.now()
+                    - min(
+                        [
+                            job_obj.started_at
+                            for job_obj in analysis_obj.failed_jobs
+                            if job_obj.started_at
+                        ]
+                    )
+                )
+                analysis_obj.comment = (
+                    f"Run finished! Time elapsed " f"{elapsed_time.split('.')[0]}"
+                )
+            elif status_distribution.get("RUNNING") or status_distribution.get("COMPLETED"):
+                analysis_obj.status = "running"
+                elapsed_time = str(
+                    dt.datetime.now()
+                    - min(
+                        [
+                            job_obj.started_at
+                            for job_obj in analysis_obj.failed_jobs
+                            if job_obj.started_at
+                        ]
+                    )
+                )
+                analysis_obj.comment = f"Running! Time elapsed " f"{elapsed_time.split('.')[0]}"
+            elif status_distribution.get("PENDING") == 1:
+                analysis_obj.status = "pending"
+            elif status_distribution.get("CANCELLED") and not (
+                status_distribution.get("RUNNING") or status_distribution.get("PENDING")
+            ):
+                analysis_obj.status = "canceled"
 
-        if yes and not dry_run:
-            shutil.rmtree(analysis_path, ignore_errors=True)
-            analysis_obj.is_deleted = True
+            LOG.info(
+                f"Updated status {analysis_obj.family} - {analysis_obj.id}: {analysis_obj.status} "
+            )
+            self.commit()
+
+            analysis_obj.logged_at = dt.datetime.now()
+        except Exception as e:
+            LOG.error(f"Error logging case - {e}")
+            analysis_obj.status = "error"
+            analysis_obj.comment = f"Error logging case - {e}"
             self.commit()
 
     @staticmethod
-    def get_trending(mip_config_raw: str, qcmetrics_raw: str, sampleinfo_raw: dict) -> dict:
-        """Get trending data for a MIP analysis"""
-        return trending.parse_mip_analysis(
-            mip_config_raw=mip_config_raw,
-            qcmetrics_raw=qcmetrics_raw,
-            sampleinfo_raw=sampleinfo_raw,
+    def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
+        """Cancel slurm job by slurm job ID"""
+        if ssh:
+            subprocess.Popen(
+                ["ssh", "hiseq.clinical@hasta.scilifelab.se", "scancel", str(slurm_id)]
+            )
+        else:
+            subprocess.Popen(["scancel", str(slurm_id)])
+
+    def cancel_analysis(self, analysis_id: int, email: str = None, ssh: bool = False) -> None:
+        """Cancel all ongoing slurm jobs associated with the analysis, and set job status to canceled"""
+        analysis_obj = self.analysis(analysis_id=analysis_id)
+        if not analysis_obj:
+            raise TrailblazerError(f"Analysis {analysis_id} does not exist")
+
+        if analysis_obj.status not in ONGOING_STATUSES:
+            raise TrailblazerError(f"Analysis {analysis_id} is not running")
+
+        for job_obj in analysis_obj.failed_jobs:
+            if job_obj.status in SLURM_ACTIVE_CATEGORIES:
+                LOG.info(f"Cancelling job {job_obj.slurm_id} - {job_obj.name}")
+                self.cancel_slurm_job(job_obj.slurm_id, ssh=ssh)
+        LOG.info(
+            f"Case {analysis_obj.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )
-
-    def get_family_root_dir(self, family_id: str):
-        """Get path for a case"""
-        return Path(self.families_dir) / family_id
-
-    def get_latest_logged_analysis(self, case_id: str):
-        """Get the the analysis with the latest logged_at date"""
-        return self.analyses(family=case_id).order_by(models.Analysis.logged_at.desc())
-
-    @staticmethod
-    def get_sampleinfo_date(data: dict) -> str:
-        """Get date from a sampleinfo """
-        return data["analysis_date"]
+        self.update_run_status(analysis_id=analysis_id)
+        analysis_obj.status = "canceled"
+        analysis_obj.comment = (
+            f"Analysis cancelled manually by user:"
+            f" {(self.user(email).name if self.user(email) else 'Unknown')}!"
+        )
+        self.commit()
 
 
 class Store(alchy.Manager, BaseHandler):
-    def __init__(self, uri: str, families_dir: str):
+    def __init__(self, uri: str):
         super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=models.Model)
-        self.families_dir = families_dir
