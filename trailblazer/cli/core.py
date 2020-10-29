@@ -96,6 +96,7 @@ def cancel(context, analysis_id):
 @click.argument("analysis_id", type=int)
 @click.pass_context
 def delete(context, analysis_id: int, force: bool):
+    """Delete analysis compeletely from database, and cancel all ongoing jobs"""
     try:
         context.obj["trailblazer"].delete_analysis(analysis_id=analysis_id, force=force)
     except Exception as e:
