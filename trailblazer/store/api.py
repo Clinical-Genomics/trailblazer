@@ -350,6 +350,9 @@ class BaseHandler:
     def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query slurm for entries related to given analysis, and update the Trailblazer database"""
         analysis_obj = self.analysis(analysis_id)
+        if not analysis_obj:
+            LOG.warning(f"Analysis {analysis_id} not found!")
+            return
         try:
             jobs_dataframe = self.parse_squeue_to_df(
                 squeue_response=self.query_slurm(
@@ -422,7 +425,6 @@ class BaseHandler:
 
             analysis_obj.logged_at = dt.datetime.now()
         except Exception as e:
-            LOG.error(f"Error logging case - {e.__class__.__name__}")
             analysis_obj.status = "error"
             analysis_obj.comment = f"Error logging case - {e.__class__.__name__}"
             self.commit()

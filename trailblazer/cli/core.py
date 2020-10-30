@@ -52,16 +52,15 @@ def init(context, reset, force):
 def scan(context):
     """Scan a directory for analyses."""
     context.obj["trailblazer"].update_ongoing_analyses()
-    LOG.info("Analyses updated!")
+    LOG.info("All analyses updated!")
 
 
 @base.command()
 @click.argument("analysis_id")
 @click.pass_context
 def update_analysis(context, analysis_id: int):
-    """Scan a directory for analyses."""
+    """Update a single analysis."""
     context.obj["trailblazer"].update_run_status(analysis_id=analysis_id)
-    LOG.info(f"Analysis {analysis_id} updated!")
 
 
 @base.command()
