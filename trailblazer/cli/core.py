@@ -52,16 +52,15 @@ def init(context, reset, force):
 def scan(context):
     """Scan a directory for analyses."""
     context.obj["trailblazer"].update_ongoing_analyses()
-    LOG.info("Analyses updated!")
+    LOG.info("All analyses updated!")
 
 
 @base.command()
 @click.argument("analysis_id")
 @click.pass_context
 def update_analysis(context, analysis_id: int):
-    """Scan a directory for analyses."""
+    """Update a single analysis."""
     context.obj["trailblazer"].update_run_status(analysis_id=analysis_id)
-    LOG.info(f"Analysis {analysis_id} updated!")
 
 
 @base.command()
@@ -93,11 +92,15 @@ def cancel(context, analysis_id):
 
 @base.command()
 @click.option("--force", is_flag=True, help="Force delete if analysis ongoing")
+@click.option("--cancel-jobs", is_flag=True, help="Cancel all ongoing jobs before deleting")
 @click.argument("analysis_id", type=int)
 @click.pass_context
-def delete(context, analysis_id: int, force: bool):
-    """Delete analysis compeletely from database, and cancel all ongoing jobs"""
+def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
+    """Delete analysis completely from database, and optionally cancel all ongoing jobs"""
     try:
+        if cancel_jobs:
+            context.obj["trailblazer"].cancel_analysis(analysis_id=analysis_id)
+
         context.obj["trailblazer"].delete_analysis(analysis_id=analysis_id, force=force)
     except Exception as e:
         LOG.error(e)

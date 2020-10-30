@@ -181,7 +181,7 @@ def test_scan(cli_runner, trailblazer_context, caplog):
 
         # WHEN running trailblazer scan command
         cli_runner.invoke(scan, [], obj=trailblazer_context)
-        assert "Analyses updated" in caplog.text
+        assert "All analyses updated" in caplog.text
         analysis_obj = trailblazer_context["trailblazer"].get_latest_analysis(
             case_id="blazinginsect"
         )
