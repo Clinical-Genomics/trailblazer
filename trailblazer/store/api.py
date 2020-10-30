@@ -428,6 +428,7 @@ class BaseHandler:
             analysis_obj.status = "error"
             analysis_obj.comment = f"Error logging case - {e.__class__.__name__}"
             self.commit()
+            raise
 
     @staticmethod
     def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
