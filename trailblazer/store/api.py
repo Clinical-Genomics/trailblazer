@@ -272,7 +272,7 @@ class BaseHandler:
     @staticmethod
     def get_time_elapsed_in_min(elapsed_string: Optional[str]) -> Optional[int]:
         """Parse SLURM elapsed time string into minutes"""
-        if elapsed_string:
+        if elapsed_string and isinstance(elapsed_string, str):
             days = 0
             if "-" in elapsed_string:
                 days = int(elapsed_string.split("-")[0])
@@ -285,6 +285,7 @@ class BaseHandler:
                 + days * 60
             )
             return elapsed_minutes
+        return 0
 
     @staticmethod
     def parse_squeue_to_df(squeue_response: Any, ssh: bool) -> pd.DataFrame:
@@ -366,7 +367,7 @@ class BaseHandler:
                 jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
             )
 
-            LOG.info("Status in SLURM")
+            LOG.info(f"Status in SLURM: {analysis_obj.family} - {analysis_id}")
             LOG.info(jobs_dataframe)
             analysis_obj.progress = float(status_distribution.get("COMPLETED", 0.0))
             if status_distribution.get("FAILED") or status_distribution.get("TIMEOUT"):
@@ -425,10 +426,10 @@ class BaseHandler:
 
             analysis_obj.logged_at = dt.datetime.now()
         except Exception as e:
+            LOG.error(f"Error logging case - {e.__class__.__name__}")
             analysis_obj.status = "error"
             analysis_obj.comment = f"Error logging case - {e.__class__.__name__}"
             self.commit()
-            raise
 
     @staticmethod
     def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
