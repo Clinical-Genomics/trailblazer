@@ -96,7 +96,7 @@ def cancel(context, analysis_id):
 @click.argument("analysis_id", type=int)
 @click.pass_context
 def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
-    """Delete analysis completely from database, and cancel all ongoing jobs"""
+    """Delete analysis completely from database, and optionally cancel all ongoing jobs"""
     try:
         if cancel_jobs:
             context.obj["trailblazer"].cancel_analysis(analysis_id=analysis_id)
