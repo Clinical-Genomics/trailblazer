@@ -340,7 +340,12 @@ class BaseHandler:
         """Iterate over all analysis with ongoing status and query SLURM for current progress"""
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
-            self.update_run_status(analysis_id=analysis_obj.id, ssh=ssh)
+            try:
+                self.update_run_status(analysis_id=analysis_obj.id, ssh=ssh)
+            except Exception as e:
+                LOG.error(
+                    f"Failed up update {analysis_obj.family} - {analysis_obj.id}: {e.__class__.__name__}"
+                )
 
     def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query slurm for entries related to given analysis, and update the Trailblazer database"""
@@ -417,9 +422,9 @@ class BaseHandler:
 
             analysis_obj.logged_at = dt.datetime.now()
         except Exception as e:
-            LOG.error(f"Error logging case - {e}")
+            LOG.error(f"Error logging case - {e.__class__.__name__}")
             analysis_obj.status = "error"
-            analysis_obj.comment = f"Error logging case - {e}"
+            analysis_obj.comment = f"Error logging case - {e.__class__.__name__}"
             self.commit()
 
     @staticmethod
