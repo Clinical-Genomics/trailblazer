@@ -217,18 +217,21 @@ class BaseHandler:
             self.commit()
         return old_analyses
 
-    def delete_analysis(self, analysis_id: int, force: bool = False, ssh: bool = False) -> None:
+    def delete_analysis(
+        self, analysis_id: int, force: bool = False, cancel_jobs: bool = False, ssh: bool = False
+    ) -> None:
         """Delete the analysis output."""
         analysis_obj = self.analysis(analysis_id=analysis_id)
         if not analysis_obj:
             raise TrailblazerError("Analysis not found")
-        self.update_run_status(analysis_id=analysis_id, ssh=ssh)
+
         if not force and analysis_obj.status in ONGOING_STATUSES:
             raise TrailblazerError(
                 f"Analysis for {analysis_obj.family} is currently running! Use --force flag to delete anyway."
             )
         LOG.info(f"Deleting analysis {analysis_id} for case {analysis_obj.family}")
-        self.cancel_analysis(analysis_id=analysis_id, ssh=ssh)
+        if cancel_jobs:
+            self.cancel_analysis(analysis_id=analysis_id, ssh=ssh)
         analysis_obj.delete()
         self.commit()
 
@@ -313,6 +316,8 @@ class BaseHandler:
 
     def update_jobs(self, analysis_obj: models.Analysis, jobs_dataframe: pd.DataFrame) -> None:
         """Parses job dataframe and creates job objects"""
+        if len(jobs_dataframe) == 0:
+            return
         for job_obj in analysis_obj.failed_jobs:
             job_obj.delete()
         self.commit()
@@ -361,13 +366,13 @@ class BaseHandler:
                     analysis_obj.status = "error"
                     analysis_obj.comment = (
                         f"WARNING! Analysis still running with failed steps: "
-                        f"{ ', '.join(list(jobs_dataframe[jobs_dataframe.status == 'FAILED']))}"
+                        f"{ ', '.join(list(jobs_dataframe[jobs_dataframe.status == 'FAILED']['step']))}"
                     )
                 else:
                     analysis_obj.status = "failed"
                     analysis_obj.comment = (
                         f"Failed steps: "
-                        f"{', '.join(list(jobs_dataframe[jobs_dataframe.status == 'FAILED']))}"
+                        f"{', '.join(list(jobs_dataframe[jobs_dataframe.status == 'FAILED']['step']))}"
                     )
 
             elif status_distribution.get("COMPLETED") == 1:
@@ -447,7 +452,7 @@ class BaseHandler:
         analysis_obj.status = "canceled"
         analysis_obj.comment = (
             f"Analysis cancelled manually by user:"
-            f" {(self.user(email).name if self.user(email) else 'Unknown')}!"
+            f" {(self.user(email).name if self.user(email) else (email or 'Unknown'))}!"
         )
         self.commit()
 

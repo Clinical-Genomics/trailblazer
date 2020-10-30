@@ -93,12 +93,15 @@ def cancel(context, analysis_id):
 
 @base.command()
 @click.option("--force", is_flag=True, help="Force delete if analysis ongoing")
+@click.option("--cancel-jobs", is_flag=True, help="Cancel all ongoing jobs before deleting")
 @click.argument("analysis_id", type=int)
 @click.pass_context
-def delete(context, analysis_id: int, force: bool):
-    """Delete analysis compeletely from database, and cancel all ongoing jobs"""
+def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
+    """Delete analysis completely from database, and cancel all ongoing jobs"""
     try:
-        context.obj["trailblazer"].delete_analysis(analysis_id=analysis_id, force=force)
+        context.obj["trailblazer"].delete_analysis(
+            analysis_id=analysis_id, force=force, cancel_jobs=cancel_jobs
+        )
     except Exception as e:
         LOG.error(e)
 

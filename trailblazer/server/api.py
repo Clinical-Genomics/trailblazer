@@ -144,7 +144,7 @@ def delete(analysis_id):
     try:
         process = multiprocessing.Process(
             target=store.delete_analysis,
-            kwargs={"analysis_id": analysis_id, "force": True, "ssh": True},
+            kwargs={"analysis_id": analysis_id, "force": True, "ssh": True, "cancel_jobs": True},
         )
         process.start()
         return jsonify("Success! Delete request sent!"), 201
