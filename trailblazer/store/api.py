@@ -217,9 +217,7 @@ class BaseHandler:
             self.commit()
         return old_analyses
 
-    def delete_analysis(
-        self, analysis_id: int, force: bool = False, cancel_jobs: bool = False, ssh: bool = False
-    ) -> None:
+    def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis output."""
         analysis_obj = self.analysis(analysis_id=analysis_id)
         if not analysis_obj:
@@ -230,8 +228,6 @@ class BaseHandler:
                 f"Analysis for {analysis_obj.family} is currently running! Use --force flag to delete anyway."
             )
         LOG.info(f"Deleting analysis {analysis_id} for case {analysis_obj.family}")
-        if cancel_jobs:
-            self.cancel_analysis(analysis_id=analysis_id, ssh=ssh)
         analysis_obj.delete()
         self.commit()
 

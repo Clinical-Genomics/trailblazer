@@ -98,9 +98,10 @@ def cancel(context, analysis_id):
 def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
     """Delete analysis completely from database, and cancel all ongoing jobs"""
     try:
-        context.obj["trailblazer"].delete_analysis(
-            analysis_id=analysis_id, force=force, cancel_jobs=cancel_jobs
-        )
+        if cancel_jobs:
+            context.obj["trailblazer"].cancel_analysis(analysis_id=analysis_id)
+
+        context.obj["trailblazer"].delete_analysis(analysis_id=analysis_id, force=force)
     except Exception as e:
         LOG.error(e)
 
