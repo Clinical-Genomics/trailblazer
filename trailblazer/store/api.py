@@ -344,7 +344,7 @@ class BaseHandler:
                 self.update_run_status(analysis_id=analysis_obj.id, ssh=ssh)
             except Exception as e:
                 LOG.error(
-                    f"Failed up update {analysis_obj.family} - {analysis_obj.id}: {e.__class__.__name__}"
+                    f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {e.__class__.__name__}"
                 )
 
     def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
