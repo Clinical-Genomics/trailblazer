@@ -55,7 +55,7 @@ def scan(context):
     LOG.info("All analyses updated!")
 
 
-@base.command()
+@base.command("update-analysis")
 @click.argument("analysis_id")
 @click.pass_context
 def update_analysis(context, analysis_id: int):
@@ -86,6 +86,17 @@ def cancel(context, analysis_id):
     """Cancel all jobs in a run."""
     try:
         context.obj["trailblazer"].cancel_analysis(analysis_id=analysis_id, email=environ_email())
+    except Exception as e:
+        LOG.error(e)
+
+
+@base.command("set-completed")
+@click.argument("analysis_id", type=int)
+@click.pass_context
+def set_analysis_completed(context, analysis_id):
+    """Set status of an analysis to "COMPLETED" """
+    try:
+        context.obj["trailblazer"].set_analysis_completed(analysis_id=analysis_id)
     except Exception as e:
         LOG.error(e)
 

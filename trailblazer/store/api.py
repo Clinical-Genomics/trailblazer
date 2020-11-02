@@ -217,6 +217,11 @@ class BaseHandler:
             self.commit()
         return old_analyses
 
+    def set_analysis_completed(self, analysis_id: int) -> None:
+        analysis_obj = self.analysis(analysis_id=analysis_id)
+        analysis_obj.status = "completed"
+        self.commit()
+
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis output."""
         analysis_obj = self.analysis(analysis_id=analysis_id)
@@ -382,19 +387,8 @@ class BaseHandler:
 
             elif status_distribution.get("COMPLETED") == 1:
                 analysis_obj.status = "completed"
-                elapsed_time = str(
-                    dt.datetime.now()
-                    - min(
-                        [
-                            job_obj.started_at
-                            for job_obj in analysis_obj.failed_jobs
-                            if job_obj.started_at
-                        ]
-                    )
-                )
-                analysis_obj.comment = (
-                    f"Run finished! Time elapsed " f"{elapsed_time.split('.')[0]}"
-                )
+                analysis_obj.comment = None
+
             elif status_distribution.get("RUNNING") or status_distribution.get("COMPLETED"):
                 analysis_obj.status = "running"
                 elapsed_time = str(
