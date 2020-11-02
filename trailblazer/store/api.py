@@ -221,6 +221,7 @@ class BaseHandler:
         analysis_obj = self.analysis(analysis_id=analysis_id)
         analysis_obj.status = "completed"
         self.commit()
+        LOG.info(f"{analysis_obj.family} - status set to COMPETED")
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis output."""

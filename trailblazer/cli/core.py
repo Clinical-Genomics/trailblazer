@@ -20,7 +20,7 @@ LOG = logging.getLogger(__name__)
 @click.version_option(trailblazer.__version__, prog_name=trailblazer.__title__)
 @click.pass_context
 def base(context, config, database, log_level):
-    """Trailblazer - Simplify running MIP!"""
+    """Trailblazer - Tracking ongoing analyses!"""
     coloredlogs.install(level=log_level)
 
     context.obj = ruamel.yaml.safe_load(config) if config else {}
@@ -50,7 +50,7 @@ def init(context, reset, force):
 @base.command()
 @click.pass_context
 def scan(context):
-    """Scan a directory for analyses."""
+    """Scan ongoing analyses in SLURM."""
     context.obj["trailblazer"].update_ongoing_analyses()
     LOG.info("All analyses updated!")
 
