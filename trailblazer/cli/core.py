@@ -59,7 +59,7 @@ def scan(context):
 @click.argument("analysis_id")
 @click.pass_context
 def update_analysis(context, analysis_id: int):
-    """Update a single analysis."""
+    """Update status of a single analysis."""
     context.obj["trailblazer"].update_run_status(analysis_id=analysis_id)
 
 
