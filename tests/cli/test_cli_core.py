@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import trailblazer
 from trailblazer.cli import base
-from trailblazer.cli.core import ls_cmd, delete, cancel, scan, user
+from trailblazer.cli.core import ls_cmd, delete, cancel, scan, user, set_analysis_completed
 import pytest
 
 
@@ -14,6 +14,28 @@ def test_base(cli_runner):
     # THEN it should print the name and version of the tool only
     assert trailblazer.__title__ in result.output
     assert trailblazer.__version__ in result.output
+
+
+def test_set_analysis_completed(cli_runner, trailblazer_context, caplog):
+
+    # GIVEN an analysis with status FAILED
+    failed_analysis = "crackpanda"
+    analysis_obj = trailblazer_context["trailblazer"].get_latest_analysis(case_id=failed_analysis)
+
+    # Make sure status is not "completed"
+    assert analysis_obj.status != "completed"
+
+    # WHEN running command
+    result = cli_runner.invoke(
+        set_analysis_completed, [str(analysis_obj.id)], obj=trailblazer_context
+    )
+
+    # THEN command runs successfully
+    assert result.exit_code == 0
+
+    # THEN status will be set to COMPLETED
+    analysis_obj = trailblazer_context["trailblazer"].get_latest_analysis(case_id=failed_analysis)
+    assert analysis_obj.status == "completed"
 
 
 def test_cancel_nonexistent(cli_runner, trailblazer_context, caplog):

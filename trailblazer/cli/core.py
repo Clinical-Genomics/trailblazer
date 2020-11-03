@@ -20,7 +20,7 @@ LOG = logging.getLogger(__name__)
 @click.version_option(trailblazer.__version__, prog_name=trailblazer.__title__)
 @click.pass_context
 def base(context, config, database, log_level):
-    """Trailblazer - Simplify running MIP!"""
+    """Trailblazer - Monitor analyses"""
     coloredlogs.install(level=log_level)
 
     context.obj = ruamel.yaml.safe_load(config) if config else {}
@@ -50,16 +50,16 @@ def init(context, reset, force):
 @base.command()
 @click.pass_context
 def scan(context):
-    """Scan a directory for analyses."""
+    """Scan ongoing analyses in SLURM"""
     context.obj["trailblazer"].update_ongoing_analyses()
     LOG.info("All analyses updated!")
 
 
-@base.command()
+@base.command("update-analysis")
 @click.argument("analysis_id")
 @click.pass_context
 def update_analysis(context, analysis_id: int):
-    """Update a single analysis."""
+    """Update status of a single analysis"""
     context.obj["trailblazer"].update_run_status(analysis_id=analysis_id)
 
 
@@ -86,6 +86,17 @@ def cancel(context, analysis_id):
     """Cancel all jobs in a run."""
     try:
         context.obj["trailblazer"].cancel_analysis(analysis_id=analysis_id, email=environ_email())
+    except Exception as e:
+        LOG.error(e)
+
+
+@base.command("set-completed")
+@click.argument("analysis_id", type=int)
+@click.pass_context
+def set_analysis_completed(context, analysis_id):
+    """Set status of an analysis to "COMPLETED" """
+    try:
+        context.obj["trailblazer"].set_analysis_completed(analysis_id=analysis_id)
     except Exception as e:
         LOG.error(e)
 

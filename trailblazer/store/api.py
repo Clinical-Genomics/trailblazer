@@ -217,6 +217,12 @@ class BaseHandler:
             self.commit()
         return old_analyses
 
+    def set_analysis_completed(self, analysis_id: int) -> None:
+        analysis_obj = self.analysis(analysis_id=analysis_id)
+        analysis_obj.status = "completed"
+        self.commit()
+        LOG.info(f"{analysis_obj.family} - status set to COMPLETED")
+
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis output."""
         analysis_obj = self.analysis(analysis_id=analysis_id)
@@ -344,6 +350,15 @@ class BaseHandler:
                     f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {e.__class__.__name__}"
                 )
 
+    def get_elapsed_time(self, analysis_obj: models.Analysis) -> str:
+        """Get elapsed time for the analysis"""
+        return str(
+            dt.datetime.now()
+            - min(
+                [job_obj.started_at for job_obj in analysis_obj.failed_jobs if job_obj.started_at]
+            )
+        )
+
     def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query slurm for entries related to given analysis, and update the Trailblazer database"""
         analysis_obj = self.analysis(analysis_id)
@@ -382,34 +397,14 @@ class BaseHandler:
 
             elif status_distribution.get("COMPLETED") == 1:
                 analysis_obj.status = "completed"
-                elapsed_time = str(
-                    dt.datetime.now()
-                    - min(
-                        [
-                            job_obj.started_at
-                            for job_obj in analysis_obj.failed_jobs
-                            if job_obj.started_at
-                        ]
-                    )
-                )
-                analysis_obj.comment = (
-                    f"Run finished! Time elapsed " f"{elapsed_time.split('.')[0]}"
-                )
-            elif status_distribution.get("RUNNING") or status_distribution.get("COMPLETED"):
-                analysis_obj.status = "running"
-                elapsed_time = str(
-                    dt.datetime.now()
-                    - min(
-                        [
-                            job_obj.started_at
-                            for job_obj in analysis_obj.failed_jobs
-                            if job_obj.started_at
-                        ]
-                    )
-                )
-                analysis_obj.comment = f"Running! Time elapsed " f"{elapsed_time.split('.')[0]}"
+                analysis_obj.comment = None
+
             elif status_distribution.get("PENDING") == 1:
                 analysis_obj.status = "pending"
+
+            elif status_distribution.get("RUNNING") or status_distribution.get("COMPLETED"):
+                analysis_obj.status = "running"
+
             elif status_distribution.get("CANCELLED") and not (
                 status_distribution.get("RUNNING") or status_distribution.get("PENDING")
             ):
