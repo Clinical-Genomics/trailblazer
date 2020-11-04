@@ -22,6 +22,7 @@ from trailblazer.constants import (
 )
 from trailblazer.exc import EmptySqueueError, TrailblazerError
 from trailblazer.store import models
+from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
 
@@ -321,6 +322,11 @@ class BaseHandler:
         """Parses job dataframe and creates job objects"""
         if len(jobs_dataframe) == 0:
             return
+        formatter_func = formatters.formatter_map.get(
+            analysis_obj.data_analysis, formatters.transform_undefined
+        )
+        jobs_dataframe["step"] = jobs_dataframe["step"].apply(lambda x: formatter_func(x))
+
         for job_obj in analysis_obj.failed_jobs:
             job_obj.delete()
         self.commit()
