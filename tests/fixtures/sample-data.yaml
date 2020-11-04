@@ -63,7 +63,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP-DNA
+    data_analysis: FLUFFY
 
 
   - family: fancymole
