@@ -16,7 +16,7 @@ analyses:
     type: wgs
     user: paul.anderson@magnolia.com
     progress: .54
-    data_analysis: MIP
+    data_analysis: MIP-DNA
 
   - family: nicemice
     version: v3.5.0
@@ -28,7 +28,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP
+    data_analysis: MIP-RNA
 
   - family: lateraligator
     version: v4.2.0
@@ -39,7 +39,7 @@ analyses:
     config_path: fixtures/runs/politesnake/analysis/politesnake_config.yaml
     type: wes
     user: tom.cruise@magnolia.com
-    data_analysis: MIP
+    data_analysis: BALSAMIC
 
   - family: escapedgoat
     version: v3.6.0
@@ -51,7 +51,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP
+    data_analysis: MIP-DNA
 
   - family: crackpanda
     version: v3.6.0
@@ -63,7 +63,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP
+    data_analysis: MIP-DNA
 
 
   - family: fancymole
@@ -76,7 +76,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP
+    data_analysis: MIP-DNA
 
 
   - family: trueferret
@@ -89,7 +89,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP
+    data_analysis: MIP-DNA
 
 
   - family: daringpidgeon
@@ -102,7 +102,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP
+    data_analysis: MIP-DNA
 
   - family: happycow
     version: v3.6.0
@@ -114,7 +114,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP
+    data_analysis: MIP-DNA
 
   - family: rarekitten
     version: v3.6.0
@@ -126,7 +126,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP
+    data_analysis: MIP-DNA
 
   - family: liberatedunicorn
     version: v3.6.0
@@ -138,7 +138,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP
+    data_analysis: MIP-DNA
 
   - family: emptydinosaur
     version: v3.6.0
@@ -150,4 +150,4 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP
+    data_analysis: MIP-DNA
