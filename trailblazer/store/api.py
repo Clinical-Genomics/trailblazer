@@ -384,16 +384,8 @@ class BaseHandler:
             if status_distribution.get("FAILED") or status_distribution.get("TIMEOUT"):
                 if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):
                     analysis_obj.status = "error"
-                    analysis_obj.comment = (
-                        f"WARNING! Analysis still running with failed steps: "
-                        f"{ ', '.join(list(jobs_dataframe[jobs_dataframe.status == 'FAILED']['step']))}"
-                    )
                 else:
                     analysis_obj.status = "failed"
-                    analysis_obj.comment = (
-                        f"Failed steps: "
-                        f"{', '.join(list(jobs_dataframe[jobs_dataframe.status == 'FAILED']['step']))}"
-                    )
 
             elif status_distribution.get("COMPLETED") == 1:
                 analysis_obj.status = "completed"
@@ -417,9 +409,8 @@ class BaseHandler:
 
             analysis_obj.logged_at = dt.datetime.now()
         except Exception as e:
-            LOG.error(f"Error logging case - {e.__class__.__name__}")
+            LOG.error(f"Error logging case - {analysis_obj.family} : {e.__class__.__name__}")
             analysis_obj.status = "error"
-            analysis_obj.comment = f"Error logging case - {e.__class__.__name__}"
             self.commit()
 
     @staticmethod
