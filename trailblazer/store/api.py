@@ -104,6 +104,7 @@ class BaseHandler:
                     self.Analysis.family.ilike(f"%{query}%"),
                     self.Analysis.status.ilike(f"%{query}%"),
                     self.Analysis.data_analysis.ilike(f"%{query}%"),
+                    self.Analysis.comment.ilike(f"%{query}%"),
                 )
             )
         if status:
