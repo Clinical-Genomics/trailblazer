@@ -3,7 +3,6 @@ from dateutil.parser import parse as parse_datestr
 from flask import abort, g, Blueprint, jsonify, make_response, request
 from google.auth import jwt
 from typing import Dict
-import subprocess
 import multiprocessing
 
 from trailblazer.server.ext import store
