@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
-
-import coloredlogs
 from flask import Flask
 from flask_cors import CORS
 from flask_reverse_proxy import FlaskReverseProxied
 
 from trailblazer.server import api, ext
 
-coloredlogs.install(level="INFO")
 app = Flask(__name__)
 
 SECRET_KEY = "unsafe!!!"
