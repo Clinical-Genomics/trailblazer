@@ -15,7 +15,6 @@ LOG = logging.getLogger(__name__)
 @click.group()
 @click.option("-c", "--config", type=click.File())
 @click.option("-d", "--database", help="path/URI of the SQL database")
-@click.option("-l", "--log-level", default="INFO")
 @click.version_option(trailblazer.__version__, prog_name=trailblazer.__title__)
 @click.pass_context
 def base(context, config, database):

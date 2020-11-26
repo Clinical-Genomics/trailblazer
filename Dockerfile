@@ -9,5 +9,6 @@ RUN pip install -e .
 EXPOSE 5000
 
 RUN useradd worker
+RUN chown -R worker:worker /home/src
 USER worker
 
