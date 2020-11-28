@@ -20,3 +20,4 @@ gunicorn
 # misc
 pymysql
 python-dateutil
+cryptography
