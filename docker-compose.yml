@@ -19,7 +19,7 @@ services:
 
   trailblazer:
     image: mropat/trailblazer
-    container_name: trailblazer_app
+    container_name: trailblazer-api
     environment:
       SQLALCHEMY_DATABASE_URI: "mysql+pymysql://user:userpass@mysql-server:3306/trailblazer-stage"
       SCOPE: "DEVELOPMENT"

@@ -1,0 +1,83 @@
+# Generation of Kubernetes YAML is still under development!
+#
+# Save the output of this file and use kubectl create -f to import
+# it into Kubernetes.
+#
+# Created with podman-2.0.6
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2020-11-29T09:43:55Z"
+  labels:
+    app: trailblazer-pod
+  name: trailblazer-pod
+spec:
+  containers:
+  - name: trailblazer-stage-db
+    env:
+    - name: MYSQL_PASSWORD
+      value: userpass
+    - name: MYSQL_ROOT_PASSWORD
+      value: rootpass
+    - name: MYSQL_USER
+      value: user
+    - name: MYSQL_DATABASE
+      value: trailblazer-stage
+    image: docker.io/library/mysql:5.6
+    ports:
+    - contrinerPort: 3306
+    resources: {}
+    securityContext:
+      allowPrivilegeEscalation: true
+      capabilities: {}
+      privileged: false
+      readOnlyRootFilesystem: false
+      seLinuxOptions: {}
+    volumeMounts:
+    - mountPath: /docker-entrypoint-initdb.d
+      name: home-admin-Documents-CG-testing-tb_dump
+    workingDir: /
+    
+  - name: trailblazer-api
+    env:
+    - name: GUNICORN_TREADS
+      value: "1"
+    - name: GUNICORN_BIND
+      value: 0.0.0.0:5000
+    - name: SCOPE
+      value: DEVELOPMENT
+    - name: GUNICORN_TIMEOUT
+      value: "400"
+    - name: SQLALCHEMY_DATABASE_URI
+      value: mysql+pymysql://user:userpass@localhost:3306/trailblazer-stage
+    - name: GUNICORN_WORKERS
+      value: "1"
+    image: docker.io/mropat/trailblazer:latest
+    ports:
+    - containerPort: 5000
+      hostPort: 7076
+      protocol: TCP
+    resources: {}
+    securityContext:
+      allowPrivilegeEscalation: true
+      capabilities: {}
+      privileged: false
+      readOnlyRootFilesystem: false
+      runAsGroup: 1000
+      runAsUser: 1000
+      seLinuxOptions: {}
+    workingDir: /home/src/app
+  
+  volumes:
+  - hostPath:
+      path: /home/admin/Documents/CG/testing/tb_dump
+      type: Directory
+    name: home-admin-Documents-CG-testing-tb_dump
+status: {}
+---
+metadata:
+  creationTimestamp: null
+spec: {}
+status:
+  loadBalancer: {}
+
