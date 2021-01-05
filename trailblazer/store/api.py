@@ -246,7 +246,7 @@ class BaseHandler:
         case_id: Unique internal case identifier which is expected to by the only item in the .YAML dict
         ssh : Whether the request is executed from hasta or clinical-db"""
         job_id_dict = safe_load(open(job_id_file))
-        submitted_jobs = job_id_dict[case_id]
+        submitted_jobs = job_id_dict.get(next(iter(job_id_dict)))
         jobs_string = ",".join(submitted_jobs)
         if ssh:
             squeue_response = (
