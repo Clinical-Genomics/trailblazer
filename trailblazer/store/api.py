@@ -73,8 +73,7 @@ class BaseHandler:
 
         categories = categories.group_by(self.Job.name).all()
 
-        data = [{"name": category.name, "count": category.count} for category in categories]
-        return data
+        return [{"name": category.name, "count": category.count} for category in categories]
 
     def analyses(
         self,
@@ -133,8 +132,7 @@ class BaseHandler:
         return self.Analysis.query.get(analysis_id)
 
     def get_latest_analysis(self, case_id: str) -> Optional[models.Analysis]:
-        latest_analysis = self.analyses(case_id=case_id).first()
-        return latest_analysis
+        return self.analyses(case_id=case_id).first()
 
     def get_latest_analysis_status(self, case_id: str) -> Optional[str]:
         """Get latest analysis status for a case_id"""
@@ -145,30 +143,22 @@ class BaseHandler:
     def is_latest_analysis_ongoing(self, case_id: str) -> bool:
         """Check if the latest analysis is ongoing for a case_id"""
         latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
-        if latest_analysis_status in ONGOING_STATUSES:
-            return True
-        return False
+        return latest_analysis_status in ONGOING_STATUSES
 
     def is_latest_analysis_failed(self, case_id: str) -> bool:
         """Check if the latest analysis is failed for a case_id"""
         latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
-        if latest_analysis_status == FAILED_STATUS:
-            return True
-        return False
+        return latest_analysis_status == FAILED_STATUS
 
     def is_latest_analysis_completed(self, case_id: str) -> bool:
         """Check if the latest analysis is completed for a case_id"""
         latest_analysis = self.analyses(case_id=case_id).first()
-        if latest_analysis and latest_analysis.status == COMPLETED_STATUS:
-            return True
-        return False
+        return bool(latest_analysis and latest_analysis.status == COMPLETED_STATUS)
 
     def has_latest_analysis_started(self, case_id: str) -> bool:
         """Check if analysis has started"""
         latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
-        if latest_analysis_status in STARTED_STATUSES:
-            return True
-        return False
+        return latest_analysis_status in STARTED_STATUSES
 
     def add_pending_analysis(
         self,
@@ -246,17 +236,17 @@ class BaseHandler:
         case_id: Unique internal case identifier which is expected to by the only item in the .YAML dict
         ssh : Whether the request is executed from hasta or clinical-db"""
         job_id_dict = safe_load(open(job_id_file))
-        submitted_jobs = job_id_dict[case_id]
-        jobs_string = ",".join(submitted_jobs)
+        submitted_job_ids = job_id_dict.get(next(iter(job_id_dict)))
+        job_ids_string = ",".join(map(str, submitted_job_ids))
         if ssh:
-            squeue_response = (
+            return (
                 subprocess.check_output(
                     [
                         "ssh",
                         "hiseq.clinical@hasta.scilifelab.se",
                         "squeue",
                         "-j",
-                        jobs_string,
+                        job_ids_string,
                         "-h",
                         "--states=all",
                         "-o",
@@ -268,28 +258,34 @@ class BaseHandler:
                 .replace("//n", "/n")
             )
         else:
-            squeue_response = subprocess.check_output(
-                ["squeue", "-j", jobs_string, "-h", "--states=all", "-o", "%A,%j,%T,%l,%M,%S"]
+            return subprocess.check_output(
+                [
+                    "squeue",
+                    "-j",
+                    job_ids_string,
+                    "-h",
+                    "--states=all",
+                    "-o",
+                    "%A,%j,%T,%l,%M,%S",
+                ]
             )
-        return squeue_response
 
     @staticmethod
     def get_time_elapsed_in_min(elapsed_string: Optional[str]) -> Optional[int]:
         """Parse SLURM elapsed time string into minutes"""
-        if elapsed_string and isinstance(elapsed_string, str):
-            days = 0
-            if "-" in elapsed_string:
-                days = int(elapsed_string.split("-")[0])
-                elapsed_string = elapsed_string.split("-")[1]
-            split_timestamp = elapsed_string.split(":")
-            if len(split_timestamp) < 3:
-                split_timestamp = list("0" * (3 - len(split_timestamp))) + split_timestamp
-            elapsed_minutes = int(
-                (parse_datestr(":".join(split_timestamp)) - parse_datestr("0:0:0")).seconds / 60
-                + days * 60
-            )
-            return elapsed_minutes
-        return 0
+        if not elapsed_string or not isinstance(elapsed_string, str):
+            return 0
+        days = 0
+        if "-" in elapsed_string:
+            days = int(elapsed_string.split("-")[0])
+            elapsed_string = elapsed_string.split("-")[1]
+        split_timestamp = elapsed_string.split(":")
+        if len(split_timestamp) < 3:
+            split_timestamp = list("0" * (3 - len(split_timestamp))) + split_timestamp
+        return int(
+            (parse_datestr(":".join(split_timestamp)) - parse_datestr("0:0:0")).seconds / 60
+            + days * 60
+        )
 
     @staticmethod
     def parse_squeue_to_df(squeue_response: Any, ssh: bool) -> pd.DataFrame:
@@ -357,12 +353,15 @@ class BaseHandler:
                     f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {e.__class__.__name__}"
                 )
 
+    @staticmethod
     def get_elapsed_time(self, analysis_obj: models.Analysis) -> str:
         """Get elapsed time for the analysis"""
         return str(
-            dt.datetime.now()
-            - min(
-                [job_obj.started_at for job_obj in analysis_obj.failed_jobs if job_obj.started_at]
+            (
+                dt.datetime.now()
+                - min(
+                    job_obj.started_at for job_obj in analysis_obj.failed_jobs if job_obj.started_at
+                )
             )
         )
 

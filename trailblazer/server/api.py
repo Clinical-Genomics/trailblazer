@@ -39,7 +39,7 @@ def before_request():
 @blueprint.route("/analyses")
 def analyses():
     """Display analyses."""
-    per_page = int(request.args.get("per_page", 50))
+    per_page = int(request.args.get("per_page", 100))
     page = int(request.args.get("page", 1))
     query = store.analyses(
         status=request.args.get("status"),
