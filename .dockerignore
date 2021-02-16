@@ -7,5 +7,6 @@ trailblazer.egg-info
 .gitignore
 .gitlint.yaml
 .pre-commit-config.yaml
+.configs
 DEPLOYMENT.md
 
