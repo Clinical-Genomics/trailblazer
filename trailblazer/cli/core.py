@@ -1,7 +1,6 @@
 import logging
-
+import os
 import click
-import coloredlogs
 import ruamel.yaml
 from dateutil.parser import parse as parse_date
 
@@ -16,15 +15,14 @@ LOG = logging.getLogger(__name__)
 @click.group()
 @click.option("-c", "--config", type=click.File())
 @click.option("-d", "--database", help="path/URI of the SQL database")
-@click.option("-l", "--log-level", default="INFO")
 @click.version_option(trailblazer.__version__, prog_name=trailblazer.__title__)
 @click.pass_context
-def base(context, config, database, log_level):
+def base(context, config, database):
     """Trailblazer - Monitor analyses"""
-    coloredlogs.install(level=log_level)
-
     context.obj = ruamel.yaml.safe_load(config) if config else {}
-    context.obj["database"] = database or context.obj.get("database")
+    context.obj["database"] = database or os.environ.get(
+        "SQLALCHEMY_DATABASE_URI", "sqlite:///:memory:"
+    )
     context.obj["trailblazer"] = Store(context.obj["database"])
 
 

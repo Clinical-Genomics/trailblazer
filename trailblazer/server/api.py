@@ -1,9 +1,10 @@
 import datetime
+import os
+
 from dateutil.parser import parse as parse_datestr
 from flask import abort, g, Blueprint, jsonify, make_response, request
 from google.auth import jwt
 from typing import Dict
-import subprocess
 import multiprocessing
 
 from trailblazer.server.ext import store
@@ -24,6 +25,8 @@ def before_request():
     """Authentication that is run before processing requests to the application"""
     if request.method == "OPTIONS":
         return make_response(jsonify(ok=True), 204)
+    if os.environ.get("SCOPE") == "DEVELOPMENT":
+        return
     auth_header = request.headers.get("Authorization")
     if auth_header:
         jwt_token = auth_header.split("Bearer ")[-1]

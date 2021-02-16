@@ -1,9 +1,8 @@
 # Trailblazer [![Coverage Status][coveralls-image]][coveralls-url]
 
-### Automate, monitor, and simplify running the [MIP][mip] analysis pipeline
+### Monitor the progress of analysis workflows submitted to SLURM
 
 Trailblazer is a tool that aims to provide:
-
 - a Python interface to interact with MIP in an automated fashion
 - a limited command line interface to simplify running MIP using an opinionated setup
 

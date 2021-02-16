@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
 import os
-
-import coloredlogs
 from flask import Flask
 from flask_cors import CORS
 from flask_reverse_proxy import FlaskReverseProxied
 
 from trailblazer.server import api, ext
 
-coloredlogs.install(level="INFO")
 app = Flask(__name__)
 
 SECRET_KEY = "unsafe!!!"
 TEMPLATES_AUTO_RELOAD = True
-SQLALCHEMY_DATABASE_URI = os.environ["SQLALCHEMY_DATABASE_URI"]
-SQLALCHEMY_POOL_RECYCLE = 7200
-SQLALCHEMY_TRACK_MODIFICATIONS = "FLASK_DEBUG" in os.environ
+SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI", "sqlite:///:memory:")
+SQLALCHEMY_POOL_RECYCLE = os.environ.get("SQLALCHEMY_POOL_RECYCLE", 7200)
+SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get("FLASK_DEBUG", False)
 
 app.config.from_object(__name__)
 
