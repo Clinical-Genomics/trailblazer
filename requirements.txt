@@ -2,7 +2,7 @@ Alchy
 Click<7
 coloredlogs
 ruamel.yaml
-SQLAlchemy
+SQLAlchemy<1.4
 marshmallow
 tabulate
 python-dateutil
