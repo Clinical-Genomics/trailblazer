@@ -20,9 +20,7 @@ LOG = logging.getLogger(__name__)
 def base(context, config, database):
     """Trailblazer - Monitor analyses"""
     context.obj = ruamel.yaml.safe_load(config) if config else {}
-    context.obj["database"] = database or os.environ.get(
-        "SQLALCHEMY_DATABASE_URI", "sqlite:///:memory:"
-    )
+    context.obj["database"] = database or context.obj.get("database", "sqlite:///:memory:")
     context.obj["trailblazer"] = Store(context.obj["database"])
 
 
