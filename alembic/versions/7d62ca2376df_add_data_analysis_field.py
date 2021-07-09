@@ -12,9 +12,10 @@ down_revision = "84079287ee2f"
 branch_labels = None
 depends_on = None
 
-from alembic import op
 import sqlalchemy as sa
 from sqlalchemy import types
+
+from alembic import op
 
 OLD_OPTIONS = ("wes", "wgs", "rna")
 NEW_OPTIONS = ("wes", "wgs", "rna", "tgs", "other")

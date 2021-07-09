@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+import pytest
+
 import trailblazer
 from trailblazer.cli import base
-from trailblazer.cli.core import ls_cmd, delete, cancel, scan, user, set_analysis_completed
-import pytest
+from trailblazer.cli.core import cancel, delete, ls_cmd, scan, set_analysis_completed, user
 
 
 def test_base(cli_runner):
