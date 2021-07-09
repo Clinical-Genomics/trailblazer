@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+
 from flask import Flask
 from flask_cors import CORS
 from flask_reverse_proxy import FlaskReverseProxied

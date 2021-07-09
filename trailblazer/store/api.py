@@ -2,9 +2,9 @@
 """Store backend in Trailblazer"""
 import datetime as dt
 import io
-import subprocess
-from typing import List, Optional, Any
 import logging
+import subprocess
+from typing import Any, List, Optional
 
 import alchy
 import pandas as pd
@@ -17,8 +17,8 @@ from trailblazer.constants import (
     COMPLETED_STATUS,
     FAILED_STATUS,
     ONGOING_STATUSES,
-    STARTED_STATUSES,
     SLURM_ACTIVE_CATEGORIES,
+    STARTED_STATUSES,
 )
 from trailblazer.exc import EmptySqueueError, TrailblazerError
 from trailblazer.store import models
@@ -201,7 +201,7 @@ class BaseHandler:
         return self.Job.query
 
     def mark_analyses_deleted(self, case_id: str) -> Query:
-        """ mark analyses connected to a case as deleted """
+        """mark analyses connected to a case as deleted"""
         old_analyses = self.analyses(case_id=case_id)
         if old_analyses.count() > 0:
             for old_analysis in old_analyses:

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-import pytest
 import subprocess
-
 from functools import partial
-from click.testing import CliRunner
+
+import pytest
 import ruamel.yaml
+from click.testing import CliRunner
 
 from trailblazer.cli import base
 from trailblazer.store import Store

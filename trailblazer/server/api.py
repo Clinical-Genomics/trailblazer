@@ -1,11 +1,11 @@
 import datetime
+import multiprocessing
 import os
+from typing import Dict
 
 from dateutil.parser import parse as parse_datestr
-from flask import abort, g, Blueprint, jsonify, make_response, request
+from flask import Blueprint, abort, g, jsonify, make_response, request
 from google.auth import jwt
-from typing import Dict
-import multiprocessing
 
 from trailblazer.server.ext import store
 

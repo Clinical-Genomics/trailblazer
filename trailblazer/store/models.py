@@ -2,16 +2,15 @@
 import datetime
 
 import alchy
-from sqlalchemy import Column, ForeignKey, orm, types, UniqueConstraint
+from sqlalchemy import Column, ForeignKey, UniqueConstraint, orm, types
 
 from trailblazer.constants import (
-    ONGOING_STATUSES,
-    STATUS_OPTIONS,
     JOB_STATUS_OPTIONS,
+    ONGOING_STATUSES,
     PRIORITY_OPTIONS,
+    STATUS_OPTIONS,
     TYPES,
 )
-
 
 Model = alchy.make_declarative_base(Base=alchy.ModelBase)
 

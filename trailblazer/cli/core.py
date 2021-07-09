@@ -1,13 +1,14 @@
 import logging
 import os
+
 import click
 import ruamel.yaml
 from dateutil.parser import parse as parse_date
 
 import trailblazer
+from trailblazer.environ import environ_email
 from trailblazer.store import Store
 from trailblazer.store.models import STATUS_OPTIONS
-from trailblazer.environ import environ_email
 
 LOG = logging.getLogger(__name__)
 
