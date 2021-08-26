@@ -8,6 +8,7 @@ from flask import Blueprint, abort, g, jsonify, make_response, request
 from google.auth import jwt
 
 from trailblazer.server.ext import store
+from trailblazer.store import models
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
@@ -247,3 +248,22 @@ def post_add_pending_analysis():
         return jsonify(**data), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
+
+
+@blueprint.route("/user/", methods=["GET", "POST", "DELETE"])
+def user():
+    if request.method == "GET":
+        user_id = request.args.get("id")
+        user_name = request.args.get("name")
+        user_email = request.args.get("email")
+
+        query = store.query(models.User)
+
+        if user_id:
+            query = query.filter(models.User.id == user_id)
+        if user_name:
+            query = query.filter(models.User.name == user_name)
+        if user_email:
+            query = query.filter(models.User.email == user_email)
+        results = query.all()
+        return jsonify(*[result.to_dict() for result in results]), 200
