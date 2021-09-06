@@ -31,4 +31,4 @@ jobs:
          context: ./
          file: ./Dockerfile
          push: true
-         tags: "clinicalgenomics/trailblazer:${{github.event.release.tag_name}}, clinicalgenomics/trailblazer:latest"
+         tags: "clinicalgenomics/trailblazer:${{github.event.release.tag_name}}, clinicalgenomics/trailblazer:latest, clinicalgenomics/trailblazer-stage:${{github.event.release.tag_name}}"
