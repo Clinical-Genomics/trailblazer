@@ -76,6 +76,20 @@ def user(context, name, email):
         LOG.error("User not found")
 
 
+@base.command("delete-user")
+@click.argument("email", default=environ_email())
+@click.pass_context
+def delete_user(context, email):
+    """Remove an existing user identified by it's email."""
+    existing_user = context.obj["trailblazer"].user(email)
+    if existing_user:
+        LOG.info(f"Deleting user: {existing_user.to_dict()}")
+        context.obj["trailblazer"].delete_user(existing_user)
+        LOG.info(f"User deleted: {email}")
+    else:
+        LOG.error("User not found")
+
+
 @base.command()
 @click.argument("analysis_id", type=int)
 @click.pass_context

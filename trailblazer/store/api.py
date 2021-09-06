@@ -192,6 +192,11 @@ class BaseHandler:
         self.add_commit(new_user)
         return new_user
 
+    def add_user(self, user: models.User) -> None:
+        """Remove user from the database."""
+        user.delete()
+        self.commit()
+
     def user(self, email: str) -> models.User:
         """Fetch a user from the database."""
         return self.User.query.filter_by(email=email).first()
