@@ -192,7 +192,7 @@ class BaseHandler:
         self.add_commit(new_user)
         return new_user
 
-    def add_user(self, user: models.User) -> None:
+    def delete_user(self, user: models.User) -> None:
         """Remove user from the database."""
         user.delete()
         self.commit()
