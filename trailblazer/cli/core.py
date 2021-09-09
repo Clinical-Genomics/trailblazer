@@ -1,7 +1,9 @@
 import logging
+import sys
 import os
 
 import click
+import coloredlogs
 import ruamel.yaml
 from dateutil.parser import parse as parse_date
 
@@ -11,15 +13,30 @@ from trailblazer.store import Store
 from trailblazer.store.models import STATUS_OPTIONS
 
 LOG = logging.getLogger(__name__)
+LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
 
 
 @click.group()
 @click.option("-c", "--config", type=click.File())
 @click.option("-d", "--database", help="path/URI of the SQL database")
+@click.option(
+    "-l", "--log-level", type=click.Choice(LEVELS), default="INFO", help="lowest level to log at"
+)
+@click.option("--verbose", is_flag=True, help="Show full log information, time stamp etc")
 @click.version_option(trailblazer.__version__, prog_name=trailblazer.__title__)
 @click.pass_context
-def base(context, config, database):
+def base(context, config, database,
+         log_level: str,
+         verbose: bool,
+         ):
     """Trailblazer - Monitor analyses"""
+    if verbose:
+        log_format = "%(asctime)s %(hostname)s %(name)s[%(process)d] %(levelname)s %(message)s"
+    else:
+        log_format = "%(message)s" if sys.stdout.isatty() else None
+
+    coloredlogs.install(level=log_level, fmt=log_format)
+
     context.obj = ruamel.yaml.safe_load(config) if config else {}
     context.obj["database"] = database or context.obj.get("database", "sqlite:///:memory:")
     context.obj["trailblazer"] = Store(context.obj["database"])
@@ -76,18 +93,31 @@ def user(context, name, email):
         LOG.error("User not found")
 
 
-@base.command("delete-user")
+@base.command()
+@click.option("--name", help="Name of new users to list")
+@click.option("--email", help="Name of new users to list")
+@click.pass_context
+def users(context, name, email):
+    """Display information about existing users."""
+    user_query = context.obj["trailblazer"].users(name, email)
+
+    LOG.info("Listing users in database:")
+
+    for a_user in user_query:
+        LOG.info(f"{a_user.to_dict()}")
+
+
+@base.command("archive-user")
 @click.argument("email", default=environ_email())
 @click.pass_context
-def delete_user(context, email):
-    """Remove an existing user identified by it's email."""
+def archive_user(context, email):
+    """Archive an existing user identified by it's email."""
     existing_user = context.obj["trailblazer"].user(email)
     if existing_user:
-        LOG.info(f"Deleting user: {existing_user.to_dict()}")
-        context.obj["trailblazer"].delete_user(existing_user)
-        LOG.info(f"User deleted: {email}")
+        context.obj["trailblazer"].archive_user(existing_user)
+        LOG.info(f"User archived: {email}")
     else:
-        LOG.error("User not found")
+        LOG.error(f"User with email {email} not found, already archived?")
 
 
 @base.command()

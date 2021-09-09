@@ -106,7 +106,6 @@ def update_analyses():
     """Update all ongoing analysis by querying SLURM"""
     process = multiprocessing.Process(target=store.update_ongoing_analyses, kwargs={"ssh": True})
     process.start()
-    # store.update_ongoing_analyses(ssh=True)
     return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), 201
 
 
@@ -118,7 +117,6 @@ def update_analysis(analysis_id):
             target=store.update_run_status, kwargs={"analysis_id": analysis_id, "ssh": True}
         )
         process.start()
-        # store.update_run_status(analysis_id=analysis_id, ssh=True)
         return jsonify("Success! Update request sent"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409

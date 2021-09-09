@@ -16,7 +16,6 @@ Model = alchy.make_declarative_base(Base=alchy.ModelBase)
 
 
 class Info(Model):
-
     """Keep track of meta data."""
 
     __tablename__ = "info"
@@ -27,15 +26,15 @@ class Info(Model):
 
 
 class User(Model):
-
     __tablename__ = "user"
 
-    id = Column(types.Integer, primary_key=True)
-    google_id = Column(types.String(128), unique=True)
-    email = Column(types.String(128), unique=True)
-    name = Column(types.String(128))
     avatar = Column(types.Text)
     created_at = Column(types.DateTime, default=datetime.datetime.now)
+    email = Column(types.String(128), unique=True)
+    google_id = Column(types.String(128), unique=True)
+    id = Column(types.Integer, primary_key=True)
+    is_archived = Column(types.Boolean, default=False)
+    name = Column(types.String(128))
 
     runs = orm.relationship("Analysis", backref="user")
 
@@ -46,7 +45,6 @@ class User(Model):
 
 
 class Analysis(Model):
-
     """Analysis record."""
 
     __tablename__ = "analysis"
@@ -82,7 +80,6 @@ class Analysis(Model):
 
 
 class Job(Model):
-
     """Represent a step in the pipeline."""
 
     __tablename__ = "job"
