@@ -201,7 +201,11 @@ class BaseHandler:
         """Fetch a user from the database."""
         return self.User.query.filter_by(email=email, is_archived=is_archived).first()
 
-    def users(self, name: str, email: str,) -> Query:
+    def users(
+        self,
+        name: str,
+        email: str,
+    ) -> Query:
         """Fetch all users from the database."""
         query = self.User.query
 

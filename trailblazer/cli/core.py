@@ -25,10 +25,13 @@ LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
 @click.option("--verbose", is_flag=True, help="Show full log information, time stamp etc")
 @click.version_option(trailblazer.__version__, prog_name=trailblazer.__title__)
 @click.pass_context
-def base(context, config, database,
-         log_level: str,
-         verbose: bool,
-         ):
+def base(
+    context,
+    config,
+    database,
+    log_level: str,
+    verbose: bool,
+):
     """Trailblazer - Monitor analyses"""
     if verbose:
         log_format = "%(asctime)s %(hostname)s %(name)s[%(process)d] %(levelname)s %(message)s"
