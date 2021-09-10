@@ -43,6 +43,9 @@ class User(Model):
         """First part of name."""
         return self.name.split(" ")[0]
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class Analysis(Model):
     """Analysis record."""

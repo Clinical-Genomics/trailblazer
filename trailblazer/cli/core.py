@@ -108,7 +108,7 @@ def users(context, name, email, include_archived):
     LOG.info("Listing users in database:")
 
     for a_user in user_query:
-        LOG.info(f"{a_user.to_dict()}")
+        LOG.info(f"{a_user}")
 
 
 @base.command("archive-user")
