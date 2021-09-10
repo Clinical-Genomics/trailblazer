@@ -102,6 +102,33 @@ trailblazer user paul.anderson@magnolia.com
 {'created_at': datetime.datetime(2017, 6, 22, 8, 49, 44, 685977), 'google_id': None, 'name': 'Paul Anderson', 'email': 'paul.anderson@magnolia.com', 'avatar': None, 'id': 2}
 ```
 
+#### Command: `trailblazer archive-user`
+
+This command archives a user in the database (and removes their access to the web interface).
+
+```bash
+# archive a user
+trailblazer archive-user paul.anderson@magnolia.com
+User archived: paul.anderson@magnolia.com
+```
+
+#### Command: `trailblazer users`
+
+This command can be used both to list all users in the database and get a filtered list of users.
+
+```bash
+# list all users
+trailblazer users
+Listing users in database:
+{'created_at': datetime.datetime(2017, 6, 22, 8, 49, 44, 685977), 'google_id': None, 'name': 'Paul Anderson', 'email': 'paul.anderson@magnolia.com', 'avatar': None, 'id': 2}
+
+# list all users named 'Anderson' that has an email with 'magnolia' in it
+trailblazer users --name Anderson --email magnolia
+Listing users in database:
+{'created_at': datetime.datetime(2017, 6, 22, 8, 49, 44, 685977), 'google_id': None, 'name': 'Paul Anderson', 'email': 'paul.anderson@magnolia.com', 'avatar': None, 'id': 2}
+```
+
+
 #### Command: `trailblazer log`
 
 Logs the status of a run to the supporting database. You need to point to the analysis config of a specific run.

@@ -33,7 +33,7 @@ def before_request():
     else:
         return abort(403, "no JWT token found on request")
     user_data = jwt.decode(jwt_token, verify=False)
-    user_obj = store.user(user_data["email"])
+    user_obj = store.user(user_data["email"], include_archived=False)
     if user_obj is None:
         return abort(403, f"{user_data['email']} doesn't have access")
     g.current_user = user_obj
@@ -106,7 +106,6 @@ def update_analyses():
     """Update all ongoing analysis by querying SLURM"""
     process = multiprocessing.Process(target=store.update_ongoing_analyses, kwargs={"ssh": True})
     process.start()
-    # store.update_ongoing_analyses(ssh=True)
     return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), 201
 
 
@@ -118,7 +117,6 @@ def update_analysis(analysis_id):
             target=store.update_run_status, kwargs={"analysis_id": analysis_id, "ssh": True}
         )
         process.start()
-        # store.update_run_status(analysis_id=analysis_id, ssh=True)
         return jsonify("Success! Update request sent"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409

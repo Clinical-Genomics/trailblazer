@@ -1,7 +1,9 @@
 import logging
+import sys
 import os
 
 import click
+import coloredlogs
 import ruamel.yaml
 from dateutil.parser import parse as parse_date
 
@@ -11,15 +13,33 @@ from trailblazer.store import Store
 from trailblazer.store.models import STATUS_OPTIONS
 
 LOG = logging.getLogger(__name__)
+LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
 
 
 @click.group()
 @click.option("-c", "--config", type=click.File())
 @click.option("-d", "--database", help="path/URI of the SQL database")
+@click.option(
+    "-l", "--log-level", type=click.Choice(LEVELS), default="INFO", help="lowest level to log at"
+)
+@click.option("--verbose", is_flag=True, help="Show full log information, time stamp etc")
 @click.version_option(trailblazer.__version__, prog_name=trailblazer.__title__)
 @click.pass_context
-def base(context, config, database):
+def base(
+    context,
+    config,
+    database,
+    log_level: str,
+    verbose: bool,
+):
     """Trailblazer - Monitor analyses"""
+    if verbose:
+        log_format = "%(asctime)s %(hostname)s %(name)s[%(process)d] %(levelname)s %(message)s"
+    else:
+        log_format = "%(message)s" if sys.stdout.isatty() else None
+
+    coloredlogs.install(level=log_level, fmt=log_format)
+
     context.obj = ruamel.yaml.safe_load(config) if config else {}
     context.obj["database"] = database or context.obj.get("database", "sqlite:///:memory:")
     context.obj["trailblazer"] = Store(context.obj["database"])
@@ -66,7 +86,7 @@ def update_analysis(context, analysis_id: int):
 @click.pass_context
 def user(context, name, email):
     """Add a new or display information about an existing user."""
-    existing_user = context.obj["trailblazer"].user(email)
+    existing_user = context.obj["trailblazer"].user(email, include_archived=True)
     if existing_user:
         LOG.info(f"Existing user found: {existing_user.to_dict()}")
     elif name:
@@ -74,6 +94,50 @@ def user(context, name, email):
         LOG.info(f"New user added: {email} ({new_user.id})")
     else:
         LOG.error("User not found")
+
+
+@base.command()
+@click.option("--name", type=click.types.STRING, help="Name of new users to list")
+@click.option("--email", type=click.types.STRING, help="Name of new users to list")
+@click.option("--include-archived", is_flag=True, help="Include archived users")
+@click.pass_context
+def users(context, name, email, include_archived):
+    """Display information about existing users."""
+    user_query = context.obj["trailblazer"].users(name, email, include_archived)
+
+    LOG.info("Listing users in database:")
+
+    for a_user in user_query:
+        LOG.info(f"{a_user}")
+
+
+@base.command("archive-user")
+@click.argument("email", default=environ_email())
+@click.option("--un-archive", is_flag=True, help="Set to True to un-archive the user")
+@click.pass_context
+def archive_user(context, email, un_archive):
+    """Archive an existing user identified by it's email."""
+    existing_user = context.obj["trailblazer"].user(email, include_archived=True)
+
+    if not existing_user:
+        LOG.error(f"User with email {email} not found")
+        return
+
+    if existing_user.is_archived and not un_archive:
+        LOG.error(f"User with email {email} already archived")
+        return
+
+    if not existing_user.is_archived and un_archive:
+        LOG.error(f"User with email {email} not archived")
+        return
+
+    if un_archive:
+        context.obj["trailblazer"].archive_user(existing_user, archive=False)
+        LOG.info(f"User un-archived: {email}")
+        return
+
+    context.obj["trailblazer"].archive_user(existing_user)
+    LOG.info(f"User archived: {email}")
 
 
 @base.command()
