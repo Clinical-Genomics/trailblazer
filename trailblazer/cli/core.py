@@ -86,7 +86,7 @@ def update_analysis(context, analysis_id: int):
 @click.pass_context
 def user(context, name, email):
     """Add a new or display information about an existing user."""
-    existing_user = context.obj["trailblazer"].user(email)
+    existing_user = context.obj["trailblazer"].user(email, include_archived=True)
     if existing_user:
         LOG.info(f"Existing user found: {existing_user.to_dict()}")
     elif name:
@@ -97,12 +97,13 @@ def user(context, name, email):
 
 
 @base.command()
-@click.option("--name", help="Name of new users to list")
-@click.option("--email", help="Name of new users to list")
+@click.option("--name", type=click.types.STRING, help="Name of new users to list")
+@click.option("--email", type=click.types.STRING, help="Name of new users to list")
+@click.option("--include-archived", is_flag=True, help="Include archived users")
 @click.pass_context
-def users(context, name, email):
+def users(context, name, email, include_archived):
     """Display information about existing users."""
-    user_query = context.obj["trailblazer"].users(name, email)
+    user_query = context.obj["trailblazer"].users(name, email, include_archived)
 
     LOG.info("Listing users in database:")
 
@@ -112,15 +113,31 @@ def users(context, name, email):
 
 @base.command("archive-user")
 @click.argument("email", default=environ_email())
+@click.option("--un-archive", is_flag=True, help="Set to True to un-archive the user")
 @click.pass_context
-def archive_user(context, email):
+def archive_user(context, email, un_archive):
     """Archive an existing user identified by it's email."""
-    existing_user = context.obj["trailblazer"].user(email)
-    if existing_user:
-        context.obj["trailblazer"].archive_user(existing_user)
-        LOG.info(f"User archived: {email}")
-    else:
-        LOG.error(f"User with email {email} not found, already archived?")
+    existing_user = context.obj["trailblazer"].user(email, include_archived=True)
+
+    if not existing_user:
+        LOG.error(f"User with email {email} not found")
+        return
+
+    if existing_user.is_archived and not un_archive:
+        LOG.error(f"User with email {email} already archived")
+        return
+
+    if not existing_user.is_archived and un_archive:
+        LOG.error(f"User with email {email} not archived")
+        return
+
+    if un_archive:
+        context.obj["trailblazer"].archive_user(existing_user, archive=False)
+        LOG.info(f"User un-archived: {email}")
+        return
+
+    context.obj["trailblazer"].archive_user(existing_user)
+    LOG.info(f"User archived: {email}")
 
 
 @base.command()

@@ -33,7 +33,7 @@ def before_request():
     else:
         return abort(403, "no JWT token found on request")
     user_data = jwt.decode(jwt_token, verify=False)
-    user_obj = store.user(user_data["email"])
+    user_obj = store.user(user_data["email"], include_archived=False)
     if user_obj is None:
         return abort(403, f"{user_data['email']} doesn't have access")
     g.current_user = user_obj
