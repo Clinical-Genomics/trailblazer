@@ -1,4 +1,4 @@
-FROM python:3.7-slim
+FROM python:3.6-slim
 
 ENV GUNICORN_WORKERS=1
 ENV GUNICORN_TREADS=1
@@ -7,7 +7,6 @@ ENV GUNICORN_TIMEOUT=400
 
 ENV SECRET_KEY="Authkey"
 ENV SQLALCHEMY_DATABASE_URI="sqlite:///:memory:"
-ENV SQLALCHEMY_POOL_RECYCLE=7200
 
 WORKDIR /home/src/app
 COPY . /home/src/app
