@@ -3,6 +3,7 @@ import multiprocessing
 import os
 from typing import Dict
 
+import requests
 from dateutil.parser import parse as parse_datestr
 from flask import Blueprint, abort, g, jsonify, make_response, request
 from google.auth import jwt
@@ -32,7 +33,9 @@ def before_request():
         jwt_token = auth_header.split("Bearer ")[-1]
     else:
         return abort(403, "no JWT token found on request")
-    user_data = jwt.decode(jwt_token, verify=False)
+    user_data = jwt.decode(
+        jwt_token, certs=requests.get("https://www.googleapis.com/oauth2/v1/certs").json()
+    )
     user_obj = store.user(user_data["email"], include_archived=False)
     if user_obj is None:
         return abort(403, f"{user_data['email']} doesn't have access")
