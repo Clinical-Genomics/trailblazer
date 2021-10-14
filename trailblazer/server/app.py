@@ -4,7 +4,6 @@ import os
 from flask import Flask
 from flask_cors import CORS
 from flask_reverse_proxy import FlaskReverseProxied
-import requests
 
 from trailblazer.server import api, ext
 
