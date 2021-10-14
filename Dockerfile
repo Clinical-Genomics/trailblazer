@@ -6,6 +6,7 @@ ENV GUNICORN_BIND="0.0.0.0:8000"
 ENV GUNICORN_TIMEOUT=400
 
 ENV SECRET_KEY="Authkey"
+ENV SERVICE_CERT_URI="https://www.googleapis.com/oauth2/v1/certs"
 ENV SQLALCHEMY_DATABASE_URI="sqlite:///:memory:"
 
 WORKDIR /home/src/app

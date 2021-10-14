@@ -33,9 +33,14 @@ def before_request():
         jwt_token = auth_header.split("Bearer ")[-1]
     else:
         return abort(403, "no JWT token found on request")
-    user_data: Mapping = jwt.decode(
-        jwt_token, certs=requests.get("https://www.googleapis.com/oauth2/v1/certs").json()
-    )
+    try:
+        user_data: Mapping = jwt.decode(
+            jwt_token, certs=requests.get("https://www.googleapis.com/oauth2/v1/certs").json()
+        )
+    except ValueError:
+        user_data: Mapping = jwt.decode(
+            jwt_token, certs=requests.get(os.environ.get("SERVICE_CERT_URI")).json()
+        )
     user_obj = store.user(user_data["email"], include_archived=False)
     if user_obj is None:
         return abort(403, f"{user_data['email']} doesn't have access")
