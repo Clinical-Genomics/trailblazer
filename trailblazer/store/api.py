@@ -426,7 +426,6 @@ class BaseHandler:
 
             elif status_distribution.get("COMPLETED") == 1:
                 analysis_obj.status = "completed"
-                analysis_obj.comment = None
 
             elif status_distribution.get("PENDING") == 1:
                 analysis_obj.status = "pending"
