@@ -8,5 +8,5 @@ SLURM_ACTIVE_CATEGORIES = ("running", "pending", "completing")
 
 STATUS_OPTIONS = ("pending", "running", "completed", "failed", "error", "canceled", "completing")
 JOB_STATUS_OPTIONS = SLURM_NORMAL_CATEGORIES + SLURM_FAILED_CATEGORIES
-PRIORITY_OPTIONS = ("low", "normal", "high", "express")
+PRIORITY_OPTIONS = ("low", "normal", "high", "express", "maintenance")
 TYPES = ("wes", "wgs", "rna", "tgs", "other")
