@@ -6,7 +6,7 @@ This PR adds/fixes ...
 - [ ] request trailblazer-stage on hasta: `paxa`
 - [ ] install on stage:
     ```Shell
-    bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-tool-stage.sh -e S_main -t trailblazer -b master -a
+    bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-tool-stage.sh -e S_main -t trailblazer -b [THIS-BRANCH-NAME] -a
     ```
 - [ ] ssh to clinical-db (depending on type of change)
 - [ ] install on stage:
