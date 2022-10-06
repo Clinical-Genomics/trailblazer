@@ -35,7 +35,7 @@ the title if not.
             1. `us`
             1. Request stage environment `paxa` and follow instructions
             1. ```Shell
-               bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-tool-stage.sh -e S_main -t trailblazer -b master -a
+               bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-tool-stage.sh -e S_main -t trailblazer -b [THIS-BRANCH-NAME] -a
                ```
             1. Make sure that installation was successful
             1. `down`
