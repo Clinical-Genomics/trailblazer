@@ -169,6 +169,7 @@ class BaseHandler:
         priority: str,
         email: str = None,
         data_analysis: str = None,
+        ticket: str = None,
     ) -> models.Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
@@ -181,6 +182,7 @@ class BaseHandler:
             out_dir=out_dir,
             priority=priority,
             data_analysis=data_analysis,
+            ticket=ticket,
         )
         new_log.user = self.user(email) if email else None
         self.add_commit(new_log)

@@ -17,6 +17,7 @@ analyses:
     user: paul.anderson@magnolia.com
     progress: .54
     data_analysis: MIP-DNA
+    ticket: 123456
 
   - family: nicemice
     version: v3.5.0
