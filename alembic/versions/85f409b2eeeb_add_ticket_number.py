@@ -17,7 +17,7 @@ import sqlalchemy as sa
 
 
 def upgrade():
-    op.add_column("analysis", sa.Column("ticket", sa.String(), nullable=True))
+    op.add_column("analysis", sa.Column("ticket", sa.String(32), nullable=True))
 
 
 def downgrade():
