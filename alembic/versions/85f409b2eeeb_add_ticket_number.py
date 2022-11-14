@@ -1,4 +1,4 @@
-"""empty message
+"""adds the ticket number for an analysis in the database
 
 Revision ID: 85f409b2eeeb
 Revises: dd72c72e23a2
