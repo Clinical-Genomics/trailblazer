@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Store backend in Trailblazer"""
+import datetime
 import datetime as dt
 import io
 import logging
@@ -247,6 +248,12 @@ class BaseHandler:
         analysis_obj.status = "completed"
         self.commit()
         LOG.info(f"{analysis_obj.family} - status set to COMPLETED")
+
+    def set_analysis_uploaded(self, case_id: str) -> None:
+        analysis_obj = self.get_latest_analysis(case_id=case_id)
+        analysis_obj.uploaded_at = datetime.datetime.now()
+        self.commit()
+        LOG.info(f"{analysis_obj.family} - uploaded at set to {datetime.datetime.now()}")
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis output."""
