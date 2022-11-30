@@ -101,6 +101,19 @@ def test_is_latest_analysis_ongoing(sample_store, family: str, expected_bool: bo
     assert is_ongoing is expected_bool
 
 
+def test_set_analysis_uploaded(sample_store):
+    # GIVEN a store with an analysis
+    analysis_obj = sample_store.analyses().first()
+    uploaded_at = datetime.datetime.now()
+
+    # WHEN setting an analysis uploaded at
+    sample_store.set_analysis_uploaded(case_id=analysis_obj.family, uploaded_at=uploaded_at)
+
+    # THEN the column uploaded_at should be updated
+    assert analysis_obj.uploaded_at == uploaded_at
+
+
+
 @pytest.mark.parametrize(
     "family, expected_bool",
     [
