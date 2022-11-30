@@ -113,7 +113,6 @@ def test_set_analysis_uploaded(sample_store):
     assert analysis_obj.uploaded_at == uploaded_at
 
 
-
 @pytest.mark.parametrize(
     "family, expected_bool",
     [
