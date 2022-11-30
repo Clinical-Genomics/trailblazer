@@ -249,11 +249,11 @@ class BaseHandler:
         self.commit()
         LOG.info(f"{analysis_obj.family} - status set to COMPLETED")
 
-    def set_analysis_uploaded(self, case_id: str) -> None:
+    def set_analysis_uploaded(self, case_id: str, uploaded_at: datetime) -> None:
         analysis_obj = self.get_latest_analysis(case_id=case_id)
-        analysis_obj.uploaded_at = datetime.datetime.now()
+        analysis_obj.uploaded_at = uploaded_at
         self.commit()
-        LOG.info(f"{analysis_obj.family} - uploaded at set to {datetime.datetime.now()}")
+        LOG.info(f"{analysis_obj.family} - uploaded at set to {uploaded_at}")
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis output."""
