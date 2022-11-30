@@ -253,6 +253,12 @@ def post_add_pending_analysis():
 def put_set_analysis_uploaded():
     content = request.json
 
-    store.set_analysis_uploaded(
-        case_id=content.get("case_id"), uploaded_at=content.get("uploaded_at")
-    )
+    try:
+        store.set_analysis_uploaded(
+            case_id=content.get("case_id"), uploaded_at=content.get("uploaded_at")
+        )
+        return jsonify("Success! Update request sent"), 201
+    except Exception as e:
+        return jsonify(f"Exception: {e}"), 409
+
+

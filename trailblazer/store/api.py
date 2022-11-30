@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Store backend in Trailblazer"""
-import datetime
 import datetime as dt
 import io
 import logging
@@ -249,7 +248,8 @@ class BaseHandler:
         self.commit()
         LOG.info(f"{analysis_obj.family} - status set to COMPLETED")
 
-    def set_analysis_uploaded(self, case_id: str, uploaded_at: datetime) -> None:
+    def set_analysis_uploaded(self, case_id: str, uploaded_at: dt.datetime) -> None:
+        """Setting analysis uploaded at."""
         analysis_obj = self.get_latest_analysis(case_id=case_id)
         analysis_obj.uploaded_at = uploaded_at
         self.commit()
