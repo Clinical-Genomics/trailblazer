@@ -102,6 +102,8 @@ def test_is_latest_analysis_ongoing(sample_store, family: str, expected_bool: bo
 
 
 def test_set_analysis_uploaded(sample_store):
+    """Test setting analysis uploaded at for an analysis."""
+
     # GIVEN a store with an analysis
     analysis_obj = sample_store.analyses().first()
     uploaded_at = datetime.datetime.now()
