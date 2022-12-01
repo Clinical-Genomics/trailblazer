@@ -3,7 +3,6 @@ import subprocess
 from functools import partial
 import datetime as dt
 
-
 import pytest
 import ruamel.yaml
 from click.testing import CliRunner
