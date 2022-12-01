@@ -260,5 +260,3 @@ def put_set_analysis_uploaded():
         return jsonify("Success! Update request sent"), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
-
-
