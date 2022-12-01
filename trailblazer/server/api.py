@@ -258,5 +258,5 @@ def put_set_analysis_uploaded():
             case_id=content.get("case_id"), uploaded_at=content.get("uploaded_at")
         )
         return jsonify("Success! Update request sent"), 201
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
+    except Exception as error:
+        return jsonify(f"Exception: {error}"), 409

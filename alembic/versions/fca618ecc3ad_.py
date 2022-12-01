@@ -1,4 +1,4 @@
-"""adds a uploaded at column when an analysis is uploaded to its corresponding place
+"""Adds a uploaded at column for showing an analysis finished uploading.
 
 Revision ID: fca618ecc3ad
 Revises: 85f409b2eeeb
