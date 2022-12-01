@@ -4,7 +4,7 @@ import os
 from typing import Dict, Mapping
 
 from dateutil.parser import parse as parse_datestr
-from flask import Blueprint, abort, g, jsonify, make_response, request
+from flask import Blueprint, abort, g, jsonify, make_response, request, Response
 from google.auth import jwt
 
 from trailblazer.server.ext import store
@@ -251,7 +251,7 @@ def post_add_pending_analysis():
 
 @blueprint.route("/set_analysis_uploaded", methods=["PUT"])
 def put_set_analysis_uploaded():
-    content = request.json
+    content: Response.json = request.json
 
     try:
         store.set_analysis_uploaded(

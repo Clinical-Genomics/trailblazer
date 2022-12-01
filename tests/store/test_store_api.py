@@ -3,6 +3,8 @@ import datetime
 
 import pytest
 
+from trailblazer.store import models
+
 
 def test_setup_and_info(store):
 
@@ -101,12 +103,12 @@ def test_is_latest_analysis_ongoing(sample_store, family: str, expected_bool: bo
     assert is_ongoing is expected_bool
 
 
-def test_set_analysis_uploaded(sample_store):
+def test_set_analysis_uploaded(sample_store, timestamp_now: datetime):
     """Test setting analysis uploaded at for an analysis."""
 
     # GIVEN a store with an analysis
-    analysis_obj = sample_store.analyses().first()
-    uploaded_at = datetime.datetime.now()
+    analysis_obj: models.Analysis = sample_store.analyses().first()
+    uploaded_at: datetime = timestamp_now
 
     # WHEN setting an analysis uploaded at
     sample_store.set_analysis_uploaded(case_id=analysis_obj.family, uploaded_at=uploaded_at)
