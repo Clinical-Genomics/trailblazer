@@ -135,7 +135,7 @@ class BaseHandler:
         return self.analyses(case_id=case_id).first()
 
     def get_latest_analysis_status(self, case_id: str) -> Optional[str]:
-        """Get latest analysis status for a case_id"""
+        """Get the latest analysis status for a case_id"""
         latest_analysis = self.get_latest_analysis(case_id=case_id)
         if latest_analysis:
             return latest_analysis.status

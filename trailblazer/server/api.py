@@ -249,7 +249,7 @@ def post_add_pending_analysis():
         return jsonify(f"Exception: {e}"), 409
 
 
-@blueprint.route("/set-analysis-uploaded", methods=["POST"])
+@blueprint.route("/set-analysis-uploaded", methods=["PUT"])
 def put_set_analysis_uploaded():
     content: Response.json = request.json
 
