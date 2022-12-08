@@ -77,7 +77,7 @@ def trailblazer_context(sample_store):
     return {"trailblazer": sample_store}
 
 
-@pytest.fixture(scope="function", name="timestamp_now")
+@pytest.fixture(name="timestamp_now")
 def fixture_timestamp_now() -> dt.datetime:
     """Return a time stamp of today's date in date time format."""
     return dt.datetime.now()
