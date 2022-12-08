@@ -74,6 +74,7 @@ class Analysis(Model):
     progress = Column(types.Float, default=0.0)
     data_analysis = Column(types.String(32))
     ticket_id = Column(types.String(32))
+    uploaded_at = Column(types.DateTime)
 
     failed_jobs = orm.relationship("Job", backref="analysis")
 

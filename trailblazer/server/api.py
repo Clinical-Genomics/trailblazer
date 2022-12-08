@@ -4,7 +4,7 @@ import os
 from typing import Dict, Mapping
 
 from dateutil.parser import parse as parse_datestr
-from flask import Blueprint, abort, g, jsonify, make_response, request
+from flask import Blueprint, abort, g, jsonify, make_response, request, Response
 from google.auth import jwt
 
 from trailblazer.server.ext import store
@@ -247,3 +247,16 @@ def post_add_pending_analysis():
         return jsonify(**data), 201
     except Exception as e:
         return jsonify(f"Exception: {e}"), 409
+
+
+@blueprint.route("/set-analysis-uploaded", methods=["PUT"])
+def put_set_analysis_uploaded():
+    content: Response.json = request.json
+
+    try:
+        store.set_analysis_uploaded(
+            case_id=content.get("case_id"), uploaded_at=content.get("uploaded_at")
+        )
+        return jsonify("Success! Update request sent"), 201
+    except Exception as error:
+        return jsonify(f"Exception: {error}"), 409
