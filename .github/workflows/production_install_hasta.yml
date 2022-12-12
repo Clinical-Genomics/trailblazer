@@ -11,17 +11,17 @@ jobs:
     steps:
 
     # Check out Trailblazer code
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.5.0
 
 
     - name: Set up Python 3.7
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4.3.1
       with:
         python-version: 3.7.5    # Python version in P_main is 3.7.1, but is not available in actions
 
     - name: Test install on hasta
       run: |
-        pip install pip==21.0.1
+        pip install pip --upgrade pip
         pip install .
         pip check
     - name: Test install dev on hasta
