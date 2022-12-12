@@ -11,17 +11,17 @@ jobs:
     steps:
 
     # Check out Trailblazer code
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.5.0
 
 
     - name: Set up Python 3.6
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4.3.1
       with:
         python-version: 3.6.7    # Python version in prod170926 is 3.6.2, but is not available in actions
 
     - name: Test install on clinical-db
       run: |
-        pip install pip==21.0.1
+        pip install pip
         pip install .
         pip check
     - name: Test install dev on clinical-db
