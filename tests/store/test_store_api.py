@@ -116,6 +116,17 @@ def test_set_analysis_uploaded(sample_store, timestamp_now: datetime):
     # THEN the column uploaded_at should be updated
     assert analysis_obj.uploaded_at == uploaded_at
 
+def test_set_analysis_failed(sample_store):
+    """Test setting analysis to failed for an analysis."""
+
+    # GIVEN a store with an analysis
+    analysis_obj: models.Analysis = sample_store.analyses().first()
+
+    # WHEN setting analysis to failed
+    sample_store.set_analysis_failed(case_id=analysis_obj.family, status="failed")
+
+    # THEN the column status should be updated with failed.
+    assert analysis_obj.status == "failed"
 
 @pytest.mark.parametrize(
     "family, expected_bool",
