@@ -255,7 +255,6 @@ class BaseHandler:
         self.commit()
         LOG.info(f"{analysis_obj.family} - uploaded at set to {uploaded_at}")
 
-
     def set_analysis_failed(self, case_id: str, status: str):
         """Setting analysis status to failed."""
         analysis_obj: models.Analysis = self.get_latest_analysis(case_id=case_id)
