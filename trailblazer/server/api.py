@@ -257,7 +257,7 @@ def put_set_analysis_uploaded():
         store.set_analysis_uploaded(
             case_id=content.get("case_id"), uploaded_at=content.get("uploaded_at")
         )
-        return jsonify("Success! Update request sent"), 201
+        return jsonify("Success! Uploaded at request sent"), 201
     except Exception as error:
         return jsonify(f"Exception: {error}"), 409
 
@@ -268,6 +268,6 @@ def put_set_analysis_failed():
 
     try:
         store.set_analysis_failed(case_id=content.get("case_id"), status=content.get("status"))
-        return jsonify("Success! Update request sent"), 201
+        return jsonify("Success! Analysis set to fail request sent"), 201
     except Exception as error:
         return jsonify(f"Exception: {error}"), 409
