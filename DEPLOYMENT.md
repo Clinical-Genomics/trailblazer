@@ -41,6 +41,8 @@ the title if not.
             1. `down`
         1. Deploy master to production
             1. `up`
-            1. `bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-trailblazer-prod.sh`
+            1. ```Shell
+               bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-tool-prod.sh -e P_main -t trailblazer -b master -a
+               ```
             1. Make sure that installation was successful
 1. Take a screenshot and post as a comment on the PR. Screenshot should include environment and that it succeeded

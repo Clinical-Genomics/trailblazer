@@ -135,7 +135,7 @@ class BaseHandler:
         return self.analyses(case_id=case_id).first()
 
     def get_latest_analysis_status(self, case_id: str) -> Optional[str]:
-        """Get latest analysis status for a case_id"""
+        """Get the latest analysis status for a case_id"""
         latest_analysis = self.get_latest_analysis(case_id=case_id)
         if latest_analysis:
             return latest_analysis.status
@@ -169,6 +169,7 @@ class BaseHandler:
         priority: str,
         email: str = None,
         data_analysis: str = None,
+        ticket_id: str = None,
     ) -> models.Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
@@ -181,6 +182,7 @@ class BaseHandler:
             out_dir=out_dir,
             priority=priority,
             data_analysis=data_analysis,
+            ticket_id=ticket_id,
         )
         new_log.user = self.user(email) if email else None
         self.add_commit(new_log)
@@ -245,6 +247,13 @@ class BaseHandler:
         analysis_obj.status = "completed"
         self.commit()
         LOG.info(f"{analysis_obj.family} - status set to COMPLETED")
+
+    def set_analysis_uploaded(self, case_id: str, uploaded_at: dt.datetime) -> None:
+        """Setting analysis uploaded at."""
+        analysis_obj: models.Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj.uploaded_at: dt.datetime = uploaded_at
+        self.commit()
+        LOG.info(f"{analysis_obj.family} - uploaded at set to {uploaded_at}")
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis output."""

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import subprocess
 from functools import partial
+import datetime as dt
 
 import pytest
 import ruamel.yaml
@@ -74,3 +75,9 @@ def sample_store(store):
 def trailblazer_context(sample_store):
     """Trailblazer context to be used in CLI"""
     return {"trailblazer": sample_store}
+
+
+@pytest.fixture(name="timestamp_now")
+def fixture_timestamp_now() -> dt.datetime:
+    """Return a time stamp of today's date in date time format."""
+    return dt.datetime.now()
