@@ -324,7 +324,7 @@ class BaseHandler:
             split_timestamp = list("0" * (3 - len(split_timestamp))) + split_timestamp
         return int(
             (parse_datestr(":".join(split_timestamp)) - parse_datestr("0:0:0")).seconds / 60
-            + days * 60
+            + days * 24 * 60
         )
 
     @staticmethod
