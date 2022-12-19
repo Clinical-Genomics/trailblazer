@@ -124,7 +124,7 @@ def test_set_analysis_failed(sample_store):
     analysis_obj: models.Analysis = sample_store.analyses().first()
 
     # WHEN setting analysis to failed
-    sample_store.set_analysis_failed(case_id=analysis_obj.family, status="failed")
+    sample_store.set_analysis_status(case_id=analysis_obj.family, status="failed")
 
     # THEN the column status should be updated with failed.
     assert analysis_obj.status == "failed"

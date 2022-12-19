@@ -262,12 +262,12 @@ def put_set_analysis_uploaded():
         return jsonify(f"Exception: {error}"), 409
 
 
-@blueprint.route("/set-analysis-failed", methods=["PUT"])
-def put_set_analysis_failed():
+@blueprint.route("/set-analysis-status", methods=["PUT"])
+def put_set_analysis_status():
     content: Response.json = request.json
 
     try:
-        store.set_analysis_failed(case_id=content.get("case_id"), status=content.get("status"))
+        store.set_analysis_status(case_id=content.get("case_id"), status=content.get("status"))
         return jsonify("Success! Analysis set to fail request sent"), 201
     except Exception as error:
         return jsonify(f"Exception: {error}"), 409
