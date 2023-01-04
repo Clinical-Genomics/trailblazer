@@ -278,7 +278,7 @@ def put_add_comment():
     content: Response.json = request.json
 
     try:
-        store
+        store.add_comment(case_id=content.get("case_id"), comment=content.get("comment"))
         return jsonify("Success! Adding comment request sent"), 201
     except Exception as error:
         return jsonify(f"Exception: {error}"), 409
