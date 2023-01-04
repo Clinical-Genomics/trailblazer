@@ -262,6 +262,12 @@ class BaseHandler:
         self.commit()
         LOG.info(f"{analysis_obj.family} - Status set to failed")
 
+    def add_comment(self, case_id: str, comment: str):
+        analysis_obj: models.Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj.comment = comment
+        self.commit()
+        LOG.info(f"Adding comment {comment} to analysis {analysis_obj.family}")
+
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis output."""
         analysis_obj = self.analysis(analysis_id=analysis_id)

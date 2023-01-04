@@ -271,3 +271,14 @@ def put_set_analysis_status():
         return jsonify("Success! Analysis set to fail request sent"), 201
     except Exception as error:
         return jsonify(f"Exception: {error}"), 409
+
+
+@blueprint.route("/add-comment", methods=["PUT"])
+def put_add_comment():
+    content: Response.json = request.json
+
+    try:
+        store
+        return jsonify("Success! Adding comment request sent"), 201
+    except Exception as error:
+        return jsonify(f"Exception: {error}"), 409

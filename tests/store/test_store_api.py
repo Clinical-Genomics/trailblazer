@@ -130,6 +130,20 @@ def test_set_analysis_failed(sample_store):
     assert analysis_obj.status == "failed"
 
 
+def test_add_comment(sample_store):
+    """Test adding comment to an analysis object."""
+
+    # GIVEN a store with an analysus
+    analysis_obj: models.Analysis = sample_store.analyses().first()
+    comment: str = "test comment"
+
+    # WHEN adding a comment
+    sample_store.add_comment(case_id=analysis_obj.family, comment=comment)
+
+    # THEN a comment should have been added
+    assert analysis_obj.comment == comment
+
+
 @pytest.mark.parametrize(
     "family, expected_bool",
     [
