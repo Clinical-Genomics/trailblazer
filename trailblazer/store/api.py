@@ -264,9 +264,11 @@ class BaseHandler:
 
     def add_comment(self, case_id: str, comment: str):
         analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
-        analysis_obj.comment: str = comment + analysis_obj.comment if analysis_obj.comment else ""
-
+        analysis_obj.comment: str = (
+            " ".join([analysis_obj.comment, comment]) if analysis_obj.comment else comment
+        )
         self.commit()
+
         LOG.info(f"Adding comment {comment} to analysis {analysis_obj.family}")
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
