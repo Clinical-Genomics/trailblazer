@@ -3,7 +3,7 @@ import datetime
 
 import pytest
 
-from trailblazer.store import models
+from trailblazer.store.models import Analysis
 
 
 def test_setup_and_info(store):
@@ -107,7 +107,7 @@ def test_set_analysis_uploaded(sample_store, timestamp_now: datetime):
     """Test setting analysis uploaded at for an analysis."""
 
     # GIVEN a store with an analysis
-    analysis_obj: models.Analysis = sample_store.analyses().first()
+    analysis_obj: Analysis = sample_store.analyses().first()
     uploaded_at: datetime = timestamp_now
 
     # WHEN setting an analysis uploaded at

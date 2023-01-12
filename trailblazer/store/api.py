@@ -22,6 +22,7 @@ from trailblazer.constants import (
 )
 from trailblazer.exc import EmptySqueueError, TrailblazerError
 from trailblazer.store import models
+from trailblazer.store.models import Analysis
 from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
@@ -250,10 +251,9 @@ class BaseHandler:
 
     def set_analysis_uploaded(self, case_id: str, uploaded_at: dt.datetime) -> None:
         """Setting analysis uploaded at."""
-        analysis_obj: models.Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
         analysis_obj.uploaded_at: dt.datetime = uploaded_at
         self.commit()
-        LOG.info(f"{analysis_obj.family} - uploaded at set to {uploaded_at}")
 
     def set_analysis_status(self, case_id: str, status: str):
         """Setting analysis status to failed."""
