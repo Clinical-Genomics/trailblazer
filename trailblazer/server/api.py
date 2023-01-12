@@ -268,7 +268,7 @@ def put_set_analysis_status():
 
     try:
         store.set_analysis_status(case_id=content.get("case_id"), status=content.get("status"))
-        return jsonify("Success! Analysis set to fail request sent"), 201
+        return jsonify(f"Success! Analysis set to {content.get('status')} request sent"), 201
     except Exception as error:
         return jsonify(f"Exception: {error}"), 409
 
