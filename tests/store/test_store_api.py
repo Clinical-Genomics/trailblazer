@@ -121,7 +121,7 @@ def test_set_analysis_failed(sample_store):
     """Test setting analysis to failed for an analysis."""
 
     # GIVEN a store with an analysis
-    analysis_obj: models.Analysis = sample_store.analyses().first()
+    analysis_obj: Analysis = sample_store.analyses().first()
 
     # WHEN setting analysis to failed
     sample_store.set_analysis_status(case_id=analysis_obj.family, status="failed")
@@ -133,8 +133,8 @@ def test_set_analysis_failed(sample_store):
 def test_add_comment(sample_store):
     """Test adding comment to an analysis object."""
 
-    # GIVEN a store with an analysus
-    analysis_obj: models.Analysis = sample_store.analyses().first()
+    # GIVEN a store with an analysis
+    analysis_obj: Analysis = sample_store.analyses().first()
     comment: str = "test comment"
 
     # WHEN adding a comment

@@ -257,14 +257,14 @@ class BaseHandler:
 
     def set_analysis_status(self, case_id: str, status: str):
         """Setting analysis status to failed."""
-        analysis_obj: models.Analysis = self.get_latest_analysis(case_id=case_id)
-        analysis_obj.status = status
+        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj.status: str = status
         self.commit()
         LOG.info(f"{analysis_obj.family} - Status set to failed")
 
     def add_comment(self, case_id: str, comment: str):
-        analysis_obj: models.Analysis = self.get_latest_analysis(case_id=case_id)
-        analysis_obj.comment = comment
+        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj.comment: str = comment
         self.commit()
         LOG.info(f"Adding comment {comment} to analysis {analysis_obj.family}")
 
