@@ -264,7 +264,9 @@ class BaseHandler:
 
     def add_comment(self, case_id: str, comment: str):
         analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
-        analysis_obj.comment: str = " ".join([analysis_obj.comment, comment]) if analysis_obj.comment else comment
+        analysis_obj.comment: str = (
+            " ".join([analysis_obj.comment, comment]) if analysis_obj.comment else comment
+        )
 
         self.commit()
 
