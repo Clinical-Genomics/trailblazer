@@ -257,6 +257,28 @@ def put_set_analysis_uploaded():
         store.set_analysis_uploaded(
             case_id=content.get("case_id"), uploaded_at=content.get("uploaded_at")
         )
-        return jsonify("Success! Update request sent"), 201
+        return jsonify("Success! Uploaded at request sent"), 201
+    except Exception as error:
+        return jsonify(f"Exception: {error}"), 409
+
+
+@blueprint.route("/set-analysis-status", methods=["PUT"])
+def put_set_analysis_status():
+    content: Response.json = request.json
+
+    try:
+        store.set_analysis_status(case_id=content.get("case_id"), status=content.get("status"))
+        return jsonify(f"Success! Analysis set to {content.get('status')} request sent"), 201
+    except Exception as error:
+        return jsonify(f"Exception: {error}"), 409
+
+
+@blueprint.route("/add-comment", methods=["PUT"])
+def put_add_comment():
+    content: Response.json = request.json
+
+    try:
+        store.add_comment(case_id=content.get("case_id"), comment=content.get("comment"))
+        return jsonify("Success! Adding comment request sent"), 201
     except Exception as error:
         return jsonify(f"Exception: {error}"), 409

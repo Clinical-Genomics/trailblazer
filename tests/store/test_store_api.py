@@ -3,7 +3,7 @@ import datetime
 
 import pytest
 
-from trailblazer.store import models
+from trailblazer.store.models import Analysis
 
 
 def test_setup_and_info(store):
@@ -107,7 +107,7 @@ def test_set_analysis_uploaded(sample_store, timestamp_now: datetime):
     """Test setting analysis uploaded at for an analysis."""
 
     # GIVEN a store with an analysis
-    analysis_obj: models.Analysis = sample_store.analyses().first()
+    analysis_obj: Analysis = sample_store.analyses().first()
     uploaded_at: datetime = timestamp_now
 
     # WHEN setting an analysis uploaded at
@@ -115,6 +115,33 @@ def test_set_analysis_uploaded(sample_store, timestamp_now: datetime):
 
     # THEN the column uploaded_at should be updated
     assert analysis_obj.uploaded_at == uploaded_at
+
+
+def test_set_analysis_failed(sample_store):
+    """Test setting analysis to failed for an analysis."""
+
+    # GIVEN a store with an analysis
+    analysis_obj: Analysis = sample_store.analyses().first()
+
+    # WHEN setting analysis to failed
+    sample_store.set_analysis_status(case_id=analysis_obj.family, status="failed")
+
+    # THEN the column status should be updated with failed.
+    assert analysis_obj.status == "failed"
+
+
+def test_add_comment(sample_store):
+    """Test adding comment to an analysis object."""
+
+    # GIVEN a store with an analysis
+    analysis_obj: Analysis = sample_store.analyses().first()
+    comment: str = "test comment"
+
+    # WHEN adding a comment
+    sample_store.add_comment(case_id=analysis_obj.family, comment=comment)
+
+    # THEN a comment should have been added
+    assert analysis_obj.comment == comment
 
 
 @pytest.mark.parametrize(

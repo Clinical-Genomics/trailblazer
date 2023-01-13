@@ -22,6 +22,7 @@ from trailblazer.constants import (
 )
 from trailblazer.exc import EmptySqueueError, TrailblazerError
 from trailblazer.store import models
+from trailblazer.store.models import Analysis
 from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
@@ -250,10 +251,26 @@ class BaseHandler:
 
     def set_analysis_uploaded(self, case_id: str, uploaded_at: dt.datetime) -> None:
         """Setting analysis uploaded at."""
-        analysis_obj: models.Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
         analysis_obj.uploaded_at: dt.datetime = uploaded_at
         self.commit()
-        LOG.info(f"{analysis_obj.family} - uploaded at set to {uploaded_at}")
+
+    def set_analysis_status(self, case_id: str, status: str):
+        """Setting analysis status."""
+        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj.status: str = status
+        self.commit()
+        LOG.info(f"{analysis_obj.family} - Status set to {status}")
+
+    def add_comment(self, case_id: str, comment: str):
+        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj.comment: str = (
+            " ".join([analysis_obj.comment, comment]) if analysis_obj.comment else comment
+        )
+
+        self.commit()
+
+        LOG.info(f"Adding comment {comment} to analysis {analysis_obj.family}")
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis output."""
