@@ -1,4 +1,16 @@
-This PR adds/fixes ...
+## Description
+
+### Added
+
+-
+
+### Changed
+
+-
+
+### Fixed
+
+-
 
 ### How to prepare for test
 - [ ] ssh to hasta (depending on type of change)
@@ -6,7 +18,7 @@ This PR adds/fixes ...
 - [ ] request trailblazer-stage on hasta: `paxa`
 - [ ] install on stage:
     ```Shell
-    bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-tool-stage.sh -e S_main -t trailblazer -b [THIS-BRANCH-NAME] -a
+    bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-tool-stage.sh -e S_trailblazer -t trailblazer -b [THIS-BRANCH-NAME] -a
     ```
 - [ ] ssh to clinical-db (depending on type of change)
 - [ ] install on stage:
@@ -21,7 +33,6 @@ This PR adds/fixes ...
 - [ ] Take a screenshot and attach or copy/paste the output.
 
 ## Review
-- [ ] code approved by
 - [ ] tests executed by
 - [ ] "Merge and deploy" approved by
 Thanks for filling in who performed the code review and the test!
