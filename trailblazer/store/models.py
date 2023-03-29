@@ -75,6 +75,7 @@ class Analysis(Model):
     data_analysis = Column(types.String(32))
     ticket_id = Column(types.String(32))
     uploaded_at = Column(types.DateTime)
+    use_tower = Column(types.Boolean, default=False)
 
     failed_jobs = orm.relationship("Job", backref="analysis")
 

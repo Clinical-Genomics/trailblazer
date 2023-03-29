@@ -18,6 +18,7 @@ analyses:
     progress: .54
     data_analysis: MIP-DNA
     ticket_id: 123456
+    use_tower: false
 
   - family: nicemice
     version: v3.5.0

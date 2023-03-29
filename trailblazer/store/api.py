@@ -171,6 +171,7 @@ class BaseHandler:
         email: str = None,
         data_analysis: str = None,
         ticket_id: str = None,
+        use_tower: bool = False
     ) -> models.Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
@@ -184,6 +185,7 @@ class BaseHandler:
             priority=priority,
             data_analysis=data_analysis,
             ticket_id=ticket_id,
+            use_tower=use_tower,
         )
         new_log.user = self.user(email) if email else None
         self.add_commit(new_log)

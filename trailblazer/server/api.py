@@ -242,6 +242,7 @@ def post_add_pending_analysis():
             priority=content.get("priority"),
             data_analysis=content.get("data_analysis"),
             ticket_id=content.get("ticket"),
+            use_tower=content.get("use_tower"),
         )
         data = stringify_timestamps(analysis_obj.to_dict())
         return jsonify(**data), 201
