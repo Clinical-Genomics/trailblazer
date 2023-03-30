@@ -329,10 +329,6 @@ class BaseHandler:
                 ]
             )
 
-    @staticmethod
-    def query_tower(job_id_file: str, case_id: str) -> dict:
-        """Queries tower to get information about a specific run."""
-        pass
 
     @staticmethod
     def get_time_elapsed_in_min(elapsed_string: Optional[str]) -> Optional[int]:
@@ -436,7 +432,8 @@ class BaseHandler:
             LOG.warning(f"Analysis {analysis_id} not found!")
             return
         if analysis_obj.use_tower:
-            self.update_tower_run_status(analysis_id=analysis_id, ssh=ssh)
+            #self.update_tower_run_status(analysis_id=analysis_id, ssh=ssh)
+            pass
         else:
             self.update_slurm_run_status(analysis_id=analysis_id, ssh=ssh)
 
@@ -490,27 +487,32 @@ class BaseHandler:
             analysis_obj.status = "error"
             self.commit()
 
-    def update_tower_run_status(self, analysis_id: int, ssh: bool = False) -> None:
-        """Query tower for entries related to given analysis, and update the Trailblazer database"""
-        analysis_obj = self.analysis(analysis_id)
-        try:
-            jobs_dataframe = self.parse_tower_response(tower_response=self.query_tower(job_id_file=analysis_obj.config_path, case_id=analysis_obj.family ))
-            self.update_jobs(analysis_obj=analysis_obj, jobs_dataframe=jobs_dataframe)
+    # @staticmethod
+    # def query_tower(job_id_file: str, case_id: str) -> dict:
+    #     """Queries tower to get information about a specific run."""
+    #     pass
 
-    @staticmethod
-    def parse_tower_response(tower_response: dict) -> pd.DataFrame:
-        """Parses tower response."""
-        parsed_df = pd.read_csv(
-                io.BytesIO(squeue_response),
-                sep=",",
-                header=None,
-                na_values=["nan", "N/A", "None"],
-                names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
-            )
-        parsed_df["time_elapsed"] = parsed_df["time_elapsed"].apply(
-            lambda x: Store.get_time_elapsed_in_min(x)
-        )
-        return parsed_df
+    # def update_tower_run_status(self, analysis_id: int, ssh: bool = False) -> None:
+    #     """Query tower for entries related to given analysis, and update the Trailblazer database"""
+    #     analysis_obj = self.analysis(analysis_id)
+    #     try:
+    #         jobs_dataframe = self.parse_tower_response(tower_response=self.query_tower(job_id_file=analysis_obj.config_path, case_id=analysis_obj.family ))
+    #         self.update_jobs(analysis_obj=analysis_obj, jobs_dataframe=jobs_dataframe)
+
+    # @staticmethod
+    # def parse_tower_response(tower_response: dict) -> pd.DataFrame:
+    #     """Parses tower response."""
+    #     parsed_df = pd.read_csv(
+    #             io.BytesIO(squeue_response),
+    #             sep=",",
+    #             header=None,
+    #             na_values=["nan", "N/A", "None"],
+    #             names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
+    #         )
+    #     parsed_df["time_elapsed"] = parsed_df["time_elapsed"].apply(
+    #         lambda x: Store.get_time_elapsed_in_min(x)
+    #     )
+    #     return parsed_df
 
     @staticmethod
     def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
