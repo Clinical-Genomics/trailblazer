@@ -6,6 +6,19 @@ users:
     email: tom.cruise@magnolia.com
 
 analyses:
+  - family: cuddlyhen
+    version: v4.2.0
+    started_at: 2017-06-17T12:11:42
+    status: pending
+    priority: high
+    out_dir: fixtures/runs/cuddlyhen/analysis
+    config_path: fixtures/runs/cuddlyhen/analysis/cuddlyhen_config.yaml
+    type: wts
+    user: paul.anderson@magnolia.com
+    data_analysis: RNAfusion
+    ticket_id: 123456
+    use_tower: true
+
   - family: blazinginsect
     version: v4.2.0
     started_at: 2017-06-17T12:11:42
