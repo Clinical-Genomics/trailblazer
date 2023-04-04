@@ -22,6 +22,7 @@ from trailblazer.constants import (
 )
 from trailblazer.exc import EmptySqueueError, TrailblazerError
 from trailblazer.store import models
+from trailblazer.store.executors import TowerAPI
 from trailblazer.store.models import Analysis
 from trailblazer.store.utils import formatters
 
@@ -171,7 +172,7 @@ class BaseHandler:
         email: str = None,
         data_analysis: str = None,
         ticket_id: str = None,
-        use_tower: bool = False
+        use_tower: bool = False,
     ) -> models.Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
@@ -329,7 +330,6 @@ class BaseHandler:
                 ]
             )
 
-
     @staticmethod
     def get_time_elapsed_in_min(elapsed_string: Optional[str]) -> Optional[int]:
         """Parse SLURM elapsed time string into minutes"""
@@ -432,8 +432,7 @@ class BaseHandler:
             LOG.warning(f"Analysis {analysis_id} not found!")
             return
         if analysis_obj.use_tower:
-            #self.update_tower_run_status(analysis_id=analysis_id, ssh=ssh)
-            pass
+            self.update_tower_run_status(analysis_id=analysis_id)
         else:
             self.update_slurm_run_status(analysis_id=analysis_id, ssh=ssh)
 
@@ -487,32 +486,37 @@ class BaseHandler:
             analysis_obj.status = "error"
             self.commit()
 
-    # @staticmethod
-    # def query_tower(job_id_file: str, case_id: str) -> dict:
-    #     """Queries tower to get information about a specific run."""
-    #     pass
+    def update_tower_run_status(self, analysis_id: int) -> None:
+        """Query tower for entries related to given analysis, and update the Trailblazer database"""
+        analysis_obj = self.analysis(analysis_id)
+        tower_api = TowerAPI(id_file=analysis_obj.config_path)
+        try:
+            analysis_obj.status = tower_api.status
+            analysis_obj.progress = tower_api.progress
+            analysis_obj.logged_at = dt.datetime.now()
+            self.update_tower_jobs(
+                analysis_obj=analysis_obj, jobs=tower_api.get_jobs(analysis_id=analysis_obj.id)
+            )
+            self.commit()
+        except Exception as error:
+            LOG.error(f"Error logging case - {analysis_obj.family} : {error.__class__.__name__}")
+            analysis_obj.status = "error"
+            self.commit()
 
-    # def update_tower_run_status(self, analysis_id: int, ssh: bool = False) -> None:
-    #     """Query tower for entries related to given analysis, and update the Trailblazer database"""
-    #     analysis_obj = self.analysis(analysis_id)
-    #     try:
-    #         jobs_dataframe = self.parse_tower_response(tower_response=self.query_tower(job_id_file=analysis_obj.config_path, case_id=analysis_obj.family ))
-    #         self.update_jobs(analysis_obj=analysis_obj, jobs_dataframe=jobs_dataframe)
+    def update_tower_jobs(self, analysis_obj: models.Analysis, jobs: List[Job]) -> None:
+        """Updates failed jobs in the analysis."""
+        (job.delete() for job in analysis_obj.failed_jobs)
+        self.commit()  # TODO: is this needed??
+        analysis_obj.failed_jobs = jobs
+        self.commit()
 
     # @staticmethod
-    # def parse_tower_response(tower_response: dict) -> pd.DataFrame:
-    #     """Parses tower response."""
-    #     parsed_df = pd.read_csv(
-    #             io.BytesIO(squeue_response),
-    #             sep=",",
-    #             header=None,
-    #             na_values=["nan", "N/A", "None"],
-    #             names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
-    #         )
-    #     parsed_df["time_elapsed"] = parsed_df["time_elapsed"].apply(
-    #         lambda x: Store.get_time_elapsed_in_min(x)
-    #     )
-    #     return parsed_df
+    # def query_tower(id_file: str, case_id: str) -> Any:
+    #     """desc"""
+    #     id_dict = safe_load(open(id_file))
+    #     submitted_ids = id_dict.get(case_id)
+    #     for tower_id in submitted_ids:
+    #         return TowerAPI(id=tower_id).query()
 
     @staticmethod
     def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
