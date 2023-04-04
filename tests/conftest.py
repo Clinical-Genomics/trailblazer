@@ -13,7 +13,7 @@ from ruamel.yaml import safe_load
 from trailblazer.cli import base
 from trailblazer.io.json import read_json
 from trailblazer.store import Store
-from trailblazer.store.executors import TowerAPI
+from trailblazer.store.executors import TowerAPI, TowerTask
 
 
 class MockStore(Store):
@@ -87,6 +87,21 @@ def fixture_timestamp_now() -> dt.datetime:
     return dt.datetime.now()
 
 
+TOWER_RESPONSE_DIR = Path("tests", "fixtures", "tower")
+
+
+class TowerResponseFile:
+    PENDING: str = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_pending").as_posix()
+    RUNNING: str = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_running").as_posix()
+    COMPLETED: str = Path(TOWER_RESPONSE_DIR, "tower", "cuddlyhen_workflow_completed").as_posix()
+
+
+class TowerTaskResponseFile:
+    PENDING: str = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_pending").as_posix()
+    RUNNING: str = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_running").as_posix()
+    COMPLETED: str = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_completed").as_posix()
+
+
 class MockTowerAPI(TowerAPI):
     """Instance of TowerAPI that mimics expected Tower output."""
 
@@ -99,13 +114,19 @@ class MockTowerAPI(TowerAPI):
         return self.mock_response
 
 
+@pytest.fixture(name="tower_id")
+def fixture_tower_id() -> str:
+    """Return a tower id."""
+    return "1m759EPcbjuK7n"
+
+
 @pytest.fixture(name="tower_config_file")
 def fixture_tower_config_file() -> str:
     """Return the path of a config yaml file with a tower id."""
     return Path("tests", "fixtures", "case", "cuddlyhen_tower_id.yaml").as_posix()
 
 
-class TowerResponseFile:
-    PENDING: str = Path("tests", "fixtures", "tower", "cuddlyhen_workflow_pending").as_posix()
-    RUNNING: str = Path("tests", "fixtures", "tower", "cuddlyhen_workflow_running").as_posix()
-    COMPLETED: str = Path("tests", "fixtures", "tower", "cuddlyhen_workflow_completed").as_posix()
+@pytest.fixture(name="tower_task")
+def fixture_tower_task() -> TowerTask:
+    """Return a Tower Task."""
+    return TowerTask(task=read_json(TowerTaskResponseFile.RUNNING)["tasks"][0]["task"])

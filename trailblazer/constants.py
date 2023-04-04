@@ -32,6 +32,7 @@ TOWER_STATUS = dict(
     SUCCEEDED=TrailblazerStatus.COMPLETED.value,
     FAILED=TrailblazerStatus.FAILED.value,
     CANCELLED=TrailblazerStatus.CANCELLED.value,
+    COMPLETED=TrailblazerStatus.COMPLETED.value,
 )
 
 PROCESS_STATUS = dict(
