@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
+import datetime as dt
 import subprocess
 from functools import partial
-import datetime as dt
+from pathlib import Path
+from typing import Any
 
 import pytest
 import ruamel.yaml
 from click.testing import CliRunner
+from ruamel.yaml import safe_load
 
 from trailblazer.cli import base
+from trailblazer.io.json import read_json
 from trailblazer.store import Store
+from trailblazer.store.executors import TowerAPI
 
 
 class MockStore(Store):
@@ -39,8 +44,7 @@ class MockStore(Store):
 
 @pytest.fixture
 def cli_runner():
-    runner = CliRunner()
-    return runner
+    return CliRunner()
 
 
 @pytest.fixture
@@ -81,3 +85,27 @@ def trailblazer_context(sample_store):
 def fixture_timestamp_now() -> dt.datetime:
     """Return a time stamp of today's date in date time format."""
     return dt.datetime.now()
+
+
+class MockTowerAPI(TowerAPI):
+    """Instance of TowerAPI that mimics expected Tower output."""
+
+    @property
+    def response(self) -> dict:
+        return self.mock_response or None
+
+    def mock_query(self, response_file: Path) -> Any:
+        self.mock_response = read_json(response_file)
+        return self.mock_response
+
+
+@pytest.fixture(name="tower_config_file")
+def fixture_tower_config_file() -> str:
+    """Return the path of a config yaml file with a tower id."""
+    return Path("tests", "fixtures", "case", "cuddlyhen_tower_id.yaml").as_posix()
+
+
+class TowerResponseFile:
+    PENDING: str = Path("tests", "fixtures", "tower", "cuddlyhen_workflow_pending").as_posix()
+    RUNNING: str = Path("tests", "fixtures", "tower", "cuddlyhen_workflow_running").as_posix()
+    COMPLETED: str = Path("tests", "fixtures", "tower", "cuddlyhen_workflow_completed").as_posix()
