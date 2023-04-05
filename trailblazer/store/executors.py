@@ -1,15 +1,25 @@
 """API for executors."""
 
 import logging
+import os
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
+from urllib.parse import urljoin
 
 import pandas as pd
+from requests import request
 from ruamel.yaml import safe_load
 
-from trailblazer.constants import PROCESS_STATUS, TOWER_STATUS, TrailblazerStatus
+from trailblazer.constants import (
+    PROCESS_STATUS,
+    TOWER_STATUS,
+    TOWER_TIMESPAM_FORMAT,
+    TrailblazerStatus,
+)
 from trailblazer.store import models
 from trailblazer.store.models import Job
+from trailblazer.store.utils.tower_client import TowerApiClient
 
 LOG = logging.getLogger(__name__)
 
@@ -32,12 +42,16 @@ class TowerProcess:
         return TrailblazerStatus.ERROR
 
     @property
-    def date_created(self) -> str:
-        return self.process.get("dateCreated")
+    def date_created(self) -> datetime:
+        return datetime.strptime(
+            date_string=self.process.get("dateCreated"), format=TOWER_TIMESPAM_FORMAT
+        )
 
     @property
-    def last_updated(self) -> str:
-        return self.process.get("lastUpdated")
+    def last_updated(self) -> datetime:
+        return datetime.strptime(
+            date_string=self.process.get("lastUpdated"), format=TOWER_TIMESPAM_FORMAT
+        )
 
     @property
     def time_since_creation(self) -> str:
@@ -72,21 +86,29 @@ class TowerTask:
         return TOWER_STATUS.get(self.task.get("status"))
 
     @property
-    def date_created(self) -> str:
-        return self.task.get("dateCreated")
+    def date_created(self) -> datetime:
+        return datetime.strptime(
+            date_string=self.task.get("dateCreated"), format=TOWER_TIMESPAM_FORMAT
+        )
 
     @property
-    def last_updated(self) -> str:
-        return self.task.get("lastUpdated")
+    def last_updated(self) -> datetime:
+        return datetime.strptime(
+            date_string=self.task.get("lastUpdated"), format=TOWER_TIMESPAM_FORMAT
+        )
 
     @property
-    def start(self) -> str:
-        return None if self.task.get("start") == "null" else self.task.get("start")
+    def start(self) -> Optional[datetime]:
+        return (
+            None
+            if self.task.get("start") == "null"
+            else datetime.strptime(date_string=self.task.get("start"), format=TOWER_TIMESPAM_FORMAT)
+        )
 
     @property
     def duration(self) -> str:
         """Returns duration in seconds."""
-        return self.task.get("duration")
+        return self.task.get("duration", 0) or 0
 
     @property
     def is_complete(self) -> bool:
@@ -97,29 +119,35 @@ class TowerTask:
 class ExecutorAPI:
     """Handles communication between executors and trailblazer."""
 
-    def __init__(self, id_file: Path, dry_run: Optional[bool] = False):
-        self.id_file: Path = id_file
-        self.dry_run: bool = dry_run
+    pass
 
 
 class TowerAPI(ExecutorAPI):
     """Handles communication with tower."""
 
+    def __init__(self, executor_id: str, dry_run: bool = False):
+        self.executor_id = executor_id
+        self.dry_run: bool = dry_run
+
     @property
-    def executor_id(self) -> int:
-        """Returns executor id"""
-        id_dict = safe_load(open(self.id_file))
-        return id_dict.get(next(iter(id_dict)))[0]
+    def tower_client(self) -> TowerApiClient:
+        """Returns a tower client."""
+        return TowerApiClient(workflow_id=self.executor_id)
 
     @property
     def response(self) -> dict:
-        """Returns a response dictionary."""
-        return self.query()
+        """Returns a workflow response dictionary."""
+        return self.response or self.tower_client.workflow
+
+    @property
+    def tasks_response(self) -> dict:
+        """Returns a tasks response dictionary."""
+        return self.tasks_response or self.tower_client.tasks
 
     @property
     def status(self) -> str:
         """Returns the status of a workflow."""
-        return TOWER_STATUS.get(self.response["workflow"]["status"])
+        return TOWER_STATUS.get(self.response["workflow"]["status"], TrailblazerStatus.ERROR.value)
 
     @property
     def is_pending(self) -> bool:
@@ -194,13 +222,20 @@ class TowerAPI(ExecutorAPI):
             name=task.name,
             status=task.status,
             started_at=task.start,
-            elapsed=task.duration / 60,
+            elapsed=int(task.duration / 60),
         )
 
-    def query(self) -> dict:
-        """Query tower."""
-        pass
-
-
-class SlurmAPI(ExecutorAPI):
-    pass
+    # def get_jobs(self, analysis_id: str) -> List[dict]:
+    #     """Returns a list of jobs associated to a workflow."""
+    #     return [self._get_job(task=task, analysis_id=analysis_id) for task in self.tasks]
+    #
+    # def _get_job(self, task: TowerTask, analysis_id: str) -> dict:
+    #     """Format a job with required information."""
+    #     return dict(
+    #         analysis_id=analysis_id,
+    #         slurm_id=task.slurm_id,
+    #         name=task.name,
+    #         status=task.status,
+    #         started_at=task.start,
+    #         elapsed=int(task.duration / 60),
+    #     )
