@@ -214,7 +214,7 @@ def fixture_tower_empty_task() -> TowerTask:
 
 
 @pytest.fixture(name="analysis_id")
-def fixture_analysis_id() -> str:
+def fixture_analysis_id() -> int:
     """Return an analysis id."""
     return 1
 
