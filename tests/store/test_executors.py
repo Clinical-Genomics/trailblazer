@@ -155,7 +155,8 @@ def test_tower_api_tasks(
     if not expected_jobs:
         assert jobs == expected_jobs
     else:
-        assert (dict(jobs[i]) == dict(expected_jobs[i]) for i in range(1, len(jobs)))
+        for i in range(1, len(jobs)):
+            assert dict(jobs[i]) == dict(expected_jobs[i])
 
 
 def test_tower_task_properties(tower_task: TowerTask) -> None:

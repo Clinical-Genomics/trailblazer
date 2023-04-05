@@ -486,12 +486,6 @@ class BaseHandler:
             analysis_obj.status = "error"
             self.commit()
 
-    # @staticmethod
-    # def get_ids_from_config(config_file: str) -> List[str]:
-    #     """Return a list of IDs from a config file."""
-    #     id_dict = safe_load(open(config_file))
-    #     return id_dict.get(next(iter(id_dict)))
-
     @staticmethod
     def query_tower(config_file: str, case_id: str):
         # Currently only one tower ID is supported

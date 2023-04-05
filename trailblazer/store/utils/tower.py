@@ -35,11 +35,6 @@ class TowerProcess:
         return datetime.strptime(self.process.get("lastUpdated"), TOWER_TIMESPAM_FORMAT)
 
     @property
-    def time_since_creation(self) -> str:
-        """Returns time elapsed from creation to last update."""
-        pass  # TODO: self.last_update - self.date_created
-
-    @property
     def is_complete(self) -> bool:
         """Returns if the process succeded."""
         return self.status == TrailblazerStatus.COMPLETED.value

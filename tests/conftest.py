@@ -4,7 +4,7 @@ import subprocess
 from functools import partial
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Any
+from typing import Any, List
 
 import pytest
 import ruamel.yaml
@@ -220,7 +220,7 @@ def fixture_analysis_id() -> str:
 
 
 @pytest.fixture(name="jobs_list")
-def fixture_jobs_list() -> str:
+def fixture_jobs_list() -> List[dict]:
     """Return a list of Tower Jobs."""
     return JOB_LIST_PENDING
 
