@@ -266,6 +266,7 @@ def test_mark_analyses_deleted(sample_store):
 
 
 def test_update_tower_jobs(sample_store, jobs_list, tower_case_id):
+    """Assess that an jobs are succesfully updated when using tower."""
 
     # GIVEN an analysis without failed jobs
     analysis_obj = sample_store.get_latest_analysis(tower_case_id)
@@ -292,6 +293,7 @@ def test_update_tower_jobs(sample_store, jobs_list, tower_case_id):
     ],
 )
 def test_update_tower_run_status(sample_store: MockStore, case_id: str, status: str):
+    """Assess that an analysis status is succesfully updated when using tower."""
 
     # GIVEN an analysis with pending status
     analysis_obj = sample_store.get_latest_analysis(case_id)
