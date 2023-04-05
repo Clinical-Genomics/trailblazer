@@ -91,11 +91,11 @@ class TowerTask:
 
     @property
     def start(self) -> Optional[datetime]:
-        return (
-            None
-            if self.task.get("start") == "null"
-            else datetime.strptime(self.task.get("start"), TOWER_TIMESPAM_FORMAT)
-        )
+        start = self.task.get("start")
+        if start == "null" or start is None:
+            return None
+        else:
+            return datetime.strptime(start, TOWER_TIMESPAM_FORMAT)
 
     @property
     def duration(self) -> str:

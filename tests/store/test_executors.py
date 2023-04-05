@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+import datetime as dt
 from pathlib import Path
 from typing import List
 
 import pytest
 
 from tests.conftest import JOB_LIST_PENDING, MockTowerAPI, TowerResponseFile, TowerTaskResponseFile
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.constants import TOWER_TIMESPAM_FORMAT, TrailblazerStatus
 from trailblazer.store.executors import TowerTask
 from trailblazer.store.models import Job
 
@@ -137,7 +138,7 @@ def test_tower_api_progress(tower_id: str, response_file: Path, expected_progres
 )
 def test_tower_api_tasks(
     tower_id: str,
-    analysis_id: str,
+    analysis_id: int,
     workflow_response_file: Path,
     tasks_response_file: Path,
     expected_jobs: List[Job],
@@ -166,8 +167,12 @@ def test_tower_task_properties(tower_task: TowerTask) -> None:
     assert tower_task.name == "NFCORE_RNAFUSION:RNAFUSION:INPUT_CHECK:SAMPLESHEET_CHECK"
     assert tower_task.slurm_id == "4611827"
     assert tower_task.status == TrailblazerStatus.COMPLETED.value
-    assert tower_task.date_created == "2023-04-04T08:11:24Z"
-    assert tower_task.last_updated == "2023-04-04T08:11:28Z"
-    assert tower_task.start == "2023-04-04T08:11:27Z"
+    assert tower_task.date_created == dt.datetime.strptime(
+        "2023-04-04T08:11:24Z", TOWER_TIMESPAM_FORMAT
+    )
+    assert tower_task.last_updated == dt.datetime.strptime(
+        "2023-04-04T08:11:28Z", TOWER_TIMESPAM_FORMAT
+    )
+    assert tower_task.start == dt.datetime.strptime("2023-04-04T08:11:27Z", TOWER_TIMESPAM_FORMAT)
     assert tower_task.duration == 3798
     assert tower_task.is_complete == True
