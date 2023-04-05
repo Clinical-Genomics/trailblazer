@@ -43,15 +43,11 @@ class TowerProcess:
 
     @property
     def date_created(self) -> datetime:
-        return datetime.strptime(
-            date_string=self.process.get("dateCreated"), format=TOWER_TIMESPAM_FORMAT
-        )
+        return datetime.strptime(self.process.get("dateCreated"), TOWER_TIMESPAM_FORMAT)
 
     @property
     def last_updated(self) -> datetime:
-        return datetime.strptime(
-            date_string=self.process.get("lastUpdated"), format=TOWER_TIMESPAM_FORMAT
-        )
+        return datetime.strptime(self.process.get("lastUpdated"), TOWER_TIMESPAM_FORMAT)
 
     @property
     def time_since_creation(self) -> str:
@@ -87,22 +83,18 @@ class TowerTask:
 
     @property
     def date_created(self) -> datetime:
-        return datetime.strptime(
-            date_string=self.task.get("dateCreated"), format=TOWER_TIMESPAM_FORMAT
-        )
+        return datetime.strptime(self.task.get("dateCreated"), TOWER_TIMESPAM_FORMAT)
 
     @property
     def last_updated(self) -> datetime:
-        return datetime.strptime(
-            date_string=self.task.get("lastUpdated"), format=TOWER_TIMESPAM_FORMAT
-        )
+        return datetime.strptime(self.task.get("lastUpdated"), TOWER_TIMESPAM_FORMAT)
 
     @property
     def start(self) -> Optional[datetime]:
         return (
             None
             if self.task.get("start") == "null"
-            else datetime.strptime(date_string=self.task.get("start"), format=TOWER_TIMESPAM_FORMAT)
+            else datetime.strptime(self.task.get("start"), TOWER_TIMESPAM_FORMAT)
         )
 
     @property
