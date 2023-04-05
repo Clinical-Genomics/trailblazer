@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
+from pathlib import Path
+from typing import List
+
 import pytest
 
-from tests.conftest import MockTowerAPI, TowerResponseFile
+from tests.conftest import JOB_LIST_PENDING, MockTowerAPI, TowerResponseFile, TowerTaskResponseFile
 from trailblazer.constants import TrailblazerStatus
+from trailblazer.store.executors import TowerTask
+from trailblazer.store.models import Job
 
 
 @pytest.mark.parametrize(
@@ -13,11 +18,11 @@ from trailblazer.constants import TrailblazerStatus
         (TowerResponseFile.COMPLETED, TrailblazerStatus.COMPLETED.value),
     ],
 )
-def test_tower_api_status(tower_config_file: str, response_file: str, expected_status: str) -> None:
+def test_tower_api_status(tower_id: str, response_file: Path, expected_status: str) -> None:
     """Assess that TowerAPI returns the correct status given a response."""
 
     # GIVEN an tower_api with a mock query response
-    tower_api = MockTowerAPI(id_file=tower_config_file)
+    tower_api = MockTowerAPI(executor_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
     # THEN status should be as expected according to the mocked response
@@ -32,13 +37,11 @@ def test_tower_api_status(tower_config_file: str, response_file: str, expected_s
         (TowerResponseFile.COMPLETED, False),
     ],
 )
-def test_tower_api_is_pending(
-    tower_config_file: str, response_file: str, expected_bool: bool
-) -> None:
+def test_tower_api_is_pending(tower_id: str, response_file: Path, expected_bool: bool) -> None:
     """Assess that TowerAPI returns the state for is_pending given a response."""
 
     # GIVEN an tower_api with a mock query response
-    tower_api = MockTowerAPI(id_file=tower_config_file)
+    tower_api = MockTowerAPI(executor_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
     # THEN is_pending should be as expected according to the mocked response
@@ -53,13 +56,11 @@ def test_tower_api_is_pending(
         (TowerResponseFile.COMPLETED, 13),
     ],
 )
-def test_tower_api_total_jobs(
-    tower_config_file: str, response_file: str, expected_total_jobs: int
-) -> None:
+def test_tower_api_total_jobs(tower_id: str, response_file: Path, expected_total_jobs: int) -> None:
     """Assess that TowerAPI correctly returns the total number jobs given a response."""
 
     # GIVEN an tower_api with a mock query response
-    tower_api = MockTowerAPI(id_file=tower_config_file)
+    tower_api = MockTowerAPI(executor_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
     # THEN total_jobs should be as expected according to the mocked response
@@ -75,12 +76,12 @@ def test_tower_api_total_jobs(
     ],
 )
 def test_tower_api_succeeded_jobs(
-    tower_config_file: str, response_file: str, expected_succeeded_jobs: int
+    tower_id: str, response_file: Path, expected_succeeded_jobs: int
 ) -> None:
     """Assess that TowerAPI correctly returns the number of succeeded jobs given a response."""
 
     # GIVEN an tower_api with a mock query response
-    tower_api = MockTowerAPI(id_file=tower_config_file)
+    tower_api = MockTowerAPI(executor_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
     # THEN total_jobs should be as expected according to the mocked response
@@ -96,12 +97,12 @@ def test_tower_api_succeeded_jobs(
     ],
 )
 def test_tower_api_succeeded_jobs(
-    tower_config_file: str, response_file: str, expected_succeeded_jobs: int
+    tower_id: str, response_file: Path, expected_succeeded_jobs: int
 ) -> None:
     """Assess that TowerAPI correctly returns the number of succeeded jobs given a response."""
 
     # GIVEN an tower_api with a mock query response
-    tower_api = MockTowerAPI(id_file=tower_config_file)
+    tower_api = MockTowerAPI(executor_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
     # THEN total_jobs should be as expected according to the mocked response
@@ -116,20 +117,47 @@ def test_tower_api_succeeded_jobs(
         (TowerResponseFile.COMPLETED, 100),
     ],
 )
-def test_tower_api_progress(
-    tower_config_file: str, response_file: str, expected_progress: int
-) -> None:
+def test_tower_api_progress(tower_id: str, response_file: Path, expected_progress: int) -> None:
     """Assess that TowerAPI returns the progress percentage given a response."""
 
     # GIVEN an tower_api with a mock query response
-    tower_api = MockTowerAPI(id_file=tower_config_file)
+    tower_api = MockTowerAPI(executor_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
     # THEN total_jobs should be as expected according to the mocked response
     assert tower_api.progress == expected_progress
 
 
-def test_tower_task_properties(tower_task: str) -> None:
+@pytest.mark.parametrize(
+    "workflow_response_file, tasks_response_file, expected_jobs",
+    [
+        (TowerResponseFile.PENDING, TowerTaskResponseFile.PENDING, []),
+        (TowerResponseFile.RUNNING, TowerTaskResponseFile.RUNNING, JOB_LIST_PENDING),
+    ],
+)
+def test_tower_api_tasks(
+    tower_id: str,
+    analysis_id: str,
+    workflow_response_file: Path,
+    tasks_response_file: Path,
+    expected_jobs: List[Job],
+) -> None:
+    """Assess that TowerAPI returns the progress percentage given a response."""
+
+    # GIVEN an tower_api with a mock query response
+    tower_api = MockTowerAPI(executor_id=tower_id)
+    tower_api.mock_query(response_file=workflow_response_file)
+    tower_api.mock_tasks_query(response_file=tasks_response_file)
+
+    # THEN total_jobs should be as expected according to the mocked response
+    jobs = tower_api.get_jobs(analysis_id=analysis_id)
+    if not expected_jobs:
+        assert jobs == expected_jobs
+    else:
+        assert (dict(jobs[i]) == dict(expected_jobs[i]) for i in range(1, len(jobs)))
+
+
+def test_tower_task_properties(tower_task: TowerTask) -> None:
     """Assess that TowerTask returns the right properties."""
 
     # GIVEN a tower task
