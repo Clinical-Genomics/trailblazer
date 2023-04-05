@@ -43,3 +43,5 @@ PROCESS_STATUS = dict(
     succeeded=TrailblazerStatus.COMPLETED.value,
     failed=TrailblazerStatus.FAILED.value,
 )
+
+TOWER_TIMESPAM_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
