@@ -1,6 +1,5 @@
 def transform_mip_job_name(job_name: str) -> str:
     try:
-
         return "_".join(job_name.split("_")[:-1])
     except Exception:
         return job_name
