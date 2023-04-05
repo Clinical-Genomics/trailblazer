@@ -21,7 +21,7 @@ from trailblazer.constants import (
     SLURM_ACTIVE_CATEGORIES,
     STARTED_STATUSES,
 )
-from trailblazer.exc import EmptySqueueError, TrailblazerError
+from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
 from trailblazer.store import models
 from trailblazer.store.executors import TowerAPI
 from trailblazer.store.models import Analysis
@@ -497,7 +497,10 @@ class BaseHandler:
     def query_tower(config_file: str, case_id: str):
         # Currently only one tower ID is supported
         tower_id = safe_load(open(config_file)).get(case_id)[0]
-        return TowerAPI(executor_id=tower_id)
+        tower_api = TowerAPI(executor_id=tower_id)
+        if not tower_api.tower_client.meets_requirements:
+            raise TowerRequirementsError
+        return tower_api
 
     def update_tower_run_status(self, analysis_id: int) -> None:
         """Query tower for entries related to given analysis, and update the Trailblazer database"""

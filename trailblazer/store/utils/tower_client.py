@@ -57,7 +57,8 @@ class TowerApiClient:
 
         return response.json()
 
-    def requirements_provided(self) -> bool:
+    @property
+    def meets_requirements(self) -> bool:
         """Return True if required variables are not empty."""
         if self.tower_api_endpoint is None or self.tower_api_endpoint == "":
             LOG.info("Error: no endpoint specified for Tower Open API request.")
@@ -72,14 +73,14 @@ class TowerApiClient:
 
     @property
     def tasks(self) -> dict:
-        """ """
-        if self.requirements_provided():
+        """Return a tasks response."""
+        if self.meets_requirements:
             url = self.build_url(endpoint=self.tasks_endpoint)
             return self.send_request(url=url)
 
     @property
     def workflow(self) -> dict:
-        """ """
-        if self.requirements_provided():
+        """Return a workflow response."""
+        if self.meets_requirements:
             url = self.build_url(endpoint=self.workflow_endpoint)
             return self.send_request(url=url)
