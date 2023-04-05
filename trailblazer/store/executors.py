@@ -1,15 +1,8 @@
 """API for executors."""
 
 import logging
-import os
 from datetime import datetime
-from pathlib import Path
 from typing import List, Optional
-from urllib.parse import urljoin
-
-import pandas as pd
-from requests import request
-from ruamel.yaml import safe_load
 
 from trailblazer.constants import (
     PROCESS_STATUS,
@@ -17,8 +10,6 @@ from trailblazer.constants import (
     TOWER_TIMESPAM_FORMAT,
     TrailblazerStatus,
 )
-from trailblazer.store import models
-from trailblazer.store.models import Job
 from trailblazer.store.utils.tower_client import TowerApiClient
 
 LOG = logging.getLogger(__name__)
@@ -185,37 +176,6 @@ class TowerAPI(ExecutorAPI):
             return 0
         else:
             return int(self.succeeded_jobs * 100.0 / self.total_jobs)
-
-    # def get_jobs(self, analysis_id: str) -> List[Job]:
-    #     """Returns a list of jobs associated to a workflow."""
-    #     return [
-    #         self._get_job(process=process, analysis_id=analysis_id) for process in self.processes
-    #     ]
-    #
-    # def _get_job(self, process: TowerProcess, analysis_id: str) -> dict:
-    #     """Format a job with required information."""
-    #     return models.Job(
-    #         analysis_id=analysis_id,
-    #         name=process.name,
-    #         status=process.status,
-    #         started_at=process.date_created,
-    #         elapsed=process.time_since_creation,
-    #     )
-
-    # def get_jobs(self, analysis_id: str) -> List[Job]:
-    #     """Returns a list of jobs associated to a workflow."""
-    #     return [self._get_job(task=task, analysis_id=analysis_id) for task in self.tasks]
-    #
-    # def _get_job(self, task: TowerTask, analysis_id: str) -> Job:
-    #     """Format a job with required information."""
-    #     return models.Job(
-    #         analysis_id=analysis_id,
-    #         slurm_id=task.slurm_id,
-    #         name=task.name,
-    #         status=task.status,
-    #         started_at=task.start,
-    #         elapsed=int(task.duration / 60),
-    #     )
 
     def get_jobs(self, analysis_id: str) -> List[dict]:
         """Returns a list of jobs associated to a workflow."""
