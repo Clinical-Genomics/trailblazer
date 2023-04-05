@@ -20,11 +20,17 @@ class TowerApiClient:
         self.tower_api_endpoint: str = os.environ.get("TOWER_API_ENDPOINT", None)
         self.workflow_endpoint: str = f"workflow/{self.workflow_id}"
         self.tasks_endpoint: str = f"{self.workflow_endpoint}/tasks"
-        self.headers: dict = {
+
+    @property
+    def headers(self) -> dict:
+        return {
             "Accept": "application/json",
-            "Authorization": "Bearer " + self.tower_access_token,
+            "Authorization": f"Bearer {self.tower_access_token}",
         }
-        self.params: List[Tuple] = [
+
+    @property
+    def params(self) -> List[Tuple]:
+        return [
             ("workspaceId", self.workspace_id),
         ]
 
