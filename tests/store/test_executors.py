@@ -7,8 +7,8 @@ import pytest
 
 from tests.conftest import JOB_LIST_PENDING, MockTowerAPI, TowerResponseFile, TowerTaskResponseFile
 from trailblazer.constants import TOWER_TIMESPAM_FORMAT, TrailblazerStatus
-from trailblazer.store.executors import TowerTask
 from trailblazer.store.models import Job
+from trailblazer.store.utils.tower import TowerTask
 
 
 @pytest.mark.parametrize(

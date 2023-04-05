@@ -4,7 +4,6 @@ import datetime as dt
 import io
 import logging
 import subprocess
-from copy import deepcopy
 from typing import Any, List, Optional
 
 import alchy
@@ -23,9 +22,9 @@ from trailblazer.constants import (
 )
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
 from trailblazer.store import models
-from trailblazer.store.executors import TowerAPI
 from trailblazer.store.models import Analysis
 from trailblazer.store.utils import formatters
+from trailblazer.store.utils.executors import TowerAPI
 
 LOG = logging.getLogger(__name__)
 

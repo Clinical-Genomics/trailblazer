@@ -4,19 +4,18 @@ import subprocess
 from functools import partial
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Any, List
+from typing import Any
 
 import pytest
 import ruamel.yaml
 from click.testing import CliRunner
-from ruamel.yaml import safe_load
 
 from trailblazer.cli import base
 from trailblazer.constants import TOWER_TIMESPAM_FORMAT
 from trailblazer.io.json import read_json
 from trailblazer.store import Store
-from trailblazer.store.executors import TowerAPI, TowerTask
-from trailblazer.store.models import Job
+from trailblazer.store.utils.executors import TowerAPI
+from trailblazer.store.utils.tower import TowerTask
 
 
 class MockStore(Store):
