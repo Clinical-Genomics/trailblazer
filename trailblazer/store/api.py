@@ -4,6 +4,7 @@ import datetime as dt
 import io
 import logging
 import subprocess
+from copy import deepcopy
 from typing import Any, List, Optional
 
 import alchy
@@ -486,17 +487,31 @@ class BaseHandler:
             analysis_obj.status = "error"
             self.commit()
 
+    # @staticmethod
+    # def get_ids_from_config(config_file: str) -> List[str]:
+    #     """Return a list of IDs from a config file."""
+    #     id_dict = safe_load(open(config_file))
+    #     return id_dict.get(next(iter(id_dict)))
+
+    @staticmethod
+    def query_tower(config_file: str, case_id: str):
+        # Currently only one tower ID is supported
+        tower_id = safe_load(open(config_file)).get(case_id)[0]
+        return TowerAPI(executor_id=tower_id)
+
     def update_tower_run_status(self, analysis_id: int) -> None:
         """Query tower for entries related to given analysis, and update the Trailblazer database"""
         analysis_obj = self.analysis(analysis_id)
-        tower_api = TowerAPI(id_file=analysis_obj.config_path)
+        tower_api = self.query_tower(
+            config_file=analysis_obj.config_path, case_id=analysis_obj.family
+        )
         try:
             analysis_obj.status = tower_api.status
             analysis_obj.progress = tower_api.progress
             analysis_obj.logged_at = dt.datetime.now()
-            self.update_tower_jobs(
-                analysis_obj=analysis_obj, jobs=tower_api.get_jobs(analysis_id=analysis_obj.id)
-            )
+            # self.update_tower_jobs(
+            #     analysis_obj=analysis_obj, jobs=tower_api.get_jobs(analysis_id=analysis_obj.id)
+            # )
             self.commit()
         except Exception as error:
             LOG.error(f"Error logging case - {analysis_obj.family} : {error.__class__.__name__}")
@@ -505,18 +520,13 @@ class BaseHandler:
 
     def update_tower_jobs(self, analysis_obj: models.Analysis, jobs: List[Job]) -> None:
         """Updates failed jobs in the analysis."""
-        (job.delete() for job in analysis_obj.failed_jobs)
+        # (job.delete() for job in analysis_obj.failed_jobs)
+        for job in analysis_obj.failed_jobs:
+            job.delete
         self.commit()  # TODO: is this needed??
         analysis_obj.failed_jobs = jobs
+        # analysis_obj.failed_jobs = [self.Job(job) for job in jobs]
         self.commit()
-
-    # @staticmethod
-    # def query_tower(id_file: str, case_id: str) -> Any:
-    #     """desc"""
-    #     id_dict = safe_load(open(id_file))
-    #     submitted_ids = id_dict.get(case_id)
-    #     for tower_id in submitted_ids:
-    #         return TowerAPI(id=tower_id).query()
 
     @staticmethod
     def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
