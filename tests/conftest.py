@@ -45,13 +45,26 @@ class MockStore(Store):
 
     @staticmethod
     def query_tower(config_file: str, case_id: str) -> TowerAPI:
+        """Return a mocked tower api."""
         configs = {
             "cuddlyhen": {
                 "workflow_response_file": TowerResponseFile.RUNNING,
                 "tasks_response_file": TowerTaskResponseFile.RUNNING,
                 "tower_id": TOWER_ID,
                 "analysis_id": 1,
-            }
+            },
+            "cuddlyhen_pending": {
+                "workflow_response_file": TowerResponseFile.PENDING,
+                "tasks_response_file": TowerTaskResponseFile.PENDING,
+                "tower_id": TOWER_ID,
+                "analysis_id": 1,
+            },
+            "cuddlyhen_completed": {
+                "workflow_response_file": TowerResponseFile.COMPLETED,
+                "tasks_response_file": TowerTaskResponseFile.COMPLETED,
+                "tower_id": TOWER_ID,
+                "analysis_id": 1,
+            },
         }
         case = configs.get(case_id)
         tower_api = MockTowerAPI(executor_id=case.get("tower_id"))

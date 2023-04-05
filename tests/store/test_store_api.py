@@ -287,12 +287,14 @@ def test_update_tower_jobs(sample_store: MockStore, jobs_list: List[dict], tower
 
 
 @pytest.mark.parametrize(
-    "case_id, status",
+    "case_id, status, progress",
     [
-        ("cuddlyhen", "running"),
+        ("cuddlyhen", "running", 15),
+        ("cuddlyhen_pending", "pending", 0),
+        ("cuddlyhen_completed", "completed", 100),
     ],
 )
-def test_update_tower_run_status(sample_store: MockStore, case_id: str, status: str):
+def test_update_tower_run_status(sample_store: MockStore, case_id: str, status: str, progress: int):
     """Assess that an analysis status is succesfully updated when using tower."""
 
     # GIVEN an analysis with pending status
@@ -304,9 +306,11 @@ def test_update_tower_run_status(sample_store: MockStore, case_id: str, status: 
 
     # THEN analysis status is changed to what is expected
     assert analysis_obj.status == status
+    assert analysis_obj.progress == progress
 
     # WHEN database is updated a second time
     sample_store.update_run_status(analysis_id=analysis_obj.id)
 
     # THEN the status is still what is expected, and no database errors were raised
     assert analysis_obj.status == status
+    assert analysis_obj.progress == progress
