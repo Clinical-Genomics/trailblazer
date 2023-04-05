@@ -509,23 +509,20 @@ class BaseHandler:
             analysis_obj.status = tower_api.status
             analysis_obj.progress = tower_api.progress
             analysis_obj.logged_at = dt.datetime.now()
-            # self.update_tower_jobs(
-            #     analysis_obj=analysis_obj, jobs=tower_api.get_jobs(analysis_id=analysis_obj.id)
-            # )
+            self.update_tower_jobs(
+                analysis_obj=analysis_obj, jobs=tower_api.get_jobs(analysis_id=analysis_obj.id)
+            )
             self.commit()
         except Exception as error:
             LOG.error(f"Error logging case - {analysis_obj.family} : {error.__class__.__name__}")
             analysis_obj.status = "error"
             self.commit()
 
-    def update_tower_jobs(self, analysis_obj: models.Analysis, jobs: List[Job]) -> None:
+    def update_tower_jobs(self, analysis_obj: models.Analysis, jobs: List[dict]) -> None:
         """Updates failed jobs in the analysis."""
-        # (job.delete() for job in analysis_obj.failed_jobs)
         for job in analysis_obj.failed_jobs:
-            job.delete
-        self.commit()  # TODO: is this needed??
-        analysis_obj.failed_jobs = jobs
-        # analysis_obj.failed_jobs = [self.Job(job) for job in jobs]
+            job.delete()
+        analysis_obj.failed_jobs = [self.Job(job) for job in jobs]
         self.commit()
 
     @staticmethod

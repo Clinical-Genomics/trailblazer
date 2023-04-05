@@ -110,7 +110,7 @@ TOWER_RESPONSE_DIR = Path("tests", "fixtures", "tower")
 TOWER_ID = "1m759EPcbjuK7n"
 
 JOB_LIST_PENDING = [
-    Job(
+    dict(
         analysis_id=1,
         slurm_id="4611827",
         name="NFCORE_RNAFUSION:RNAFUSION:INPUT_CHECK:SAMPLESHEET_CHECK",
@@ -118,7 +118,7 @@ JOB_LIST_PENDING = [
         elapsed=63,
         status="completed",
     ),
-    Job(
+    dict(
         analysis_id=1,
         slurm_id="4611829",
         name="NFCORE_RNAFUSION:RNAFUSION:PIZZLY_WORKFLOW:KALLISTO_QUANT",
@@ -126,7 +126,7 @@ JOB_LIST_PENDING = [
         elapsed=0,
         status="pending",
     ),
-    Job(
+    dict(
         analysis_id=1,
         slurm_id="4611828",
         name="NFCORE_RNAFUSION:RNAFUSION:FASTQC",

@@ -202,28 +202,13 @@ class TowerAPI(ExecutorAPI):
     #         elapsed=process.time_since_creation,
     #     )
 
-    def get_jobs(self, analysis_id: str) -> List[Job]:
-        """Returns a list of jobs associated to a workflow."""
-        return [self._get_job(task=task, analysis_id=analysis_id) for task in self.tasks]
-
-    def _get_job(self, task: TowerTask, analysis_id: str) -> Job:
-        """Format a job with required information."""
-        return models.Job(
-            analysis_id=analysis_id,
-            slurm_id=task.slurm_id,
-            name=task.name,
-            status=task.status,
-            started_at=task.start,
-            elapsed=int(task.duration / 60),
-        )
-
-    # def get_jobs(self, analysis_id: str) -> List[dict]:
+    # def get_jobs(self, analysis_id: str) -> List[Job]:
     #     """Returns a list of jobs associated to a workflow."""
     #     return [self._get_job(task=task, analysis_id=analysis_id) for task in self.tasks]
     #
-    # def _get_job(self, task: TowerTask, analysis_id: str) -> dict:
+    # def _get_job(self, task: TowerTask, analysis_id: str) -> Job:
     #     """Format a job with required information."""
-    #     return dict(
+    #     return models.Job(
     #         analysis_id=analysis_id,
     #         slurm_id=task.slurm_id,
     #         name=task.name,
@@ -231,3 +216,18 @@ class TowerAPI(ExecutorAPI):
     #         started_at=task.start,
     #         elapsed=int(task.duration / 60),
     #     )
+
+    def get_jobs(self, analysis_id: str) -> List[dict]:
+        """Returns a list of jobs associated to a workflow."""
+        return [self._get_job(task=task, analysis_id=analysis_id) for task in self.tasks]
+
+    def _get_job(self, task: TowerTask, analysis_id: str) -> dict:
+        """Format a job with required information."""
+        return dict(
+            analysis_id=analysis_id,
+            slurm_id=task.slurm_id,
+            name=task.name,
+            status=task.status,
+            started_at=task.start,
+            elapsed=int(task.duration / 60),
+        )
