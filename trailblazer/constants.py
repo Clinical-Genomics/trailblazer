@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Dict
 
 COMPLETED_STATUS = "completed"
 FAILED_STATUS = "failed"
@@ -26,22 +27,23 @@ class TrailblazerStatus(Enum):
     COMPLETING: str = "completing"
 
 
-TOWER_STATUS = dict(
-    SUBMITTED=TrailblazerStatus.PENDING.value,
-    RUNNING=TrailblazerStatus.RUNNING.value,
-    SUCCEEDED=TrailblazerStatus.COMPLETED.value,
-    FAILED=TrailblazerStatus.FAILED.value,
-    CANCELLED=TrailblazerStatus.CANCELLED.value,
-    COMPLETED=TrailblazerStatus.COMPLETED.value,
-)
+TOWER_STATUS: Dict[str, str] = {
+    "SUBMITTED": TrailblazerStatus.PENDING.value,
+    "RUNNING": TrailblazerStatus.RUNNING.value,
+    "SUCCEEDED": TrailblazerStatus.COMPLETED.value,
+    "FAILED": TrailblazerStatus.FAILED.value,
+    "CANCELLED": TrailblazerStatus.CANCELLED.value,
+    "COMPLETED": TrailblazerStatus.COMPLETED.value,
+}
 
-PROCESS_STATUS = dict(
-    submitted=TrailblazerStatus.PENDING.value,
-    pending=TrailblazerStatus.PENDING.value,
-    running=TrailblazerStatus.RUNNING.value,
-    cached=TrailblazerStatus.COMPLETED.value,
-    succeeded=TrailblazerStatus.COMPLETED.value,
-    failed=TrailblazerStatus.FAILED.value,
-)
+
+PROCESS_STATUS: Dict[str, str] = {
+    "submitted": TrailblazerStatus.PENDING.value,
+    "pending": TrailblazerStatus.PENDING.value,
+    "running": TrailblazerStatus.RUNNING.value,
+    "cached": TrailblazerStatus.COMPLETED.value,
+    "succeeded": TrailblazerStatus.COMPLETED.value,
+    "failed": TrailblazerStatus.FAILED.value,
+}
 
 TOWER_TIMESPAM_FORMAT = "%Y-%m-%dT%H:%M:%SZ"

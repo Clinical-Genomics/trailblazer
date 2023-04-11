@@ -5,7 +5,7 @@ from typing import List
 import pytest
 
 from tests.mocks.tower_mock import MockTowerAPI
-from tests.store.utils.conftest import JOB_LIST_PENDING, TowerResponseFile, TowerTaskResponseFile
+from tests.store.utils.conftest import TowerResponseFile, TowerTaskResponseFile
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Job
 
@@ -25,7 +25,7 @@ def test_tower_api_status(tower_id: str, response_file: Path, expected_status: s
     tower_api = MockTowerAPI(executor_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
-    # THEN status should be as expected according to the mocked response
+    # THEN a trailblazer status is returned
     assert tower_api.status == expected_status
 
 
@@ -49,22 +49,24 @@ def test_tower_api_is_pending(tower_id: str, response_file: Path, expected_bool:
 
 
 @pytest.mark.parametrize(
-    "response_file, expected_total_jobs",
+    "response_file, expected_nr_total_jobs",
     [
         (TowerResponseFile.PENDING, 0),
         (TowerResponseFile.RUNNING, 13),
         (TowerResponseFile.COMPLETED, 13),
     ],
 )
-def test_tower_api_total_jobs(tower_id: str, response_file: Path, expected_total_jobs: int) -> None:
-    """Assess that TowerAPI correctly returns the total number jobs given a response."""
+def test_tower_api_total_jobs(
+    tower_id: str, response_file: Path, expected_nr_total_jobs: int
+) -> None:
+    """Assess that TowerAPI correctly returns the total number of potential jobs given a response."""
 
     # GIVEN an tower_api with a mock query response
     tower_api = MockTowerAPI(executor_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
-    # THEN total_jobs should be as expected according to the mocked response
-    assert tower_api.total_jobs == expected_total_jobs
+    # THEN the total number of potential jobs is returned
+    assert tower_api.total_jobs == expected_nr_total_jobs
 
 
 @pytest.mark.parametrize(
@@ -84,28 +86,7 @@ def test_tower_api_succeeded_jobs(
     tower_api = MockTowerAPI(executor_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
-    # THEN total_jobs should be as expected according to the mocked response
-    assert tower_api.succeeded_jobs == expected_succeeded_jobs
-
-
-@pytest.mark.parametrize(
-    "response_file, expected_succeeded_jobs",
-    [
-        (TowerResponseFile.PENDING, 0),
-        (TowerResponseFile.RUNNING, 2),
-        (TowerResponseFile.COMPLETED, 6),
-    ],
-)
-def test_tower_api_succeeded_jobs(
-    tower_id: str, response_file: Path, expected_succeeded_jobs: int
-) -> None:
-    """Assess that TowerAPI correctly returns the number of succeeded jobs given a response."""
-
-    # GIVEN an tower_api with a mock query response
-    tower_api = MockTowerAPI(executor_id=tower_id)
-    tower_api.mock_query(response_file=response_file)
-
-    # THEN total_jobs should be as expected according to the mocked response
+    # THEN the total number of succeeded jobs is returned
     assert tower_api.succeeded_jobs == expected_succeeded_jobs
 
 
@@ -124,35 +105,43 @@ def test_tower_api_progress(tower_id: str, response_file: Path, expected_progres
     tower_api = MockTowerAPI(executor_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
-    # THEN total_jobs should be as expected according to the mocked response
+    # THEN progress should be returned
     assert tower_api.progress == expected_progress
 
 
-@pytest.mark.parametrize(
-    "workflow_response_file, tasks_response_file, expected_jobs",
-    [
-        (TowerResponseFile.PENDING, TowerTaskResponseFile.PENDING, []),
-        (TowerResponseFile.RUNNING, TowerTaskResponseFile.RUNNING, JOB_LIST_PENDING),
-    ],
-)
 def test_tower_api_tasks(
     tower_id: str,
     analysis_id: int,
-    workflow_response_file: Path,
-    tasks_response_file: Path,
-    expected_jobs: List[Job],
+    tower_task_response_running: Path,
+    jobs_list: List[dict],
 ) -> None:
-    """Assess that TowerAPI returns the progress percentage given a response."""
+    """Assess that TowerAPI returns a list of tasks given a response."""
 
     # GIVEN an tower_api with a mock query response
     tower_api = MockTowerAPI(executor_id=tower_id)
-    tower_api.mock_query(response_file=workflow_response_file)
-    tower_api.mock_tasks_query(response_file=tasks_response_file)
+    tower_api.mock_tasks_query(response_file=tower_task_response_running)
 
-    # THEN total_jobs should be as expected according to the mocked response
+    # WHEN asking for jobs
     jobs = tower_api.get_jobs(analysis_id=analysis_id)
-    if not expected_jobs:
-        assert jobs == expected_jobs
-    else:
-        for i in range(1, len(jobs)):
-            assert dict(jobs[i]) == dict(expected_jobs[i])
+
+    # THEN a list of jobs should be returned
+    for job_nr in range(1, len(jobs)):
+        assert dict(jobs[job_nr]) == dict(jobs_list[job_nr])
+
+
+def test_tower_api_tasks_empty(
+    tower_id: str,
+    analysis_id: int,
+    tower_task_response_pending: Path,
+) -> None:
+    """Assess that TowerAPI returns an empty list of tasks given a response for a pending case."""
+
+    # GIVEN an tower_api with a mock query response for a pending case
+    tower_api = MockTowerAPI(executor_id=tower_id)
+    tower_api.mock_tasks_query(response_file=tower_task_response_pending)
+
+    # WHEN asking for jobs
+    jobs = tower_api.get_jobs(analysis_id=analysis_id)
+
+    # THEN an empty list should be returned
+    assert jobs == []

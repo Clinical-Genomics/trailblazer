@@ -6,6 +6,7 @@ from typing import List
 import pytest
 
 from tests.mocks.store_mock import MockStore
+from tests.store.utils.conftest import CaseIDs
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Analysis, Job
 
@@ -266,11 +267,11 @@ def test_mark_analyses_deleted(sample_store):
     assert analysis_obj.is_deleted
 
 
-def test_update_tower_jobs(sample_store: MockStore, jobs_list: List[dict], tower_case_id: str):
+def test_update_tower_jobs(sample_store: MockStore, jobs_list: List[dict], case_id: str):
     """Assess that an jobs are successfully updated when using NF Tower."""
 
     # GIVEN an analysis without failed jobs
-    analysis: Analysis = sample_store.get_latest_analysis(case_id=tower_case_id)
+    analysis: Analysis = sample_store.get_latest_analysis(case_id=case_id)
     assert not analysis.failed_jobs
 
     # WHEN jobs are updated
@@ -289,9 +290,9 @@ def test_update_tower_jobs(sample_store: MockStore, jobs_list: List[dict], tower
 @pytest.mark.parametrize(
     "case_id, status, progress",
     [
-        ("cuddlyhen", "running", 15),
-        ("cuddlyhen_pending", "pending", 0),
-        ("cuddlyhen_completed", "completed", 100),
+        (CaseIDs.RUNNING, TrailblazerStatus.RUNNING.value, 15),
+        (CaseIDs.PENDING, TrailblazerStatus.PENDING.value, 0),
+        (CaseIDs.COMPLETED, TrailblazerStatus.COMPLETED.value, 100),
     ],
 )
 def test_update_tower_run_status(sample_store: MockStore, case_id: str, status: str, progress: int):

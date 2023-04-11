@@ -1,41 +1,12 @@
-import datetime as dt
 from pathlib import Path
-from typing import List
 
 import pytest
 
-from trailblazer.constants import TOWER_TIMESPAM_FORMAT, TrailblazerStatus
 from trailblazer.io.json import read_json
 from trailblazer.store.utils.tower import TowerTask
 
 TOWER_RESPONSE_DIR: Path = Path("tests", "fixtures", "tower")
 TOWER_ID: str = "1m759EPcbjuK7n"
-JOB_LIST_PENDING: List[dict] = [
-    dict(
-        analysis_id=1,
-        slurm_id="4611827",
-        name="NFCORE_RNAFUSION:RNAFUSION:INPUT_CHECK:SAMPLESHEET_CHECK",
-        started_at=dt.datetime.strptime("2023-04-04T08:11:27Z", TOWER_TIMESPAM_FORMAT),
-        elapsed=63,
-        status=TrailblazerStatus.COMPLETED.value,
-    ),
-    dict(
-        analysis_id=1,
-        slurm_id="4611829",
-        name="NFCORE_RNAFUSION:RNAFUSION:PIZZLY_WORKFLOW:KALLISTO_QUANT",
-        started_at=None,
-        elapsed=0,
-        status=TrailblazerStatus.PENDING.value,
-    ),
-    dict(
-        analysis_id=1,
-        slurm_id="4611828",
-        name="NFCORE_RNAFUSION:RNAFUSION:FASTQC",
-        started_at=None,
-        elapsed=0,
-        status=TrailblazerStatus.PENDING.value,
-    ),
-]
 
 
 class TowerResponseFile:
@@ -50,6 +21,12 @@ class TowerTaskResponseFile:
     RUNNING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_running")
     COMPLETED: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_completed")
     EMPTY: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_empty")
+
+
+class CaseIDs:
+    PENDING: str = "cuddlyhen_pending"
+    RUNNING: str = "cuddlyhen"
+    COMPLETED: str = "cuddlyhen_completed"
 
 
 @pytest.fixture(name="tower_id")
@@ -70,13 +47,19 @@ def fixture_tower_task() -> TowerTask:
     return TowerTask(task=read_json(TowerTaskResponseFile.RUNNING)["tasks"][0]["task"])
 
 
-@pytest.fixture(name="tower_empty_task")
-def fixture_tower_empty_task() -> TowerTask:
-    """Return an empty NF Tower task."""
-    return TowerTask(task=read_json(TowerTaskResponseFile.EMPTY))
+@pytest.fixture(name="tower_task_response_pending")
+def fixture_tower_task_response_pending() -> Path:
+    """Return an NF Tower task response for a pending case."""
+    return TowerTaskResponseFile.PENDING
 
 
-@pytest.fixture(name="analysis_id")
-def fixture_analysis_id() -> int:
-    """Return an analysis id."""
-    return 1
+@pytest.fixture(name="tower_task_response_running")
+def fixture_tower_task_response_running() -> Path:
+    """Return an NF Tower task response for a running case."""
+    return TowerTaskResponseFile.RUNNING
+
+
+# @pytest.fixture(name="tower_empty_task")
+# def fixture_tower_empty_task() -> TowerTask:
+#     """Return an empty NF Tower task."""
+#     return TowerTask(task=read_json(TowerTaskResponseFile.EMPTY))

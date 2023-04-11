@@ -1,7 +1,9 @@
 import subprocess
 
+import pytest
+
 from tests.mocks.tower_mock import MockTowerAPI
-from tests.store.utils.conftest import TOWER_ID, TowerResponseFile, TowerTaskResponseFile
+from tests.store.utils.conftest import TOWER_ID, CaseIDs, TowerResponseFile, TowerTaskResponseFile
 from trailblazer.store import Store
 
 
@@ -34,19 +36,19 @@ class MockStore(Store):
     def query_tower(config_file: str, case_id: str) -> MockTowerAPI:
         """Return a mocked NF Tower API."""
         configs = {
-            "cuddlyhen": {
+            CaseIDs.RUNNING: {
                 "workflow_response_file": TowerResponseFile.RUNNING,
                 "tasks_response_file": TowerTaskResponseFile.RUNNING,
                 "tower_id": TOWER_ID,
                 "analysis_id": 1,
             },
-            "cuddlyhen_pending": {
+            CaseIDs.PENDING: {
                 "workflow_response_file": TowerResponseFile.PENDING,
                 "tasks_response_file": TowerTaskResponseFile.PENDING,
                 "tower_id": TOWER_ID,
                 "analysis_id": 1,
             },
-            "cuddlyhen_completed": {
+            CaseIDs.COMPLETED: {
                 "workflow_response_file": TowerResponseFile.COMPLETED,
                 "tasks_response_file": TowerTaskResponseFile.COMPLETED,
                 "tower_id": TOWER_ID,
