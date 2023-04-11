@@ -3,7 +3,6 @@ import subprocess
 from tests.mocks.tower_mock import MockTowerAPI
 from tests.store.utils.conftest import TOWER_ID, TowerResponseFile, TowerTaskResponseFile
 from trailblazer.store import Store
-from trailblazer.store.utils.executors import TowerAPI
 
 
 class MockStore(Store):
@@ -32,8 +31,8 @@ class MockStore(Store):
         return
 
     @staticmethod
-    def query_tower(config_file: str, case_id: str) -> TowerAPI:
-        """Return a mocked tower api."""
+    def query_tower(config_file: str, case_id: str) -> MockTowerAPI:
+        """Return a mocked NF Tower API."""
         configs = {
             "cuddlyhen": {
                 "workflow_response_file": TowerResponseFile.RUNNING,

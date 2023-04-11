@@ -267,23 +267,23 @@ def test_mark_analyses_deleted(sample_store):
 
 
 def test_update_tower_jobs(sample_store: MockStore, jobs_list: List[dict], tower_case_id: str):
-    """Assess that an jobs are succesfully updated when using tower."""
+    """Assess that an jobs are successfully updated when using NF Tower."""
 
     # GIVEN an analysis without failed jobs
-    analysis_obj = sample_store.get_latest_analysis(tower_case_id)
-    assert len(analysis_obj.failed_jobs) == 0
+    analysis: Analysis = sample_store.get_latest_analysis(case_id=tower_case_id)
+    assert not analysis.failed_jobs
 
     # WHEN jobs are updated
-    sample_store.update_tower_jobs(analysis_obj=analysis_obj, jobs=jobs_list)
+    sample_store.update_tower_jobs(analysis_obj=analysis, jobs=jobs_list)
 
     # THEN analysis object should have failed jobs
-    assert len(analysis_obj.failed_jobs) == 3
+    assert len(analysis.failed_jobs) == 3
 
     # WHEN jobs are updated a second time
-    sample_store.update_tower_jobs(analysis_obj=analysis_obj, jobs=jobs_list[:2])
+    sample_store.update_tower_jobs(analysis_obj=analysis, jobs=jobs_list[:2])
 
     # THEN failed jobs should be updated
-    assert len(analysis_obj.failed_jobs) == 2
+    assert len(analysis.failed_jobs) == 2
 
 
 @pytest.mark.parametrize(
@@ -295,22 +295,22 @@ def test_update_tower_jobs(sample_store: MockStore, jobs_list: List[dict], tower
     ],
 )
 def test_update_tower_run_status(sample_store: MockStore, case_id: str, status: str, progress: int):
-    """Assess that an analysis status is succesfully updated when using tower."""
+    """Assess that an analysis status is successfully updated when using NF Tower."""
 
     # GIVEN an analysis with pending status
-    analysis_obj = sample_store.get_latest_analysis(case_id)
-    assert analysis_obj.status == TrailblazerStatus.PENDING.value
+    analysis: Analysis = sample_store.get_latest_analysis(case_id=case_id)
+    assert analysis.status == TrailblazerStatus.PENDING.value
 
     # WHEN database is updated once
-    sample_store.update_run_status(analysis_id=analysis_obj.id)
+    sample_store.update_run_status(analysis_id=analysis.id)
 
     # THEN analysis status is changed to what is expected
-    assert analysis_obj.status == status
-    assert analysis_obj.progress == progress
+    assert analysis.status == status
+    assert analysis.progress == progress
 
     # WHEN database is updated a second time
-    sample_store.update_run_status(analysis_id=analysis_obj.id)
+    sample_store.update_run_status(analysis_id=analysis.id)
 
-    # THEN the status is still what is expected, and no database errors were raised
-    assert analysis_obj.status == status
-    assert analysis_obj.progress == progress
+    # THEN the status is still as before, and no database errors were raised
+    assert analysis.status == status
+    assert analysis.progress == progress
