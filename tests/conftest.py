@@ -1,76 +1,18 @@
 # -*- coding: utf-8 -*-
 import datetime as dt
-import subprocess
 from functools import partial
-from json import JSONDecodeError
 from pathlib import Path
-from typing import Any, List
+from typing import List
 
 import pytest
 import ruamel.yaml
 from click.testing import CliRunner
 
+from tests.mocks.store_mock import MockStore
 from trailblazer.cli import base
 from trailblazer.constants import TOWER_TIMESPAM_FORMAT
 from trailblazer.io.json import read_json
-from trailblazer.store import Store
-from trailblazer.store.utils.executors import TowerAPI
 from trailblazer.store.utils.tower import TowerTask
-
-
-class MockStore(Store):
-    """Instance of TrailblazerAPI that mimics expected SLURM output"""
-
-    @staticmethod
-    def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> bytes:
-        slurm_dict = {
-            "blazinginsect": "tests/fixtures/sacct/blazinginsect_sacct",  # running
-            "crackpanda": "tests/fixtures/sacct/crackpanda_sacct",  # failed
-            "daringpidgeon": "tests/fixtures/sacct/daringpidgeon_sacct",  # failed
-            "emptydinosaur": "tests/fixtures/sacct/emptydinosaur_sacct",  # failed
-            "escapedgoat": "tests/fixtures/sacct/escapegoat_sacct",  # pending
-            "fancymole": "tests/fixtures/sacct/fancymole_sacct",  # completed
-            "happycow": "tests/fixtures/sacct/happycow_sacct",  # pending
-            "lateraligator": "tests/fixtures/sacct/lateraligator_sacct",  # failed
-            "liberatedunicorn": "tests/fixtures/sacct/liberatedunicorn_sacct",  # error
-            "nicemice": "tests/fixtures/sacct/nicemice_sacct",  # completed
-            "rarekitten": "tests/fixtures/sacct/rarekitten_sacct",  # canceled
-            "trueferret": "tests/fixtures/sacct/trueferret_sacct",  # running
-        }
-        return subprocess.check_output(["cat", slurm_dict.get(case_id)])
-
-    @staticmethod
-    def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
-        return
-
-    @staticmethod
-    def query_tower(config_file: str, case_id: str) -> TowerAPI:
-        """Return a mocked tower api."""
-        configs = {
-            "cuddlyhen": {
-                "workflow_response_file": TowerResponseFile.RUNNING,
-                "tasks_response_file": TowerTaskResponseFile.RUNNING,
-                "tower_id": TOWER_ID,
-                "analysis_id": 1,
-            },
-            "cuddlyhen_pending": {
-                "workflow_response_file": TowerResponseFile.PENDING,
-                "tasks_response_file": TowerTaskResponseFile.PENDING,
-                "tower_id": TOWER_ID,
-                "analysis_id": 1,
-            },
-            "cuddlyhen_completed": {
-                "workflow_response_file": TowerResponseFile.COMPLETED,
-                "tasks_response_file": TowerTaskResponseFile.COMPLETED,
-                "tower_id": TOWER_ID,
-                "analysis_id": 1,
-            },
-        }
-        case = configs.get(case_id)
-        tower_api = MockTowerAPI(executor_id=case.get("tower_id"))
-        tower_api.mock_query(response_file=case.get("workflow_response_file"))
-        tower_api.mock_tasks_query(response_file=case.get("tasks_response_file"))
-        return tower_api
 
 
 @pytest.fixture
@@ -161,32 +103,6 @@ class TowerTaskResponseFile:
     RUNNING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_running")
     COMPLETED: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_completed")
     EMPTY: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_empty")
-
-
-class MockTowerAPI(TowerAPI):
-    """Instance of TowerAPI that mimics expected Tower output."""
-
-    @property
-    def response(self) -> dict:
-        return self.mock_response or None
-
-    @property
-    def tasks_response(self) -> dict:
-        return self.mock_tasks_response or None
-
-    def mock_query(self, response_file: Path) -> Any:
-        try:
-            self.mock_response = read_json(response_file)
-        except JSONDecodeError:
-            self.mock_response = {}
-        return self.mock_response
-
-    def mock_tasks_query(self, response_file: Path) -> Any:
-        try:
-            self.mock_tasks_response = read_json(response_file)
-        except JSONDecodeError:
-            self.mock_tasks_response = {}
-        return self.mock_tasks_response
 
 
 @pytest.fixture(name="tower_id")

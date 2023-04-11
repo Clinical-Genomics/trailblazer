@@ -4,7 +4,8 @@ from typing import List
 
 import pytest
 
-from tests.conftest import JOB_LIST_PENDING, MockTowerAPI, TowerResponseFile, TowerTaskResponseFile
+from tests.conftest import JOB_LIST_PENDING, TowerResponseFile, TowerTaskResponseFile
+from tests.mocks.tower_mock import MockTowerAPI
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Job
 

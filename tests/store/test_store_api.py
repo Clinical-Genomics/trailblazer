@@ -5,7 +5,7 @@ from typing import List
 
 import pytest
 
-from tests.conftest import MockStore
+from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Analysis, Job
 
