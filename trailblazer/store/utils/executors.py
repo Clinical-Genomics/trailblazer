@@ -20,12 +20,12 @@ class TowerAPI(ExecutorAPI):
     """Handles communication with tower."""
 
     def __init__(self, executor_id: str, dry_run: bool = False):
-        self.executor_id = executor_id
+        self.executor_id: str = executor_id
         self.dry_run: bool = dry_run
 
     @property
     def tower_client(self) -> TowerApiClient:
-        """Returns a tower client."""
+        """Returns a NF Tower client."""
         return TowerApiClient(workflow_id=self.executor_id)
 
     @property
@@ -88,11 +88,11 @@ class TowerAPI(ExecutorAPI):
         else:
             return int(self.succeeded_jobs * 100.0 / self.total_jobs)
 
-    def get_jobs(self, analysis_id: str) -> List[dict]:
+    def get_jobs(self, analysis_id: int) -> List[dict]:
         """Returns a list of jobs associated to a workflow."""
         return [self._get_job(task=task, analysis_id=analysis_id) for task in self.tasks]
 
-    def _get_job(self, task: TowerTask, analysis_id: str) -> dict:
+    def _get_job(self, task: TowerTask, analysis_id: int) -> dict:
         """Format a job with required information."""
         return dict(
             analysis_id=analysis_id,

@@ -27,4 +27,4 @@ class TowerRequirementsError(TowerError):
 
 
 class TowerResponseError(TowerError):
-    """Raised when an invalid tower response is obtained."""
+    """Raised when an invalid Tower response is returned."""

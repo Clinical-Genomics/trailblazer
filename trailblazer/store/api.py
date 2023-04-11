@@ -19,6 +19,7 @@ from trailblazer.constants import (
     ONGOING_STATUSES,
     SLURM_ACTIVE_CATEGORIES,
     STARTED_STATUSES,
+    TrailblazerStatus,
 )
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
 from trailblazer.store import models
@@ -375,7 +376,9 @@ class BaseHandler:
         )
         return parsed_df
 
-    def update_jobs(self, analysis_obj: models.Analysis, jobs_dataframe: pd.DataFrame) -> None:
+    def update_slurm_jobs(
+        self, analysis_obj: models.Analysis, jobs_dataframe: pd.DataFrame
+    ) -> None:
         """Parses job dataframe and creates job objects"""
         if len(jobs_dataframe) == 0:
             return
@@ -427,63 +430,61 @@ class BaseHandler:
 
     def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
-        analysis_obj = self.analysis(analysis_id)
-        if not analysis_obj:
+        analysis: Analysis = self.analysis(analysis_id)
+        if not analysis:
             LOG.warning(f"Analysis {analysis_id} not found!")
             return
-        if analysis_obj.use_tower:
+        if analysis.use_tower:
             self.update_tower_run_status(analysis_id=analysis_id)
         else:
             self.update_slurm_run_status(analysis_id=analysis_id, ssh=ssh)
 
     def update_slurm_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query slurm for entries related to given analysis, and update the Trailblazer database"""
-        analysis_obj = self.analysis(analysis_id)
+        analysis: Analysis = self.analysis(analysis_id)
         try:
             jobs_dataframe = self.parse_squeue_to_df(
                 squeue_response=self.query_slurm(
-                    job_id_file=analysis_obj.config_path, case_id=analysis_obj.family, ssh=ssh
+                    job_id_file=analysis.config_path, case_id=analysis.family, ssh=ssh
                 ),
                 ssh=ssh,
             )
-            self.update_jobs(analysis_obj=analysis_obj, jobs_dataframe=jobs_dataframe)
+            self.update_slurm_jobs(analysis_obj=analysis, jobs_dataframe=jobs_dataframe)
 
             status_distribution = round(
                 jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
             )
 
-            LOG.info(f"Status in SLURM: {analysis_obj.family} - {analysis_id}")
+            LOG.info(f"Status in SLURM: {analysis.family} - {analysis_id}")
             LOG.info(jobs_dataframe)
-            analysis_obj.progress = float(status_distribution.get("COMPLETED", 0.0))
+            analysis.progress = float(status_distribution.get("COMPLETED", 0.0))
             if status_distribution.get("FAILED") or status_distribution.get("TIMEOUT"):
                 if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):
-                    analysis_obj.status = "error"
+                    analysis.status = "error"
                 else:
-                    analysis_obj.status = "failed"
+                    analysis.status = "failed"
 
             elif status_distribution.get("COMPLETED") == 1:
-                analysis_obj.status = "completed"
+                analysis.status = "completed"
 
             elif status_distribution.get("PENDING") == 1:
-                analysis_obj.status = "pending"
+                analysis.status = "pending"
 
             elif status_distribution.get("RUNNING"):
-                analysis_obj.status = "running"
+                analysis.status = "running"
 
             elif status_distribution.get("CANCELLED") and not (
                 status_distribution.get("RUNNING") or status_distribution.get("PENDING")
             ):
-                analysis_obj.status = "canceled"
+                analysis.status = "canceled"
 
-            LOG.info(
-                f"Updated status {analysis_obj.family} - {analysis_obj.id}: {analysis_obj.status} "
-            )
+            LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
             self.commit()
 
-            analysis_obj.logged_at = dt.datetime.now()
+            analysis.logged_at = dt.datetime.now()
         except Exception as e:
-            LOG.error(f"Error logging case - {analysis_obj.family} : {e.__class__.__name__}")
-            analysis_obj.status = "error"
+            LOG.error(f"Error logging case - {analysis.family} : {e.__class__.__name__}")
+            analysis.status = "error"
             self.commit()
 
     @staticmethod
@@ -496,29 +497,27 @@ class BaseHandler:
         return tower_api
 
     def update_tower_run_status(self, analysis_id: int) -> None:
-        """Query tower for entries related to given analysis, and update the Trailblazer database"""
-        analysis_obj = self.analysis(analysis_id)
-        tower_api = self.query_tower(
-            config_file=analysis_obj.config_path, case_id=analysis_obj.family
+        """Query tower for entries related to given analysis, and update the Trailblazer database."""
+        analysis: Analysis = self.analysis(analysis_id)
+        tower_api: TowerAPI = self.query_tower(
+            config_file=analysis.config_path, case_id=analysis.family
         )
         try:
-            analysis_obj.status = tower_api.status
-            analysis_obj.progress = tower_api.progress
-            analysis_obj.logged_at = dt.datetime.now()
-            self.update_tower_jobs(
-                analysis_obj=analysis_obj, jobs=tower_api.get_jobs(analysis_id=analysis_obj.id)
-            )
+            analysis.status: str = tower_api.status
+            analysis.progress: int = tower_api.progress
+            analysis.logged_at: dt.datetime = dt.datetime.now()
+            self.update_jobs(analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id))
             self.commit()
         except Exception as error:
-            LOG.error(f"Error logging case - {analysis_obj.family} : {error.__class__.__name__}")
-            analysis_obj.status = "error"
+            LOG.error(f"Error logging case - {analysis.family} : {type(error).__name__}")
+            analysis.status: str = TrailblazerStatus.ERROR
             self.commit()
 
-    def update_tower_jobs(self, analysis_obj: models.Analysis, jobs: List[dict]) -> None:
+    def update_jobs(self, analysis: Analysis, jobs: List[dict]) -> None:
         """Updates failed jobs in the analysis."""
-        for job in analysis_obj.failed_jobs:
+        for job in analysis.failed_jobs:
             job.delete()
-        analysis_obj.failed_jobs = [self.Job(job) for job in jobs]
+        analysis.failed_jobs = [self.Job(job) for job in jobs]
         self.commit()
 
     @staticmethod

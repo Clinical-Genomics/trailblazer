@@ -1,4 +1,4 @@
-"""Code for talking to tower Open API"""
+"""Code for talking to Tower Open API"""
 import logging
 import os
 from typing import List, Tuple
@@ -29,7 +29,7 @@ class TowerApiClient:
         }
 
     @property
-    def params(self) -> List[Tuple]:
+    def request_params(self) -> List[Tuple]:
         return [
             ("workspaceId", self.workspace_id),
         ]
@@ -45,7 +45,7 @@ class TowerApiClient:
             response = requests.get(
                 url,
                 headers=self.headers,
-                params=self.params,
+                params=self.request_params,
                 verify=True,
             )
             if response.status_code == 404:
