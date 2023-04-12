@@ -511,7 +511,7 @@ class BaseHandler:
             self.commit()
         except Exception as error:
             LOG.error(f"Error logging case - {analysis.family} : {type(error).__name__}")
-            analysis.status: str = TrailblazerStatus.ERROR
+            analysis.status: str = TrailblazerStatus.ERROR.value
             self.commit()
 
     def update_jobs(self, analysis: Analysis, jobs: List[dict]) -> None:

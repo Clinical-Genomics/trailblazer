@@ -38,13 +38,13 @@ def fixture_tower_id() -> str:
 @pytest.fixture(name="tower_config_file")
 def fixture_tower_config_file() -> str:
     """Return the path of a config yaml file with a NF Tower id."""
-    return Path("tests", "../fixtures", "case", "cuddlyhen_tower_id.yaml").as_posix()
+    return Path("tests", "fixtures", "case", "cuddlyhen_tower_id.yaml").as_posix()
 
 
 @pytest.fixture(name="tower_task")
 def fixture_tower_task() -> TowerTask:
     """Return a NF Tower task."""
-    return TowerTask(task=read_json(TowerTaskResponseFile.RUNNING)["tasks"][0]["task"])
+    return TowerTask(**read_json(TowerTaskResponseFile.RUNNING)["tasks"][0]["task"])
 
 
 @pytest.fixture(name="tower_task_response_pending")

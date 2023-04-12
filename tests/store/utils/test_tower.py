@@ -16,11 +16,11 @@ def test_tower_task_properties(
     # GIVEN a tower task
 
     # THEN properties should be returned
-    assert tower_task.name == task_name
-    assert tower_task.slurm_id == slurm_id
+    assert tower_task.process == task_name
+    assert tower_task.nativeId == slurm_id
     assert tower_task.status == TrailblazerStatus.COMPLETED.value
-    assert tower_task.date_created == created_at
-    assert tower_task.last_updated == last_updated
+    assert tower_task.dateCreated == created_at
+    assert tower_task.lastUpdated == last_updated
     assert tower_task.start == started_at
     assert tower_task.duration == duration
     assert tower_task.is_complete is True

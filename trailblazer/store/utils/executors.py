@@ -57,14 +57,13 @@ class TowerAPI(ExecutorAPI):
     def processes(self) -> List[TowerProcess]:
         """Returns processes."""
         return [
-            TowerProcess(process=process)
-            for process in self.response["progress"]["processesProgress"]
+            TowerProcess(**process) for process in self.response["progress"]["processesProgress"]
         ]
 
     @property
     def tasks(self) -> List[TowerTask]:
         """Returns tasks."""
-        return [TowerTask(task=task["task"]) for task in self.tasks_response["tasks"]]
+        return [TowerTask(**task["task"]) for task in self.tasks_response["tasks"]]
 
     @property
     def total_jobs(self) -> int:
@@ -96,8 +95,8 @@ class TowerAPI(ExecutorAPI):
         """Format a job with required information."""
         return dict(
             analysis_id=analysis_id,
-            slurm_id=task.slurm_id,
-            name=task.name,
+            slurm_id=task.nativeId,
+            name=task.process,
             status=task.status,
             started_at=task.start,
             elapsed=int(task.duration / 60),

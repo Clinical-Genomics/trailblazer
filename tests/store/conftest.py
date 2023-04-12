@@ -5,7 +5,7 @@ from typing import List
 import pytest
 
 from tests.store.utils.conftest import CaseIDs
-from trailblazer.constants import TOWER_TIMESPAM_FORMAT, TrailblazerStatus
+from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TrailblazerStatus
 
 
 @pytest.fixture(name="timestamp_now")
@@ -23,19 +23,19 @@ def fixture_analysis_id() -> int:
 @pytest.fixture(name="started_at")
 def fixture_started_at() -> str:
     """Returns a started at date."""
-    return dt.datetime.strptime("2023-04-04T08:11:27Z", TOWER_TIMESPAM_FORMAT)
+    return dt.datetime.strptime("2023-04-04T08:11:27Z", TOWER_TIMESTAMP_FORMAT)
 
 
 @pytest.fixture(name="created_at")
 def fixture_created_at() -> str:
     """Returns a created at date."""
-    return dt.datetime.strptime("2023-04-04T08:11:24Z", TOWER_TIMESPAM_FORMAT)
+    return dt.datetime.strptime("2023-04-04T08:11:24Z", TOWER_TIMESTAMP_FORMAT)
 
 
 @pytest.fixture(name="last_updated")
 def fixture_last_updated() -> str:
     """Returns a last updated date."""
-    return dt.datetime.strptime("2023-04-04T08:11:28Z", TOWER_TIMESPAM_FORMAT)
+    return dt.datetime.strptime("2023-04-04T08:11:28Z", TOWER_TIMESTAMP_FORMAT)
 
 
 @pytest.fixture(name="duration")

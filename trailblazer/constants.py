@@ -58,4 +58,5 @@ PROCESS_STATUS: Dict[str, str] = {
     "failed": TrailblazerStatus.FAILED.value,
 }
 
-TOWER_TIMESPAM_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+TOWER_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+TOWER_TIMESTAMP_FORMAT_ALTERNATIVE = "%Y-%m-%dT%H:%M:%S.%fZ"
