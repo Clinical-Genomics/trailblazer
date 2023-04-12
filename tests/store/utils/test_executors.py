@@ -44,7 +44,7 @@ def test_tower_api_is_pending(tower_id: str, response_file: Path, expected_bool:
     tower_api = MockTowerAPI(executor_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
-    # THEN is_pending should be as expected according to the mocked response
+    # THEN is_pending should be returned
     assert tower_api.is_pending == expected_bool
 
 

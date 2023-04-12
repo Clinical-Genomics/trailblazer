@@ -15,7 +15,7 @@ def test_tower_task_properties(
 
     # GIVEN a tower task
 
-    # THEN properties should be as expected
+    # THEN properties should be returned
     assert tower_task.name == task_name
     assert tower_task.slurm_id == slurm_id
     assert tower_task.status == TrailblazerStatus.COMPLETED.value
