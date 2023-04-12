@@ -45,6 +45,7 @@ TOWER_STATUS: Dict[str, str] = {
     "FAILED": TrailblazerStatus.FAILED.value,
     "CANCELLED": TrailblazerStatus.CANCELLED.value,
     "COMPLETED": TrailblazerStatus.COMPLETED.value,
+    "UNKNOWN": TrailblazerStatus.FAILED.value,
 }
 
 
