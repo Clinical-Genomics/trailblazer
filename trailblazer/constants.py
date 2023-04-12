@@ -15,6 +15,17 @@ PRIORITY_OPTIONS = ("low", "normal", "high", "express", "maintenance")
 TYPES = ("other", "rna", "tgs", "wes", "wgs", "wts")
 
 
+class TaskManager(Enum):
+    """Supported task managers."""
+
+    SLURM: str = "Slurm"
+    TOWER: str = "NF_Tower"
+
+    @classmethod
+    def list(cls):
+        return [task.value for task in cls]
+
+
 class TrailblazerStatus(Enum):
     """Trailblazer allowed status."""
 

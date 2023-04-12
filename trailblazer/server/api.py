@@ -4,7 +4,7 @@ import os
 from typing import Dict, Mapping
 
 from dateutil.parser import parse as parse_datestr
-from flask import Blueprint, abort, g, jsonify, make_response, request, Response
+from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 
 from trailblazer.server.ext import store
@@ -242,7 +242,7 @@ def post_add_pending_analysis():
             priority=content.get("priority"),
             data_analysis=content.get("data_analysis"),
             ticket_id=content.get("ticket"),
-            use_tower=content.get("use_tower"),
+            task_manager=content.get("task_manager"),
         )
         data = stringify_timestamps(analysis_obj.to_dict())
         return jsonify(**data), 201

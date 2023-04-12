@@ -1,4 +1,4 @@
-"""Adds a use_tower column to allow tower support
+"""Adds a task_manager column to allow tower support
 
 Revision ID: ae1c26559e9b
 Revises: fca618ecc3ad
@@ -18,8 +18,8 @@ from alembic import op
 
 
 def upgrade():
-    op.add_column("analysis", sa.Column("use_tower", sa.Boolean(), nullable=True))
+    op.add_column("analysis", sa.Column("task_manager", sa.Enum(), nullable=True))
 
 
 def downgrade():
-    op.drop_column("analysis", "use_tower")
+    op.drop_column("analysis", "task_manager")

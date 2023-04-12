@@ -19,6 +19,7 @@ from trailblazer.constants import (
     ONGOING_STATUSES,
     SLURM_ACTIVE_CATEGORIES,
     STARTED_STATUSES,
+    TaskManager,
     TrailblazerStatus,
 )
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
@@ -173,7 +174,7 @@ class BaseHandler:
         email: str = None,
         data_analysis: str = None,
         ticket_id: str = None,
-        use_tower: bool = False,
+        task_manager: str = None,
     ) -> models.Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
@@ -187,7 +188,7 @@ class BaseHandler:
             priority=priority,
             data_analysis=data_analysis,
             ticket_id=ticket_id,
-            use_tower=use_tower,
+            task_manager=task_manager,
         )
         new_log.user = self.user(email) if email else None
         self.add_commit(new_log)
@@ -434,7 +435,7 @@ class BaseHandler:
         if not analysis:
             LOG.warning(f"Analysis {analysis_id} not found!")
             return
-        if analysis.use_tower:
+        if analysis.task_manager == TaskManager.TOWER.value:
             self.update_tower_run_status(analysis_id=analysis_id)
         else:
             self.update_slurm_run_status(analysis_id=analysis_id, ssh=ssh)
