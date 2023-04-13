@@ -16,9 +16,19 @@ import sqlalchemy as sa
 
 from alembic import op
 
+TASK_MANAGER_OPTIONS = ["Slurm", "NF_Tower"]
+
 
 def upgrade():
-    op.add_column("analysis", sa.Column("task_manager", sa.Enum(), nullable=True))
+    op.add_column(
+        "analysis",
+        sa.Column(
+            "task_manager",
+            sa.Enum(*TASK_MANAGER_OPTIONS),
+            nullable=False,
+            default=TASK_MANAGER_OPTIONS[0],
+        ),
+    )
 
 
 def downgrade():
