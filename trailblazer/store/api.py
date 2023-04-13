@@ -504,15 +504,10 @@ class BaseHandler:
             config_file=analysis.config_path, case_id=analysis.family
         )
 
-        LOG.info(f"Setting status")
-        analysis.status: str = tower_api.status
-        LOG.info(f"Setting progress")
-        analysis.progress: int = tower_api.progress
-        LOG.info(f"Setting logged_at")
-        analysis.logged_at: dt.datetime = dt.datetime.now()
-
         try:
-            LOG.info(f"Setting jobs")
+            analysis.status: str = tower_api.status
+            analysis.progress: int = tower_api.progress
+            analysis.logged_at: dt.datetime = dt.datetime.now()
             self.update_jobs(analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id))
             self.commit()
         except Exception as error:
