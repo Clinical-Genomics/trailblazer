@@ -510,7 +510,7 @@ class BaseHandler:
             self.update_jobs(analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id))
             self.commit()
         except Exception as error:
-            LOG.error(f"Error logging case - {analysis.family} : {type(error).__name__}")
+            LOG.error(f"Error logging case - {analysis.family} : {error}")
             analysis.status: str = TrailblazerStatus.ERROR.value
             self.commit()
 
