@@ -6,7 +6,7 @@ from typing import List, Tuple
 import requests
 from requests.exceptions import ConnectionError, HTTPError, MissingSchema
 
-from trailblazer.store.utils.tower import TowerWorkflowResponse
+from trailblazer.store.utils.tower import TowerTaskResponse, TowerWorkflowResponse
 
 LOG = logging.getLogger(__name__)
 
@@ -74,15 +74,15 @@ class TowerApiClient:
         return True
 
     @property
-    def tasks(self) -> dict:
+    def tasks(self) -> TowerTaskResponse:
         """Return a tasks response."""
         if self.meets_requirements:
             url = self.build_url(endpoint=self.tasks_endpoint)
-            return self.send_request(url=url)
+            return TowerTaskResponse(**self.send_request(url=url))
 
     @property
-    def workflow(self) -> dict:
+    def workflow(self) -> TowerWorkflowResponse:
         """Return a workflow response."""
         if self.meets_requirements:
             url = self.build_url(endpoint=self.workflow_endpoint)
-            return TowerWorkflowResponse(self.send_request(url=url))
+            return TowerWorkflowResponse(**self.send_request(url=url))

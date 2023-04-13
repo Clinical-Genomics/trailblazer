@@ -4,7 +4,7 @@ from typing import Any
 
 from trailblazer.io.json import read_json
 from trailblazer.store.utils.executors import TowerAPI
-from trailblazer.store.utils.tower import TowerWorkflowResponse
+from trailblazer.store.utils.tower import TowerTaskResponse, TowerWorkflowResponse
 
 
 class MockTowerAPI(TowerAPI):
@@ -27,7 +27,7 @@ class MockTowerAPI(TowerAPI):
 
     def mock_tasks_query(self, response_file: Path) -> Any:
         try:
-            self.mock_tasks_response = read_json(response_file)
+            self.mock_tasks_response = TowerTaskResponse(**read_json(response_file))
         except JSONDecodeError:
-            self.mock_tasks_response = {}
+            self.mock_tasks_response = TowerTaskResponse(**{})
         return self.mock_tasks_response

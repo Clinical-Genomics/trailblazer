@@ -163,7 +163,7 @@ class TowerProgress(BaseModel):
 class TowerTaskResponse(BaseModel):
     """NF Tower task response model."""
 
-    tasks: List
+    tasks: List[Optional[Dict[str, TowerTask]]]
     total: int
 
 

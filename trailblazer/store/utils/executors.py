@@ -4,7 +4,12 @@ import logging
 from typing import List
 
 from trailblazer.constants import TOWER_STATUS, TrailblazerStatus
-from trailblazer.store.utils.tower import TowerProcess, TowerTask, TowerWorkflowResponse
+from trailblazer.store.utils.tower import (
+    TowerProcess,
+    TowerTask,
+    TowerTaskResponse,
+    TowerWorkflowResponse,
+)
 from trailblazer.store.utils.tower_client import TowerApiClient
 
 LOG = logging.getLogger(__name__)
@@ -29,12 +34,12 @@ class TowerAPI(ExecutorAPI):
         return TowerApiClient(workflow_id=self.executor_id)
 
     @property
-    def response(self) -> dict:
+    def response(self) -> TowerWorkflowResponse:
         """Returns a workflow response dictionary."""
         return self.response or self.tower_client.workflow
 
     @property
-    def tasks_response(self) -> dict:
+    def tasks_response(self) -> TowerTaskResponse:
         """Returns a tasks response dictionary."""
         return self.tasks_response or self.tower_client.tasks
 
@@ -61,7 +66,7 @@ class TowerAPI(ExecutorAPI):
     @property
     def tasks(self) -> List[TowerTask]:
         """Returns tasks."""
-        return [TowerTask(**task["task"]) for task in self.tasks_response["tasks"]]
+        return [task["task"] for task in self.tasks_response.tasks]
 
     @property
     def total_jobs(self) -> int:
