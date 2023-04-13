@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from pydantic import BaseModel, validator
 
@@ -145,3 +145,30 @@ class TowerProcess(BaseModel):
             if cls.dict().get(status_flag, 0):
                 return PROCESS_STATUS.get(status_flag)
         return TrailblazerStatus.ERROR.value
+
+
+class TowerWorkflow(BaseModel):
+    """NF Tower workflow model."""
+
+    status: str
+
+
+class TowerProgress(BaseModel):
+    """NF Tower progress model."""
+
+    workflowProgress: Dict
+    processesProgress: List
+
+
+class TowerTaskResponse(BaseModel):
+    """NF Tower task response model."""
+
+    tasks: List
+    total: int
+
+
+class TowerWorkflowResponse(BaseModel):
+    """NF Tower task model."""
+
+    workflow: TowerWorkflow
+    progress: TowerProgress

@@ -4,7 +4,7 @@ import logging
 from typing import List
 
 from trailblazer.constants import TOWER_STATUS, TrailblazerStatus
-from trailblazer.store.utils.tower import TowerProcess, TowerTask
+from trailblazer.store.utils.tower import TowerProcess, TowerTask, TowerWorkflowResponse
 from trailblazer.store.utils.tower_client import TowerApiClient
 
 LOG = logging.getLogger(__name__)
@@ -41,7 +41,7 @@ class TowerAPI(ExecutorAPI):
     @property
     def status(self) -> str:
         """Returns the status of a workflow."""
-        return TOWER_STATUS.get(self.response["workflow"]["status"], TrailblazerStatus.ERROR.value)
+        return TOWER_STATUS.get(self.response.workflow.status, TrailblazerStatus.ERROR.value)
 
     @property
     def is_pending(self) -> bool:
@@ -56,9 +56,7 @@ class TowerAPI(ExecutorAPI):
     @property
     def processes(self) -> List[TowerProcess]:
         """Returns processes."""
-        return [
-            TowerProcess(**process) for process in self.response["progress"]["processesProgress"]
-        ]
+        return [TowerProcess(**process) for process in self.response.progress.processesProgress]
 
     @property
     def tasks(self) -> List[TowerTask]:
