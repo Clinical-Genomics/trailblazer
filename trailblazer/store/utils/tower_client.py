@@ -76,15 +76,13 @@ class TowerApiClient:
     @property
     def tasks(self) -> TowerTaskResponse:
         """Return a tasks response."""
-        if not self._tasks and self.meets_requirements:
+        if self.meets_requirements:
             url = self.build_url(endpoint=self.tasks_endpoint)
-            self._tasks = TowerTaskResponse(**self.send_request(url=url))
-        return self._tasks
+            return TowerTaskResponse(**self.send_request(url=url))
 
     @property
     def workflow(self) -> TowerWorkflowResponse:
         """Return a workflow response."""
-        if not self._workflow and self.meets_requirements:
+        if self.meets_requirements:
             url = self.build_url(endpoint=self.workflow_endpoint)
-            self._workflow = TowerWorkflowResponse(**self.send_request(url=url))
-        return self._workflow
+            return TowerWorkflowResponse(**self.send_request(url=url))
