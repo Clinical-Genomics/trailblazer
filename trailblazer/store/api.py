@@ -504,8 +504,10 @@ class BaseHandler:
             config_file=analysis.config_path, case_id=analysis.family
         )
         try:
+            LOG.info(f"Print response")
+            LOG.info(f"{tower_api.response}")
             LOG.info(f"Setting status")
-            analysis.status: str = tower_api.status
+            # analysis.status: str = tower_api.status
             LOG.info(f"Setting progress")
             analysis.progress: int = tower_api.progress
             LOG.info(f"Setting logged_at")
