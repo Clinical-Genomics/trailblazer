@@ -38,16 +38,12 @@ class TowerAPI(ExecutorAPI):
     @property
     def response(self) -> TowerWorkflowResponse:
         """Returns a workflow response dictionary."""
-        if not self._response:
-            self._response = self.tower_client.workflow
-        return self._response
+        return self.tower_client.workflow
 
     @property
     def tasks_response(self) -> TowerTaskResponse:
         """Returns a tasks response dictionary."""
-        if not self._tasks_response:
-            self._tasks_response = self.tower_client.tasks
-        return self._tasks_response
+        return self.tower_client.tasks
 
     @property
     def status(self) -> str:
