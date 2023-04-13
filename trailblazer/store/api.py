@@ -504,16 +504,21 @@ class BaseHandler:
             config_file=analysis.config_path, case_id=analysis.family
         )
 
-        try:
-            analysis.status: str = tower_api.status
-            analysis.progress: int = tower_api.progress
-            analysis.logged_at: dt.datetime = dt.datetime.now()
-            self.update_jobs(analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id))
-            self.commit()
-        except Exception as error:
-            LOG.error(f"Error logging case - {analysis.family} : {error}")
-            analysis.status: str = TrailblazerStatus.ERROR.value
-            self.commit()
+        analysis.status: str = tower_api.status
+        analysis.progress: int = tower_api.progress
+        analysis.logged_at: dt.datetime = dt.datetime.now()
+        self.update_jobs(analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id))
+        self.commit()
+        # try:
+        #     analysis.status: str = tower_api.status
+        #     analysis.progress: int = tower_api.progress
+        #     analysis.logged_at: dt.datetime = dt.datetime.now()
+        #     self.update_jobs(analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id))
+        #     self.commit()
+        # except Exception as error:
+        #     LOG.error(f"Error logging case - {analysis.family} : {error}")
+        #     analysis.status: str = TrailblazerStatus.ERROR.value
+        #     self.commit()
 
     def update_jobs(self, analysis: Analysis, jobs: List[dict]) -> None:
         """Updates failed jobs in the analysis."""
