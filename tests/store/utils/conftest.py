@@ -57,9 +57,3 @@ def fixture_tower_task_response_pending() -> Path:
 def fixture_tower_task_response_running() -> Path:
     """Return an NF Tower task response for a running case."""
     return TowerTaskResponseFile.RUNNING
-
-
-# @pytest.fixture(name="tower_empty_task")
-# def fixture_tower_empty_task() -> TowerTask:
-#     """Return an empty NF Tower task."""
-#     return TowerTask(task=read_json(TowerTaskResponseFile.EMPTY))

@@ -21,19 +21,19 @@ def fixture_analysis_id() -> int:
 
 
 @pytest.fixture(name="started_at")
-def fixture_started_at() -> str:
+def fixture_started_at() -> dt.datetime:
     """Returns a started at date."""
     return dt.datetime.strptime("2023-04-04T08:11:27Z", TOWER_TIMESTAMP_FORMAT)
 
 
 @pytest.fixture(name="created_at")
-def fixture_created_at() -> str:
+def fixture_created_at() -> dt.datetime:
     """Returns a created at date."""
     return dt.datetime.strptime("2023-04-04T08:11:24Z", TOWER_TIMESTAMP_FORMAT)
 
 
 @pytest.fixture(name="last_updated")
-def fixture_last_updated() -> str:
+def fixture_last_updated() -> dt.datetime:
     """Returns a last updated date."""
     return dt.datetime.strptime("2023-04-04T08:11:28Z", TOWER_TIMESTAMP_FORMAT)
 

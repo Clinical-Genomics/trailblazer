@@ -88,7 +88,7 @@ class TowerTask(BaseModel):
         return TOWER_STATUS.get(status)
 
     @validator("start", "dateCreated", "lastUpdated")
-    def set_datetime(cls, time) -> str:
+    def set_datetime(cls, time) -> Optional[Union[str, datetime]]:
         if type(time) is str:
             return datetime_converter(timestamp=time)
         elif type(time) is datetime:
@@ -126,7 +126,7 @@ class TowerProcess(BaseModel):
         validate_all = True
 
     @validator("dateCreated", "lastUpdated")
-    def set_datetime(cls, time) -> str:
+    def set_datetime(cls, time) -> Optional[Union[str, datetime]]:
         if type(time) is str:
             return datetime_converter(timestamp=time)
         elif type(time) is datetime:
