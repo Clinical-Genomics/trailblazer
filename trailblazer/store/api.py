@@ -493,6 +493,8 @@ class BaseHandler:
         # Currently only one tower ID is supported
         tower_id = safe_load(open(config_file)).get(case_id)[0]
         tower_api = TowerAPI(executor_id=tower_id)
+        LOG.info(f"Requirements: {tower_api.tower_client.meets_requirements}")
+        LOG.info(f"Endpoint: {tower_api.tower_client.tower_api_endpoint}")
         if not tower_api.tower_client.meets_requirements:
             raise TowerRequirementsError
         return tower_api
