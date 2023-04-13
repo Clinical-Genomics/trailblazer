@@ -31,17 +31,23 @@ class TowerAPI(ExecutorAPI):
     @property
     def tower_client(self) -> TowerApiClient:
         """Returns a NF Tower client."""
-        return TowerApiClient(workflow_id=self.executor_id)
+        if not self._tower_client:
+            self._tower_client = TowerApiClient(workflow_id=self.executor_id)
+        return self._tower_client
 
     @property
     def response(self) -> TowerWorkflowResponse:
         """Returns a workflow response dictionary."""
-        return self.tower_client.workflow
+        if not self._response:
+            self._response = self.tower_client.workflow
+        return self._response
 
     @property
     def tasks_response(self) -> TowerTaskResponse:
         """Returns a tasks response dictionary."""
-        return self.tower_client.tasks
+        if not self._tasks_response:
+            self._tasks_response = self.tower_client.tasks
+        return self._tasks_response
 
     @property
     def status(self) -> str:
