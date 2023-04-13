@@ -493,11 +493,6 @@ class BaseHandler:
         # Currently only one tower ID is supported
         tower_id = safe_load(open(config_file)).get(case_id)[0]
         tower_api = TowerAPI(executor_id=tower_id)
-        LOG.info(f"Requirements: {tower_api.tower_client.meets_requirements}")
-        LOG.info(f"Endpoint: {tower_api.tower_client.tower_api_endpoint}")
-        LOG.info(f"tasks: {tower_api.tower_client.tasks}")
-        LOG.info(f"workflow: {tower_api.tower_client.workflow}")
-
         if not tower_api.tower_client.meets_requirements:
             raise TowerRequirementsError
         return tower_api
@@ -508,17 +503,19 @@ class BaseHandler:
         tower_api: TowerAPI = self.query_tower(
             config_file=analysis.config_path, case_id=analysis.family
         )
+
+        LOG.info(f"Print response")
+        LOG.info(f"{tower_api.response}")
+        LOG.info(f"Setting status")
+        analysis.status: str = tower_api.status
+        LOG.info(f"Setting progress")
+        analysis.progress: int = tower_api.progress
+        LOG.info(f"Setting logged_at")
+        analysis.logged_at: dt.datetime = dt.datetime.now()
+        LOG.info(f"Getting job list")
+        job_list = tower_api.get_jobs(analysis_id=analysis.id)
+
         try:
-            LOG.info(f"Print response")
-            LOG.info(f"{tower_api.response}")
-            LOG.info(f"Setting status")
-            # analysis.status: str = tower_api.status
-            LOG.info(f"Setting progress")
-            analysis.progress: int = tower_api.progress
-            LOG.info(f"Setting logged_at")
-            analysis.logged_at: dt.datetime = dt.datetime.now()
-            LOG.info(f"Getting job list")
-            job_list = tower_api.get_jobs(analysis_id=analysis.id)
             LOG.info(f"Setting jobs")
             self.update_jobs(analysis=analysis, jobs=job_list)
             self.commit()
