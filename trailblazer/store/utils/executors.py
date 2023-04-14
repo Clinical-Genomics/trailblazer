@@ -27,6 +27,9 @@ class TowerAPI(ExecutorAPI):
     def __init__(self, executor_id: str, dry_run: bool = False):
         self.executor_id: str = executor_id
         self.dry_run: bool = dry_run
+        self._tower_client = None
+        self._response = None
+        self._tasks_response = None
 
     @property
     def tower_client(self) -> TowerApiClient:
