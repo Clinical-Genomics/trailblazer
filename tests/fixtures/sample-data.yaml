@@ -15,7 +15,7 @@ analyses:
     config_path: fixtures/runs/cuddlyhen/analysis/cuddlyhen_config.yaml
     type: wts
     user: paul.anderson@magnolia.com
-    data_analysis: RNAfusion
+    data_analysis: RNAFUSION
     ticket_id: 123456
     task_manager: NF_Tower
 
@@ -28,7 +28,7 @@ analyses:
     config_path: fixtures/runs/cuddlyhen/analysis/cuddlyhen_config.yaml
     type: wts
     user: paul.anderson@magnolia.com
-    data_analysis: RNAfusion
+    data_analysis: RNAFUSION
     ticket_id: 123456
     task_manager: NF_Tower
 
@@ -41,10 +41,9 @@ analyses:
     config_path: fixtures/runs/cuddlyhen/analysis/cuddlyhen_config.yaml
     type: wts
     user: paul.anderson@magnolia.com
-    data_analysis: RNAfusion
+    data_analysis: RNAFUSION
     ticket_id: 123456
     task_manager: NF_Tower
-
 
   - family: blazinginsect
     version: v4.2.0
