@@ -43,7 +43,6 @@ class TowerApiClient:
     def send_request(self, url: str) -> dict:
         """Sends a request to the server and returns the response."""
         try:
-            LOG.info(f"Using Tower API with the following url:{url}")
             response = requests.get(
                 url,
                 headers=self.headers,
