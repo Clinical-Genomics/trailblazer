@@ -413,7 +413,9 @@ class BaseHandler:
             try:
                 self.update_run_status(analysis_id=analysis_obj.id, ssh=ssh)
             except Exception as error:
-                LOG.error(f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {error}")
+                LOG.error(
+                    f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {type(error).__name__}"
+                )
 
     @staticmethod
     def get_elapsed_time(self, analysis_obj: models.Analysis) -> str:
@@ -509,7 +511,7 @@ class BaseHandler:
             self.update_jobs(analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id))
             self.commit()
         except Exception as error:
-            LOG.error(f"Error logging case - {analysis.family} : {error}")
+            LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
             analysis.status: str = TrailblazerStatus.ERROR.value
             self.commit()
 
