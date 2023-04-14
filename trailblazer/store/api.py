@@ -505,11 +505,15 @@ class BaseHandler:
         )
 
         try:
+            LOG.info(
+                f"Status in Tower: {analysis.family} - {analysis_id} - {tower_api.executor_id}"
+            )
             analysis.status: str = tower_api.status
             analysis.progress: int = tower_api.progress
             analysis.logged_at: dt.datetime = dt.datetime.now()
             self.update_jobs(analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id))
             self.commit()
+            LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
         except Exception as error:
             LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
             analysis.status: str = TrailblazerStatus.ERROR.value
