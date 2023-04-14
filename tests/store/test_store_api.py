@@ -12,7 +12,6 @@ from trailblazer.store.models import Analysis, Job
 
 
 def test_setup_and_info(store):
-
     # GIVEN a store which is already setup
     assert len(store.engine.table_names()) > 0
 
@@ -45,7 +44,6 @@ def test_add_user(store):
 
 
 def test_user(store):
-
     # GIVEN a database with a user
     name, email = "Paul T. Anderson", "paul.anderson@magnolia.com"
     store.add_user(name, email)
@@ -65,7 +63,6 @@ def test_user(store):
 
 
 def test_analysis(sample_store):
-
     # GIVEN a store with an analysis
     existing_analysis = sample_store.analyses().first()
 
@@ -95,7 +92,6 @@ def test_analysis(sample_store):
     ],
 )
 def test_is_latest_analysis_ongoing(sample_store, family: str, expected_bool: bool):
-
     # GIVEN an analysis
     sample_store.update_ongoing_analyses()
     analysis_objs = sample_store.analyses(case_id=family).first()
@@ -159,7 +155,6 @@ def test_add_comment(sample_store):
     ],
 )
 def test_is_latest_analysis_failed(sample_store, family: str, expected_bool: bool):
-
     # GIVEN an analysis
     sample_store.update_ongoing_analyses()
     analysis_objs = sample_store.analyses(case_id=family).first()
@@ -204,7 +199,6 @@ def test_is_latest_analysis_completed(sample_store, family: str, expected_bool: 
     ],
 )
 def test_get_latest_analysis_status(sample_store, family: str, expected_status: str):
-
     # GIVEN an analysis
     sample_store.update_ongoing_analyses()
     analysis_objs = sample_store.analyses(case_id=family).first()
@@ -235,7 +229,6 @@ def test_get_latest_analysis_status(sample_store, family: str, expected_status: 
     ],
 )
 def test_update(sample_store, case_id, status):
-
     # GIVEN an analysis
     analysis_obj = sample_store.get_latest_analysis(case_id)
 
@@ -253,7 +246,6 @@ def test_update(sample_store, case_id, status):
 
 
 def test_mark_analyses_deleted(sample_store):
-
     # GIVEN case_id for a case that is not deleted
     case_id = "liberatedunicorn"
     analysis_obj = sample_store.get_latest_analysis(case_id)

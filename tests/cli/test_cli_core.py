@@ -18,7 +18,6 @@ def test_base(cli_runner):
 
 
 def test_set_analysis_completed(cli_runner, trailblazer_context, caplog):
-
     # GIVEN an analysis with status FAILED
     failed_analysis = "crackpanda"
     analysis_obj = trailblazer_context["trailblazer"].get_latest_analysis(case_id=failed_analysis)
@@ -41,7 +40,6 @@ def test_set_analysis_completed(cli_runner, trailblazer_context, caplog):
 
 def test_cancel_nonexistent(cli_runner, trailblazer_context, caplog):
     with caplog.at_level("ERROR"):
-
         # GIVEN Trailblazer database with analyses and jobs
         trailblazer_context["trailblazer"].update_ongoing_analyses()
 
@@ -57,7 +55,6 @@ def test_cancel_nonexistent(cli_runner, trailblazer_context, caplog):
 
 def test_cancel_not_running(cli_runner, trailblazer_context, caplog):
     with caplog.at_level("ERROR"):
-
         # GIVEN an analysis that is NOT running
         failed_analysis = "crackpanda"
         analysis_obj = trailblazer_context["trailblazer"].get_latest_analysis(
@@ -76,7 +73,6 @@ def test_cancel_not_running(cli_runner, trailblazer_context, caplog):
 
 def test_cancel_ongoing(cli_runner, trailblazer_context, caplog):
     with caplog.at_level("INFO"):
-
         # GIVEN an analysis that is running
         trailblazer_context["trailblazer"].update_ongoing_analyses()
         analysis_obj = trailblazer_context["trailblazer"].get_latest_analysis(
@@ -106,7 +102,6 @@ def test_cancel_ongoing(cli_runner, trailblazer_context, caplog):
 
 def test_delete_nonexisting(cli_runner, trailblazer_context, caplog):
     with caplog.at_level("ERROR"):
-
         # GIVEN Trailblazer database with analyses and jobs
         trailblazer_context["trailblazer"].update_ongoing_analyses()
 
@@ -119,7 +114,6 @@ def test_delete_nonexisting(cli_runner, trailblazer_context, caplog):
 
 def test_delete_ongoing_fail(cli_runner, trailblazer_context, caplog):
     with caplog.at_level("ERROR"):
-
         # GIVEN Trailblazer database with analyses and jobs
         trailblazer_context["trailblazer"].update_ongoing_analyses()
 
