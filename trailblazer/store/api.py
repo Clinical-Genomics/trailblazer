@@ -412,10 +412,8 @@ class BaseHandler:
         for analysis_obj in ongoing_analyses:
             try:
                 self.update_run_status(analysis_id=analysis_obj.id, ssh=ssh)
-            except Exception as e:
-                LOG.error(
-                    f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {e.__class__.__name__}"
-                )
+            except Exception as error:
+                LOG.error(f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {error}")
 
     @staticmethod
     def get_elapsed_time(self, analysis_obj: models.Analysis) -> str:
