@@ -25,6 +25,8 @@ class TowerApiClient:
 
     @property
     def headers(self) -> dict:
+        """Return headers required for an NF Tower API call.
+        Accept and Authorization fields are mandatory."""
         return {
             "Accept": "application/json",
             "Authorization": f"Bearer {self.tower_access_token}",
@@ -32,6 +34,8 @@ class TowerApiClient:
 
     @property
     def request_params(self) -> List[Tuple]:
+        """Return required parameters for an NF Tower API call.
+        Workspace ID is mandatory."""
         return [
             ("workspaceId", self.workspace_id),
         ]
@@ -41,7 +45,11 @@ class TowerApiClient:
         return self.tower_api_endpoint + endpoint
 
     def send_request(self, url: str) -> dict:
-        """Sends a request to the server and returns the response."""
+        """Sends a request to the server and returns the response. NF Tower API calls follow the next schema:
+        curl -X GET "<URL>?workspaceId=<WORKSPACE_ID>" \
+        -H "Accept: application/json"  \
+        -H "Authorization: Bearer <TOWER_ACCESS_TOKEN>
+        """
         try:
             response = requests.get(
                 url,
@@ -74,14 +82,14 @@ class TowerApiClient:
 
     @property
     def tasks(self) -> TowerTaskResponse:
-        """Return a tasks response."""
+        """Return a tasks response with information about submitted jobs."""
         if self.meets_requirements:
             url = self.build_url(endpoint=self.tasks_endpoint)
             return TowerTaskResponse(**self.send_request(url=url))
 
     @property
     def workflow(self) -> TowerWorkflowResponse:
-        """Return a workflow response."""
+        """Return a workflow response with general information about the analysis."""
         if self.meets_requirements:
             url = self.build_url(endpoint=self.workflow_endpoint)
             return TowerWorkflowResponse(**self.send_request(url=url))
