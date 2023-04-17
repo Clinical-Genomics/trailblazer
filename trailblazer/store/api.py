@@ -492,7 +492,7 @@ class BaseHandler:
     def query_tower(config_file: str, case_id: str):
         # Currently only one tower ID is supported
         tower_id = safe_load(open(config_file)).get(case_id)[0]
-        tower_api = TowerAPI(executor_id=tower_id)
+        tower_api = TowerAPI(workflow_id=tower_id)
         if not tower_api.tower_client.meets_requirements:
             raise TowerRequirementsError
         return tower_api
@@ -506,7 +506,7 @@ class BaseHandler:
 
         try:
             LOG.info(
-                f"Status in Tower: {analysis.family} - {analysis_id} - {tower_api.executor_id}"
+                f"Status in Tower: {analysis.family} - {analysis_id} - {tower_api.workflow_id}"
             )
             analysis.status: str = tower_api.status
             analysis.progress: int = tower_api.progress

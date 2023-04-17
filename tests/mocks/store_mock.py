@@ -56,7 +56,7 @@ class MockStore(Store):
             },
         }
         case = configs.get(case_id)
-        tower_api = MockTowerAPI(executor_id=case.get("tower_id"))
+        tower_api = MockTowerAPI(workflow_id=case.get("tower_id"))
         tower_api.mock_query(response_file=case.get("workflow_response_file"))
         tower_api.mock_tasks_query(response_file=case.get("tasks_response_file"))
         return tower_api

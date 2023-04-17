@@ -24,8 +24,8 @@ class ExecutorAPI:
 class TowerAPI(ExecutorAPI):
     """Class communicating with NF tower regarding a given analysis (workflow)."""
 
-    def __init__(self, executor_id: str, dry_run: bool = False):
-        self.executor_id: str = executor_id
+    def __init__(self, workflow_id: str, dry_run: bool = False):
+        self.workflow_id: str = workflow_id
         self.dry_run: bool = dry_run
         self._tower_client = None
         self._response = None
@@ -35,7 +35,7 @@ class TowerAPI(ExecutorAPI):
     def tower_client(self) -> TowerApiClient:
         """Returns a NF Tower client."""
         if not self._tower_client:
-            self._tower_client = TowerApiClient(workflow_id=self.executor_id)
+            self._tower_client = TowerApiClient(workflow_id=self.workflow_id)
         return self._tower_client
 
     @property
