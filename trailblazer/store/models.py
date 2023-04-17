@@ -10,8 +10,8 @@ from trailblazer.constants import (
     PRIORITY_OPTIONS,
     STATUS_OPTIONS,
     TYPES,
-    TaskManager,
     TrailblazerStatus,
+    WorkflowManager,
 )
 
 Model = alchy.make_declarative_base(Base=alchy.ModelBase)
@@ -77,7 +77,9 @@ class Analysis(Model):
     data_analysis = Column(types.String(32))
     ticket_id = Column(types.String(32))
     uploaded_at = Column(types.DateTime)
-    task_manager = Column(types.Enum(*TaskManager.list()), default=TaskManager.SLURM.value)
+    workflow_manager = Column(
+        types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM.value
+    )
 
     failed_jobs = orm.relationship("Job", backref="analysis")
 

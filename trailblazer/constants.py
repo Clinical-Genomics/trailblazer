@@ -15,11 +15,11 @@ PRIORITY_OPTIONS = ("low", "normal", "high", "express", "maintenance")
 TYPES = ("other", "rna", "tgs", "wes", "wgs", "wts")
 
 
-class TaskManager(Enum):
+class WorkflowManager(Enum):
     """Supported task managers."""
 
-    SLURM: str = "Slurm"
-    TOWER: str = "NF_Tower"
+    SLURM: str = "slurm"
+    TOWER: str = "nf_tower"
 
     @classmethod
     def list(cls):

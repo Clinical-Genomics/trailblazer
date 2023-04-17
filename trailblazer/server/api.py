@@ -242,7 +242,7 @@ def post_add_pending_analysis():
             priority=content.get("priority"),
             data_analysis=content.get("data_analysis"),
             ticket_id=content.get("ticket"),
-            task_manager=content.get("task_manager"),
+            workflow_manager=content.get("workflow_manager"),
         )
         data = stringify_timestamps(analysis_obj.to_dict())
         return jsonify(**data), 201

@@ -17,7 +17,7 @@ analyses:
     user: paul.anderson@magnolia.com
     data_analysis: RNAFUSION
     ticket_id: 123456
-    task_manager: NF_Tower
+    workflow_manager: nf_tower
 
   - family: cuddlyhen_pending
     version: v4.2.0
@@ -30,7 +30,7 @@ analyses:
     user: paul.anderson@magnolia.com
     data_analysis: RNAFUSION
     ticket_id: 123456
-    task_manager: NF_Tower
+    workflow_manager: nf_tower
 
   - family: cuddlyhen_completed
     version: v4.2.0
@@ -43,7 +43,7 @@ analyses:
     user: paul.anderson@magnolia.com
     data_analysis: RNAFUSION
     ticket_id: 123456
-    task_manager: NF_Tower
+    workflow_manager: nf_tower
 
   - family: blazinginsect
     version: v4.2.0
@@ -57,7 +57,7 @@ analyses:
     progress: .54
     data_analysis: MIP-DNA
     ticket_id: 123456
-    task_manager: Slurm
+    workflow_manager: slurm
 
   - family: nicemice
     version: v3.5.0
