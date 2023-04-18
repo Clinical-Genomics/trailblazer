@@ -13,6 +13,7 @@ from alchy import Query
 from dateutil.parser import parse as parse_datestr
 from ruamel.yaml import safe_load
 
+from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import (
     COMPLETED_STATUS,
     FAILED_STATUS,
@@ -26,7 +27,6 @@ from trailblazer.exc import EmptySqueueError, TowerRequirementsError, Trailblaze
 from trailblazer.store import models
 from trailblazer.store.models import Analysis
 from trailblazer.store.utils import formatters
-from trailblazer.store.utils.executors import TowerAPI
 
 LOG = logging.getLogger(__name__)
 

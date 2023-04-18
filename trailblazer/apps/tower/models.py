@@ -3,24 +3,8 @@ from typing import Dict, List, Optional, Union
 
 from pydantic import BaseModel, validator
 
-from trailblazer.constants import (
-    TOWER_PROCESS_STATUS,
-    TOWER_STATUS,
-    TOWER_TIMESTAMP_FORMAT,
-    TOWER_TIMESTAMP_FORMAT_ALTERNATIVE,
-    TrailblazerStatus,
-)
-
-
-def datetime_converter(timestamp: str, allowed_formats: Optional[List[str]] = None) -> datetime:
-    """Converts a timestamp into a datatime object."""
-    if allowed_formats is None:
-        allowed_formats = [TOWER_TIMESTAMP_FORMAT, TOWER_TIMESTAMP_FORMAT_ALTERNATIVE]
-    for dt_format in allowed_formats:
-        try:
-            return datetime.strptime(timestamp, dt_format)
-        except ValueError:
-            continue
+from trailblazer.constants import TOWER_PROCESS_STATUS, TOWER_STATUS, TrailblazerStatus
+from trailblazer.utils.datetime import tower_datetime_converter
 
 
 class TowerTask(BaseModel):
@@ -90,7 +74,7 @@ class TowerTask(BaseModel):
     @validator("start", "dateCreated", "lastUpdated")
     def set_datetime(cls, time) -> Optional[Union[str, datetime]]:
         if type(time) is str:
-            return datetime_converter(timestamp=time)
+            return tower_datetime_converter(timestamp=time)
         elif type(time) is datetime:
             return time
         else:
@@ -128,7 +112,7 @@ class TowerProcess(BaseModel):
     @validator("dateCreated", "lastUpdated")
     def set_datetime(cls, time) -> Optional[Union[str, datetime]]:
         if type(time) is str:
-            return datetime_converter(timestamp=time)
+            return tower_datetime_converter(timestamp=time)
         elif type(time) is datetime:
             return time
         else:

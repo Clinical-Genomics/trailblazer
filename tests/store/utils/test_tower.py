@@ -1,5 +1,5 @@
+from trailblazer.apps.tower.models import TowerTask
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.store.utils.tower import TowerTask
 
 
 def test_tower_task_properties(

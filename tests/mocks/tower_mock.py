@@ -2,9 +2,9 @@ from json import JSONDecodeError
 from pathlib import Path
 from typing import Any, Optional
 
+from trailblazer.apps.tower.api import TowerAPI
+from trailblazer.apps.tower.models import TowerTaskResponse, TowerWorkflowResponse
 from trailblazer.io.json import read_json
-from trailblazer.store.utils.executors import TowerAPI
-from trailblazer.store.utils.tower import TowerTaskResponse, TowerWorkflowResponse
 
 
 class MockTowerAPI(TowerAPI):

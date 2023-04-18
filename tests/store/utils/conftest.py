@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
+from trailblazer.apps.tower.models import TowerTask
 from trailblazer.io.json import read_json
-from trailblazer.store.utils.tower import TowerTask
 
 TOWER_RESPONSE_DIR: Path = Path("tests", "fixtures", "tower")
 TOWER_ID: str = "1m759EPcbjuK7n"
