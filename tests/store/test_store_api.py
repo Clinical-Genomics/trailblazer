@@ -1,13 +1,15 @@
-# -*- coding: utf-8 -*-
 import datetime
+from typing import List
 
 import pytest
 
+from tests.apps.tower.conftest import CaseIDs
+from tests.mocks.store_mock import MockStore
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Analysis
 
 
 def test_setup_and_info(store):
-
     # GIVEN a store which is already setup
     assert len(store.engine.table_names()) > 0
 
@@ -40,7 +42,6 @@ def test_add_user(store):
 
 
 def test_user(store):
-
     # GIVEN a database with a user
     name, email = "Paul T. Anderson", "paul.anderson@magnolia.com"
     store.add_user(name, email)
@@ -60,7 +61,6 @@ def test_user(store):
 
 
 def test_analysis(sample_store):
-
     # GIVEN a store with an analysis
     existing_analysis = sample_store.analyses().first()
 
@@ -90,7 +90,6 @@ def test_analysis(sample_store):
     ],
 )
 def test_is_latest_analysis_ongoing(sample_store, family: str, expected_bool: bool):
-
     # GIVEN an analysis
     sample_store.update_ongoing_analyses()
     analysis_objs = sample_store.analyses(case_id=family).first()
@@ -154,7 +153,6 @@ def test_add_comment(sample_store):
     ],
 )
 def test_is_latest_analysis_failed(sample_store, family: str, expected_bool: bool):
-
     # GIVEN an analysis
     sample_store.update_ongoing_analyses()
     analysis_objs = sample_store.analyses(case_id=family).first()
@@ -199,7 +197,6 @@ def test_is_latest_analysis_completed(sample_store, family: str, expected_bool: 
     ],
 )
 def test_get_latest_analysis_status(sample_store, family: str, expected_status: str):
-
     # GIVEN an analysis
     sample_store.update_ongoing_analyses()
     analysis_objs = sample_store.analyses(case_id=family).first()
@@ -230,7 +227,6 @@ def test_get_latest_analysis_status(sample_store, family: str, expected_status: 
     ],
 )
 def test_update(sample_store, case_id, status):
-
     # GIVEN an analysis
     analysis_obj = sample_store.get_latest_analysis(case_id)
 
@@ -248,7 +244,6 @@ def test_update(sample_store, case_id, status):
 
 
 def test_mark_analyses_deleted(sample_store):
-
     # GIVEN case_id for a case that is not deleted
     case_id = "liberatedunicorn"
     analysis_obj = sample_store.get_latest_analysis(case_id)
@@ -260,3 +255,53 @@ def test_mark_analyses_deleted(sample_store):
 
     # THEN analysis is marked deleted
     assert analysis_obj.is_deleted
+
+
+def test_update_tower_jobs(sample_store: MockStore, tower_jobs: List[dict], case_id: str):
+    """Assess that jobs are successfully updated when using NF Tower."""
+
+    # GIVEN an analysis without failed jobs
+    analysis: Analysis = sample_store.get_latest_analysis(case_id=case_id)
+    assert not analysis.failed_jobs
+
+    # WHEN jobs are updated
+    sample_store.update_jobs(analysis=analysis, jobs=tower_jobs)
+
+    # THEN analysis object should have failed jobs
+    assert len(analysis.failed_jobs) == 3
+
+    # WHEN jobs are updated a second time
+    sample_store.update_jobs(analysis=analysis, jobs=tower_jobs[:2])
+
+    # THEN failed jobs should be updated
+    assert len(analysis.failed_jobs) == 2
+
+
+@pytest.mark.parametrize(
+    "case_id, status, progress",
+    [
+        (CaseIDs.RUNNING, TrailblazerStatus.RUNNING.value, 15),
+        (CaseIDs.PENDING, TrailblazerStatus.PENDING.value, 0),
+        (CaseIDs.COMPLETED, TrailblazerStatus.COMPLETED.value, 100),
+    ],
+)
+def test_update_tower_run_status(sample_store: MockStore, case_id: str, status: str, progress: int):
+    """Assess that an analysis status is successfully updated when using NF Tower."""
+
+    # GIVEN an analysis with pending status
+    analysis: Analysis = sample_store.get_latest_analysis(case_id=case_id)
+    assert analysis.status == TrailblazerStatus.PENDING.value
+
+    # WHEN database is updated once
+    sample_store.update_run_status(analysis_id=analysis.id)
+
+    # THEN analysis status is changed to what is expected
+    assert analysis.status == status
+    assert analysis.progress == progress
+
+    # WHEN database is updated a second time
+    sample_store.update_run_status(analysis_id=analysis.id)
+
+    # THEN the status is still as before, and no database errors were raised
+    assert analysis.status == status
+    assert analysis.progress == progress
