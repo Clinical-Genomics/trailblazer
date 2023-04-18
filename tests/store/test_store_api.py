@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 import datetime
-from copy import deepcopy
 from typing import List
 
 import pytest
 
+from tests.apps.tower.conftest import CaseIDs
 from tests.mocks.store_mock import MockStore
-from tests.store.utils.conftest import CaseIDs
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.store.models import Analysis, Job
+from trailblazer.store.models import Analysis
 
 
 def test_setup_and_info(store):

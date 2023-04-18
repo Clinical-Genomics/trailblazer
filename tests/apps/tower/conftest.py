@@ -1,9 +1,9 @@
+import datetime as dt
 from pathlib import Path
 
 import pytest
 
-from trailblazer.apps.tower.models import TowerTask
-from trailblazer.io.json import read_json
+from trailblazer.constants import TOWER_TIMESTAMP_FORMAT
 
 TOWER_RESPONSE_DIR: Path = Path("tests", "fixtures", "tower")
 TOWER_ID: str = "1m759EPcbjuK7n"
@@ -41,12 +41,6 @@ def fixture_tower_config_file() -> str:
     return Path("tests", "fixtures", "case", "cuddlyhen_tower_id.yaml").as_posix()
 
 
-@pytest.fixture(name="tower_task")
-def fixture_tower_task() -> TowerTask:
-    """Return a NF Tower task."""
-    return TowerTask(**read_json(TowerTaskResponseFile.RUNNING)["tasks"][0]["task"])
-
-
 @pytest.fixture(name="tower_task_response_pending")
 def fixture_tower_task_response_pending() -> Path:
     """Return an NF Tower task response for a pending case."""
@@ -57,3 +51,21 @@ def fixture_tower_task_response_pending() -> Path:
 def fixture_tower_task_response_running() -> Path:
     """Return an NF Tower task response for a running case."""
     return TowerTaskResponseFile.RUNNING
+
+
+@pytest.fixture(name="created_at")
+def fixture_created_at() -> dt.datetime:
+    """Returns a created at date."""
+    return dt.datetime.strptime("2023-04-04T08:11:24Z", TOWER_TIMESTAMP_FORMAT)
+
+
+@pytest.fixture(name="last_updated")
+def fixture_last_updated() -> dt.datetime:
+    """Returns a last updated date."""
+    return dt.datetime.strptime("2023-04-04T08:11:28Z", TOWER_TIMESTAMP_FORMAT)
+
+
+@pytest.fixture(name="tower_task_duration")
+def fixture_tower_task_duration() -> int:
+    """Returns the duration of a NF Tower task."""
+    return 3798

@@ -1,9 +1,7 @@
 import subprocess
 
-import pytest
-
+from tests.apps.tower.conftest import TOWER_ID, CaseIDs, TowerResponseFile, TowerTaskResponseFile
 from tests.mocks.tower_mock import MockTowerAPI
-from tests.store.utils.conftest import TOWER_ID, CaseIDs, TowerResponseFile, TowerTaskResponseFile
 from trailblazer.store import Store
 
 
