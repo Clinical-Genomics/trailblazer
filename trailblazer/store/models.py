@@ -10,7 +10,6 @@ from trailblazer.constants import (
     PRIORITY_OPTIONS,
     STATUS_OPTIONS,
     TYPES,
-    TrailblazerStatus,
     WorkflowManager,
 )
 

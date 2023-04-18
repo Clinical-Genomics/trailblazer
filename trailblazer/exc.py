@@ -23,7 +23,7 @@ class TowerError(Exception):
 
 
 class TowerRequirementsError(TowerError):
-    """Raised when tower requirements are not satisfied."""
+    """Raised when Tower requirements are not satisfied."""
 
 
 class TowerResponseError(TowerError):

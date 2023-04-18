@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import datetime as dt
 from typing import List
 
@@ -16,7 +15,7 @@ def fixture_timestamp_now() -> dt.datetime:
 
 @pytest.fixture(name="analysis_id")
 def fixture_analysis_id() -> int:
-    """Return an analysis id."""
+    """Return a mock ID of the analysis in the Trailblazer database."""
     return 1
 
 
@@ -38,9 +37,9 @@ def fixture_last_updated() -> dt.datetime:
     return dt.datetime.strptime("2023-04-04T08:11:28Z", TOWER_TIMESTAMP_FORMAT)
 
 
-@pytest.fixture(name="duration")
-def fixture_duration() -> int:
-    """Returns the duration of a task."""
+@pytest.fixture(name="tower_task_duration")
+def fixture_tower_task_duration() -> int:
+    """Returns the duration of a NF Tower task."""
     return 3798
 
 
@@ -50,20 +49,20 @@ def fixture_slurm_id() -> str:
     return "4611827"
 
 
-@pytest.fixture(name="task_name")
-def fixture_task_name() -> str:
-    """Returns a task name."""
+@pytest.fixture(name="tower_task_name")
+def fixture_tower_task_name() -> str:
+    """Returns a NF Tower task name."""
     return "NFCORE_RNAFUSION:RNAFUSION:INPUT_CHECK:SAMPLESHEET_CHECK"
 
 
-@pytest.fixture(name="jobs_list")
-def fixture_jobs_list(analysis_id, started_at, slurm_id, task_name) -> List[dict]:
+@pytest.fixture(name="tower_jobs")
+def fixture_tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> List[dict]:
     """Return a list of Tower Jobs."""
     return [
         dict(
             analysis_id=analysis_id,
             slurm_id=slurm_id,
-            name=task_name,
+            name=tower_task_name,
             started_at=started_at,
             elapsed=63,
             status=TrailblazerStatus.COMPLETED.value,

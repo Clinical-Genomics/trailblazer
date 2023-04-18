@@ -1,4 +1,5 @@
-"""Code for talking to Tower Open API"""
+"""Module for Tower Open API."""
+
 import logging
 import os
 from typing import List, Tuple

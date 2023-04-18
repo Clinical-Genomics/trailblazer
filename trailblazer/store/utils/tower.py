@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Union
 from pydantic import BaseModel, validator
 
 from trailblazer.constants import (
-    PROCESS_STATUS,
+    TOWER_PROCESS_STATUS,
     TOWER_STATUS,
     TOWER_TIMESTAMP_FORMAT,
     TOWER_TIMESTAMP_FORMAT_ALTERNATIVE,
@@ -141,9 +141,9 @@ class TowerProcess(BaseModel):
 
     @property
     def status(cls) -> str:
-        for status_flag in PROCESS_STATUS.keys():
+        for status_flag in TOWER_PROCESS_STATUS.keys():
             if cls.dict().get(status_flag, 0):
-                return PROCESS_STATUS.get(status_flag)
+                return TOWER_PROCESS_STATUS.get(status_flag)
         return TrailblazerStatus.ERROR.value
 
 

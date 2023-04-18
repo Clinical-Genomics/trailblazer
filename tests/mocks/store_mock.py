@@ -8,10 +8,11 @@ from trailblazer.store import Store
 
 
 class MockStore(Store):
-    """Instance of TrailblazerAPI that mimics expected SLURM output"""
+    """Instance of Store that mimics workflow manager outputs and interactions."""
 
     @staticmethod
     def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> bytes:
+        """Mock SLURM output."""
         slurm_dict = {
             "blazinginsect": "tests/fixtures/sacct/blazinginsect_sacct",  # running
             "crackpanda": "tests/fixtures/sacct/crackpanda_sacct",  # failed
@@ -34,7 +35,7 @@ class MockStore(Store):
 
     @staticmethod
     def query_tower(config_file: str, case_id: str) -> MockTowerAPI:
-        """Return a mocked NF Tower API."""
+        """Return a mocked NF Tower API response."""
         configs = {
             CaseIDs.RUNNING: {
                 "workflow_response_file": TowerResponseFile.RUNNING,

@@ -259,21 +259,21 @@ def test_mark_analyses_deleted(sample_store):
     assert analysis_obj.is_deleted
 
 
-def test_update_tower_jobs(sample_store: MockStore, jobs_list: List[dict], case_id: str):
-    """Assess that an jobs are successfully updated when using NF Tower."""
+def test_update_tower_jobs(sample_store: MockStore, tower_jobs: List[dict], case_id: str):
+    """Assess that jobs are successfully updated when using NF Tower."""
 
     # GIVEN an analysis without failed jobs
     analysis: Analysis = sample_store.get_latest_analysis(case_id=case_id)
     assert not analysis.failed_jobs
 
     # WHEN jobs are updated
-    sample_store.update_jobs(analysis=analysis, jobs=jobs_list)
+    sample_store.update_jobs(analysis=analysis, jobs=tower_jobs)
 
     # THEN analysis object should have failed jobs
     assert len(analysis.failed_jobs) == 3
 
     # WHEN jobs are updated a second time
-    sample_store.update_jobs(analysis=analysis, jobs=jobs_list[:2])
+    sample_store.update_jobs(analysis=analysis, jobs=tower_jobs[:2])
 
     # THEN failed jobs should be updated
     assert len(analysis.failed_jobs) == 2

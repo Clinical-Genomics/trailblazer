@@ -34,7 +34,7 @@ class TrailblazerStatus(Enum):
     COMPLETED: str = "completed"
     FAILED: str = "failed"
     ERROR: str = "error"
-    CANCELLED: str = "cancelled"
+    CANCELLED: str = "canceled"
     COMPLETING: str = "completing"
 
 
@@ -49,7 +49,7 @@ TOWER_STATUS: Dict[str, str] = {
 }
 
 
-PROCESS_STATUS: Dict[str, str] = {
+TOWER_PROCESS_STATUS: Dict[str, str] = {
     "submitted": TrailblazerStatus.PENDING.value,
     "pending": TrailblazerStatus.PENDING.value,
     "running": TrailblazerStatus.RUNNING.value,

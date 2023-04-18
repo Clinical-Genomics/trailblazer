@@ -1,3 +1,5 @@
+from typing import Dict
+
 import pytest
 import ruamel.yaml
 
@@ -5,7 +7,7 @@ from tests.mocks.store_mock import MockStore
 
 
 @pytest.fixture(scope="function")
-def trailblazer_context(sample_store: MockStore) -> dict:
+def trailblazer_context(sample_store: MockStore) -> Dict[str, MockStore]:
     """Trailblazer context to be used in CLI."""
     return {"trailblazer": sample_store}
 

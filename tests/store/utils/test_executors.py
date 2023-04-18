@@ -113,7 +113,7 @@ def test_tower_api_tasks(
     tower_id: str,
     analysis_id: int,
     tower_task_response_running: Path,
-    jobs_list: List[dict],
+    tower_jobs: List[dict],
 ) -> None:
     """Assess that TowerAPI returns a list of tasks given a response."""
 
@@ -126,7 +126,7 @@ def test_tower_api_tasks(
 
     # THEN a list of jobs should be returned
     for job_nr in range(1, len(jobs)):
-        assert dict(jobs[job_nr]) == dict(jobs_list[job_nr])
+        assert dict(jobs[job_nr]) == dict(tower_jobs[job_nr])
 
 
 def test_tower_api_tasks_empty(

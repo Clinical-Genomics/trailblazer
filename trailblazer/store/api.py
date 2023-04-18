@@ -437,7 +437,7 @@ class BaseHandler:
             return
         if analysis.workflow_manager == WorkflowManager.TOWER.value:
             self.update_tower_run_status(analysis_id=analysis_id)
-        else:
+        elif analysis.workflow_manager == WorkflowManager.SLURM.value:
             self.update_slurm_run_status(analysis_id=analysis_id, ssh=ssh)
 
     def update_slurm_run_status(self, analysis_id: int, ssh: bool = False) -> None:
@@ -461,23 +461,23 @@ class BaseHandler:
             analysis.progress = float(status_distribution.get("COMPLETED", 0.0))
             if status_distribution.get("FAILED") or status_distribution.get("TIMEOUT"):
                 if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):
-                    analysis.status = "error"
+                    analysis.status = TrailblazerStatus.ERROR.value
                 else:
-                    analysis.status = "failed"
+                    analysis.status = TrailblazerStatus.FAILED.value
 
             elif status_distribution.get("COMPLETED") == 1:
-                analysis.status = "completed"
+                analysis.status = TrailblazerStatus.COMPLETED.value
 
             elif status_distribution.get("PENDING") == 1:
-                analysis.status = "pending"
+                analysis.status = TrailblazerStatus.PENDING.value
 
             elif status_distribution.get("RUNNING"):
-                analysis.status = "running"
+                analysis.status = TrailblazerStatus.RUNNING.value
 
             elif status_distribution.get("CANCELLED") and not (
                 status_distribution.get("RUNNING") or status_distribution.get("PENDING")
             ):
-                analysis.status = "canceled"
+                analysis.status = TrailblazerStatus.CANCELLED.value
 
             LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
             self.commit()
@@ -489,10 +489,11 @@ class BaseHandler:
             self.commit()
 
     @staticmethod
-    def query_tower(config_file: str, case_id: str):
-        # Currently only one tower ID is supported
-        tower_id = safe_load(open(config_file)).get(case_id)[0]
-        tower_api = TowerAPI(workflow_id=tower_id)
+    def query_tower(config_file: str, case_id: str) -> TowerAPI:
+        """Parse a config file to extract a NF Tower workflow ID and return a TowerAPI.
+        Currently only one tower ID is supported."""
+        workflow_id: int = safe_load(open(config_file)).get(case_id)[0]
+        tower_api = TowerAPI(workflow_id=workflow_id)
         if not tower_api.tower_client.meets_requirements:
             raise TowerRequirementsError
         return tower_api
