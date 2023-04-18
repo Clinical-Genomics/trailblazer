@@ -103,13 +103,7 @@ class TowerApiClient:
             return TowerWorkflowResponse(**self.send_request(url=url))
 
 
-class ExecutorAPI:
-    """Handles communication between executors and trailblazer."""
-
-    pass
-
-
-class TowerAPI(ExecutorAPI):
+class TowerAPI:
     """Class communicating with NF tower regarding a given analysis (workflow)."""
 
     def __init__(self, workflow_id: str, dry_run: bool = False):
