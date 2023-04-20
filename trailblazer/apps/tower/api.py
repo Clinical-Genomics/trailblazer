@@ -183,7 +183,7 @@ class TowerAPI:
         processes to be run is unknown."""
         if self.is_complete:
             return 100
-        elif self.is_pending:
+        elif self.is_pending or self.total_jobs == 0:
             return 0
         else:
             return int(self.succeeded_jobs * 100.0 / self.total_jobs)
