@@ -177,7 +177,7 @@ class TowerAPI:
         return sum(process.is_complete for process in self.processes)
 
     @property
-    def progress(self) -> int:
+    def progress(self) -> float:
         """Returns the progress fraction of a workflow.
         Note this number is not accurate since that exact number of
         processes to be run is unknown."""
@@ -186,7 +186,7 @@ class TowerAPI:
         elif self.is_pending or self.total_jobs == 0:
             return 0
         else:
-            return int(self.succeeded_jobs / self.total_jobs)
+            return round(float(self.succeeded_jobs) / self.total_jobs, 2)
 
     def get_jobs(self, analysis_id: int) -> List[dict]:
         """Returns a list of jobs associated to a workflow."""
