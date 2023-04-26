@@ -93,11 +93,11 @@ def test_tower_api_succeeded_jobs(
     "response_file, expected_progress",
     [
         (TowerResponseFile.PENDING, 0),
-        (TowerResponseFile.RUNNING, 15),
-        (TowerResponseFile.COMPLETED, 100),
+        (TowerResponseFile.RUNNING, 0.15),
+        (TowerResponseFile.COMPLETED, 1),
     ],
 )
-def test_tower_api_progress(tower_id: str, response_file: Path, expected_progress: int) -> None:
+def test_tower_api_progress(tower_id: str, response_file: Path, expected_progress: float) -> None:
     """Assess that TowerAPI returns the progress percentage given a response."""
 
     # GIVEN an tower_api with a mock query response
