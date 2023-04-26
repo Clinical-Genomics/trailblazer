@@ -178,15 +178,15 @@ class TowerAPI:
 
     @property
     def progress(self) -> int:
-        """Returns the progress percentage of a workflow.
+        """Returns the progress fraction of a workflow.
         Note this number is not accurate since that exact number of
         processes to be run is unknown."""
         if self.is_complete:
-            return 100
+            return 1
         elif self.is_pending or self.total_jobs == 0:
             return 0
         else:
-            return int(self.succeeded_jobs * 100.0 / self.total_jobs)
+            return int(self.succeeded_jobs / self.total_jobs)
 
     def get_jobs(self, analysis_id: int) -> List[dict]:
         """Returns a list of jobs associated to a workflow."""
