@@ -280,9 +280,9 @@ def test_update_tower_jobs(sample_store: MockStore, tower_jobs: List[dict], case
 @pytest.mark.parametrize(
     "case_id, status, progress",
     [
-        (CaseIDs.RUNNING, TrailblazerStatus.RUNNING.value, 15),
+        (CaseIDs.RUNNING, TrailblazerStatus.RUNNING.value, 0.15),
         (CaseIDs.PENDING, TrailblazerStatus.PENDING.value, 0),
-        (CaseIDs.COMPLETED, TrailblazerStatus.COMPLETED.value, 100),
+        (CaseIDs.COMPLETED, TrailblazerStatus.COMPLETED.value, 1),
     ],
 )
 def test_update_tower_run_status(sample_store: MockStore, case_id: str, status: str, progress: int):
