@@ -14,7 +14,7 @@ from trailblazer.constants import TrailblazerStatus
     [
         (TowerResponseFile.PENDING, TrailblazerStatus.PENDING.value),
         (TowerResponseFile.RUNNING, TrailblazerStatus.RUNNING.value),
-        (TowerResponseFile.COMPLETED, TrailblazerStatus.COMPLETED.value),
+        (TowerResponseFile.COMPLETED, TrailblazerStatus.QC.value),
     ],
 )
 def test_tower_api_status(tower_id: str, response_file: Path, expected_status: str) -> None:
