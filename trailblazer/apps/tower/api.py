@@ -155,7 +155,7 @@ class TowerAPI:
     @property
     def is_complete(self) -> bool:
         """Returns True if workflow has completed. Otherwise returns False."""
-        return self.status == TrailblazerStatus.COMPLETED.value
+        return self.status == TrailblazerStatus.QC.value
 
     @property
     def processes(self) -> List[TowerProcess]:
