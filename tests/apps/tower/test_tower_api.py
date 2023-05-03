@@ -50,7 +50,7 @@ def test_tower_api_is_pending(tower_id: str, response_file: Path, expected_bool:
 @pytest.mark.parametrize(
     "response_file, expected_nr_total_jobs",
     [
-        # (TowerResponseFile.PENDING, 0),
+        (TowerResponseFile.PENDING, 0),
         (TowerResponseFile.RUNNING, 13),
         (TowerResponseFile.COMPLETED, 13),
     ],
