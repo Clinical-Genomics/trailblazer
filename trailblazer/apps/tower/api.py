@@ -140,7 +140,12 @@ class TowerAPI:
     @property
     def status(self) -> str:
         """Returns the status of an analysis (also called workflow in NF Tower)."""
-        return TOWER_STATUS.get(self.response.workflow.status, TrailblazerStatus.ERROR.value)
+        status: str = TOWER_STATUS.get(self.response.workflow.status, TrailblazerStatus.ERROR.value)
+
+        # If the whole workflow (analysis) is completed set it as QC instead of COMPLETE
+        if status == TrailblazerStatus.COMPLETED.value:
+            return TrailblazerStatus.QC.value
+        return status
 
     @property
     def is_pending(self) -> bool:
@@ -150,7 +155,7 @@ class TowerAPI:
     @property
     def is_complete(self) -> bool:
         """Returns True if workflow has completed. Otherwise returns False."""
-        return self.status == TrailblazerStatus.COMPLETED.value
+        return self.status == TrailblazerStatus.QC.value
 
     @property
     def processes(self) -> List[TowerProcess]:
