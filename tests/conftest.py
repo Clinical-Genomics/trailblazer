@@ -11,14 +11,14 @@ from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TrailblazerStatus
 from trailblazer.io.json import read_json
 
 
-@pytest.fixture(scope="function")
-def trailblazer_context(sample_store: MockStore) -> Dict[str, MockStore]:
+@pytest.fixture(name="trailblazer_context")
+def fixture_trailblazer_context(sample_store: MockStore) -> Dict[str, MockStore]:
     """Trailblazer context to be used in CLI."""
     return {"trailblazer": sample_store}
 
 
-@pytest.yield_fixture(scope="function")
-def store():
+@pytest.fixture(name="store")
+def fixture_store():
     """Empty Trailblazer database."""
     _store = MockStore(uri="sqlite://")
     _store.setup()
@@ -26,8 +26,8 @@ def store():
     _store.drop_all()
 
 
-@pytest.yield_fixture(scope="function")
-def sample_store(store: MockStore):
+@pytest.fixture(name="sample_store")
+def fixture_sample_store(store: MockStore):
     """A sample Trailblazer database populated with pending analyses."""
     sample_data = ruamel.yaml.safe_load(open("tests/fixtures/sample-data.yaml"))
     for user_data in sample_data["users"]:
