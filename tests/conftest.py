@@ -1,18 +1,44 @@
 import datetime as dt
+from pathlib import Path
 from typing import Dict, List
 
 import pytest
-import ruamel.yaml
 
 from tests.apps.tower.conftest import CaseIDs, TowerTaskResponseFile
 from tests.mocks.store_mock import MockStore
 from trailblazer.apps.tower.models import TowerTask
-from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TrailblazerStatus
+from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TrailblazerStatus, FileFormat
 from trailblazer.io.json import read_json
 
+from trailblazer.io.controller import ReadFile
 
-@pytest.fixture(scope="function")
-def trailblazer_context(sample_store: MockStore) -> Dict[str, MockStore]:
+
+@pytest.fixture(scope="session", name="fixtures_dir")
+def fixture_fixtures_dir() -> Path:
+    """Return the path to the fixtures' dir."""
+    return Path("tests", "fixtures")
+
+
+@pytest.fixture(scope="session", name="sample_data_path")
+def fixture_sample_data_path(fixtures_dir: Path) -> Path:
+    """Return the path to the sample data file."""
+    return Path(fixtures_dir, "sample-data.yaml")
+
+
+@pytest.fixture(name="sample_data")
+def fixture_sample_data(sample_data_path: Path) -> Dict[str, list]:
+    """Return content of the sample data file."""
+    return ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=sample_data_path)
+
+
+@pytest.fixture(name="trailblazer_tmp_dir")
+def fixture_trailblazer_tmp_dir(tmpdir_factory) -> Path:
+    """Return a temporary directory for Trailblazer testing."""
+    return tmpdir_factory.mktemp("trailblazer_tmp")
+
+
+@pytest.fixture(name="trailblazer_context")
+def fixture_trailblazer_context(sample_store: MockStore) -> Dict[str, MockStore]:
     """Trailblazer context to be used in CLI."""
     return {"trailblazer": sample_store}
 
@@ -27,9 +53,8 @@ def store():
 
 
 @pytest.yield_fixture(scope="function")
-def sample_store(store: MockStore):
+def sample_store(sample_data: Dict[str, list], store: MockStore):
     """A sample Trailblazer database populated with pending analyses."""
-    sample_data = ruamel.yaml.safe_load(open("tests/fixtures/sample-data.yaml"))
     for user_data in sample_data["users"]:
         store.add_user(user_data["name"], user_data["email"])
     for analysis_data in sample_data["analyses"]:
