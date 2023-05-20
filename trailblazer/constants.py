@@ -17,6 +17,10 @@ class FileFormat(str, Enum):
     YAML: str = "yaml"
 
 
+class FileExtension(str, Enum):
+    YAML: str = ".yaml"
+
+
 class WorkflowManager(Enum):
     """Supported task managers."""
 

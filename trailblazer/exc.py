@@ -28,3 +28,9 @@ class TowerRequirementsError(TowerError):
 
 class TowerResponseError(TowerError):
     """Raised when an invalid Tower response is returned."""
+
+
+class ValidationError(TrailblazerError):
+    """
+    Exception related to validations.
+    """
