@@ -16,6 +16,7 @@ Flask-Alchy
 Flask-SQLAlchemy==2.1
 Flask-CORS
 Flask-Reverse-Proxy
+markupsafe==2.0.1
 google-auth
 gunicorn
 

@@ -43,8 +43,8 @@ def fixture_trailblazer_context(sample_store: MockStore) -> Dict[str, MockStore]
     return {"trailblazer": sample_store}
 
 
-@pytest.yield_fixture(scope="function")
-def store():
+@pytest.fixture(name="store")
+def fixture_store():
     """Empty Trailblazer database."""
     _store = MockStore(uri="sqlite://")
     _store.setup()
@@ -52,8 +52,8 @@ def store():
     _store.drop_all()
 
 
-@pytest.yield_fixture(scope="function")
-def sample_store(sample_data: Dict[str, list], store: MockStore):
+@pytest.fixture(name="sample_store")
+def fixture_sample_store(sample_data: Dict[str, list], store: MockStore):
     """A sample Trailblazer database populated with pending analyses."""
     for user_data in sample_data["users"]:
         store.add_user(user_data["name"], user_data["email"])
