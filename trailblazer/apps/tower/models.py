@@ -64,8 +64,9 @@ class TowerTask(BaseModel):
         validate_all = True
 
     @validator("duration")
-    def set_duration(cls, duration) -> str:
-        return duration or 0
+    def set_duration(cls, duration) -> int:
+        """Convert milliseconds to seconds or return 0 if empty."""
+        return round(duration / 1000) if duration else 0
 
     @validator("status")
     def set_status(cls, status) -> str:
