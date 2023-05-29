@@ -3,14 +3,14 @@
 ### Monitor the progress of analysis workflows submitted to SLURM
 
 Trailblazer is a tool that aims to provide:
-- Monitoring of processes requiring submission to a workflow manager
-- Display metadata for each analysis in webinterface
+- Monitoring of processes that require submission to a workflow manager
+- Display metadata for each analysis within a web based user interface
 
 [Here][Trailblazer-UI] you can find a simple web UI for Trailblazer that helps you keep track of the status of multiple runs
 
 ## Installation
 
-Trailblazer written in Python 3.7+ and is available on the [Python Package Index][pypi] (PyPI).
+Trailblazer is written in Python 3.7+ and is available on the [Python Package Index][pypi] (PyPI).
 
 ```bash
 pip install trailblazer
@@ -24,7 +24,7 @@ cd trailblazer
 pip install --editable .
 ```
 
-Files will be verified as blacked automatically with each push to GitHub. If you would like to automatically [Black] format your commits on your local machine:
+With each push to GitHub your files will be automatically verified using [Black] . If you would like to automatically [Black] format your commits on your local machine:
 
 ```
 pre-commit install
@@ -32,7 +32,7 @@ pre-commit install
 
 ## Contributing
 
-Trailblazer is using GitHub flow branching model as described in Atlas [GitHub Flow].
+Trailblazer uses the GitHub flow branching model as described in Atlas [GitHub Flow].
 
 ## Documentation
 
@@ -42,7 +42,7 @@ Here's a brief documentation. Trailblazer functionality can be accessed from the
 
 #### Command: `trailblazer init`
 
-Setup (or reset) a Trailblazer database. It will simply set up all the tables in the database. You can reset an existing database by using the `--reset` option.
+Setup (or reset) a Trailblazer database. The command will set up all the tables in the database. You can reset an existing database by using the `--reset` option.
 
 ```shell
 trailblazer --database "sqlite:///tb.sqlite3" init --reset
