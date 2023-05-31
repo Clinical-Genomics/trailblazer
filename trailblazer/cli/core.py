@@ -42,7 +42,7 @@ def base(
     coloredlogs.install(level=log_level, fmt=log_format)
 
     context.obj = (
-        ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=Path(config))
+        ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=Path(config.name))
         if config
         else {}
     )
