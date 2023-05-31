@@ -1,6 +1,7 @@
+argcomplete==1.12.3
 Alchy
 alembic
-Click<7
+Click
 coloredlogs
 ruamel.yaml
 SQLAlchemy<1.4
@@ -11,12 +12,12 @@ pandas
 requests
 
 # server
-Flask>=1.1.1                # versioned due to setup.py install misselecting Flask-SQLAlchemy otherwise
+Flask                # versioned due to setup.py install misselecting Flask-SQLAlchemy otherwise
 Flask-Alchy
 Flask-SQLAlchemy==2.1
 Flask-CORS
 Flask-Reverse-Proxy
-markupsafe==2.0.1
+markupsafe
 google-auth
 gunicorn
 
