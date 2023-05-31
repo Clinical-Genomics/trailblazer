@@ -1,4 +1,4 @@
-"""Module to read or write YAML files."""
+"""Module to read YAML files."""
 from pathlib import Path
 from typing import Any
 from ruamel.yaml import YAML
@@ -12,10 +12,3 @@ def read_yaml(file_path: Path) -> Any:
     validate_file_suffix(path_to_validate=file_path, target_suffix=FileExtension.YAML)
     yaml: YAML = YAML(typ="safe", pure=True)
     return yaml.load(file_path)
-
-
-def write_yaml(content: Any, file_path: Path) -> None:
-    """Write content to a YAML file."""
-    yaml: YAML = YAML()
-    yaml.default_flow_style = False
-    yaml.dump(content, file_path)
