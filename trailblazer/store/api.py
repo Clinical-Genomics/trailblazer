@@ -4,6 +4,7 @@ import datetime as dt
 import io
 import logging
 import subprocess
+from pathlib import Path
 from typing import Any, List, Optional
 
 import alchy
@@ -11,7 +12,6 @@ import pandas as pd
 import sqlalchemy as sqa
 from alchy import Query
 from dateutil.parser import parse as parse_datestr
-from ruamel.yaml import safe_load
 
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import (
@@ -22,10 +22,11 @@ from trailblazer.constants import (
     STARTED_STATUSES,
     TrailblazerStatus,
     WorkflowManager,
+    FileFormat,
 )
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
+from trailblazer.io.controller import ReadFile
 from trailblazer.store import models
-from trailblazer.store.models import Analysis
 from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
@@ -297,8 +298,10 @@ class BaseHandler:
         job_id_file: Path to slurm id .YAML file as string
         case_id: Unique internal case identifier which is expected to by the only item in the .YAML dict
         ssh : Whether the request is executed from hasta or clinical-db"""
-        job_id_dict = safe_load(open(job_id_file))
-        submitted_job_ids = job_id_dict.get(next(iter(job_id_dict)))
+        job_id: dict = ReadFile.get_content_from_file(
+            file_format=FileFormat.YAML, file_path=Path(job_id_file)
+        )
+        submitted_job_ids = job_id.get(next(iter(job_id)))
         job_ids_string = ",".join(map(str, submitted_job_ids))
         if ssh:
             return (
@@ -492,7 +495,9 @@ class BaseHandler:
     def query_tower(config_file: str, case_id: str) -> TowerAPI:
         """Parse a config file to extract a NF Tower workflow ID and return a TowerAPI.
         Currently only one tower ID is supported."""
-        workflow_id: int = safe_load(open(config_file)).get(case_id)[0]
+        workflow_id: int = ReadFile.get_content_from_file(
+            file_format=FileFormat.YAML, file_path=Path(config_file)
+        ).get(case_id)[0]
         tower_api = TowerAPI(workflow_id=workflow_id)
         if not tower_api.tower_client.meets_requirements:
             raise TowerRequirementsError

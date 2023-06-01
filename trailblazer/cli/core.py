@@ -1,14 +1,15 @@
 import logging
 import sys
-import os
+from pathlib import Path
 
 import click
 import coloredlogs
-import ruamel.yaml
 from dateutil.parser import parse as parse_date
 
 import trailblazer
+from trailblazer.constants import FileFormat
 from trailblazer.environ import environ_email
+from trailblazer.io.controller import ReadFile
 from trailblazer.store import Store
 from trailblazer.store.models import STATUS_OPTIONS
 
@@ -40,7 +41,11 @@ def base(
 
     coloredlogs.install(level=log_level, fmt=log_format)
 
-    context.obj = ruamel.yaml.safe_load(config) if config else {}
+    context.obj = (
+        ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=Path(config.name))
+        if config
+        else {}
+    )
     context.obj["database"] = database or context.obj.get("database", "sqlite:///:memory:")
     context.obj["trailblazer"] = Store(context.obj["database"])
 

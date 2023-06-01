@@ -13,6 +13,14 @@ PRIORITY_OPTIONS = ("low", "normal", "high", "express", "maintenance")
 TYPES = ("other", "rna", "tgs", "wes", "wgs", "wts")
 
 
+class FileFormat(str, Enum):
+    YAML: str = "yaml"
+
+
+class FileExtension(str, Enum):
+    YAML: str = ".yaml"
+
+
 class WorkflowManager(Enum):
     """Supported task managers."""
 
