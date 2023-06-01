@@ -26,7 +26,7 @@ def fixture_sample_data_path(fixtures_dir: Path) -> Path:
 
 
 @pytest.fixture(name="sample_data")
-def fixture_sample_data(sample_data_path: Path) -> Dict[list, dict]:
+def fixture_sample_data(sample_data_path: Path) -> Dict[str, list]:
     """Return content of the sample data file."""
     return ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=sample_data_path)
 
@@ -53,7 +53,7 @@ def fixture_store():
 
 
 @pytest.fixture(name="sample_store")
-def fixture_sample_store(sample_data: Dict[list, dict], store: MockStore):
+def fixture_sample_store(sample_data: Dict[str, list], store: MockStore):
     """A sample Trailblazer database populated with pending analyses."""
     for user_data in sample_data["users"]:
         store.add_user(user_data["name"], user_data["email"])
