@@ -26,17 +26,17 @@ from trailblazer.constants import (
 )
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
-from trailblazer.store import models
+from trailblazer.store.models import Model, User, Analysis, Job, Info
 from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
 
 
 class BaseHandler:
-    User = models.User
-    Analysis = models.Analysis
-    Job = models.Job
-    Info = models.Info
+    User = User
+    Analysis = Analysis
+    Job = Job
+    Info = Info
 
     def setup(self):
         self.create_all()
@@ -44,7 +44,7 @@ class BaseHandler:
         new_info = self.Info()
         self.add_commit(new_info)
 
-    def info(self) -> models.Info:
+    def info(self) -> Info:
         """Return metadata entry."""
         return self.Info.query.first()
 
@@ -56,7 +56,7 @@ class BaseHandler:
         metadata.updated_at = dt.datetime.now()
         self.commit()
 
-    def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> models.Analysis:
+    def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> Analysis:
         """
         used in LOG
         Find a single analysis."""
@@ -123,20 +123,20 @@ class BaseHandler:
             analysis_query = analysis_query.filter_by(is_visible=is_visible)
         if data_analysis:
             analysis_query = analysis_query.filter(
-                models.Analysis.data_analysis.ilike(f"%{data_analysis}%")
+                Analysis.data_analysis.ilike(f"%{data_analysis}%")
             )
         if comment:
-            analysis_query = analysis_query.filter(models.Analysis.comment.ilike(f"%{comment}%"))
+            analysis_query = analysis_query.filter(Analysis.comment.ilike(f"%{comment}%"))
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def analysis(self, analysis_id: int) -> Optional[models.Analysis]:
+    def analysis(self, analysis_id: int) -> Optional[Analysis]:
         """
         used by REST
         Get a single analysis by id."""
         return self.Analysis.query.get(analysis_id)
 
-    def get_latest_analysis(self, case_id: str) -> Optional[models.Analysis]:
+    def get_latest_analysis(self, case_id: str) -> Optional[Analysis]:
         return self.analyses(case_id=case_id).first()
 
     def get_latest_analysis_status(self, case_id: str) -> Optional[str]:
@@ -176,7 +176,7 @@ class BaseHandler:
         data_analysis: str = None,
         ticket_id: str = None,
         workflow_manager: str = None,
-    ) -> models.Analysis:
+    ) -> Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
         new_log = self.Analysis(
@@ -195,18 +195,18 @@ class BaseHandler:
         self.add_commit(new_log)
         return new_log
 
-    def add_user(self, name: str, email: str) -> models.User:
+    def add_user(self, name: str, email: str) -> User:
         """Add a new user to the database."""
         new_user = self.User(name=name, email=email)
         self.add_commit(new_user)
         return new_user
 
-    def archive_user(self, user: models.User, archive: bool = True) -> None:
+    def archive_user(self, user: User, archive: bool = True) -> None:
         """Archive user in the database."""
         user.is_archived = archive
         self.commit()
 
-    def user(self, email: str, include_archived: bool = False) -> models.User:
+    def user(self, email: str, include_archived: bool = False) -> User:
         """Fetch a user from the database."""
         query = self.User.query
 
@@ -380,9 +380,7 @@ class BaseHandler:
         )
         return parsed_df
 
-    def update_slurm_jobs(
-        self, analysis_obj: models.Analysis, jobs_dataframe: pd.DataFrame
-    ) -> None:
+    def update_slurm_jobs(self, analysis_obj: Analysis, jobs_dataframe: pd.DataFrame) -> None:
         """Parses job dataframe and creates job objects"""
         if len(jobs_dataframe) == 0:
             return
@@ -421,7 +419,7 @@ class BaseHandler:
                 )
 
     @staticmethod
-    def get_elapsed_time(self, analysis_obj: models.Analysis) -> str:
+    def get_elapsed_time(self, analysis_obj: Analysis) -> str:
         """Get elapsed time for the analysis"""
         return str(
             (
@@ -569,4 +567,4 @@ class BaseHandler:
 
 class Store(alchy.Manager, BaseHandler):
     def __init__(self, uri: str):
-        super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=models.Model)
+        super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=Model)
