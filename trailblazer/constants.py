@@ -14,6 +14,7 @@ TYPES = ("other", "rna", "tgs", "wes", "wgs", "wts")
 
 
 class FileFormat(str, Enum):
+    JSON: str = "json"
     YAML: str = "yaml"
 
 
