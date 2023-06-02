@@ -257,19 +257,19 @@ class BaseHandler:
 
     def set_analysis_uploaded(self, case_id: str, uploaded_at: dt.datetime) -> None:
         """Setting analysis uploaded at."""
-        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj: models.Analysis = self.get_latest_analysis(case_id=case_id)
         analysis_obj.uploaded_at: dt.datetime = uploaded_at
         self.commit()
 
     def set_analysis_status(self, case_id: str, status: str):
         """Setting analysis status."""
-        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj: models.Analysis = self.get_latest_analysis(case_id=case_id)
         analysis_obj.status: str = status
         self.commit()
         LOG.info(f"{analysis_obj.family} - Status set to {status}")
 
     def add_comment(self, case_id: str, comment: str):
-        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj: models.Analysis = self.get_latest_analysis(case_id=case_id)
         analysis_obj.comment: str = (
             " ".join([analysis_obj.comment, comment]) if analysis_obj.comment else comment
         )
@@ -434,7 +434,7 @@ class BaseHandler:
 
     def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
-        analysis: Analysis = self.analysis(analysis_id)
+        analysis: models.Analysis = self.analysis(analysis_id)
         if not analysis:
             LOG.warning(f"Analysis {analysis_id} not found!")
             return
@@ -445,7 +445,7 @@ class BaseHandler:
 
     def update_slurm_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query slurm for entries related to given analysis, and update the Trailblazer database"""
-        analysis: Analysis = self.analysis(analysis_id)
+        analysis: models.Analysis = self.analysis(analysis_id)
         try:
             jobs_dataframe = self.parse_squeue_to_df(
                 squeue_response=self.query_slurm(
@@ -505,7 +505,7 @@ class BaseHandler:
 
     def update_tower_run_status(self, analysis_id: int) -> None:
         """Query tower for entries related to given analysis, and update the Trailblazer database."""
-        analysis: Analysis = self.analysis(analysis_id)
+        analysis: models.Analysis = self.analysis(analysis_id)
         tower_api: TowerAPI = self.query_tower(
             config_file=analysis.config_path, case_id=analysis.family
         )
