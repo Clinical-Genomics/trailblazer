@@ -29,19 +29,19 @@ class CaseIDs:
     COMPLETED: str = "cuddlyhen_completed"
 
 
-@pytest.fixture(name="tower_id")
+@pytest.fixture(name="tower_id", scope="session")
 def fixture_tower_id() -> str:
     """Return a NF Tower id."""
     return TOWER_ID
 
 
-@pytest.fixture(name="tower_config_file")
+@pytest.fixture(name="tower_config_file", scope="session")
 def fixture_tower_config_file() -> str:
     """Return the path of a config yaml file with a NF Tower id."""
     return Path("tests", "fixtures", "case", "cuddlyhen_tower_id.yaml").as_posix()
 
 
-@pytest.fixture(name="tower_task_response_pending")
+@pytest.fixture(name="tower_task_response_pending", scope="session")
 def fixture_tower_task_response_pending() -> Path:
     """Return an NF Tower task response for a pending case."""
     return TowerTaskResponseFile.PENDING
