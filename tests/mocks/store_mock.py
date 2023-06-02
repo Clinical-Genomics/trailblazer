@@ -2,7 +2,7 @@ import subprocess
 
 from tests.apps.tower.conftest import TOWER_ID, CaseIDs, TowerResponseFile, TowerTaskResponseFile
 from tests.mocks.tower_mock import MockTowerAPI
-from trailblazer.store import Store
+from trailblazer.store.api import Store
 
 
 class MockStore(Store):
