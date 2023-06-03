@@ -8,7 +8,6 @@ from tests.apps.tower.conftest import CaseIDs, TowerTaskResponseFile
 from tests.mocks.store_mock import MockStore
 from trailblazer.apps.tower.models import TowerTask
 from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TrailblazerStatus, FileFormat
-from trailblazer.io.json import read_json
 
 from trailblazer.io.controller import ReadFile
 
@@ -132,7 +131,22 @@ def fixture_case_id() -> str:
     return CaseIDs.RUNNING
 
 
-@pytest.fixture(name="tower_task")
-def fixture_tower_task() -> TowerTask:
-    """Return a NF Tower task."""
-    return TowerTask(**read_json(TowerTaskResponseFile.RUNNING)["tasks"][0]["task"])
+@pytest.fixture(name="tower_dir", scope="session")
+def fixture_tower_dir(fixtures_dir: Path) -> Path:
+    """Return Tower directory."""
+    return Path(fixtures_dir, "tower")
+
+
+@pytest.fixture(name="tower_task_response_running_file_path", scope="session")
+def fixture_tower_task_response_running_file_path(tower_dir: Path) -> Path:
+    """Return Tower task running file path."""
+    return Path(tower_dir, "cuddlyhen_tasks_running.json")
+
+
+@pytest.fixture(name="tower_task", scope="session")
+def fixture_tower_task(tower_task_response_running_file_path: dict) -> TowerTask:
+    """Return a Tower task."""
+    tower_task_running_content: dict = ReadFile.get_content_from_file(
+        file_format=FileFormat.JSON, file_path=tower_task_response_running_file_path
+    )
+    return TowerTask(**tower_task_running_content["tasks"][0]["task"])

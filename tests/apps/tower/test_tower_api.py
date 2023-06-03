@@ -111,14 +111,14 @@ def test_tower_api_progress(tower_id: str, response_file: Path, expected_progres
 def test_tower_api_tasks(
     tower_id: str,
     analysis_id: int,
-    tower_task_response_running: Path,
+    tower_task_response_running_file_path: Path,
     tower_jobs: List[dict],
 ) -> None:
     """Assess that TowerAPI returns a list of tasks given a response."""
 
     # GIVEN an tower_api with a mock query response
     tower_api = MockTowerAPI(workflow_id=tower_id)
-    tower_api.mock_tasks_query(response_file=tower_task_response_running)
+    tower_api.mock_tasks_query(response_file=tower_task_response_running_file_path)
 
     # WHEN asking for jobs
     jobs = tower_api.get_jobs(analysis_id=analysis_id)

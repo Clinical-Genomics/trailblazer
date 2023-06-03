@@ -18,7 +18,7 @@ class TowerResponseFile:
 
 class TowerTaskResponseFile:
     PENDING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_pending")
-    RUNNING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_running")
+    RUNNING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_running.json")
     COMPLETED: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_completed")
     EMPTY: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_empty")
 
@@ -45,12 +45,6 @@ def fixture_tower_config_file() -> str:
 def fixture_tower_task_response_pending() -> Path:
     """Return an NF Tower task response for a pending case."""
     return TowerTaskResponseFile.PENDING
-
-
-@pytest.fixture(name="tower_task_response_running")
-def fixture_tower_task_response_running() -> Path:
-    """Return an NF Tower task response for a running case."""
-    return TowerTaskResponseFile.RUNNING
 
 
 @pytest.fixture(name="created_at")
