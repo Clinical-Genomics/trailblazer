@@ -10,10 +10,10 @@ TOWER_ID: str = "1m759EPcbjuK7n"
 
 
 class TowerResponseFile:
-    PENDING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_pending")
-    RUNNING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_running")
-    COMPLETED: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_completed")
-    EMPTY: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_empty")
+    PENDING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_pending.json")
+    RUNNING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_running.json")
+    COMPLETED: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_completed.json")
+    EMPTY: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_empty.json")
 
 
 class TowerTaskResponseFile:

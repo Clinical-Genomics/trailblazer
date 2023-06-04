@@ -19,6 +19,7 @@ class FileFormat(str, Enum):
 
 
 class FileExtension(str, Enum):
+    JSON: str = ".json"
     YAML: str = ".yaml"
 
 
