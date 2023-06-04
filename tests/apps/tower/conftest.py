@@ -17,10 +17,10 @@ class TowerResponseFile:
 
 
 class TowerTaskResponseFile:
-    PENDING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_pending")
+    PENDING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_pending.json")
     RUNNING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_running.json")
-    COMPLETED: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_completed")
-    EMPTY: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_empty")
+    COMPLETED: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_completed.json")
+    EMPTY: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_empty.json")
 
 
 class CaseIDs:

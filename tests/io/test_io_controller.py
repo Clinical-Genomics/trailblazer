@@ -26,9 +26,9 @@ def test_get_content_from_file_when_json(example_json_path: Path):
     # GIVEN a JSON file
 
     # WHEN reading the JSON file
-    raw_json_content: dict = ReadFile.get_content_from_file(
+    json_content: dict = ReadFile.get_content_from_file(
         file_format=FileFormat.JSON, file_path=example_json_path
     )
 
     # Then assert a dict is returned
-    assert isinstance(raw_json_content, dict)
+    assert isinstance(json_content, dict)

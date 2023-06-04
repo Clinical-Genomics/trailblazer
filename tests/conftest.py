@@ -131,22 +131,10 @@ def fixture_case_id() -> str:
     return CaseIDs.RUNNING
 
 
-@pytest.fixture(name="tower_dir", scope="session")
-def fixture_tower_dir(fixtures_dir: Path) -> Path:
-    """Return Tower directory."""
-    return Path(fixtures_dir, "tower")
-
-
-@pytest.fixture(name="tower_task_response_running_file_path", scope="session")
-def fixture_tower_task_response_running_file_path(tower_dir: Path) -> Path:
-    """Return Tower task running file path."""
-    return Path(tower_dir, "cuddlyhen_tasks_running.json")
-
-
 @pytest.fixture(name="tower_task", scope="session")
-def fixture_tower_task(tower_task_response_running_file_path: dict) -> TowerTask:
+def fixture_tower_task() -> TowerTask:
     """Return a Tower task."""
     tower_task_running_content: dict = ReadFile.get_content_from_file(
-        file_format=FileFormat.JSON, file_path=tower_task_response_running_file_path
+        file_format=FileFormat.JSON, file_path=TowerTaskResponseFile.RUNNING
     )
     return TowerTask(**tower_task_running_content["tasks"][0]["task"])
