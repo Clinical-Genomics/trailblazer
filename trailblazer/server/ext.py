@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
 from flask_alchy import Alchy
 
-from trailblazer.store import BaseHandler, models
+from trailblazer.store.api import BaseHandler
+from trailblazer.store import models
 
 
 class TrailblazerAlchy(Alchy, BaseHandler):
