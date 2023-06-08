@@ -70,7 +70,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "trailblazer = trailblazer.cli:base",
+            "trailblazer = trailblazer.cli.core:base",
         ]
     },
     # See: http://pypi.python.org/pypi?%3Aaction=list_classifiers
