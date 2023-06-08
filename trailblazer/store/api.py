@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-"""Store backend in Trailblazer"""
+"""Store backend in Trailblazer."""
 import datetime as dt
 import io
 import logging

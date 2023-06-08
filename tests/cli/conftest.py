@@ -3,7 +3,7 @@ from functools import partial
 import pytest
 from click.testing import CliRunner
 
-from trailblazer.cli import base
+from trailblazer.cli.core import base
 
 
 @pytest.fixture
