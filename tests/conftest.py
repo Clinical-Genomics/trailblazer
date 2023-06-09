@@ -64,7 +64,7 @@ def fixture_sample_store(sample_data: Dict[str, list], store: MockStore):
     yield store
 
 
-@pytest.fixture(name="timestamp_now")
+@pytest.fixture(name="timestamp_now", scope="session")
 def fixture_timestamp_now() -> dt.datetime:
     """Return a time stamp of today's date in date time format."""
     return dt.datetime.now()
@@ -107,25 +107,25 @@ def fixture_analysis_id() -> int:
     return 1
 
 
-@pytest.fixture(name="started_at")
+@pytest.fixture(name="started_at", scope="session")
 def fixture_started_at() -> dt.datetime:
     """Returns a started at date."""
     return dt.datetime.strptime("2023-04-04T08:11:27Z", TOWER_TIMESTAMP_FORMAT)
 
 
-@pytest.fixture(name="slurm_id")
+@pytest.fixture(name="slurm_id", scope="session")
 def fixture_slurm_id() -> str:
     """Returns a slurm id."""
     return "4611827"
 
 
-@pytest.fixture(name="tower_task_name")
+@pytest.fixture(name="tower_task_name", scope="session")
 def fixture_tower_task_name() -> str:
     """Returns a NF Tower task name."""
     return "NFCORE_RNAFUSION:RNAFUSION:INPUT_CHECK:SAMPLESHEET_CHECK"
 
 
-@pytest.fixture(name="case_id")
+@pytest.fixture(name="case_id", scope="session")
 def fixture_case_id() -> str:
     """Return a case ID."""
     return CaseIDs.RUNNING

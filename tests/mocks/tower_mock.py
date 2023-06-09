@@ -1,6 +1,6 @@
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.apps.tower.models import TowerTaskResponse, TowerWorkflowResponse
