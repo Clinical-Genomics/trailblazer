@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-"""Store backend in Trailblazer"""
+"""Store backend in Trailblazer."""
 import datetime as dt
 import io
 import logging
@@ -26,17 +25,17 @@ from trailblazer.constants import (
 )
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
-from trailblazer.store import models
+from trailblazer.store.models import Model, User, Analysis, Job, Info
 from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
 
 
 class BaseHandler:
-    User = models.User
-    Analysis = models.Analysis
-    Job = models.Job
-    Info = models.Info
+    User = User
+    Analysis = Analysis
+    Job = Job
+    Info = Info
 
     def setup(self):
         self.create_all()
@@ -44,7 +43,7 @@ class BaseHandler:
         new_info = self.Info()
         self.add_commit(new_info)
 
-    def info(self) -> models.Info:
+    def info(self) -> Info:
         """Return metadata entry."""
         return self.Info.query.first()
 
@@ -56,7 +55,7 @@ class BaseHandler:
         metadata.updated_at = dt.datetime.now()
         self.commit()
 
-    def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> models.Analysis:
+    def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> Analysis:
         """
         used in LOG
         Find a single analysis."""
@@ -123,20 +122,20 @@ class BaseHandler:
             analysis_query = analysis_query.filter_by(is_visible=is_visible)
         if data_analysis:
             analysis_query = analysis_query.filter(
-                models.Analysis.data_analysis.ilike(f"%{data_analysis}%")
+                Analysis.data_analysis.ilike(f"%{data_analysis}%")
             )
         if comment:
-            analysis_query = analysis_query.filter(models.Analysis.comment.ilike(f"%{comment}%"))
+            analysis_query = analysis_query.filter(Analysis.comment.ilike(f"%{comment}%"))
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def analysis(self, analysis_id: int) -> Optional[models.Analysis]:
+    def analysis(self, analysis_id: int) -> Optional[Analysis]:
         """
         used by REST
         Get a single analysis by id."""
         return self.Analysis.query.get(analysis_id)
 
-    def get_latest_analysis(self, case_id: str) -> Optional[models.Analysis]:
+    def get_latest_analysis(self, case_id: str) -> Optional[Analysis]:
         return self.analyses(case_id=case_id).first()
 
     def get_latest_analysis_status(self, case_id: str) -> Optional[str]:
@@ -176,7 +175,7 @@ class BaseHandler:
         data_analysis: str = None,
         ticket_id: str = None,
         workflow_manager: str = None,
-    ) -> models.Analysis:
+    ) -> Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
         new_log = self.Analysis(
@@ -195,18 +194,18 @@ class BaseHandler:
         self.add_commit(new_log)
         return new_log
 
-    def add_user(self, name: str, email: str) -> models.User:
+    def add_user(self, name: str, email: str) -> User:
         """Add a new user to the database."""
         new_user = self.User(name=name, email=email)
         self.add_commit(new_user)
         return new_user
 
-    def archive_user(self, user: models.User, archive: bool = True) -> None:
+    def archive_user(self, user: User, archive: bool = True) -> None:
         """Archive user in the database."""
         user.is_archived = archive
         self.commit()
 
-    def user(self, email: str, include_archived: bool = False) -> models.User:
+    def user(self, email: str, include_archived: bool = False) -> User:
         """Fetch a user from the database."""
         query = self.User.query
 
@@ -257,19 +256,19 @@ class BaseHandler:
 
     def set_analysis_uploaded(self, case_id: str, uploaded_at: dt.datetime) -> None:
         """Setting analysis uploaded at."""
-        analysis_obj: models.Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
         analysis_obj.uploaded_at: dt.datetime = uploaded_at
         self.commit()
 
     def set_analysis_status(self, case_id: str, status: str):
         """Setting analysis status."""
-        analysis_obj: models.Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
         analysis_obj.status: str = status
         self.commit()
         LOG.info(f"{analysis_obj.family} - Status set to {status}")
 
     def add_comment(self, case_id: str, comment: str):
-        analysis_obj: models.Analysis = self.get_latest_analysis(case_id=case_id)
+        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
         analysis_obj.comment: str = (
             " ".join([analysis_obj.comment, comment]) if analysis_obj.comment else comment
         )
@@ -380,9 +379,7 @@ class BaseHandler:
         )
         return parsed_df
 
-    def update_slurm_jobs(
-        self, analysis_obj: models.Analysis, jobs_dataframe: pd.DataFrame
-    ) -> None:
+    def update_slurm_jobs(self, analysis_obj: Analysis, jobs_dataframe: pd.DataFrame) -> None:
         """Parses job dataframe and creates job objects"""
         if len(jobs_dataframe) == 0:
             return
@@ -421,7 +418,7 @@ class BaseHandler:
                 )
 
     @staticmethod
-    def get_elapsed_time(self, analysis_obj: models.Analysis) -> str:
+    def get_elapsed_time(self, analysis_obj: Analysis) -> str:
         """Get elapsed time for the analysis"""
         return str(
             (
@@ -434,7 +431,7 @@ class BaseHandler:
 
     def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
-        analysis: models.Analysis = self.analysis(analysis_id)
+        analysis: Analysis = self.analysis(analysis_id)
         if not analysis:
             LOG.warning(f"Analysis {analysis_id} not found!")
             return
@@ -445,7 +442,7 @@ class BaseHandler:
 
     def update_slurm_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query slurm for entries related to given analysis, and update the Trailblazer database"""
-        analysis: models.Analysis = self.analysis(analysis_id)
+        analysis: Analysis = self.analysis(analysis_id)
         try:
             jobs_dataframe = self.parse_squeue_to_df(
                 squeue_response=self.query_slurm(
@@ -505,7 +502,7 @@ class BaseHandler:
 
     def update_tower_run_status(self, analysis_id: int) -> None:
         """Query tower for entries related to given analysis, and update the Trailblazer database."""
-        analysis: models.Analysis = self.analysis(analysis_id)
+        analysis: Analysis = self.analysis(analysis_id)
         tower_api: TowerAPI = self.query_tower(
             config_file=analysis.config_path, case_id=analysis.family
         )
@@ -569,4 +566,4 @@ class BaseHandler:
 
 class Store(alchy.Manager, BaseHandler):
     def __init__(self, uri: str):
-        super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=models.Model)
+        super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=Model)
