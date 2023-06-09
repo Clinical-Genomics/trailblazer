@@ -8,7 +8,6 @@ from tests.apps.tower.conftest import CaseIDs, TowerTaskResponseFile
 from tests.mocks.store_mock import MockStore
 from trailblazer.apps.tower.models import TowerTask
 from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TrailblazerStatus, FileFormat
-from trailblazer.io.json import read_json
 
 from trailblazer.io.controller import ReadFile
 
@@ -134,5 +133,8 @@ def fixture_case_id() -> str:
 
 @pytest.fixture(name="tower_task", scope="session")
 def fixture_tower_task() -> TowerTask:
-    """Return a NF Tower task."""
-    return TowerTask(**read_json(TowerTaskResponseFile.RUNNING)["tasks"][0]["task"])
+    """Return a Tower task."""
+    tower_task_running_content: dict = ReadFile.get_content_from_file(
+        file_format=FileFormat.JSON, file_path=TowerTaskResponseFile.RUNNING
+    )
+    return TowerTask(**tower_task_running_content["tasks"][0]["task"])

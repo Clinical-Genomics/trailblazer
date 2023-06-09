@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Any
 
 from trailblazer.constants import FileFormat
+from trailblazer.io.json import read_json
 from trailblazer.io.yaml import read_yaml
 
 
@@ -9,6 +10,7 @@ class ReadFile:
     """Reading file using different methods."""
 
     read_file = {
+        FileFormat.JSON: read_json,
         FileFormat.YAML: read_yaml,
     }
 
