@@ -10,7 +10,7 @@ import trailblazer
 from trailblazer.constants import FileFormat
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
-from trailblazer.store import Store
+from trailblazer.store.api import Store
 from trailblazer.store.models import STATUS_OPTIONS
 
 LOG = logging.getLogger(__name__)

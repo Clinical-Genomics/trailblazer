@@ -1,8 +1,7 @@
 import pytest
 
 import trailblazer
-from trailblazer.cli import base
-from trailblazer.cli.core import cancel, delete, ls_cmd, scan, set_analysis_completed, user
+from trailblazer.cli.core import base, cancel, delete, ls_cmd, scan, set_analysis_completed, user
 
 
 def test_base(cli_runner):
