@@ -4,7 +4,7 @@ import io
 import logging
 import subprocess
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Type
 
 import alchy
 import pandas as pd
@@ -37,22 +37,20 @@ class BaseHandler:
     Job = Job
     Info = Info
 
+    def _get_query(self, table: Type[Model]) -> Query:
+        """Return a query for the given table."""
+        return self.query(table)
+
     def setup(self):
         self.create_all()
         # add initial metadata record (for web interface)
         new_info = self.Info()
         self.add_commit(new_info)
 
-    def info(self) -> Info:
-        """Return metadata entry."""
-        return self.Info.query.first()
-
-    def set_latest_update_date(self):
-        """
-        used in CLI
-        Update the latest updated date in the database."""
-        metadata = self.info()
-        metadata.updated_at = dt.datetime.now()
+    def set_latest_update_date(self) -> None:
+        """Update when the database was last updated."""
+        info: Info = self._get_query(table=Info).first()
+        info.updated_at: dt.datetime = dt.datetime.now()
         self.commit()
 
     def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> Analysis:

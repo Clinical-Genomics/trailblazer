@@ -8,7 +8,6 @@ from tests.apps.tower.conftest import CaseIDs, TowerTaskResponseFile
 from tests.mocks.store_mock import MockStore
 from trailblazer.apps.tower.models import TowerTask
 from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TrailblazerStatus, FileFormat
-
 from trailblazer.io.controller import ReadFile
 
 
@@ -43,7 +42,7 @@ def fixture_trailblazer_context(sample_store: MockStore) -> Dict[str, MockStore]
 
 
 @pytest.fixture(name="store")
-def fixture_store():
+def fixture_store() -> MockStore:
     """Empty Trailblazer database."""
     _store = MockStore(uri="sqlite://")
     _store.setup()
