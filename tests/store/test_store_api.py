@@ -9,7 +9,7 @@ from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Analysis, Info
 
 
-def test_setup_and_info(store: MockStore):
+def test_setup_db(store: MockStore):
     """Test store contains tables."""
 
     # GIVEN a store which is already setup
