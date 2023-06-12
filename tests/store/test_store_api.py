@@ -6,7 +6,7 @@ import pytest
 from tests.apps.tower.conftest import CaseIDs
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.store.models import Analysis, Info
+from trailblazer.store.models import Analysis
 
 
 def test_setup_db(store: MockStore):
@@ -16,32 +16,6 @@ def test_setup_db(store: MockStore):
 
     # THEN it should contain tables
     assert store.engine.table_names()
-
-
-def test_info_query(store: MockStore):
-    """Test Info table query."""
-
-    # GIVEN a store
-
-    # WHEN getting the object using the query
-    info: Info = store._get_query(table=Info).first()
-
-    # THEN it should return an Info object with a default "created_at" date
-    assert isinstance(info.created_at, datetime.datetime)
-
-
-def test_set_latest_update_date(store: MockStore):
-    """Test setting the info table latest updated date."""
-
-    # GIVEN a store which is empty apart from the initialized info entry
-    assert store._get_query(table=Info).first().updated_at is None
-
-    # WHEN setting the last updated date
-    store.set_latest_update_date()
-    info: Info = store._get_query(table=Info).first()
-
-    # THEN it should update info entry with the current date
-    assert isinstance(info.updated_at, datetime.datetime)
 
 
 def test_add_user(store):

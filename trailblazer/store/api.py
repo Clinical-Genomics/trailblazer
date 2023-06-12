@@ -4,7 +4,7 @@ import io
 import logging
 import subprocess
 from pathlib import Path
-from typing import Any, List, Optional, Type
+from typing import Any, List, Optional
 
 import alchy
 import pandas as pd
@@ -25,6 +25,7 @@ from trailblazer.constants import (
 )
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
+from trailblazer.store.core import CoreHandler
 from trailblazer.store.models import Model, User, Analysis, Job, Info
 from trailblazer.store.utils import formatters
 
@@ -37,21 +38,11 @@ class BaseHandler:
     Job = Job
     Info = Info
 
-    def _get_query(self, table: Type[Model]) -> Query:
-        """Return a query for the given table."""
-        return self.query(table)
-
     def setup(self):
         self.create_all()
         # add initial metadata record (for web interface)
         new_info = self.Info()
         self.add_commit(new_info)
-
-    def set_latest_update_date(self) -> None:
-        """Update when the database was last updated."""
-        info: Info = self._get_query(table=Info).first()
-        info.updated_at: dt.datetime = dt.datetime.now()
-        self.commit()
 
     def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> Analysis:
         """
@@ -562,6 +553,6 @@ class BaseHandler:
         self.commit()
 
 
-class Store(alchy.Manager, BaseHandler):
+class Store(alchy.Manager, BaseHandler, CoreHandler):
     def __init__(self, uri: str):
         super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=Model)
