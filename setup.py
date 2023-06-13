@@ -52,7 +52,7 @@ except FileNotFoundError:
 
 setup(
     name=NAME,
-    version="12.0.9",
+    version="12.0.10",
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
@@ -77,7 +77,7 @@ setup(
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Environment :: Console",
     ],
 )
