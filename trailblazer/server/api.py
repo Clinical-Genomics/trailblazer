@@ -83,7 +83,7 @@ def analysis(analysis_id):
 @blueprint.route("/info")
 def info():
     """Display metadata about database."""
-    info: Info = store._get_query(table=Info).first()
+    info: Info = store.get_query(table=Info).first()
     return jsonify(**info.to_dict())
 
 

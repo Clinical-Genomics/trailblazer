@@ -12,6 +12,6 @@ class BaseHandler_2:
     def __init__(self):
         pass
 
-    def _get_query(self, table: Type[Model]) -> Query:
+    def get_query(self, table: Type[Model]) -> Query:
         """Return a query for the given table."""
         return self.query(table)
