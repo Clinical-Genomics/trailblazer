@@ -62,4 +62,4 @@ def fixture_last_updated() -> dt.datetime:
 @pytest.fixture(name="tower_task_duration")
 def fixture_tower_task_duration() -> int:
     """Returns the duration of a NF Tower task."""
-    return 3798
+    return 4
