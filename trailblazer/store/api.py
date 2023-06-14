@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
-"""Store backend in Trailblazer"""
+"""Store backend in Trailblazer."""
 import datetime as dt
 import io
 import logging
 import subprocess
+from pathlib import Path
 from typing import Any, List, Optional
 
 import alchy
@@ -11,7 +11,6 @@ import pandas as pd
 import sqlalchemy as sqa
 from alchy import Query
 from dateutil.parser import parse as parse_datestr
-from ruamel.yaml import safe_load
 
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import (
@@ -22,20 +21,21 @@ from trailblazer.constants import (
     STARTED_STATUSES,
     TrailblazerStatus,
     WorkflowManager,
+    FileFormat,
 )
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
-from trailblazer.store import models
-from trailblazer.store.models import Analysis
+from trailblazer.io.controller import ReadFile
+from trailblazer.store.models import Model, User, Analysis, Job, Info
 from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
 
 
 class BaseHandler:
-    User = models.User
-    Analysis = models.Analysis
-    Job = models.Job
-    Info = models.Info
+    User = User
+    Analysis = Analysis
+    Job = Job
+    Info = Info
 
     def setup(self):
         self.create_all()
@@ -43,7 +43,7 @@ class BaseHandler:
         new_info = self.Info()
         self.add_commit(new_info)
 
-    def info(self) -> models.Info:
+    def info(self) -> Info:
         """Return metadata entry."""
         return self.Info.query.first()
 
@@ -55,7 +55,7 @@ class BaseHandler:
         metadata.updated_at = dt.datetime.now()
         self.commit()
 
-    def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> models.Analysis:
+    def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> Analysis:
         """
         used in LOG
         Find a single analysis."""
@@ -122,20 +122,20 @@ class BaseHandler:
             analysis_query = analysis_query.filter_by(is_visible=is_visible)
         if data_analysis:
             analysis_query = analysis_query.filter(
-                models.Analysis.data_analysis.ilike(f"%{data_analysis}%")
+                Analysis.data_analysis.ilike(f"%{data_analysis}%")
             )
         if comment:
-            analysis_query = analysis_query.filter(models.Analysis.comment.ilike(f"%{comment}%"))
+            analysis_query = analysis_query.filter(Analysis.comment.ilike(f"%{comment}%"))
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def analysis(self, analysis_id: int) -> Optional[models.Analysis]:
+    def analysis(self, analysis_id: int) -> Optional[Analysis]:
         """
         used by REST
         Get a single analysis by id."""
         return self.Analysis.query.get(analysis_id)
 
-    def get_latest_analysis(self, case_id: str) -> Optional[models.Analysis]:
+    def get_latest_analysis(self, case_id: str) -> Optional[Analysis]:
         return self.analyses(case_id=case_id).first()
 
     def get_latest_analysis_status(self, case_id: str) -> Optional[str]:
@@ -175,7 +175,7 @@ class BaseHandler:
         data_analysis: str = None,
         ticket_id: str = None,
         workflow_manager: str = None,
-    ) -> models.Analysis:
+    ) -> Analysis:
         """Add pending entry for an analysis."""
         started_at = dt.datetime.now()
         new_log = self.Analysis(
@@ -194,18 +194,18 @@ class BaseHandler:
         self.add_commit(new_log)
         return new_log
 
-    def add_user(self, name: str, email: str) -> models.User:
+    def add_user(self, name: str, email: str) -> User:
         """Add a new user to the database."""
         new_user = self.User(name=name, email=email)
         self.add_commit(new_user)
         return new_user
 
-    def archive_user(self, user: models.User, archive: bool = True) -> None:
+    def archive_user(self, user: User, archive: bool = True) -> None:
         """Archive user in the database."""
         user.is_archived = archive
         self.commit()
 
-    def user(self, email: str, include_archived: bool = False) -> models.User:
+    def user(self, email: str, include_archived: bool = False) -> User:
         """Fetch a user from the database."""
         query = self.User.query
 
@@ -297,8 +297,10 @@ class BaseHandler:
         job_id_file: Path to slurm id .YAML file as string
         case_id: Unique internal case identifier which is expected to by the only item in the .YAML dict
         ssh : Whether the request is executed from hasta or clinical-db"""
-        job_id_dict = safe_load(open(job_id_file))
-        submitted_job_ids = job_id_dict.get(next(iter(job_id_dict)))
+        job_id: dict = ReadFile.get_content_from_file(
+            file_format=FileFormat.YAML, file_path=Path(job_id_file)
+        )
+        submitted_job_ids = job_id.get(next(iter(job_id)))
         job_ids_string = ",".join(map(str, submitted_job_ids))
         if ssh:
             return (
@@ -377,9 +379,7 @@ class BaseHandler:
         )
         return parsed_df
 
-    def update_slurm_jobs(
-        self, analysis_obj: models.Analysis, jobs_dataframe: pd.DataFrame
-    ) -> None:
+    def update_slurm_jobs(self, analysis_obj: Analysis, jobs_dataframe: pd.DataFrame) -> None:
         """Parses job dataframe and creates job objects"""
         if len(jobs_dataframe) == 0:
             return
@@ -418,7 +418,7 @@ class BaseHandler:
                 )
 
     @staticmethod
-    def get_elapsed_time(self, analysis_obj: models.Analysis) -> str:
+    def get_elapsed_time(self, analysis_obj: Analysis) -> str:
         """Get elapsed time for the analysis"""
         return str(
             (
@@ -492,7 +492,9 @@ class BaseHandler:
     def query_tower(config_file: str, case_id: str) -> TowerAPI:
         """Parse a config file to extract a NF Tower workflow ID and return a TowerAPI.
         Currently only one tower ID is supported."""
-        workflow_id: int = safe_load(open(config_file)).get(case_id)[0]
+        workflow_id: int = ReadFile.get_content_from_file(
+            file_format=FileFormat.YAML, file_path=Path(config_file)
+        ).get(case_id)[0]
         tower_api = TowerAPI(workflow_id=workflow_id)
         if not tower_api.tower_client.meets_requirements:
             raise TowerRequirementsError
@@ -564,4 +566,4 @@ class BaseHandler:
 
 class Store(alchy.Manager, BaseHandler):
     def __init__(self, uri: str):
-        super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=models.Model)
+        super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=Model)

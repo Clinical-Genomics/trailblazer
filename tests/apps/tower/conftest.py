@@ -10,17 +10,17 @@ TOWER_ID: str = "1m759EPcbjuK7n"
 
 
 class TowerResponseFile:
-    PENDING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_pending")
-    RUNNING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_running")
-    COMPLETED: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_completed")
-    EMPTY: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_workflow_empty")
+    PENDING: Path = Path(TOWER_RESPONSE_DIR, "tower_workflow_pending.json")
+    RUNNING: Path = Path(TOWER_RESPONSE_DIR, "tower_workflow_running.json")
+    COMPLETED: Path = Path(TOWER_RESPONSE_DIR, "tower_workflow_completed.json")
+    EMPTY: Path = Path(TOWER_RESPONSE_DIR, "tower_workflow_empty.json")
 
 
 class TowerTaskResponseFile:
-    PENDING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_pending")
-    RUNNING: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_running")
-    COMPLETED: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_completed")
-    EMPTY: Path = Path(TOWER_RESPONSE_DIR, "cuddlyhen_tasks_empty")
+    PENDING: Path = Path(TOWER_RESPONSE_DIR, "tower_tasks_pending.json")
+    RUNNING: Path = Path(TOWER_RESPONSE_DIR, "tower_tasks_running.json")
+    COMPLETED: Path = Path(TOWER_RESPONSE_DIR, "tower_tasks_completed.json")
+    EMPTY: Path = Path(TOWER_RESPONSE_DIR, "tower_tasks_empty.json")
 
 
 class CaseIDs:
@@ -29,28 +29,22 @@ class CaseIDs:
     COMPLETED: str = "cuddlyhen_completed"
 
 
-@pytest.fixture(name="tower_id")
+@pytest.fixture(name="tower_id", scope="session")
 def fixture_tower_id() -> str:
     """Return a NF Tower id."""
     return TOWER_ID
 
 
-@pytest.fixture(name="tower_config_file")
+@pytest.fixture(name="tower_config_file", scope="session")
 def fixture_tower_config_file() -> str:
     """Return the path of a config yaml file with a NF Tower id."""
     return Path("tests", "fixtures", "case", "cuddlyhen_tower_id.yaml").as_posix()
 
 
-@pytest.fixture(name="tower_task_response_pending")
+@pytest.fixture(name="tower_task_response_pending", scope="session")
 def fixture_tower_task_response_pending() -> Path:
     """Return an NF Tower task response for a pending case."""
     return TowerTaskResponseFile.PENDING
-
-
-@pytest.fixture(name="tower_task_response_running")
-def fixture_tower_task_response_running() -> Path:
-    """Return an NF Tower task response for a running case."""
-    return TowerTaskResponseFile.RUNNING
 
 
 @pytest.fixture(name="created_at")

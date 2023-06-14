@@ -52,7 +52,7 @@ except FileNotFoundError:
 
 setup(
     name=NAME,
-    version="12.0.4",
+    version="12.0.10",
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
@@ -70,14 +70,14 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "trailblazer = trailblazer.cli:base",
+            "trailblazer = trailblazer.cli.core:base",
         ]
     },
     # See: http://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Environment :: Console",
     ],
 )

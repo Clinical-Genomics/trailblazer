@@ -3,7 +3,7 @@ from typing import List
 
 import pytest
 
-from tests.apps.tower.conftest import TowerResponseFile
+from tests.apps.tower.conftest import TowerResponseFile, TowerTaskResponseFile
 from tests.mocks.tower_mock import MockTowerAPI
 from trailblazer.apps.tower.models import TowerTask
 from trailblazer.constants import TrailblazerStatus
@@ -89,6 +89,25 @@ def test_tower_api_succeeded_jobs(
     assert tower_api.succeeded_jobs == expected_succeeded_jobs
 
 
+def test_tower_api_tasks(
+    tower_id: str,
+    analysis_id: int,
+    tower_jobs: List[dict],
+) -> None:
+    """Assess that TowerAPI returns a list of tasks given a response."""
+
+    # GIVEN an tower_api with a mock query response
+    tower_api = MockTowerAPI(workflow_id=tower_id)
+    tower_api.mock_tasks_query(response_file=TowerTaskResponseFile.RUNNING)
+
+    # WHEN asking for jobs
+    jobs = tower_api.get_jobs(analysis_id=analysis_id)
+
+    # THEN a list of jobs should be returned
+    for job_nr in range(1, len(jobs)):
+        assert dict(jobs[job_nr]) == dict(tower_jobs[job_nr])
+
+
 @pytest.mark.parametrize(
     "response_file, expected_progress",
     [
@@ -106,26 +125,6 @@ def test_tower_api_progress(tower_id: str, response_file: Path, expected_progres
 
     # THEN progress should be returned
     assert tower_api.progress == expected_progress
-
-
-def test_tower_api_tasks(
-    tower_id: str,
-    analysis_id: int,
-    tower_task_response_running: Path,
-    tower_jobs: List[dict],
-) -> None:
-    """Assess that TowerAPI returns a list of tasks given a response."""
-
-    # GIVEN an tower_api with a mock query response
-    tower_api = MockTowerAPI(workflow_id=tower_id)
-    tower_api.mock_tasks_query(response_file=tower_task_response_running)
-
-    # WHEN asking for jobs
-    jobs = tower_api.get_jobs(analysis_id=analysis_id)
-
-    # THEN a list of jobs should be returned
-    for job_nr in range(1, len(jobs)):
-        assert dict(jobs[job_nr]) == dict(tower_jobs[job_nr])
 
 
 def test_tower_api_tasks_empty(

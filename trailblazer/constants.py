@@ -13,6 +13,16 @@ PRIORITY_OPTIONS = ("low", "normal", "high", "express", "maintenance")
 TYPES = ("other", "rna", "tgs", "wes", "wgs", "wts")
 
 
+class FileFormat(str, Enum):
+    JSON: str = "json"
+    YAML: str = "yaml"
+
+
+class FileExtension(str, Enum):
+    JSON: str = ".json"
+    YAML: str = ".yaml"
+
+
 class WorkflowManager(Enum):
     """Supported task managers."""
 
