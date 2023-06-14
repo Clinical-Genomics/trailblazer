@@ -6,6 +6,8 @@ from pydantic import BaseModel, validator
 from trailblazer.constants import TOWER_PROCESS_STATUS, TOWER_STATUS, TrailblazerStatus
 from trailblazer.utils.datetime import tower_datetime_converter
 
+SCALE_TO_MILLISEC: int = 1000
+
 
 class TowerTask(BaseModel):
     """NF Tower task model."""
@@ -66,7 +68,7 @@ class TowerTask(BaseModel):
     @validator("duration")
     def set_duration(cls, duration: Optional[int]) -> int:
         """Convert milliseconds to seconds or return 0 if empty."""
-        return round(duration / 1000) if duration else 0
+        return round(duration / SCALE_TO_MILLISEC) if duration else 0
 
     @validator("status")
     def set_status(cls, status) -> str:
