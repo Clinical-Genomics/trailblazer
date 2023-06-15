@@ -47,6 +47,14 @@ class BaseHandler:
         """Return metadata entry."""
         return self.Info.query.first()
 
+    def set_latest_update_date(self):
+        """
+        used in CLI
+        Update the latest updated date in the database."""
+        metadata = self.info()
+        metadata.updated_at = dt.datetime.now()
+        self.commit()
+
     def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> Analysis:
         """
         used in LOG
