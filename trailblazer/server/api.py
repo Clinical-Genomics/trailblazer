@@ -8,7 +8,8 @@ from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 
 from trailblazer.server.ext import store
-from trailblazer.store.models import Info
+
+# from trailblazer.store.models import Info
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
@@ -83,8 +84,13 @@ def analysis(analysis_id):
 @blueprint.route("/info")
 def info():
     """Display metadata about database."""
-    info: Info = store.get_query(table=Info).first()
-    return jsonify(**info.to_dict())
+    """Display meta data about database."""
+    metadata_obj = store.info()
+    return jsonify(**metadata_obj.to_dict())
+
+
+#    info: Info = store.get_query(table=Info).first()
+#    return jsonify(**info.to_dict())
 
 
 @blueprint.route("/me")

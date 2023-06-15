@@ -44,6 +44,10 @@ class BaseHandler:
         new_info = self.Info()
         self.add_commit(new_info)
 
+    def info(self) -> Info:
+        """Return metadata entry."""
+        return self.Info.query.first()
+
     def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> Analysis:
         """
         used in LOG
