@@ -18,6 +18,17 @@ def test_setup_and_info(store):
     assert isinstance(info_obj.created_at, datetime.datetime)
 
 
+def test_track_update(store):
+    # GIVEN a store which is empty apart from the initialized info entry
+    assert store.info().updated_at is None
+
+    # WHEN updating the last updated date
+    store.set_latest_update_date()
+
+    # THEN it should update info entry with the current date
+    assert isinstance(store.info().updated_at, datetime.datetime)
+
+
 def test_add_user(store):
     # GIVEN an empty database
     assert store.User.query.first() is None
