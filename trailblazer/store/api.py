@@ -26,7 +26,7 @@ from trailblazer.constants import (
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.core import CoreHandler
-from trailblazer.store.models import Model, User, Analysis, Job
+from trailblazer.store.models import Model, User, Analysis, Job, Info
 from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
@@ -36,9 +36,13 @@ class BaseHandler:
     User = User
     Analysis = Analysis
     Job = Job
+    Info = Info
 
     def setup(self):
         self.create_all()
+        # add initial metadata record (for web interface)
+        new_info = self.Info()
+        self.add_commit(new_info)
 
     def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> Analysis:
         """
