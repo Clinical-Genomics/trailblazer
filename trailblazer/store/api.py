@@ -25,7 +25,8 @@ from trailblazer.constants import (
 )
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
-from trailblazer.store.core import CoreHandler
+
+# from trailblazer.store.core import CoreHandler
 from trailblazer.store.models import Model, User, Analysis, Job, Info
 from trailblazer.store.utils import formatters
 
@@ -557,6 +558,6 @@ class BaseHandler:
         self.commit()
 
 
-class Store(alchy.Manager, BaseHandler, CoreHandler):
+class Store(alchy.Manager, BaseHandler):
     def __init__(self, uri: str):
         super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=Model)
