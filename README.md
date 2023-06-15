@@ -3,8 +3,8 @@
 ### Monitor the progress of analysis workflows submitted to SLURM
 
 Trailblazer is a tool that aims to provide:
-- Monitoring of processes that require submission to a workflow manager
-- Display metadata for each analysis within a web based user interface
+- Monitoring of processes that require submission to a workflow manager.
+- Display metadata for each analysis within a web based user interface.
 
 [Here][Trailblazer-UI] you can find a simple web UI for Trailblazer that helps you keep track of the status of multiple runs
 
