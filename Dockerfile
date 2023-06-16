@@ -1,4 +1,4 @@
-FROM docker.io/library/python:3.8-slim@sha256:7bebae21c28738810809ac96734e7a423e6e1e20ebeb6a419e4ddc3f2827ab7b
+FROM docker.io/library/python:3.8-slim-bullseye
 
 ENV GUNICORN_WORKERS=1
 ENV GUNICORN_TREADS=1
