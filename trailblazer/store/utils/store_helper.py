@@ -1,6 +1,6 @@
 """Utility functions to simply add test data in a Trailblazer store."""
 from trailblazer.store.api import Store
-from trailblazer.store.models import Info
+from trailblazer.store.models import Info, User
 
 
 class StoreHelpers:
@@ -13,3 +13,11 @@ class StoreHelpers:
         store.add(info)
         store.commit()
         return info
+
+    @staticmethod
+    def add_user(email: str, name: str, store: Store) -> User:
+        """Addd a user object to the store."""
+        user: User = User(email=email, name=name)
+        store.add(user)
+        store.commit()
+        return user

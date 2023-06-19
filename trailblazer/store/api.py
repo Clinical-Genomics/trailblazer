@@ -179,12 +179,6 @@ class BaseHandler:
         self.add_commit(new_log)
         return new_log
 
-    def add_user(self, name: str, email: str) -> User:
-        """Add a new user to the database."""
-        new_user = self.User(name=name, email=email)
-        self.add_commit(new_user)
-        return new_user
-
     def archive_user(self, user: User, archive: bool = True) -> None:
         """Archive user in the database."""
         user.is_archived = archive
