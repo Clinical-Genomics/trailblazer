@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import datetime
 
 import alchy
@@ -17,7 +16,7 @@ Model = alchy.make_declarative_base(Base=alchy.ModelBase)
 
 
 class Info(Model):
-    """Keep track of meta data."""
+    """Keep track of metadata."""
 
     __tablename__ = "info"
 

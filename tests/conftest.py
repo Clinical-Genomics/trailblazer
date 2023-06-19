@@ -1,6 +1,6 @@
 import datetime as dt
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Generator
 
 import pytest
 
@@ -8,8 +8,8 @@ from tests.apps.tower.conftest import CaseIDs, TowerTaskResponseFile
 from tests.mocks.store_mock import MockStore
 from trailblazer.apps.tower.models import TowerTask
 from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TrailblazerStatus, FileFormat
-
 from trailblazer.io.controller import ReadFile
+from trailblazer.store.utils.store_helper import StoreHelpers
 
 
 @pytest.fixture(scope="session", name="fixtures_dir")
@@ -43,7 +43,7 @@ def fixture_trailblazer_context(sample_store: MockStore) -> Dict[str, MockStore]
 
 
 @pytest.fixture(name="store")
-def fixture_store():
+def fixture_store() -> Generator[MockStore, None, None]:
     """Empty Trailblazer database."""
     _store = MockStore(uri="sqlite://")
     _store.setup()
@@ -51,8 +51,17 @@ def fixture_store():
     _store.drop_all()
 
 
+@pytest.fixture(name="info_store")
+def fixture_info_store(store: MockStore) -> Generator[MockStore, None, None]:
+    """A Trailblazer database wih a populated info table."""
+    StoreHelpers.add_info(store=store)
+    yield store
+
+
 @pytest.fixture(name="sample_store")
-def fixture_sample_store(sample_data: Dict[str, list], store: MockStore):
+def fixture_sample_store(
+    sample_data: Dict[str, list], store: MockStore
+) -> Generator[MockStore, None, None]:
     """A sample Trailblazer database populated with pending analyses."""
     for user_data in sample_data["users"]:
         store.add_user(user_data["name"], user_data["email"])
