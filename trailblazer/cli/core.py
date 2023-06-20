@@ -107,9 +107,10 @@ def user(context, name: str, email: str) -> None:
 @click.option("--email", type=click.types.STRING, help="Name of new users to list")
 @click.option("--include-archived", is_flag=True, help="Include archived users")
 @click.pass_context
-def users(context, name, email, include_archived):
+def users(context, name: str, email: str, include_archived: bool) -> None:
     """Display information about existing users."""
-    user_query = context.obj["trailblazer"].users(name, email, include_archived)
+    trailblazer_db: Store = context.obj["trailblazer"]
+    user_query = trailblazer_db.get_users(name=name, email=email, include_archived=include_archived)
 
     LOG.info("Listing users in database:")
 
