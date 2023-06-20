@@ -89,13 +89,14 @@ def update_analysis(context, analysis_id: int):
 @click.option("--name", help="Name of new user to add")
 @click.argument("email", default=environ_email())
 @click.pass_context
-def user(context, name, email):
+def user(context, name: str, email: str) -> None:
     """Add a new or display information about an existing user."""
-    existing_user = context.obj["trailblazer"].user(email, include_archived=True)
+    trailblazer_db: Store = context.obj["trailblazer"]
+    existing_user = trailblazer_db.user(email, include_archived=True)
     if existing_user:
         LOG.info(f"Existing user found: {existing_user.to_dict()}")
     elif name:
-        new_user = context.obj["trailblazer"].add_user(name, email)
+        new_user = trailblazer_db.add_user(email=email, name=name)
         LOG.info(f"New user added: {email} ({new_user.id})")
     else:
         LOG.error("User not found")

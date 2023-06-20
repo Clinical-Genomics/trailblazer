@@ -1,6 +1,9 @@
+from typing import Dict
+
 import pytest
 
 import trailblazer
+from tests.mocks.store_mock import MockStore
 from trailblazer.cli.core import base, cancel, delete, ls_cmd, scan, set_analysis_completed, user
 
 
@@ -149,32 +152,36 @@ def test_delete_ongoing_force(cli_runner, trailblazer_context, caplog):
         assert "Deleting" in caplog.text
 
 
-def test_user_not_in_database(cli_runner, trailblazer_context, caplog):
+def test_user_not_in_database(cli_runner, trailblazer_context: Dict[str, MockStore], caplog):
+    """Test user when user is not in the database."""
+    # GIVEN populated Trailblazer database
+
     with caplog.at_level("ERROR"):
-        # GIVEN populated Trailblazer database
-
         # WHEN looking for a user that is not added
-        cli_runner.invoke(user, ["harriers@disco.com"], obj=trailblazer_context)
+        cli_runner.invoke(user, ["not_in_db@disco.com"], obj=trailblazer_context)
 
-        # THEN log should inform that user not found
+        # THEN log should inform that user was not found
         assert "not found" in caplog.text
 
 
-def test_user_in_database(cli_runner, trailblazer_context, caplog):
+def test_user_in_database(
+    cli_runner, trailblazer_context: Dict[str, MockStore], caplog, user_email: str, username: str
+):
+    """Test user when user is in the database."""
+    # GIVEN populated Trailblazer database
     with caplog.at_level("INFO"):
-        # GIVEN populated Trailblazer database
-
         # WHEN looking for a user that is added
-        cli_runner.invoke(user, ["paul.anderson@magnolia.com"], obj=trailblazer_context)
+        cli_runner.invoke(user, [user_email], obj=trailblazer_context)
 
         # THEN log informs the user about their full name
-        assert "Anderson" in caplog.text
+        assert username in caplog.text
 
 
-def test_user_added(cli_runner, trailblazer_context, caplog):
+def test_user_added(cli_runner, trailblazer_context: Dict[str, MockStore], caplog):
+    """Test user when adding user."""
+    # GIVEN populated Trailblazer database
+
     with caplog.at_level("INFO"):
-        # GIVEN populated Trailblazer database
-
         # WHEN adding new user
         cli_runner.invoke(
             user, ["harriers@disco.com", "--name", "Harry DuBois"], obj=trailblazer_context

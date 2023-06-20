@@ -18,18 +18,6 @@ def test_setup_db(store: MockStore):
     assert store.engine.table_names()
 
 
-def test_add_user(store):
-    # GIVEN an empty database
-    assert store.User.query.first() is None
-    name, email = "Paul T. Anderson", "paul.anderson@magnolia.com"
-
-    # WHEN adding a new user
-    new_user = store.add_user(name, email)
-
-    # THEN it should be stored in the database
-    assert store.User.query.filter_by(email=email).first() == new_user
-
-
 def test_user(store):
     # GIVEN a database with a user
     name, email = "Paul T. Anderson", "paul.anderson@magnolia.com"

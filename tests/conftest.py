@@ -12,6 +12,18 @@ from trailblazer.io.controller import ReadFile
 from trailblazer.store.utils.store_helper import StoreHelpers
 
 
+@pytest.fixture(scope="session", name="username")
+def fixture_username() -> str:
+    """Return a username."""
+    return "Paul Anderson"
+
+
+@pytest.fixture(scope="session", name="user_email")
+def fixture_user_email() -> str:
+    """Return an user email."""
+    return "paul.anderson@magnolia.com"
+
+
 @pytest.fixture(scope="session", name="fixtures_dir")
 def fixture_fixtures_dir() -> Path:
     """Return the path to the fixtures' dir."""
@@ -55,6 +67,15 @@ def fixture_store() -> Generator[MockStore, None, None]:
 def fixture_info_store(store: MockStore) -> Generator[MockStore, None, None]:
     """A Trailblazer database wih a populated info table."""
     StoreHelpers.add_info(store=store)
+    yield store
+
+
+@pytest.fixture(name="user_store")
+def fixture_user_store(
+    user_email: str, username: str, store: MockStore
+) -> Generator[MockStore, None, None]:
+    """A Trailblazer database wih a populated user table."""
+    StoreHelpers.add_user(email=user_email, name=username, store=store)
     yield store
 
 
