@@ -23,7 +23,7 @@ def filter_users_by_contains_name(users: Query, name: str, **kwargs) -> Query:
 
 def filter_users_by_is_not_archived(users: Query, **kwargs) -> Query:
     """Filter users which are not archived."""
-    return users.filter_by(is_archived=False)
+    return users.filter(User.is_archived.is_(False))
 
 
 class UserFilter(Enum):

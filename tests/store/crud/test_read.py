@@ -2,7 +2,7 @@ from typing import List
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.store.models import User
-from trailblazer.store.utils.store_helper import StoreHelpers
+from tests.store.utils.store_helper import StoreHelpers
 
 
 def test_get_users(user_store: MockStore, user_email: str, username: str):

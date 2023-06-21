@@ -8,7 +8,7 @@ from trailblazer.store.filters.user_filters import (
     filter_users_by_is_not_archived,
 )
 from trailblazer.store.models import User
-from trailblazer.store.utils.store_helper import StoreHelpers
+from tests.store.utils.store_helper import StoreHelpers
 
 
 def test_filter_users_by_email(user_store: MockStore, user_email: str):
