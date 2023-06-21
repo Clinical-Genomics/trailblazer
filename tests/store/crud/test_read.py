@@ -26,7 +26,7 @@ def test_get_users_including_archived(user_store: MockStore, user_email: str, us
     # WHEN getting users
     users: List[User] = user_store.get_users(name=username, exclude_archived=False)
 
-    # THEN the 2 users should be returned
+    # THEN the two users should be returned
     assert len(users) == 2
 
 

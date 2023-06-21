@@ -211,10 +211,10 @@ def test_users(
 
     caplog.set_level("INFO")
 
-    # WHEN looking for a user that is added
+    # WHEN getting users
     cli_runner.invoke(get_users_from_db, ["--email", user_email], obj=trailblazer_context)
 
-    # THEN log informs the user about their full name
+    # THEN log shows users
     assert username in caplog.text
 
 
