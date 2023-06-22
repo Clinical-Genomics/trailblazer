@@ -18,6 +18,18 @@ def fixture_username() -> str:
     return "Paul Anderson"
 
 
+@pytest.fixture(scope="session", name="archived_username")
+def fixture_archived_username() -> str:
+    """Return an archived username."""
+    return "Archived User"
+
+
+@pytest.fixture(scope="session", name="archived_user_email")
+def fixture_archived_user_email() -> str:
+    """Return an archived user email."""
+    return "archived.user@magnolia.com"
+
+
 @pytest.fixture(scope="session", name="user_email")
 def fixture_user_email() -> str:
     """Return an user email."""
@@ -72,18 +84,28 @@ def fixture_info_store(store: MockStore) -> Generator[MockStore, None, None]:
 
 @pytest.fixture(name="user_store")
 def fixture_user_store(
-    user_email: str, username: str, store: MockStore
+    archived_user_email: str,
+    archived_username: str,
+    user_email: str,
+    username: str,
+    store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A Trailblazer database wih a populated user table."""
     StoreHelpers.add_user(email=user_email, name=username, store=store)
+    StoreHelpers.add_user(
+        email=archived_user_email, name=archived_username, is_archived=True, store=store
+    )
     yield store
 
 
 @pytest.fixture(name="sample_store")
 def fixture_sample_store(
-    sample_data: Dict[str, list], store: MockStore
+    archived_user_email: str, archived_username: str, sample_data: Dict[str, list], store: MockStore
 ) -> Generator[MockStore, None, None]:
     """A sample Trailblazer database populated with pending analyses."""
+    StoreHelpers.add_user(
+        email=archived_user_email, name=archived_username, is_archived=True, store=store
+    )
     for user_data in sample_data["users"]:
         store.add_user(user_data["name"], user_data["email"])
     for analysis_data in sample_data["analyses"]:

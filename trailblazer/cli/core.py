@@ -8,6 +8,7 @@ import coloredlogs
 from dateutil.parser import parse as parse_date
 
 import trailblazer
+from trailblazer.cli.utils.user_helper import is_existing_user
 from trailblazer.constants import FileFormat
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
@@ -122,31 +123,39 @@ def get_users_from_db(context, name: str, email: str, exclude_archived: bool) ->
 
 @base.command("archive-user")
 @click.argument("email", default=environ_email())
-@click.option("--un-archive", is_flag=True, help="Set to True to un-archive the user")
 @click.pass_context
-def archive_user(context, email, un_archive):
-    """Archive an existing user identified by it's email."""
-    existing_user = context.obj["trailblazer"].user(email, include_archived=True)
+def archive_user(context, email: str) -> None:
+    """Archive an existing user identified by email."""
+    trailblazer_db: Store = context.obj["trailblazer"]
+    existing_user: user = trailblazer_db.user(email=email, include_archived=True)
 
-    if not existing_user:
-        LOG.error(f"User with email {email} not found")
+    if not is_existing_user(user=existing_user, email=email):
         return
 
-    if existing_user.is_archived and not un_archive:
+    if existing_user.is_archived:
         LOG.error(f"User with email {email} already archived")
         return
 
-    if not existing_user.is_archived and un_archive:
+    trailblazer_db.update_user_is_archived(user=existing_user, archive=True)
+    LOG.info(f"User archived: {email}")
+
+
+@base.command("unarchive-user")
+@click.argument("email", default=environ_email())
+@click.pass_context
+def unarchive_user(context, email: str) -> None:
+    """Unarchive an existing user identified by email."""
+    trailblazer_db: Store = context.obj["trailblazer"]
+    existing_user: user = trailblazer_db.user(email=email, include_archived=True)
+
+    if not is_existing_user(user=existing_user, email=email):
+        return
+    if not existing_user.is_archived:
         LOG.error(f"User with email {email} not archived")
         return
 
-    if un_archive:
-        context.obj["trailblazer"].archive_user(existing_user, archive=False)
-        LOG.info(f"User un-archived: {email}")
-        return
-
-    context.obj["trailblazer"].archive_user(existing_user)
-    LOG.info(f"User archived: {email}")
+    trailblazer_db.update_user_is_archived(user=existing_user, archive=False)
+    LOG.info(f"User unarchived: {email}")
 
 
 @base.command()

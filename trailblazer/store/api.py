@@ -179,11 +179,6 @@ class BaseHandler:
         self.add_commit(new_log)
         return new_log
 
-    def archive_user(self, user: User, archive: bool = True) -> None:
-        """Archive user in the database."""
-        user.is_archived = archive
-        self.commit()
-
     def user(self, email: str, include_archived: bool = False) -> User:
         """Fetch a user from the database."""
         query = self.User.query
