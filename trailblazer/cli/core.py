@@ -167,6 +167,30 @@ def set_analysis_completed(context, analysis_id):
         LOG.error(e)
 
 
+@base.command("set-status")
+@click.option(
+    "--status",
+    is_flag=False,
+    type=str,
+    help=f"Status to be set. Can take the values:{STATUS_OPTIONS}",
+)
+@click.argument("case_id", type=str)
+@click.pass_context
+def set_analysis_status(
+    context,
+    case_id: str,
+    status: str,
+):
+    """Set the status of the latest analysis for a given CASE_ID."""
+    try:
+        context.obj["trailblazer"].set_analysis_status(case_id=case_id, status=status)
+    except ValueError as e:
+        LOG.error(e)
+        raise click.Abort from e
+    except Exception as e:
+        LOG.error(e)
+
+
 @base.command()
 @click.option("--force", is_flag=True, help="Force delete if analysis ongoing")
 @click.option("--cancel-jobs", is_flag=True, help="Cancel all ongoing jobs before deleting")
