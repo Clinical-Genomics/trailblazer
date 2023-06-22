@@ -21,7 +21,7 @@ def test_add_user(store: MockStore, user_email: str, username: str):
 
 
 def test_update_user_is_archived(user_store: MockStore, user_email: str):
-    """Test updating user is arcived attribute."""
+    """Test updating user is archived attribute."""
     # GIVE a database and a not archived user
     user: User = apply_user_filter(
         filter_functions=[UserFilter.FILTER_BY_EMAIL],
@@ -40,5 +40,4 @@ def test_update_user_is_archived(user_store: MockStore, user_email: str):
     ).first()
 
     # THEN user should be recorded as archived in the database
-
     assert archived_user
