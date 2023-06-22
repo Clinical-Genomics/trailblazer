@@ -1,5 +1,4 @@
 alembic
-docutils
 pre-commit
-pytest>=5.2                 # due to  pytest-cov, pytest-flask
+pytest
 ruff
