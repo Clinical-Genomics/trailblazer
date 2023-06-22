@@ -1,6 +1,7 @@
 import logging
 import sys
 from pathlib import Path
+from typing import List
 
 import click
 import coloredlogs
@@ -11,7 +12,7 @@ from trailblazer.constants import FileFormat
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.api import Store
-from trailblazer.store.models import STATUS_OPTIONS
+from trailblazer.store.models import STATUS_OPTIONS, User
 
 LOG = logging.getLogger(__name__)
 LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
@@ -102,19 +103,21 @@ def user(context, name: str, email: str) -> None:
         LOG.error("User not found")
 
 
-@base.command()
+@base.command("users")
 @click.option("--name", type=click.types.STRING, help="Name of new users to list")
 @click.option("--email", type=click.types.STRING, help="Name of new users to list")
-@click.option("--include-archived", is_flag=True, help="Include archived users")
+@click.option("--exclude-archived", is_flag=True, help="Exclude archived users")
 @click.pass_context
-def users(context, name, email, include_archived):
+def get_users_from_db(context, name: str, email: str, exclude_archived: bool) -> None:
     """Display information about existing users."""
-    user_query = context.obj["trailblazer"].users(name, email, include_archived)
+    trailblazer_db: Store = context.obj["trailblazer"]
+    users: List[User] = trailblazer_db.get_users(
+        email=email, exclude_archived=exclude_archived, name=name
+    )
 
     LOG.info("Listing users in database:")
-
-    for a_user in user_query:
-        LOG.info(f"{a_user}")
+    for user in users:
+        LOG.info(f"{user}")
 
 
 @base.command("archive-user")
