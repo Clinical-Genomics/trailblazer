@@ -9,36 +9,13 @@ from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Analysis
 
 
-def test_setup_and_info(store):
+def test_setup_db(store: MockStore):
+    """Test store contains tables."""
+
     # GIVEN a store which is already setup
-    assert len(store.engine.table_names()) > 0
 
-    # THEN it should contain an Info entry with a default "created_at" date
-    info_obj = store.info()
-    assert isinstance(info_obj.created_at, datetime.datetime)
-
-
-def test_track_update(store):
-    # GIVEN a store which is empty apart from the initialized info entry
-    assert store.info().updated_at is None
-
-    # WHEN updating the last updated date
-    store.set_latest_update_date()
-
-    # THEN it should update info entry with the current date
-    assert isinstance(store.info().updated_at, datetime.datetime)
-
-
-def test_add_user(store):
-    # GIVEN an empty database
-    assert store.User.query.first() is None
-    name, email = "Paul T. Anderson", "paul.anderson@magnolia.com"
-
-    # WHEN adding a new user
-    new_user = store.add_user(name, email)
-
-    # THEN it should be stored in the database
-    assert store.User.query.filter_by(email=email).first() == new_user
+    # THEN it should contain tables
+    assert store.engine.table_names()
 
 
 def test_user(store):
