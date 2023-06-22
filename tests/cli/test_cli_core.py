@@ -241,13 +241,27 @@ def test_archive_user_when_already_archived(
     """Test archiving a user in the database when already archived."""
     # GIVEN populated Trailblazer database
 
-    caplog.set_level("INFO")
-
     # WHEN archiving user
     cli_runner.invoke(archive_user, [archived_user_email], obj=trailblazer_context)
 
     # THEN log shows users
     assert "already archived" in caplog.text
+
+
+def test_archive_user_when_non_existinng_user(
+    cli_runner, trailblazer_context: Dict[str, MockStore], caplog, archived_user_email: str
+):
+    """Test archiving a user in the database when user does not exist."""
+    # GIVEN populated Trailblazer database
+
+    # GIVEN a user email that does not exist
+    non_existing_email: str = "does-not.exist@none.com"
+
+    # WHEN archiving user
+    cli_runner.invoke(archive_user, [non_existing_email], obj=trailblazer_context)
+
+    # THEN log shows users
+    assert f"User with email {non_existing_email} not found" in caplog.text
 
 
 def test_unarchive_user_when_not_archived(
