@@ -9,7 +9,7 @@ from tests.mocks.store_mock import MockStore
 from trailblazer.apps.tower.models import TowerTask
 from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TrailblazerStatus, FileFormat
 from trailblazer.io.controller import ReadFile
-from trailblazer.store.utils.store_helper import StoreHelpers
+from tests.store.utils.store_helper import StoreHelpers
 
 
 @pytest.fixture(scope="session", name="username")

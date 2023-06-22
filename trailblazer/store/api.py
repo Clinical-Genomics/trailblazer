@@ -195,25 +195,6 @@ class BaseHandler:
 
         return query.first()
 
-    def users(
-        self,
-        name: str,
-        email: str,
-        include_archived: bool = False,
-    ) -> Query:
-        """Fetch all users from the database."""
-        query = self.User.query
-
-        if not include_archived:
-            query = query.filter_by(is_archived=False)
-
-        if name:
-            query = query.filter(self.User.name.contains(name))
-        if email:
-            query = query.filter(self.User.email.contains(email))
-
-        return query
-
     def jobs(self) -> Query:
         """Return all jobs in the database."""
         return self.Job.query
