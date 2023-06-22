@@ -8,16 +8,16 @@ class StoreHelpers:
 
     @staticmethod
     def add_info(store: Store) -> Info:
-        """Addd an info object to the store."""
+        """Add an info object to the store."""
         info: Info = Info()
         store.add(info)
         store.commit()
         return info
 
     @staticmethod
-    def add_user(email: str, name: str, store: Store) -> User:
-        """Addd a user object to the store."""
-        user: User = User(email=email, name=name)
+    def add_user(email: str, name: str, store: Store, is_archived: bool = False) -> User:
+        """Add a user object to the store."""
+        user: User = User(email=email, name=name, is_archived=is_archived)
         store.add(user)
         store.commit()
         return user
