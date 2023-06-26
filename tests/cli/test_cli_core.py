@@ -245,7 +245,7 @@ def test_archive_user_when_already_archived(
     cli_runner.invoke(archive_user, [archived_user_email], obj=trailblazer_context)
 
     # THEN log shows users is already archived
-    assert "already archived" in caplog.text
+    assert "has archive status: True" in caplog.text
 
 
 def test_archive_user_when_non_existing_user(
@@ -276,7 +276,7 @@ def test_unarchive_user_when_not_archived(
     cli_runner.invoke(unarchive_user, [user_email], obj=trailblazer_context)
 
     # THEN log shows users is not archived
-    assert f"User with email {user_email} not archived" in caplog.text
+    assert f"User with email {user_email} has archive status: False" in caplog.text
 
 
 def test_unarchive_user(

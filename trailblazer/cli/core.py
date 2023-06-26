@@ -8,7 +8,7 @@ import coloredlogs
 from dateutil.parser import parse as parse_date
 
 import trailblazer
-from trailblazer.cli.utils.user_helper import is_existing_user
+from trailblazer.cli.utils.user_helper import is_existing_user, is_user_archived
 from trailblazer.constants import FileFormat
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
@@ -131,9 +131,7 @@ def archive_user(context, email: str) -> None:
 
     if not is_existing_user(user=existing_user, email=email):
         return
-
-    if existing_user.is_archived:
-        LOG.error(f"User with email {email} already archived")
+    if is_user_archived(user=existing_user, email=email):
         return
 
     trailblazer_db.update_user_is_archived(user=existing_user, archive=True)
@@ -150,8 +148,7 @@ def unarchive_user(context, email: str) -> None:
 
     if not is_existing_user(user=existing_user, email=email):
         return
-    if not existing_user.is_archived:
-        LOG.error(f"User with email {email} not archived")
+    if not is_user_archived(user=existing_user, email=email):
         return
 
     trailblazer_db.update_user_is_archived(user=existing_user, archive=False)
