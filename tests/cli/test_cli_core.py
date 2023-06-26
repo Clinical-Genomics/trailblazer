@@ -13,6 +13,8 @@ from trailblazer.cli.core import (
     set_analysis_completed,
     user,
     get_users_from_db,
+    archive_user,
+    unarchive_user,
 )
 
 
@@ -216,6 +218,82 @@ def test_users(
 
     # THEN log shows users
     assert username in caplog.text
+
+
+def test_archive_user(
+    cli_runner, trailblazer_context: Dict[str, MockStore], caplog, user_email: str
+):
+    """Test archiving a user in the database."""
+    # GIVEN populated Trailblazer database
+
+    caplog.set_level("INFO")
+
+    # WHEN archiving user
+    cli_runner.invoke(archive_user, [user_email], obj=trailblazer_context)
+
+    # THEN log shows users as archived
+    assert f"User archived: {user_email}" in caplog.text
+
+
+def test_archive_user_when_already_archived(
+    cli_runner, trailblazer_context: Dict[str, MockStore], caplog, archived_user_email: str
+):
+    """Test archiving a user in the database when already archived."""
+    # GIVEN populated Trailblazer database
+
+    caplog.set_level("INFO")
+
+    # WHEN archiving user
+    cli_runner.invoke(archive_user, [archived_user_email], obj=trailblazer_context)
+
+    # THEN log shows users is already archived
+    assert "has archive status: True" in caplog.text
+
+
+def test_archive_user_when_non_existing_user(
+    cli_runner, trailblazer_context: Dict[str, MockStore], caplog, archived_user_email: str
+):
+    """Test archiving a user in the database when user does not exist."""
+    # GIVEN populated Trailblazer database
+
+    # GIVEN a user email that does not exist
+    non_existing_email: str = "does-not.exist@none.com"
+
+    # WHEN archiving user
+    cli_runner.invoke(archive_user, [non_existing_email], obj=trailblazer_context)
+
+    # THEN log shows users is not found
+    assert f"User with email {non_existing_email} not found" in caplog.text
+
+
+def test_unarchive_user_when_not_archived(
+    cli_runner, trailblazer_context: Dict[str, MockStore], caplog, user_email: str
+):
+    """Test unarchiving a user in the database which is not archived."""
+    # GIVEN populated Trailblazer database
+
+    caplog.set_level("INFO")
+
+    # WHEN unarchiving user
+    cli_runner.invoke(unarchive_user, [user_email], obj=trailblazer_context)
+
+    # THEN log shows users is not archived
+    assert f"User with email {user_email} has archive status: False" in caplog.text
+
+
+def test_unarchive_user(
+    cli_runner, trailblazer_context: Dict[str, MockStore], caplog, archived_user_email: str
+):
+    """Test unarchiving a user in the database which is archived."""
+    # GIVEN populated Trailblazer database
+
+    caplog.set_level("INFO")
+
+    # WHEN unarchiving user
+    cli_runner.invoke(unarchive_user, [archived_user_email], obj=trailblazer_context)
+
+    # THEN log shows users as not archived
+    assert f"User unarchived: {archived_user_email}" in caplog.text
 
 
 def test_scan(cli_runner, trailblazer_context, caplog):
