@@ -75,14 +75,14 @@ def fixture_store() -> Generator[MockStore, None, None]:
     _store.drop_all()
 
 
-@pytest.fixture(name="info_store")
+@pytest.fixture(scope="function", name="info_store")
 def fixture_info_store(store: MockStore) -> Generator[MockStore, None, None]:
     """A Trailblazer database wih a populated info table."""
     StoreHelpers.add_info(store=store)
     yield store
 
 
-@pytest.fixture(name="user_store")
+@pytest.fixture(scope="function", name="user_store")
 def fixture_user_store(
     archived_user_email: str,
     archived_username: str,

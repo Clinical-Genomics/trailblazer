@@ -248,7 +248,7 @@ def test_archive_user_when_already_archived(
     assert "already archived" in caplog.text
 
 
-def test_archive_user_when_non_existinng_user(
+def test_archive_user_when_non_existing_user(
     cli_runner, trailblazer_context: Dict[str, MockStore], caplog, archived_user_email: str
 ):
     """Test archiving a user in the database when user does not exist."""
