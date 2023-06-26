@@ -241,6 +241,8 @@ def test_archive_user_when_already_archived(
     """Test archiving a user in the database when already archived."""
     # GIVEN populated Trailblazer database
 
+    caplog.set_level("INFO")
+
     # WHEN archiving user
     cli_runner.invoke(archive_user, [archived_user_email], obj=trailblazer_context)
 
