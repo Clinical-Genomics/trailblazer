@@ -5,16 +5,17 @@ import pytest
 import trailblazer
 from tests.mocks.store_mock import MockStore
 from trailblazer.cli.core import (
+    archive_user,
     base,
     cancel,
     delete,
+    get_users_from_db,
     ls_cmd,
     scan,
     set_analysis_completed,
-    user,
-    get_users_from_db,
-    archive_user,
+    set_analysis_status,
     unarchive_user,
+    user,
 )
 
 
@@ -48,6 +49,47 @@ def test_set_analysis_completed(cli_runner, trailblazer_context, caplog):
     # THEN status will be set to COMPLETED
     analysis_obj = trailblazer_context["trailblazer"].get_latest_analysis(case_id=failed_analysis)
     assert analysis_obj.status == "completed"
+
+
+def test_set_analysis_status(cli_runner, trailblazer_context, caplog) -> None:
+    """Test that the lastest analysis status is updated for a given case ID."""
+
+    # GIVEN an analysis with status FAILED
+    failed_analysis = "crackpanda"
+    analysis_obj = trailblazer_context["trailblazer"].get_latest_analysis(case_id=failed_analysis)
+
+    # Make sure status is not "completed"
+    assert analysis_obj.status != "qc"
+
+    # WHEN running command
+    result = cli_runner.invoke(
+        set_analysis_status, ["--status", "qc", failed_analysis], obj=trailblazer_context
+    )
+
+    # THEN command runs successfully
+    assert result.exit_code == 0
+
+    # THEN status will be set to COMPLETED
+    analysis_obj = trailblazer_context["trailblazer"].get_latest_analysis(case_id=failed_analysis)
+    assert analysis_obj.status == "qc"
+
+
+def test_set_analysis_status_error(cli_runner, trailblazer_context, caplog) -> None:
+    """Test that setting the status to a non-accepted value raises an error."""
+
+    # GIVEN an analysis with status FAILED
+    failed_analysis = "crackpanda"
+
+    # WHEN running command
+    result = cli_runner.invoke(
+        set_analysis_status,
+        ["--status", "non_existing_status", failed_analysis],
+        obj=trailblazer_context,
+    )
+
+    # THEN an error should be raised
+    assert result.exit_code != 0
+    assert "Invalid status" in caplog.text
 
 
 def test_cancel_nonexistent(cli_runner, trailblazer_context, caplog):

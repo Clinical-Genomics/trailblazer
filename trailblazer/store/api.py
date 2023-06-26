@@ -19,14 +19,15 @@ from trailblazer.constants import (
     ONGOING_STATUSES,
     SLURM_ACTIVE_CATEGORIES,
     STARTED_STATUSES,
+    STATUS_OPTIONS,
+    FileFormat,
     TrailblazerStatus,
     WorkflowManager,
-    FileFormat,
 )
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.core import CoreHandler
-from trailblazer.store.models import Model, User, Analysis, Job
+from trailblazer.store.models import Analysis, Job, Model, User
 from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
@@ -204,6 +205,7 @@ class BaseHandler:
         return old_analyses
 
     def set_analysis_completed(self, analysis_id: int) -> None:
+        """Set an analysis status to completed."""
         analysis_obj = self.analysis(analysis_id=analysis_id)
         analysis_obj.status = "completed"
         self.commit()
@@ -217,10 +219,13 @@ class BaseHandler:
 
     def set_analysis_status(self, case_id: str, status: str):
         """Setting analysis status."""
+        status = status.lower()
+        if status not in set(STATUS_OPTIONS):
+            raise ValueError(f"Invalid status. Allowed values are: {STATUS_OPTIONS}")
         analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
         analysis_obj.status: str = status
         self.commit()
-        LOG.info(f"{analysis_obj.family} - Status set to {status}")
+        LOG.info(f"{analysis_obj.family} - Status set to {status.upper()}")
 
     def add_comment(self, case_id: str, comment: str):
         analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
@@ -449,7 +454,7 @@ class BaseHandler:
         Currently only one tower ID is supported."""
         workflow_id: int = ReadFile.get_content_from_file(
             file_format=FileFormat.YAML, file_path=Path(config_file)
-        ).get(case_id)[0]
+        ).get(case_id)[-1]
         tower_api = TowerAPI(workflow_id=workflow_id)
         if not tower_api.tower_client.meets_requirements:
             raise TowerRequirementsError
