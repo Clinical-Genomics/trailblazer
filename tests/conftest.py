@@ -110,7 +110,7 @@ def fixture_sample_store(
         store.add_user(name=user_data["name"], email=user_data["email"])
     for analysis_data in sample_data["analyses"]:
         analysis_data["case_id"] = analysis_data["family"]
-        analysis_data["user"] = store.user(email=analysis_data["user"])
+        analysis_data["user"] = store.get_user(email=analysis_data["user"])
         store.add(store.Analysis(**analysis_data))
     store.commit()
     yield store
