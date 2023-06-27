@@ -27,14 +27,13 @@ from trailblazer.constants import (
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.core import CoreHandler
-from trailblazer.store.models import Analysis, Job, Model, User
+from trailblazer.store.models import Analysis, Job, Model
 from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
 
 
 class BaseHandler:
-    User = User
     Analysis = Analysis
     Job = Job
 
@@ -176,20 +175,9 @@ class BaseHandler:
             ticket_id=ticket_id,
             workflow_manager=workflow_manager,
         )
-        new_log.user = self.user(email) if email else None
+        new_log.user = self.get_user(email=email) if email else None
         self.add_commit(new_log)
         return new_log
-
-    def user(self, email: str, include_archived: bool = False) -> User:
-        """Fetch a user from the database."""
-        query = self.User.query
-
-        if not include_archived:
-            query = query.filter_by(is_archived=False)
-
-        query = query.filter_by(email=email)
-
-        return query.first()
 
     def jobs(self) -> Query:
         """Return all jobs in the database."""
@@ -519,7 +507,7 @@ class BaseHandler:
         analysis_obj.status = "canceled"
         analysis_obj.comment = (
             f"Analysis cancelled manually by user:"
-            f" {(self.user(email).name if self.user(email) else (email or 'Unknown'))}!"
+            f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
         )
         self.commit()
 

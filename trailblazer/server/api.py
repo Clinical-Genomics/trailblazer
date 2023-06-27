@@ -8,7 +8,7 @@ from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 
 from trailblazer.server.ext import store
-from trailblazer.store.models import Info
+from trailblazer.store.models import Info, User
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
@@ -35,10 +35,10 @@ def before_request():
         return abort(403, "no JWT token found on request")
 
     user_data: Mapping = jwt.decode(jwt_token, verify=False)
-    user_obj = store.user(user_data["email"], include_archived=False)
-    if user_obj is None:
+    user: User = store.get_user(email=user_data["email"], exclude_archived=True)
+    if not user:
         return abort(403, f"{user_data['email']} doesn't have access")
-    g.current_user = user_obj
+    g.current_user = user
 
 
 @blueprint.route("/analyses")
