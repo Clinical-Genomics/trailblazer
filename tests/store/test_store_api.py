@@ -6,7 +6,7 @@ import pytest
 from tests.apps.tower.conftest import CaseIDs
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.store.models import Analysis
+from trailblazer.store.models import Analysis, User
 
 
 def test_setup_db(store: MockStore):
@@ -18,23 +18,7 @@ def test_setup_db(store: MockStore):
     assert store.engine.table_names()
 
 
-def test_user(store):
-    # GIVEN a database with a user
-    name, email = "Paul T. Anderson", "paul.anderson@magnolia.com"
-    store.add_user(name, email)
-    assert store.User.query.filter_by(email=email).first().email == email
 
-    # WHEN querying for a user
-    user_obj = store.user(email)
-
-    # THEN it should be returned
-    assert user_obj.email == email
-
-    # WHEN querying for a user that doesn't exist
-    user_obj = store.user("this_is_a_made_up_email@fake_example.com")
-
-    # THEN it should return as None
-    assert user_obj is None
 
 
 def test_analysis(sample_store):

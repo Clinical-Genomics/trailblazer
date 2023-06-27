@@ -8,6 +8,25 @@ from trailblazer.store.models import User
 class ReadHandler(BaseHandler_2):
     """Class for reading items in the database."""
 
+    def get_user(
+        self,
+        email: str = None,
+        exclude_archived: bool = True,
+    ) -> User:
+        """Return user from the database."""
+        filter_map: Dict[Callable, Optional[Union[str, bool]]] = {
+            UserFilter.FILTER_BY_CONTAINS_EMAIL: email,
+            UserFilter.FILTER_BY_IS_NOT_ARCHIVED: exclude_archived,
+        }
+        filter_functions: List[Callable] = [
+            function for function, supplied_arg in filter_map.items() if supplied_arg
+        ]
+        return apply_user_filter(
+            filter_functions=filter_functions,
+            users=self.get_query(table=User),
+            email=email,
+        ).first()
+
     def get_users(
         self,
         name: str = None,

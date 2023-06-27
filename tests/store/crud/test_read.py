@@ -4,6 +4,46 @@ from tests.mocks.store_mock import MockStore
 from trailblazer.store.models import User
 from tests.store.utils.store_helper import StoreHelpers
 
+def test_get_user(user_store: MockStore, user_email: str):
+    """Test getting a user from the database."""
+    # GIVEN a database with a user
+
+    # WHEN querying for a user
+    user: User = user_store.get_user(email=user_email)
+
+    # THEN it should be returned
+    assert user.email == user_email
+
+def test_get_user_including_archived(user_store: MockStore, archived_user_email: str):
+    """Test getting an archived user from the database."""
+    # GIVEN a database with an archived user
+
+    # WHEN querying for a user
+    user: User = user_store.get_user(email=archived_user_email, exclude_archived=False)
+
+    # THEN it should be returned
+    assert user.email == archived_user_email
+
+def test_get_user_including_archive_false(user_store: MockStore, archived_user_email: str):
+    """Test getting an archived user from the database."""
+    # GIVEN a database with an archived user
+
+    # WHEN querying for a user
+    user: User = user_store.get_user(email=archived_user_email, exclude_archived=True)
+
+    # THEN no user should be returned
+    assert not user
+
+
+def test_get_user_when_non_existing(user_store: MockStore):
+    """Test getting a non-existing user from the database."""
+    # GIVEN a database with a user
+
+    # WHEN querying for a user that doesn't exist
+    user: User = user_store.get_user(email="this_is_a_made_up_email@fake_example.com")
+
+    # THEN it should return as None
+    assert user is None
 
 def test_get_users(user_store: MockStore, user_email: str, username: str):
     """Test getting a user with username and email."""

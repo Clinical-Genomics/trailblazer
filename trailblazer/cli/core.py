@@ -94,7 +94,7 @@ def update_analysis(context, analysis_id: int):
 def user(context, name: str, email: str) -> None:
     """Add a new or display information about an existing user."""
     trailblazer_db: Store = context.obj["trailblazer"]
-    existing_user = trailblazer_db.user(email, include_archived=True)
+    existing_user = trailblazer_db.user(email=email, include_archived=True)
     if existing_user:
         LOG.info(f"Existing user found: {existing_user.to_dict()}")
     elif name:
