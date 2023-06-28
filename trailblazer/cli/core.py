@@ -135,7 +135,7 @@ def get_users_from_db(context, name: str, email: str, exclude_archived: bool) ->
 def archive_user(context, email: str) -> None:
     """Archive an existing user identified by email."""
     trailblazer_db: Store = context.obj["trailblazer"]
-    existing_user: user = trailblazer_db.get_user(email=email, exclude_archived=False)
+    existing_user: User = trailblazer_db.get_user(email=email, exclude_archived=False)
 
     if not is_existing_user(user=existing_user, email=email):
         return
