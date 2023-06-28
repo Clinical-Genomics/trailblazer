@@ -87,24 +87,33 @@ def update_analysis(context, analysis_id: int):
     context.obj["trailblazer"].update_run_status(analysis_id=analysis_id)
 
 
-@base.command()
+@base.command("add-user")
 @click.option("--name", help="Name of new user to add")
 @click.argument("email", default=environ_email())
 @click.pass_context
-def user(context, name: str, email: str) -> None:
-    """Add a new or display information about an existing user."""
+def add_user_to_db(context, email: str, name: str) -> None:
+    """Add a new user to the database."""
     trailblazer_db: Store = context.obj["trailblazer"]
     existing_user = trailblazer_db.get_user(email=email, exclude_archived=False)
-    if existing_user:
-        LOG.info(f"Existing user found: {existing_user.to_dict()}")
-    elif name:
-        new_user = trailblazer_db.add_user(email=email, name=name)
-        LOG.info(f"New user added: {email} ({new_user.id})")
-    else:
-        LOG.error("User not found")
+    if is_existing_user(user=existing_user, email=email):
+        return
+    new_user = trailblazer_db.add_user(email=email, name=name)
+    LOG.info(f"New user added: {new_user.email} ({new_user.id})")
 
 
-@base.command("users")
+@base.command("get-user")
+@click.argument("email", default=environ_email())
+@click.pass_context
+def get_user_from_db(context, email: str) -> None:
+    """Display information about an existing user."""
+    trailblazer_db: Store = context.obj["trailblazer"]
+    existing_user = trailblazer_db.get_user(email=email, exclude_archived=False)
+    if not is_existing_user(user=existing_user, email=email):
+        return
+    LOG.info(f"Existing user found: {existing_user.to_dict()}")
+
+
+@base.command("get-users")
 @click.option("--name", type=click.types.STRING, help="Name of new users to list")
 @click.option("--email", type=click.types.STRING, help="Name of new users to list")
 @click.option("--exclude-archived", is_flag=True, help="Exclude archived users")
@@ -115,10 +124,9 @@ def get_users_from_db(context, name: str, email: str, exclude_archived: bool) ->
     users: List[User] = trailblazer_db.get_users(
         email=email, exclude_archived=exclude_archived, name=name
     )
-
     LOG.info("Listing users in database:")
     for user in users:
-        LOG.info(f"{user}")
+        LOG.info(f"{user.to_dict()}")
 
 
 @base.command("archive-user")
@@ -144,7 +152,7 @@ def archive_user(context, email: str) -> None:
 def unarchive_user(context, email: str) -> None:
     """Unarchive an existing user identified by email."""
     trailblazer_db: Store = context.obj["trailblazer"]
-    existing_user: user = trailblazer_db.get_user(email=email, exclude_archived=False)
+    existing_user: User = trailblazer_db.get_user(email=email, exclude_archived=False)
 
     if not is_existing_user(user=existing_user, email=email):
         return

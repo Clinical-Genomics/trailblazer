@@ -10,6 +10,7 @@ def is_existing_user(user: User, email: str) -> bool:
     if not user:
         LOG.error(f"User with email {email} not found")
         return False
+    LOG.info(f"User with email {email} found")
     return True
 
 
