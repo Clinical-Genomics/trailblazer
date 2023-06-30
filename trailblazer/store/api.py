@@ -33,7 +33,7 @@ from trailblazer.store.utils import formatters
 LOG = logging.getLogger(__name__)
 
 
-class BaseHandler:
+class BaseHandler(CoreHandler):
     Analysis = Analysis
     Job = Job
 
@@ -512,6 +512,6 @@ class BaseHandler:
         self.commit()
 
 
-class Store(alchy.Manager, BaseHandler, CoreHandler):
+class Store(alchy.Manager, BaseHandler):
     def __init__(self, uri: str):
         super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=Model)
