@@ -6,6 +6,7 @@ import trailblazer
 from tests.mocks.store_mock import MockStore
 from trailblazer.cli.core import (
     archive_user,
+    add_user_to_db,
     base,
     cancel,
     delete,
@@ -15,7 +16,7 @@ from trailblazer.cli.core import (
     scan,
     set_analysis_completed,
     set_analysis_status,
-    unarchive_user, add_user_to_db,
+    unarchive_user,
 )
 
 
@@ -246,19 +247,21 @@ def test_add_user(cli_runner, trailblazer_context: Dict[str, MockStore], caplog)
     # THEN log should inform that user is added
     assert "New user added" in caplog.text
 
-def test_add_user_when_already_exists(cli_runner, trailblazer_context: Dict[str, MockStore], caplog, user_email: str, username: str):
+
+def test_add_user_when_already_exists(
+    cli_runner, trailblazer_context: Dict[str, MockStore], caplog, user_email: str, username: str
+):
     """Test adding a user to the database when the user already exists."""
     # GIVEN populated Trailblazer database
 
     caplog.set_level("INFO")
 
     # WHEN adding new user
-    cli_runner.invoke(
-        add_user_to_db, [user_email, "--name", username], obj=trailblazer_context
-    )
+    cli_runner.invoke(add_user_to_db, [user_email, "--name", username], obj=trailblazer_context)
 
     # THEN log should inform that user is added
     assert f"User with email {user_email} found" in caplog.text
+
 
 def test_users(
     cli_runner, trailblazer_context: Dict[str, MockStore], caplog, user_email: str, username: str

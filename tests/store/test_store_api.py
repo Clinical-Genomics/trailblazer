@@ -6,7 +6,7 @@ import pytest
 from tests.apps.tower.conftest import CaseIDs
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.store.models import Analysis, User
+from trailblazer.store.models import Analysis
 
 
 def test_setup_db(store: MockStore):
@@ -16,9 +16,6 @@ def test_setup_db(store: MockStore):
 
     # THEN it should contain tables
     assert store.engine.table_names()
-
-
-
 
 
 def test_analysis(sample_store):
