@@ -27,7 +27,7 @@ from trailblazer.constants import (
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.core import CoreHandler
-from trailblazer.store.models import Analysis, Job, Model
+from trailblazer.store.models import Analysis, Job, Model, User
 from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
@@ -36,6 +36,17 @@ LOG = logging.getLogger(__name__)
 class BaseHandler:
     Analysis = Analysis
     Job = Job
+
+    def user(self, email: str, include_archived: bool = False) -> User:
+        """Fetch a user from the database."""
+        query = self.User.query
+
+        if not include_archived:
+            query = query.filter_by(is_archived=False)
+
+        query = query.filter_by(email=email)
+
+        return query.first()
 
     def setup(self):
         self.create_all()
