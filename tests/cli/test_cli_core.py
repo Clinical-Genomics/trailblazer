@@ -6,16 +6,17 @@ import trailblazer
 from tests.mocks.store_mock import MockStore
 from trailblazer.cli.core import (
     archive_user,
+    add_user_to_db,
     base,
     cancel,
     delete,
+    get_user_from_db,
     get_users_from_db,
     ls_cmd,
     scan,
     set_analysis_completed,
     set_analysis_status,
     unarchive_user,
-    user,
 )
 
 
@@ -205,46 +206,61 @@ def test_delete_ongoing_force(cli_runner, trailblazer_context, caplog):
         assert "Deleting" in caplog.text
 
 
-def test_user_not_in_database(cli_runner, trailblazer_context: Dict[str, MockStore], caplog):
-    """Test user when user is not in the database."""
+def test_get_user_not_in_database(cli_runner, trailblazer_context: Dict[str, MockStore], caplog):
+    """Test getting user when user is not in the database."""
     # GIVEN populated Trailblazer database
 
     caplog.set_level("ERROR")
 
     # WHEN looking for a user that is not added
-    cli_runner.invoke(user, ["not_in_db@disco.com"], obj=trailblazer_context)
+    cli_runner.invoke(get_user_from_db, ["not_in_db@disco.com"], obj=trailblazer_context)
 
     # THEN log should inform that user was not found
     assert "not found" in caplog.text
 
 
-def test_user_in_database(
+def test_get_user_in_database(
     cli_runner, trailblazer_context: Dict[str, MockStore], caplog, user_email: str, username: str
 ):
-    """Test user when user is in the database."""
+    """Test getting user when user is in the database."""
     # GIVEN populated Trailblazer database
     caplog.set_level("INFO")
 
     # WHEN looking for a user that is added
-    cli_runner.invoke(user, [user_email], obj=trailblazer_context)
+    cli_runner.invoke(get_user_from_db, [user_email], obj=trailblazer_context)
 
     # THEN log informs the user about their full name
     assert username in caplog.text
 
 
-def test_user_added(cli_runner, trailblazer_context: Dict[str, MockStore], caplog):
-    """Test user when adding user."""
+def test_add_user(cli_runner, trailblazer_context: Dict[str, MockStore], caplog):
+    """Test adding a user to the database."""
     # GIVEN populated Trailblazer database
 
     caplog.set_level("INFO")
 
     # WHEN adding new user
     cli_runner.invoke(
-        user, ["harriers@disco.com", "--name", "Harry DuBois"], obj=trailblazer_context
+        add_user_to_db, ["harriers@disco.com", "--name", "Harry DuBois"], obj=trailblazer_context
     )
 
     # THEN log should inform that user is added
     assert "New user added" in caplog.text
+
+
+def test_add_user_when_already_exists(
+    cli_runner, trailblazer_context: Dict[str, MockStore], caplog, user_email: str, username: str
+):
+    """Test adding a user to the database when the user already exists."""
+    # GIVEN populated Trailblazer database
+
+    caplog.set_level("INFO")
+
+    # WHEN adding new user
+    cli_runner.invoke(add_user_to_db, [user_email, "--name", username], obj=trailblazer_context)
+
+    # THEN log should inform that user is added
+    assert f"User with email {user_email} found" in caplog.text
 
 
 def test_users(
