@@ -27,26 +27,15 @@ from trailblazer.constants import (
 from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.core import CoreHandler
-from trailblazer.store.models import Analysis, Job, Model, User
+from trailblazer.store.models import Analysis, Job, Model
 from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
 
 
-class BaseHandler:
+class BaseHandler(CoreHandler):
     Analysis = Analysis
     Job = Job
-
-    def user(self, email: str, include_archived: bool = False) -> User:
-        """Fetch a user from the database."""
-        query = self.User.query
-
-        if not include_archived:
-            query = query.filter_by(is_archived=False)
-
-        query = query.filter_by(email=email)
-
-        return query.first()
 
     def setup(self):
         self.create_all()
@@ -523,6 +512,6 @@ class BaseHandler:
         self.commit()
 
 
-class Store(alchy.Manager, BaseHandler, CoreHandler):
+class Store(alchy.Manager, BaseHandler):
     def __init__(self, uri: str):
         super(Store, self).__init__(config=dict(SQLALCHEMY_DATABASE_URI=uri), Model=Model)
