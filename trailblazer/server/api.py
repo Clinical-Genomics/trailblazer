@@ -1,7 +1,7 @@
 import datetime
 import multiprocessing
 import os
-from typing import Dict, Mapping
+from typing import Dict, Mapping, List, Union
 
 from dateutil.parser import parse as parse_datestr
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
@@ -95,12 +95,14 @@ def me():
 
 @blueprint.route("/aggregate/jobs")
 def aggregate_jobs():
-    """Return stats about jobs."""
+    """Return stats about failed jobs."""
     days_back = int(request.args.get("days_back", 31))
     one_month_ago = datetime.datetime.now() - datetime.timedelta(days=days_back)
 
-    data = store.aggregate_failed(one_month_ago)
-    return jsonify(jobs=data)
+    failed_jobs: List[Dict[str, Union[str, int]]] = store.get_nr_of_failed_jobs_per_category(
+        since_when=one_month_ago
+    )
+    return jsonify(jobs=failed_jobs)
 
 
 @blueprint.route("/update-all")

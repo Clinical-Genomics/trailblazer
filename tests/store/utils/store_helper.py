@@ -1,6 +1,8 @@
 """Utility functions to simply add test data in a Trailblazer store."""
+from datetime import datetime, date
+
 from trailblazer.store.api import Store
-from trailblazer.store.models import Info, User
+from trailblazer.store.models import Info, User, Job
 
 
 class StoreHelpers:
@@ -13,6 +15,27 @@ class StoreHelpers:
         store.add(info)
         store.commit()
         return info
+
+    @staticmethod
+    def add_job(
+        analysis_id: int,
+        name: str,
+        slurm_id: int,
+        status: str,
+        store: Store,
+        started_at: date = datetime.now(),
+    ) -> Job:
+        """Add an job object to the store."""
+        job: Job = Job(
+            analysis_id=analysis_id,
+            slurm_id=slurm_id,
+            name=name,
+            started_at=started_at,
+            status=status,
+        )
+        store.add(job)
+        store.commit()
+        return job
 
     @staticmethod
     def add_user(email: str, name: str, store: Store, is_archived: bool = False) -> User:

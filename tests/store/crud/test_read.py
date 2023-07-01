@@ -1,8 +1,25 @@
-from typing import List
+from datetime import datetime, timedelta
+from typing import List, Dict, Union
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.store.models import User
 from tests.store.utils.store_helper import StoreHelpers
+
+
+def test_get_nr_of_failed_jobs_per_category(job_store: MockStore, timestamp_now: datetime):
+    """Test getting the number of failed jobs per category since a supplied date from the database."""
+    # GIVEN a database with jobs
+
+    # WHEN querying for failed users
+    failed_jobs: List[Dict[str, Union[str, int]]] = job_store.get_nr_of_failed_jobs_per_category(
+        since_when=timestamp_now - timedelta(days=2)
+    )
+
+    # THEN failed jobs should be returned
+    assert failed_jobs
+
+    assert failed_jobs[0].get("name") == "one"
+    assert failed_jobs[0].get("count") == 1
 
 
 def test_get_user(user_store: MockStore, user_email: str):

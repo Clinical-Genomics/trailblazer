@@ -82,6 +82,15 @@ def fixture_info_store(store: MockStore) -> Generator[MockStore, None, None]:
     yield store
 
 
+@pytest.fixture(scope="function", name="job_store")
+def fixture_job_store(
+    store: MockStore,
+) -> Generator[MockStore, None, None]:
+    """A Trailblazer database wih a populated job table."""
+    StoreHelpers.add_job(analysis_id=1, name="one", slurm_id=1, status="failed", store=store)
+    yield store
+
+
 @pytest.fixture(scope="function", name="user_store")
 def fixture_user_store(
     archived_user_email: str,

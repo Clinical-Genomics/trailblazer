@@ -1,4 +1,6 @@
+from datetime import date
 from typing import Callable, List, Dict, Union, Optional
+import sqlalchemy as sqa
 
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
@@ -7,6 +9,23 @@ from trailblazer.store.models import User
 
 class ReadHandler(BaseHandler_2):
     """Class for reading items in the database."""
+
+    def get_nr_of_failed_jobs_per_category(
+        self, since_when: date = None
+    ) -> List[Dict[str, Union[str, int]]]:
+        """Return the number of failed jobs per category (name)."""
+
+        categories = self.session.query(
+            self.Job.name.label("name"),
+            sqa.func.count(self.Job.id).label("count"),
+        ).filter(self.Job.status == "failed")
+
+        if since_when:
+            categories = categories.filter(self.Job.started_at > since_when)
+
+        categories = categories.group_by(self.Job.name).all()
+
+        return [{"name": category.name, "count": category.count} for category in categories]
 
     def get_user(
         self,

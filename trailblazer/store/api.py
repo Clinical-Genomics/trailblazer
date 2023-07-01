@@ -47,23 +47,6 @@ class BaseHandler(CoreHandler):
         query = self.Analysis.query.filter_by(family=case_id, started_at=started_at, status=status)
         return query.first()
 
-    def aggregate_failed(self, since_when: dt.date = None) -> List[dict]:
-        """
-        used in FRONTEND
-        Count the number of failed jobs per category (name)."""
-
-        categories = self.session.query(
-            self.Job.name.label("name"),
-            sqa.func.count(self.Job.id).label("count"),
-        ).filter(self.Job.status == "failed")
-
-        if since_when:
-            categories = categories.filter(self.Job.started_at > since_when)
-
-        categories = categories.group_by(self.Job.name).all()
-
-        return [{"name": category.name, "count": category.count} for category in categories]
-
     def analyses(
         self,
         case_id: str = None,
