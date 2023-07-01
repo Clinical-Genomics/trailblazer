@@ -18,7 +18,7 @@ def test_get_nr_of_failed_jobs_per_category(job_store: MockStore, timestamp_now:
     # THEN failed jobs should be returned
     assert failed_jobs
 
-    assert failed_jobs[0].get("name") == "one"
+    assert failed_jobs[0].get("name") == "1"
     assert failed_jobs[0].get("count") == 1
 
 

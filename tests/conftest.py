@@ -87,7 +87,11 @@ def fixture_job_store(
     store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A Trailblazer database wih a populated job table."""
-    StoreHelpers.add_job(analysis_id=1, name="one", slurm_id=1, status="failed", store=store)
+    statuses: List[str] = ["completed", "failed"]
+    for index, status in enumerate(statuses):
+        StoreHelpers.add_job(
+            analysis_id=index, name=str(index), slurm_id=index, status=status, store=store
+        )
     yield store
 
 
