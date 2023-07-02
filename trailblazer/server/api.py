@@ -9,6 +9,7 @@ from google.auth import jwt
 
 from trailblazer.server.ext import store
 from trailblazer.store.models import Info, User
+from trailblazer.utils.date import get_date_days_ago
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
@@ -96,9 +97,7 @@ def me():
 @blueprint.route("/aggregate/jobs")
 def aggregate_jobs():
     """Return stats about failed jobs."""
-    days_back = int(request.args.get("days_back", 31))
-    one_month_ago = datetime.datetime.now() - datetime.timedelta(days=days_back)
-
+    one_month_ago: datetime = get_date_days_ago(days_ago=int(request.args.get("days_back", 31)))
     failed_jobs: List[Dict[str, Union[str, int]]] = store.get_nr_of_failed_jobs_per_category(
         since_when=one_month_ago
     )
