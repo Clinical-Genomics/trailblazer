@@ -1,6 +1,5 @@
 from datetime import date
 from typing import Callable, List, Dict, Union, Optional
-import sqlalchemy as sqa
 
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.base import BaseHandler_2
@@ -16,11 +15,13 @@ class ReadHandler(BaseHandler_2):
     ) -> List[Dict[str, Union[str, int]]]:
         """Return the number of failed jobs per category (name)."""
 
-        categories = self.session.query(
-            self.Job.name.label("name"),
-            sqa.func.count(self.Job.id).label("count"),
-        ).filter(self.Job.status == TrailblazerStatus.FAILED.value)
+        # categories = self.session.query(
+        #    self.Job.name.label("name"),
+        #    sqa.func.count(self.Job.id).label("count"),
+        # ).filter(self.Job.status == TrailblazerStatus.FAILED.value)
 
+        categories = self.get_job_query_with_name_and_count_labels()
+        categories = categories.filter(self.Job.status == TrailblazerStatus.FAILED.value)
         if since_when:
             categories = categories.filter(self.Job.started_at > since_when)
 
