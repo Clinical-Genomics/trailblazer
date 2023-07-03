@@ -7,6 +7,7 @@ from dateutil.parser import parse as parse_datestr
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.server.ext import store
 from trailblazer.store.models import Info, User
 from trailblazer.utils.date import get_date_days_ago
@@ -99,7 +100,7 @@ def aggregate_jobs():
     """Return stats about failed jobs."""
     one_month_ago: datetime = get_date_days_ago(days_ago=int(request.args.get("days_back", 31)))
     failed_jobs: List[Dict[str, Union[str, int]]] = store.get_nr_of_failed_jobs_per_category(
-        since_when=one_month_ago
+        status=TrailblazerStatus.FAILED.value, since_when=one_month_ago
     )
     return jsonify(jobs=failed_jobs)
 

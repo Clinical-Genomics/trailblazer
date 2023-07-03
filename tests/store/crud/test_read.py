@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import List, Dict, Union
 
 from tests.mocks.store_mock import MockStore
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import User
 from tests.store.utils.store_helper import StoreHelpers
 
@@ -12,7 +13,7 @@ def test_get_nr_of_failed_jobs_per_category(job_store: MockStore, timestamp_yest
 
     # WHEN querying for failed users
     failed_jobs: List[Dict[str, Union[str, int]]] = job_store.get_nr_of_failed_jobs_per_category(
-        since_when=timestamp_yesterday
+        since_when=timestamp_yesterday, status=TrailblazerStatus.FAILED.value
     )
 
     # THEN failed jobs should be returned
