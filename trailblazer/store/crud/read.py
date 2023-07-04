@@ -1,21 +1,22 @@
-from datetime import date
+from datetime import datetime
 from typing import Callable, List, Dict, Union, Optional
 
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.filters.job_filters import JobFilter, apply_job_filter
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
-from trailblazer.store.models import User
+from trailblazer.store.models import User, Job
 
 
 class ReadHandler(BaseHandler_2):
     """Class for reading items in the database."""
 
-    def get_nr_of_failed_jobs_per_category(
-        self, status: str, since_when: date = None
+    def get_nr_jobs_with_status_per_category(
+        self, status: str, since_when: datetime = None
     ) -> List[Dict[str, Union[str, int]]]:
         """Return the number of jobs with status per category (name)."""
         filter_map: Dict[Callable, Optional[Union[str, bool]]] = {
-            JobFilter.FILTER_BY_STATUS: status
+            JobFilter.FILTER_BY_STATUS: status,
+            JobFilter.FILTER_BY_SINCE_WHEN: since_when,
         }
         filter_functions: List[Callable] = [
             function for function, supplied_arg in filter_map.items() if supplied_arg
@@ -23,13 +24,10 @@ class ReadHandler(BaseHandler_2):
         categories = apply_job_filter(
             filter_functions=filter_functions,
             jobs=self.get_job_query_with_name_and_count_labels(),
+            since_when=since_when,
             status=status,
         )
-        if since_when:
-            categories = categories.filter(self.Job.started_at > since_when)
-
-        categories = categories.group_by(self.Job.name).all()
-
+        categories = categories.group_by(Job.name).all()
         return [{"name": category.name, "count": category.count} for category in categories]
 
     def get_user(
