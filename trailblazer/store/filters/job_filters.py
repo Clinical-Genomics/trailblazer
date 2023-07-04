@@ -8,7 +8,7 @@ from trailblazer.store.models import Job
 
 
 def filter_jobs_by_since_when(jobs: Query, since_when: datetime, **kwargs) -> Query:
-    """Filter jobs younger than supplied date."""
+    """Filter jobs before the supplied date."""
     return jobs.filter(Job.started_at > since_when)
 
 

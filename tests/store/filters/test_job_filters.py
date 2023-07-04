@@ -38,7 +38,7 @@ def test_filter_jobs_by_since_when_with_current_date(job_store: MockStore, times
     assert not jobs.count()
 
 
-def test_filter_jobs_by_status(job_store: MockStore, user_email: str):
+def test_filter_jobs_by_status(job_store: MockStore):
     """Test return jobs by status."""
     # GIVEN a store containing jobs
 
