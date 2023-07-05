@@ -223,13 +223,13 @@ def test_update_tower_jobs(sample_store: MockStore, tower_jobs: List[dict], case
     assert not analysis.failed_jobs
 
     # WHEN jobs are updated
-    sample_store.update_jobs(analysis=analysis, jobs=tower_jobs)
+    sample_store.delete_analysis_jobs(analysis=analysis)
 
     # THEN analysis object should have failed jobs
-    assert len(analysis.failed_jobs) == 3
+    assert len(analysis.failed_jobs) == 0
 
     # WHEN jobs are updated a second time
-    sample_store.update_jobs(analysis=analysis, jobs=tower_jobs[:2])
+    sample_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
 
     # THEN failed jobs should be updated
     assert len(analysis.failed_jobs) == 2

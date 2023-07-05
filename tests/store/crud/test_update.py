@@ -1,6 +1,8 @@
+from typing import List
+
 from tests.mocks.store_mock import MockStore
 from trailblazer.store.filters.user_filters import apply_user_filter, UserFilter
-from trailblazer.store.models import User
+from trailblazer.store.models import User, Analysis
 
 
 def test_add_user(store: MockStore, user_email: str, username: str):
@@ -18,6 +20,20 @@ def test_add_user(store: MockStore, user_email: str, username: str):
         email=user_email,
     ).first()
     assert user == new_user
+
+
+def test_update_analysis_jobs(sample_store: MockStore, tower_jobs: List[dict], case_id: str):
+    """Test jobs are successfully updated."""
+
+    # GIVEN an analysis without failed jobs
+    analysis: Analysis = sample_store.get_latest_analysis(case_id=case_id)
+    assert not analysis.failed_jobs
+
+    # WHEN jobs are updated
+    sample_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
+
+    # THEN there should be jobs
+    assert analysis.failed_jobs
 
 
 def test_update_user_is_archived(user_store: MockStore, user_email: str):
