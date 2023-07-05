@@ -365,18 +365,6 @@ class BaseHandler(CoreHandler):
                     f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {type(error).__name__}"
                 )
 
-    @staticmethod
-    def get_elapsed_time(self, analysis_obj: Analysis) -> str:
-        """Get elapsed time for the analysis"""
-        return str(
-            (
-                dt.datetime.now()
-                - min(
-                    job_obj.started_at for job_obj in analysis_obj.failed_jobs if job_obj.started_at
-                )
-            )
-        )
-
     def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
         analysis: Analysis = self.analysis(analysis_id)
