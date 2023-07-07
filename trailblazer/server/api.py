@@ -8,7 +8,7 @@ from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 
 from trailblazer.server.ext import store
-from trailblazer.store.models import Info, User
+from trailblazer.store.models import Info, User, Analysis
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
@@ -231,24 +231,23 @@ def post_mark_analyses_deleted():
 
 @blueprint.route("/add-pending-analysis", methods=["POST"])
 def post_add_pending_analysis():
-    """Add new analysis with pending status"""
-    content = request.json
+    """Add new analysis with status: pending."""
     try:
-        analysis_obj = store.add_pending_analysis(
-            case_id=content.get("case_id"),
-            email=content.get("email"),
-            type=content.get("type"),
-            config_path=content.get("config_path"),
-            out_dir=content.get("out_dir"),
-            priority=content.get("priority"),
-            data_analysis=content.get("data_analysis"),
-            ticket_id=content.get("ticket"),
-            workflow_manager=content.get("workflow_manager"),
+        analysis: Analysis = store.add_pending_analysis(
+            case_id=request.json.get("case_id"),
+            email=request.json.get("email"),
+            type=request.json.get("type"),
+            config_path=request.json.get("config_path"),
+            out_dir=request.json.get("out_dir"),
+            priority=request.json.get("priority"),
+            data_analysis=request.json.get("data_analysis"),
+            ticket_id=request.json.get("ticket"),
+            workflow_manager=request.json.get("workflow_manager"),
         )
-        data = stringify_timestamps(analysis_obj.to_dict())
-        return jsonify(**data), 201
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
+        raw_analysis: dict = stringify_timestamps(analysis.to_dict())
+        return jsonify(**raw_analysis), 201
+    except Exception as exception:
+        return jsonify(f"Exception: {exception}"), 409
 
 
 @blueprint.route("/set-analysis-uploaded", methods=["PUT"])

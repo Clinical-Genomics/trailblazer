@@ -10,6 +10,7 @@ from trailblazer.apps.tower.models import TowerTask
 from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TrailblazerStatus, FileFormat
 from trailblazer.io.controller import ReadFile
 from tests.store.utils.store_helper import StoreHelpers
+from trailblazer.store.models import Analysis
 
 
 @pytest.fixture(scope="session", name="username")
@@ -98,9 +99,23 @@ def fixture_user_store(
     yield store
 
 
+@pytest.fixture(name="raw_analyses")
+def fixture_raw_analyses(sample_data: Dict[str, list]) -> List[dict]:
+    """Return raw analyses data."""
+    analyses: List[Analysis] = []
+    for analysis_data in sample_data["analyses"]:
+        analysis_data["case_id"] = analysis_data["family"]
+        analyses.append(analysis_data)
+    return analyses
+
+
 @pytest.fixture(name="sample_store")
 def fixture_sample_store(
-    archived_user_email: str, archived_username: str, sample_data: Dict[str, list], store: MockStore
+    raw_analyses: List[dict],
+    archived_user_email: str,
+    archived_username: str,
+    sample_data: Dict[str, list],
+    store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A sample Trailblazer database populated with pending analyses."""
     StoreHelpers.add_user(
@@ -108,10 +123,9 @@ def fixture_sample_store(
     )
     for user_data in sample_data["users"]:
         store.add_user(name=user_data["name"], email=user_data["email"])
-    for analysis_data in sample_data["analyses"]:
-        analysis_data["case_id"] = analysis_data["family"]
-        analysis_data["user"] = store.get_user(email=analysis_data["user"])
-        store.add(store.Analysis(**analysis_data))
+    for raw_analysis in raw_analyses:
+        raw_analysis["user"] = store.get_user(email=raw_analysis["user"])
+        store.add(store.Analysis(**raw_analysis))
     store.commit()
     yield store
 
