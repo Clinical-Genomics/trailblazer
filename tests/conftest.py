@@ -62,9 +62,9 @@ def fixture_trailblazer_tmp_dir(tmpdir_factory) -> Path:
 
 
 @pytest.fixture(name="trailblazer_context")
-def fixture_trailblazer_context(sample_store: MockStore) -> Dict[str, MockStore]:
+def fixture_trailblazer_context(analysis_store: MockStore) -> Dict[str, MockStore]:
     """Trailblazer context to be used in CLI."""
-    return {"trailblazer": sample_store}
+    return {"trailblazer": analysis_store}
 
 
 @pytest.fixture(name="store")
@@ -109,8 +109,8 @@ def fixture_raw_analyses(sample_data: Dict[str, list]) -> List[dict]:
     return analyses
 
 
-@pytest.fixture(name="sample_store")
-def fixture_sample_store(
+@pytest.fixture(name="analysis_store")
+def fixture_analysis_store(
     raw_analyses: List[dict],
     archived_user_email: str,
     archived_username: str,
