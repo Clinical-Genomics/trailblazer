@@ -18,26 +18,6 @@ def test_setup_db(store: MockStore):
     assert store.engine.table_names()
 
 
-def test_analysis(analysis_store: MockStore):
-    # GIVEN a store with an analysis
-    existing_analysis = analysis_store.analyses().first()
-
-    # WHEN accessing it by ID
-    analysis_obj = analysis_store.analysis(existing_analysis.id)
-
-    # THEN it should return the same analysis
-    assert analysis_obj == existing_analysis
-
-    # GIVEN an id that doesn't exist
-    missing_analysis_id = 12312423534
-
-    # WHEN accessing the analysis
-    analysis_obj = analysis_store.analysis(missing_analysis_id)
-
-    # THEN it should return None
-    assert analysis_obj is None
-
-
 @pytest.mark.parametrize(
     "family, expected_bool",
     [

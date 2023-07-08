@@ -1,12 +1,22 @@
 from typing import Callable, List, Dict, Union, Optional
 
 from trailblazer.store.base import BaseHandler_2
+from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
-from trailblazer.store.models import User
+from trailblazer.store.models import User, Analysis
 
 
 class ReadHandler(BaseHandler_2):
     """Class for reading items in the database."""
+
+    def get_analysis_with_id(self, analysis_id: int) -> Optional[Analysis]:
+        """Get a single analysis by id."""
+        return apply_analysis_filter(
+            filter_functions=[AnalysisFilter.FILTER_BY_ID],
+            analyses=self.get_query(table=Analysis),
+            analysis_id=analysis_id,
+        ).first()
+        return self.Analysis.query.get(analysis_id)
 
     def get_user(
         self,
