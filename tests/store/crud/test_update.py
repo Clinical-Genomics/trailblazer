@@ -29,6 +29,7 @@ def test_add_pending_analysis(raw_analyses: List[dict], store: MockStore, user_e
         started_at=new_analysis.started_at,
         status=analysis.get("status"),
     )
+    assert new_analysis
     assert stored_analysis == new_analysis
 
 
@@ -46,6 +47,7 @@ def test_add_user(store: MockStore, user_email: str, username: str):
         users=store.get_query(table=User),
         email=user_email,
     ).first()
+    assert new_user
     assert user == new_user
 
 
