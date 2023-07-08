@@ -10,7 +10,6 @@ from trailblazer.apps.tower.models import TowerTask
 from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TrailblazerStatus, FileFormat
 from trailblazer.io.controller import ReadFile
 from tests.store.utils.store_helper import StoreHelpers
-from trailblazer.store.models import Analysis
 
 
 @pytest.fixture(scope="session", name="username")
@@ -43,16 +42,16 @@ def fixture_fixtures_dir() -> Path:
     return Path("tests", "fixtures")
 
 
-@pytest.fixture(scope="session", name="sample_data_path")
-def fixture_sample_data_path(fixtures_dir: Path) -> Path:
-    """Return the path to the sample data file."""
-    return Path(fixtures_dir, "sample-data.yaml")
+@pytest.fixture(scope="session", name="analysis_data_path")
+def fixture_analysis_data_path(fixtures_dir: Path) -> Path:
+    """Return the path to an analysis data file."""
+    return Path(fixtures_dir, "analysis-data.yaml")
 
 
-@pytest.fixture(name="sample_data")
-def fixture_sample_data(sample_data_path: Path) -> Dict[str, list]:
-    """Return content of the sample data file."""
-    return ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=sample_data_path)
+@pytest.fixture(name="analysis_data")
+def fixture_analysis_data(analysis_data_path: Path) -> Dict[str, list]:
+    """Return content of the analysis data file."""
+    return ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=analysis_data_path)
 
 
 @pytest.fixture(name="trailblazer_tmp_dir")
@@ -100,28 +99,28 @@ def fixture_user_store(
 
 
 @pytest.fixture(name="raw_analyses")
-def fixture_raw_analyses(sample_data: Dict[str, list]) -> List[dict]:
+def fixture_raw_analyses(analysis_data: Dict[str, list]) -> List[dict]:
     """Return raw analyses data."""
-    analyses: List[Analysis] = []
-    for analysis_data in sample_data["analyses"]:
-        analysis_data["case_id"] = analysis_data["family"]
-        analyses.append(analysis_data)
+    analyses: List[dict] = []
+    for analysis in analysis_data["analyses"]:
+        analysis["case_id"] = analysis["family"]
+        analyses.append(analysis)
     return analyses
 
 
 @pytest.fixture(name="analysis_store")
 def fixture_analysis_store(
-    raw_analyses: List[dict],
+    analysis_data: Dict[str, list],
     archived_user_email: str,
     archived_username: str,
-    sample_data: Dict[str, list],
+    raw_analyses: List[dict],
     store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A sample Trailblazer database populated with pending analyses."""
     StoreHelpers.add_user(
         email=archived_user_email, name=archived_username, is_archived=True, store=store
     )
-    for user_data in sample_data["users"]:
+    for user_data in analysis_data["users"]:
         store.add_user(name=user_data["name"], email=user_data["email"])
     for raw_analysis in raw_analyses:
         raw_analysis["user"] = store.get_user(email=raw_analysis["user"])
