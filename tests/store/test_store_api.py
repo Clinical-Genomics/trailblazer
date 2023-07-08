@@ -18,7 +18,7 @@ def test_setup_db(store: MockStore):
     assert store.engine.table_names()
 
 
-def test_analysis(analysis_store):
+def test_analysis(analysis_store: MockStore):
     # GIVEN a store with an analysis
     existing_analysis = analysis_store.analyses().first()
 
@@ -47,7 +47,7 @@ def test_analysis(analysis_store):
         ("escapedgoat", True),  # pending
     ],
 )
-def test_is_latest_analysis_ongoing(analysis_store, family: str, expected_bool: bool):
+def test_is_latest_analysis_ongoing(analysis_store: MockStore, family: str, expected_bool: bool):
     # GIVEN an analysis
     analysis_store.update_ongoing_analyses()
     analysis_objs = analysis_store.analyses(case_id=family).first()
@@ -60,7 +60,7 @@ def test_is_latest_analysis_ongoing(analysis_store, family: str, expected_bool: 
     assert is_ongoing is expected_bool
 
 
-def test_set_analysis_uploaded(analysis_store, timestamp_now: datetime):
+def test_set_analysis_uploaded(analysis_store: MockStore, timestamp_now: datetime):
     """Test setting analysis uploaded at for an analysis."""
 
     # GIVEN a store with an analysis
@@ -74,7 +74,7 @@ def test_set_analysis_uploaded(analysis_store, timestamp_now: datetime):
     assert analysis_obj.uploaded_at == uploaded_at
 
 
-def test_set_analysis_failed(analysis_store):
+def test_set_analysis_failed(analysis_store: MockStore):
     """Test setting analysis to failed for an analysis."""
 
     # GIVEN a store with an analysis
@@ -87,7 +87,7 @@ def test_set_analysis_failed(analysis_store):
     assert analysis_obj.status == "failed"
 
 
-def test_add_comment(analysis_store):
+def test_add_comment(analysis_store: MockStore):
     """Test adding comment to an analysis object."""
 
     # GIVEN a store with an analysis
@@ -110,7 +110,7 @@ def test_add_comment(analysis_store):
         ("escapedgoat", False),  # pending
     ],
 )
-def test_is_latest_analysis_failed(analysis_store, family: str, expected_bool: bool):
+def test_is_latest_analysis_failed(analysis_store: MockStore, family: str, expected_bool: bool):
     # GIVEN an analysis
     analysis_store.update_ongoing_analyses()
     analysis_objs = analysis_store.analyses(case_id=family).first()
@@ -132,7 +132,7 @@ def test_is_latest_analysis_failed(analysis_store, family: str, expected_bool: b
         ("escapedgoat", False),  # pending
     ],
 )
-def test_is_latest_analysis_completed(analysis_store, family: str, expected_bool: bool):
+def test_is_latest_analysis_completed(analysis_store: MockStore, family: str, expected_bool: bool):
     # GIVEN an analysis
     analysis_store.update_ongoing_analyses()
     analysis_objs = analysis_store.analyses(case_id=family).first()
@@ -154,7 +154,7 @@ def test_is_latest_analysis_completed(analysis_store, family: str, expected_bool
         ("escapedgoat", "pending"),  # pending
     ],
 )
-def test_get_latest_analysis_status(analysis_store, family: str, expected_status: str):
+def test_get_latest_analysis_status(analysis_store: MockStore, family: str, expected_status: str):
     # GIVEN an analysis
     analysis_store.update_ongoing_analyses()
     analysis_objs = analysis_store.analyses(case_id=family).first()
@@ -184,7 +184,7 @@ def test_get_latest_analysis_status(analysis_store, family: str, expected_status
         ("trueferret", "running"),
     ],
 )
-def test_update(analysis_store, case_id, status):
+def test_update(analysis_store: MockStore, case_id, status):
     # GIVEN an analysis
     analysis_obj = analysis_store.get_latest_analysis(case_id)
 
@@ -201,7 +201,7 @@ def test_update(analysis_store, case_id, status):
     assert analysis_obj.status == status
 
 
-def test_mark_analyses_deleted(analysis_store):
+def test_mark_analyses_deleted(analysis_store: MockStore):
     # GIVEN case_id for a case that is not deleted
     case_id = "liberatedunicorn"
     analysis_obj = analysis_store.get_latest_analysis(case_id)
