@@ -99,7 +99,7 @@ def fixture_user_store(
 
 
 @pytest.fixture(name="raw_analyses")
-def fixture_raw_analyses(analysis_data: Dict[str, list]) -> List[dict]:
+def fixture_raw_analyses(analysis_data: Dict[str, List[Dict]]) -> List[dict]:
     """Return raw analyses data."""
     analyses: List[dict] = []
     for analysis in analysis_data["analyses"]:
