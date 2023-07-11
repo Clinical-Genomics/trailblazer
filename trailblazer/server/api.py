@@ -232,17 +232,18 @@ def post_mark_analyses_deleted():
 @blueprint.route("/add-pending-analysis", methods=["POST"])
 def post_add_pending_analysis():
     """Add new analysis with status: pending."""
+    post_request: Response.json = request.json
     try:
         analysis: Analysis = store.add_pending_analysis(
-            case_id=request.json.get("case_id"),
-            email=request.json.get("email"),
-            type=request.json.get("type"),
-            config_path=request.json.get("config_path"),
-            out_dir=request.json.get("out_dir"),
-            priority=request.json.get("priority"),
-            data_analysis=request.json.get("data_analysis"),
-            ticket_id=request.json.get("ticket"),
-            workflow_manager=request.json.get("workflow_manager"),
+            case_id=post_request.get("case_id"),
+            email=post_request.get("email"),
+            type=post_request.get("type"),
+            config_path=post_request.get("config_path"),
+            out_dir=post_request.get("out_dir"),
+            priority=post_request.get("priority"),
+            data_analysis=post_request.get("data_analysis"),
+            ticket_id=post_request.get("ticket"),
+            workflow_manager=post_request.get("workflow_manager"),
         )
         raw_analysis: dict = stringify_timestamps(analysis.to_dict())
         return jsonify(**raw_analysis), 201

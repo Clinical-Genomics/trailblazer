@@ -48,7 +48,7 @@ def fixture_analysis_data_path(fixtures_dir: Path) -> Path:
     return Path(fixtures_dir, "analysis-data.yaml")
 
 
-@pytest.fixture(name="analysis_data")
+@pytest.fixture(name="analysis_data", scope="function")
 def fixture_analysis_data(analysis_data_path: Path) -> Dict[str, list]:
     """Return content of the analysis data file."""
     return ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=analysis_data_path)
@@ -98,7 +98,7 @@ def fixture_user_store(
     yield store
 
 
-@pytest.fixture(name="raw_analyses")
+@pytest.fixture(name="raw_analyses", scope="function")
 def fixture_raw_analyses(analysis_data: Dict[str, List[Dict]]) -> List[dict]:
     """Return raw analyses data."""
     analyses: List[dict] = []
