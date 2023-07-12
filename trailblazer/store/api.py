@@ -179,10 +179,6 @@ class BaseHandler(CoreHandler):
         self.add_commit(new_log)
         return new_log
 
-    def jobs(self) -> Query:
-        """Return all jobs in the database."""
-        return self.Job.query
-
     def mark_analyses_deleted(self, case_id: str) -> Query:
         """mark analyses connected to a case as deleted"""
         old_analyses = self.analyses(case_id=case_id)
