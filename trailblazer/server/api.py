@@ -7,7 +7,7 @@ from dateutil.parser import parse as parse_datestr
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 
-from trailblazer.constants import TrailblazerStatus, ONE_MONTH_AGO
+from trailblazer.constants import TrailblazerStatus, ONE_MONTH_IN_DAYS
 from trailblazer.server.ext import store
 from trailblazer.store.models import Info, User
 from trailblazer.utils.date import get_date_days_ago
@@ -98,8 +98,8 @@ def me():
 @blueprint.route("/aggregate/jobs")
 def aggregate_jobs():
     """Return stats about failed jobs."""
-    one_month_ago: datetime = get_date_days_ago(
-        days_ago=int(request.args.get("days_back", ONE_MONTH_AGO))
+    time_window: datetime = get_date_days_ago(
+        days_ago=int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
     )
     failed_jobs: List[Dict[str, Union[str, int]]] = store.get_nr_jobs_with_status_per_category(
         status=TrailblazerStatus.FAILED.value, since_when=one_month_ago

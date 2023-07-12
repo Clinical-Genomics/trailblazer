@@ -4,7 +4,7 @@ from typing import Dict
 COMPLETED_STATUS = "completed"
 FAILED_STATUS = "failed"
 ONGOING_STATUSES = ("pending", "running", "error", "completing")
-ONE_MONTH_AGO: int = 31
+ONE_MONTH_IN_DAYS: int = 31
 PRIORITY_OPTIONS = ("low", "normal", "high", "express", "maintenance")
 SLURM_ACTIVE_CATEGORIES = ("running", "pending", "completing")
 SLURM_FAILED_CATEGORIES = ("failed", "cancelled", "timeout")
