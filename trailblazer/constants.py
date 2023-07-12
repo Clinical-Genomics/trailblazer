@@ -4,12 +4,13 @@ from typing import Dict
 COMPLETED_STATUS = "completed"
 FAILED_STATUS = "failed"
 ONGOING_STATUSES = ("pending", "running", "error", "completing")
-STARTED_STATUSES = ["completed", "failed", "pending", "running", "error", "completing"]
-SLURM_NORMAL_CATEGORIES = ("completed", "running", "pending", "completing")
-SLURM_FAILED_CATEGORIES = ("failed", "cancelled", "timeout")
-SLURM_ACTIVE_CATEGORIES = ("running", "pending", "completing")
-JOB_STATUS_OPTIONS = SLURM_NORMAL_CATEGORIES + SLURM_FAILED_CATEGORIES
+ONE_MONTH_IN_DAYS: int = 31
 PRIORITY_OPTIONS = ("low", "normal", "high", "express", "maintenance")
+SLURM_ACTIVE_CATEGORIES = ("running", "pending", "completing")
+SLURM_FAILED_CATEGORIES = ("failed", "cancelled", "timeout")
+SLURM_NORMAL_CATEGORIES = ("completed", "running", "pending", "completing")
+JOB_STATUS_OPTIONS = SLURM_NORMAL_CATEGORIES + SLURM_FAILED_CATEGORIES
+STARTED_STATUSES = ["completed", "failed", "pending", "running", "error", "completing"]
 TYPES = ("other", "rna", "tgs", "wes", "wgs", "wts")
 
 

@@ -1,14 +1,16 @@
 import datetime
 import multiprocessing
 import os
-from typing import Dict, Mapping
+from typing import Dict, Mapping, List, Union
 
 from dateutil.parser import parse as parse_datestr
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 
+from trailblazer.constants import TrailblazerStatus, ONE_MONTH_IN_DAYS
 from trailblazer.server.ext import store
 from trailblazer.store.models import Info, User, Analysis
+from trailblazer.utils.date import get_date_days_ago
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
@@ -95,12 +97,14 @@ def me():
 
 @blueprint.route("/aggregate/jobs")
 def aggregate_jobs():
-    """Return stats about jobs."""
-    days_back = int(request.args.get("days_back", 31))
-    one_month_ago = datetime.datetime.now() - datetime.timedelta(days=days_back)
-
-    data = store.aggregate_failed(one_month_ago)
-    return jsonify(jobs=data)
+    """Return stats about failed jobs."""
+    time_window: datetime = get_date_days_ago(
+        days_ago=int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
+    )
+    failed_jobs: List[Dict[str, Union[str, int]]] = store.get_nr_jobs_with_status_per_category(
+        status=TrailblazerStatus.FAILED.value, since_when=time_window
+    )
+    return jsonify(jobs=failed_jobs)
 
 
 @blueprint.route("/update-all")
