@@ -56,6 +56,7 @@ TOWER_STATUS: Dict[str, str] = {
     "SUBMITTED": TrailblazerStatus.PENDING.value,
     "RUNNING": TrailblazerStatus.RUNNING.value,
     "SUCCEEDED": TrailblazerStatus.COMPLETED.value,
+    "CACHED": TrailblazerStatus.COMPLETED.value,
     "FAILED": TrailblazerStatus.FAILED.value,
     "CANCELLED": TrailblazerStatus.CANCELLED.value,
     "COMPLETED": TrailblazerStatus.COMPLETED.value,
