@@ -1,4 +1,4 @@
-import datetime as dt
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Generator
 
@@ -82,6 +82,19 @@ def fixture_info_store(store: MockStore) -> Generator[MockStore, None, None]:
     yield store
 
 
+@pytest.fixture(scope="function", name="job_store")
+def fixture_job_store(
+    store: MockStore,
+) -> Generator[MockStore, None, None]:
+    """A Trailblazer database wih a populated job table."""
+    statuses: List[str] = [TrailblazerStatus.COMPLETED.value, TrailblazerStatus.FAILED.value]
+    for index, status in enumerate(statuses):
+        StoreHelpers.add_job(
+            analysis_id=index, name=str(index), slurm_id=index, status=status, store=store
+        )
+    yield store
+
+
 @pytest.fixture(scope="function", name="user_store")
 def fixture_user_store(
     archived_user_email: str,
@@ -117,9 +130,15 @@ def fixture_sample_store(
 
 
 @pytest.fixture(name="timestamp_now", scope="session")
-def fixture_timestamp_now() -> dt.datetime:
+def fixture_timestamp_now() -> datetime:
     """Return a time stamp of today's date in date time format."""
-    return dt.datetime.now()
+    return datetime.now()
+
+
+@pytest.fixture(name="timestamp_yesterday", scope="session")
+def fixture_timestamp_yesterday(timestamp_now: datetime) -> datetime:
+    """Return a time stamp of yesterday's date in date time format."""
+    return timestamp_now - timedelta(days=1)
 
 
 @pytest.fixture(name="tower_jobs")
@@ -160,9 +179,9 @@ def fixture_analysis_id() -> int:
 
 
 @pytest.fixture(name="started_at", scope="session")
-def fixture_started_at() -> dt.datetime:
+def fixture_started_at() -> datetime:
     """Returns a started at date."""
-    return dt.datetime.strptime("2023-04-04T08:11:27Z", TOWER_TIMESTAMP_FORMAT)
+    return datetime.strptime("2023-04-04T08:11:27Z", TOWER_TIMESTAMP_FORMAT)
 
 
 @pytest.fixture(name="slurm_id", scope="session")

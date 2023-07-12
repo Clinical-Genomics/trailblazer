@@ -1,8 +1,30 @@
-from typing import List
+from datetime import datetime
+from typing import List, Dict, Union
 
 from tests.mocks.store_mock import MockStore
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import User
 from tests.store.utils.store_helper import StoreHelpers
+
+
+def test_get_nr_jobs_with_status_per_category(job_store: MockStore, timestamp_yesterday: datetime):
+    """Test getting the number of failed jobs per category since a supplied date from the database."""
+    # GIVEN a database with jobs
+
+    # WHEN querying for failed users
+    failed_jobs: List[Dict[str, Union[str, int]]] = job_store.get_nr_jobs_with_status_per_category(
+        since_when=timestamp_yesterday, status=TrailblazerStatus.FAILED.value
+    )
+
+    # THEN failed jobs should be returned
+    assert failed_jobs
+
+    # THEN one job should be returned
+    assert len(failed_jobs) == 1
+
+    # THEN name and count should be defined
+    assert failed_jobs[0].get("name") == "1"
+    assert failed_jobs[0].get("count") == 1
 
 
 def test_get_user(user_store: MockStore, user_email: str):
