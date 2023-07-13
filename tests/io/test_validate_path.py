@@ -7,13 +7,13 @@ from trailblazer.exc import ValidationError
 from trailblazer.io.validate_path import validate_file_suffix
 
 
-def test_validate_file_suffix_correct_suffix(sample_data_path: Path):
+def test_validate_file_suffix_correct_suffix(analysis_data_path: Path):
     """Test validate file suffix when file suffix is in correct format."""
     # GIVEN a path in the correct file format
 
     # WHEN validating the file suffix
     was_validated: bool = validate_file_suffix(
-        path_to_validate=sample_data_path, target_suffix=FileExtension.YAML
+        path_to_validate=analysis_data_path, target_suffix=FileExtension.YAML
     )
 
     # THEN assert the suffix is in the correct format

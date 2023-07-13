@@ -42,16 +42,16 @@ def fixture_fixtures_dir() -> Path:
     return Path("tests", "fixtures")
 
 
-@pytest.fixture(scope="session", name="sample_data_path")
-def fixture_sample_data_path(fixtures_dir: Path) -> Path:
-    """Return the path to the sample data file."""
-    return Path(fixtures_dir, "sample-data.yaml")
+@pytest.fixture(scope="session", name="analysis_data_path")
+def fixture_analysis_data_path(fixtures_dir: Path) -> Path:
+    """Return the path to an analysis data file."""
+    return Path(fixtures_dir, "analysis-data.yaml")
 
 
-@pytest.fixture(name="sample_data")
-def fixture_sample_data(sample_data_path: Path) -> Dict[str, list]:
-    """Return content of the sample data file."""
-    return ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=sample_data_path)
+@pytest.fixture(name="analysis_data", scope="function")
+def fixture_analysis_data(analysis_data_path: Path) -> Dict[str, list]:
+    """Return content of the analysis data file."""
+    return ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=analysis_data_path)
 
 
 @pytest.fixture(name="trailblazer_tmp_dir")
@@ -61,9 +61,9 @@ def fixture_trailblazer_tmp_dir(tmpdir_factory) -> Path:
 
 
 @pytest.fixture(name="trailblazer_context")
-def fixture_trailblazer_context(sample_store: MockStore) -> Dict[str, MockStore]:
+def fixture_trailblazer_context(analysis_store: MockStore) -> Dict[str, MockStore]:
     """Trailblazer context to be used in CLI."""
-    return {"trailblazer": sample_store}
+    return {"trailblazer": analysis_store}
 
 
 @pytest.fixture(name="store")
@@ -111,20 +111,33 @@ def fixture_user_store(
     yield store
 
 
-@pytest.fixture(name="sample_store")
-def fixture_sample_store(
-    archived_user_email: str, archived_username: str, sample_data: Dict[str, list], store: MockStore
+@pytest.fixture(name="raw_analyses", scope="function")
+def fixture_raw_analyses(analysis_data: Dict[str, List[Dict]]) -> List[dict]:
+    """Return raw analyses data."""
+    analyses: List[dict] = []
+    for analysis in analysis_data["analyses"]:
+        analysis["case_id"] = analysis["family"]
+        analyses.append(analysis)
+    return analyses
+
+
+@pytest.fixture(name="analysis_store")
+def fixture_analysis_store(
+    analysis_data: Dict[str, list],
+    archived_user_email: str,
+    archived_username: str,
+    raw_analyses: List[dict],
+    store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A sample Trailblazer database populated with pending analyses."""
     StoreHelpers.add_user(
         email=archived_user_email, name=archived_username, is_archived=True, store=store
     )
-    for user_data in sample_data["users"]:
+    for user_data in analysis_data["users"]:
         store.add_user(name=user_data["name"], email=user_data["email"])
-    for analysis_data in sample_data["analyses"]:
-        analysis_data["case_id"] = analysis_data["family"]
-        analysis_data["user"] = store.get_user(email=analysis_data["user"])
-        store.add(store.Analysis(**analysis_data))
+    for raw_analysis in raw_analyses:
+        raw_analysis["user"] = store.get_user(email=raw_analysis["user"])
+        store.add(store.Analysis(**raw_analysis))
     store.commit()
     yield store
 
