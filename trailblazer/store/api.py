@@ -132,40 +132,6 @@ class BaseHandler(CoreHandler):
         latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
         return latest_analysis_status in STARTED_STATUSES
 
-    def add_pending_analysis(
-        self,
-        case_id: str,
-        type: str,
-        config_path: str,
-        out_dir: str,
-        priority: str,
-        email: str = None,
-        data_analysis: str = None,
-        ticket_id: str = None,
-        workflow_manager: str = None,
-    ) -> Analysis:
-        """Add pending entry for an analysis."""
-        started_at = dt.datetime.now()
-        new_log = self.Analysis(
-            family=case_id,
-            status="pending",
-            started_at=started_at,
-            type=type,
-            config_path=config_path,
-            out_dir=out_dir,
-            priority=priority,
-            data_analysis=data_analysis,
-            ticket_id=ticket_id,
-            workflow_manager=workflow_manager,
-        )
-        new_log.user = self.get_user(email=email) if email else None
-        self.add_commit(new_log)
-        return new_log
-
-    def jobs(self) -> Query:
-        """Return all jobs in the database."""
-        return self.Job.query
-
     def mark_analyses_deleted(self, case_id: str) -> Query:
         """mark analyses connected to a case as deleted"""
         old_analyses = self.analyses(case_id=case_id)
