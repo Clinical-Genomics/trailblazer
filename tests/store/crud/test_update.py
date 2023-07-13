@@ -23,15 +23,15 @@ def test_add_user(store: MockStore, user_email: str, username: str):
     assert user == new_user
 
 
-def test_update_analysis_jobs(sample_store: MockStore, tower_jobs: List[dict], case_id: str):
+def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
     """Test jobs are successfully updated."""
 
     # GIVEN an analysis without failed jobs
-    analysis: Analysis = sample_store.get_latest_analysis(case_id=case_id)
+    analysis: Analysis = analysis_store.get_latest_analysis(case_id=case_id)
     assert not analysis.failed_jobs
 
     # WHEN jobs are updated
-    sample_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
+    analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
 
     # THEN there should be jobs
     assert analysis.failed_jobs
