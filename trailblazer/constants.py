@@ -4,7 +4,7 @@ from typing import Dict
 COMPLETED_STATUS = "completed"
 FAILED_STATUS = "failed"
 ONGOING_STATUSES = ("pending", "running", "error", "completing")
-ONE_MONTH_AGO: int = 31
+ONE_MONTH_IN_DAYS: int = 31
 PRIORITY_OPTIONS = ("low", "normal", "high", "express", "maintenance")
 SLURM_ACTIVE_CATEGORIES = ("running", "pending", "completing")
 SLURM_FAILED_CATEGORIES = ("failed", "cancelled", "timeout")
@@ -53,12 +53,15 @@ class TrailblazerStatus(Enum):
 
 
 TOWER_STATUS: Dict[str, str] = {
-    "SUBMITTED": TrailblazerStatus.PENDING.value,
-    "RUNNING": TrailblazerStatus.RUNNING.value,
-    "SUCCEEDED": TrailblazerStatus.COMPLETED.value,
-    "FAILED": TrailblazerStatus.FAILED.value,
+    "ABORTED": TrailblazerStatus.CANCELLED.value,
+    "CACHED": TrailblazerStatus.COMPLETED.value,
     "CANCELLED": TrailblazerStatus.CANCELLED.value,
     "COMPLETED": TrailblazerStatus.COMPLETED.value,
+    "FAILED": TrailblazerStatus.FAILED.value,
+    "NEW": TrailblazerStatus.PENDING.value,
+    "RUNNING": TrailblazerStatus.RUNNING.value,
+    "SUBMITTED": TrailblazerStatus.PENDING.value,
+    "SUCCEEDED": TrailblazerStatus.COMPLETED.value,
     "UNKNOWN": TrailblazerStatus.FAILED.value,
 }
 
