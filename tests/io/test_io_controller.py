@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from trailblazer.constants import FileFormat
-from trailblazer.io.controller import ReadFile
+from trailblazer.io.controller import ReadFile, ReadStream
 
 
 def test_get_content_from_file(example_yaml_path: Path):
@@ -32,3 +32,36 @@ def test_get_content_from_file_when_json(example_json_path: Path):
 
     # Then assert a dict is returned
     assert isinstance(json_content, dict)
+
+
+def test_get_content_from_stream_when_csv(csv_stream: str):
+    """
+    Tests read a CVS stream.
+    """
+    # GIVEN a string in csv format
+
+    # WHEN reading the csv content in string
+    raw_csv_content: list = ReadStream.get_content_from_stream(
+        file_format=FileFormat.CSV, stream=csv_stream
+    )
+
+    # THEN assert that a list is returned
+    assert isinstance(raw_csv_content, list)
+
+
+def test_get_content_from_stream_when_csv_when_dict(csv_stream: str):
+    """
+    Tests read a CVS stream intoo a dict.
+    """
+    # GIVEN a string in csv format
+
+    # WHEN reading the csv content in string
+    raw_csv_content: list = ReadStream.get_content_from_stream(
+        file_format=FileFormat.CSV,
+        stream=csv_stream,
+        read_to_dict=True,
+    )
+
+    # Then assert a list is returned and that the first element is a dict
+    assert isinstance(raw_csv_content, list)
+    assert isinstance(raw_csv_content[0], dict)

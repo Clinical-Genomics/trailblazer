@@ -34,5 +34,5 @@ def test_get_content_from_stream_to_dict(csv_stream: str):
 
     print(raw_csv_content)
     # Then assert a list is returned and that the first element is a dict
-    assert isinstance(raw_csv_content, List)
+    assert isinstance(raw_csv_content, list)
     assert isinstance(raw_csv_content[0], dict)
