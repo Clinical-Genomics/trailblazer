@@ -1,13 +1,13 @@
 from typing import List
 
-from trailblazer.apps.slurm.models import SqueueJob
+from trailblazer.apps.slurm.models import SqueueJob, SqueueResult
 from trailblazer.constants import FileFormat
 from trailblazer.io.controller import ReadStream
 
 
 def test_instantiate_squeue_job(squeue_stream: str):
     """
-    Tests squeue output against a pydantic model
+    Tests squeue row output against a pydantic model
     """
     # GIVEN a csv squeue stream
 
@@ -22,3 +22,22 @@ def test_instantiate_squeue_job(squeue_stream: str):
 
         # THEN assert that it was successfully created
         assert isinstance(squeue_job, SqueueJob)
+
+
+def test_instantiate_squeue_result(squeue_stream: str):
+    """
+    Tests squeue output against a pydantic model
+    """
+    # GIVEN a csv squeue stream
+
+    csv_content: List[dict] = ReadStream.get_content_from_stream(
+        file_format=FileFormat.CSV,
+        stream=squeue_stream,
+        read_to_dict=True,
+    )
+
+    # WHEN instantiating a SqueueJob object
+    squeue_result: SqueueResult = SqueueResult(jobs=csv_content)
+
+    # THEN assert that it was successfully created
+    assert isinstance(squeue_result, SqueueResult)
