@@ -10,7 +10,7 @@ from tests.store.utils.store_helper import StoreHelpers
 def test_get_analysis_with_id(analysis_store: MockStore):
     """Test getting an analysis when it exists in the database."""
     # GIVEN a store with an analysis
-    existing_analysis: Analysis = analysis_store.analyses().first()
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
     # WHEN accessing it by ID
     analysis: Analysis = analysis_store.get_analysis_with_id(analysis_id=existing_analysis.id)

@@ -138,9 +138,9 @@ class BaseHandler(CoreHandler):
     def set_analysis_completed(self, analysis_id: int) -> None:
         """Set an analysis status to completed."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
-        analysis.status = "completed"
+        analysis.status = TrailblazerStatus.COMPLETED.value
         self.commit()
-        LOG.info(f"{analysis.family} - status set to COMPLETED")
+        LOG.info(f"{analysis.family} - status set to {TrailblazerStatus.COMPLETED.value}")
 
     def set_analysis_uploaded(self, case_id: str, uploaded_at: dt.datetime) -> None:
         """Setting analysis uploaded at."""
@@ -435,7 +435,7 @@ class BaseHandler(CoreHandler):
             f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )
         self.update_run_status(analysis_id=analysis_id)
-        analysis.status = "canceled"
+        analysis.status = TrailblazerStatus.CANCELLED.value
         analysis.comment = (
             f"Analysis cancelled manually by user:"
             f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
