@@ -34,7 +34,7 @@ def test_add_pending_analysis(raw_analyses: List[dict], store: MockStore, user_e
 
 
 def test_add_user(store: MockStore, user_email: str, username: str):
-    """Test adding a user."""
+    """Test adding a user to the database."""
     # GIVEN an empty database
     assert not store.get_query(table=User).first()
 

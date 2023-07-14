@@ -47,23 +47,6 @@ class BaseHandler(CoreHandler):
         query = self.Analysis.query.filter_by(family=case_id, started_at=started_at, status=status)
         return query.first()
 
-    def aggregate_failed(self, since_when: dt.date = None) -> List[dict]:
-        """
-        used in FRONTEND
-        Count the number of failed jobs per category (name)."""
-
-        categories = self.session.query(
-            self.Job.name.label("name"),
-            sqa.func.count(self.Job.id).label("count"),
-        ).filter(self.Job.status == "failed")
-
-        if since_when:
-            categories = categories.filter(self.Job.started_at > since_when)
-
-        categories = categories.group_by(self.Job.name).all()
-
-        return [{"name": category.name, "count": category.count} for category in categories]
-
     def analyses(
         self,
         case_id: str = None,
@@ -142,10 +125,6 @@ class BaseHandler(CoreHandler):
         """Check if analysis has started"""
         latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
         return latest_analysis_status in STARTED_STATUSES
-
-    def jobs(self) -> Query:
-        """Return all jobs in the database."""
-        return self.Job.query
 
     def mark_analyses_deleted(self, case_id: str) -> Query:
         """mark analyses connected to a case as deleted"""
@@ -328,18 +307,6 @@ class BaseHandler(CoreHandler):
                 LOG.error(
                     f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {type(error).__name__}"
                 )
-
-    @staticmethod
-    def get_elapsed_time(self, analysis_obj: Analysis) -> str:
-        """Get elapsed time for the analysis"""
-        return str(
-            (
-                dt.datetime.now()
-                - min(
-                    job_obj.started_at for job_obj in analysis_obj.failed_jobs if job_obj.started_at
-                )
-            )
-        )
 
     def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
