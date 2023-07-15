@@ -24,18 +24,21 @@ def test_instantiate_squeue_job(squeue_stream_pending_job: str):
         assert isinstance(squeue_job, SqueueJob)
 
 
-def test_squeue_job_convert_time_elapse(squeue_stream_completed_job: str):
+def test_squeue_job_convert_time_elapse(squeue_stream_jobs: str):
     """Tests SqueueJob convert time elapsed validator."""
     # GIVEN a csv squeue stream
 
     csv_content: List[dict] = ReadStream.get_content_from_stream(
         file_format=FileFormat.CSV,
-        stream=squeue_stream_completed_job,
+        stream=squeue_stream_jobs,
         read_to_dict=True,
     )
     expected_time_elapsed: Dict[int, int] = {
         0: 61,
         1: 1528,
+        2: 5,
+        3: 0,
+        4: 0,
     }
     for index, job in enumerate(csv_content):
         # WHEN instantiating a SqueueJob object
