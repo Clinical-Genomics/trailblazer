@@ -3,9 +3,12 @@ from typing import Dict
 
 COMPLETED_STATUS = "completed"
 FAILED_STATUS = "failed"
+HOURS_IN_DAY: int = 24
+MINUTES_PER_HOUR: int = 60
 ONGOING_STATUSES = ("pending", "running", "error", "completing")
 ONE_MONTH_IN_DAYS: int = 31
 PRIORITY_OPTIONS = ("low", "normal", "high", "express", "maintenance")
+SCALE_SECONDS_TO_MINUTES: int = 60
 SLURM_ACTIVE_CATEGORIES = ("running", "pending", "completing")
 SLURM_FAILED_CATEGORIES = ("failed", "cancelled", "timeout")
 SLURM_NORMAL_CATEGORIES = ("completed", "running", "pending", "completing")
