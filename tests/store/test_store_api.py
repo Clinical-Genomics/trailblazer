@@ -38,6 +38,22 @@ def test_analysis(analysis_store: MockStore):
     assert analysis_obj is None
 
 
+def test_update_slurm_run_status(analysis_store: MockStore, squeue_stream_jobs: str):
+    """Test updating analysis jobs when given squeue results."""
+    # GIVEN an analysis and a squeue stream
+    analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+    assert not analysis.failed_jobs
+
+    # WHEN updating the analysis
+    analysis_store.update_slurm_run_status(analysis_id=analysis.id)
+    updated_analysis: Analysis = analysis_store.get_analysis(
+        case_id=analysis.family, started_at=analysis.started_at, status="running"
+    )
+
+    # THEN it should update the analysis jobs
+    assert updated_analysis.failed_jobs
+
+
 @pytest.mark.parametrize(
     "family, expected_bool",
     [

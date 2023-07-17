@@ -1,5 +1,8 @@
+from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.store.base import BaseHandler_2
-from trailblazer.store.models import User
+from trailblazer.store.models import User, Analysis
+from trailblazer.store.utils import formatters
+from dateutil.parser import parse as parse_datestr
 
 
 class UpdateHandler(BaseHandler_2):
@@ -14,4 +17,30 @@ class UpdateHandler(BaseHandler_2):
     def update_user_is_archived(self, user: User, archive: bool = True) -> None:
         """Update is archived fpr a user in the database."""
         user.is_archived = archive
+        self.commit()
+
+    def update_slurm_jobs_2(self, analysis: Analysis, squeue_result: SqueueResult) -> None:
+        """Update analysis failed jobs from supplied squeue results."""
+        if len(squeue_result.jobs) == 0:
+            return
+        formatter_func = formatters.formatter_map.get(
+            analysis.data_analysis, formatters.transform_undefined
+        )
+        for job in squeue_result.jobs:
+            job.step = formatter_func(job.step)
+
+        for job_obj in analysis.failed_jobs:
+            job_obj.delete()
+        self.commit()
+        analysis.failed_jobs = [
+            self.Job(
+                analysis_id=analysis.id,
+                slurm_id=job.id,
+                name=job.step,
+                status=job.status.lower(),
+                started_at=parse_datestr(job.started) if isinstance(job.started, str) else None,
+                elapsed=job.time_elapsed,
+            )
+            for job in squeue_result.jobs
+        ]
         self.commit()

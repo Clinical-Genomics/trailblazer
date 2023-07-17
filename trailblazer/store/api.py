@@ -4,7 +4,7 @@ import io
 import logging
 import subprocess
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Dict
 
 import alchy
 import pandas as pd
@@ -12,6 +12,8 @@ import sqlalchemy as sqa
 from alchy import Query
 from dateutil.parser import parse as parse_datestr
 
+from trailblazer.apps.slurm.api import get_squeue_result
+from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import (
     COMPLETED_STATUS,
@@ -328,21 +330,35 @@ class BaseHandler(CoreHandler):
     def update_slurm_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query slurm for entries related to given analysis, and update the Trailblazer database"""
         analysis: Analysis = self.analysis(analysis_id)
+
         try:
-            jobs_dataframe = self.parse_squeue_to_df(
+            # jobs_dataframe = self.parse_squeue_to_df(
+            #   squeue_response=self.query_slurm(
+            #      job_id_file=analysis.config_path, case_id=analysis.family, ssh=ssh
+            # ),
+            # ssh=ssh,
+            # )
+            squeue_result: SqueueResult = get_squeue_result(
                 squeue_response=self.query_slurm(
                     job_id_file=analysis.config_path, case_id=analysis.family, ssh=ssh
-                ),
-                ssh=ssh,
+                )
             )
-            self.update_slurm_jobs(analysis_obj=analysis, jobs_dataframe=jobs_dataframe)
-
-            status_distribution = round(
-                jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
-            )
+            # self.update_slurm_jobs(analysis_obj=analysis, jobs_dataframe=jobs_dataframe)z
+            self.update_slurm_jobs_2(analysis=analysis, squeue_result=squeue_result)
+            status_distribution: Dict[str, int] = {}
+            for job in squeue_result.jobs:
+                status_distribution[job.status] = status_distribution.get(job.status, 0) + 1
+            for status in status_distribution:
+                status_distribution[status] = round(
+                    status_distribution[status] / len(squeue_result.jobs), 2
+                )
+                print(status_distribution[status])
+            # status_distribution = round(
+            #   jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
+            # )
 
             LOG.info(f"Status in SLURM: {analysis.family} - {analysis_id}")
-            LOG.info(jobs_dataframe)
+            LOG.info(squeue_result.jobs)
             analysis.progress = float(status_distribution.get("COMPLETED", 0.0))
             if status_distribution.get("FAILED") or status_distribution.get("TIMEOUT"):
                 if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):

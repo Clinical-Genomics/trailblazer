@@ -1,6 +1,8 @@
 from tests.mocks.store_mock import MockStore
+from trailblazer.apps.slurm.api import get_squeue_result
+from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.store.filters.user_filters import apply_user_filter, UserFilter
-from trailblazer.store.models import User
+from trailblazer.store.models import User, Analysis
 
 
 def test_add_user(store: MockStore, user_email: str, username: str):
@@ -42,3 +44,21 @@ def test_update_user_is_archived(user_store: MockStore, user_email: str):
 
     # THEN user should be recorded as archived in the database
     assert archived_user
+
+
+def test_update_slurm_jobs_2(analysis_store: MockStore, squeue_stream_jobs: str):
+    """Test updating analysis jobs when given squeue results."""
+    # GIVEN an analysis and a squeue stream
+    analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+    assert not analysis.failed_jobs
+
+    squeue_result: SqueueResult = get_squeue_result(squeue_response=squeue_stream_jobs)
+
+    # WHEN updating the analysis
+    analysis_store.update_slurm_jobs_2(analysis=analysis, squeue_result=squeue_result)
+    updated_analysis: Analysis = analysis_store.get_analysis(
+        case_id=analysis.family, started_at=analysis.started_at, status="pending"
+    )
+
+    # THEN it should update the analysis jobs
+    assert updated_analysis.failed_jobs
