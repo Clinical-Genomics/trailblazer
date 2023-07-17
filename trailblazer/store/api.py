@@ -273,26 +273,24 @@ class BaseHandler(CoreHandler):
 
             LOG.info(f"Status in SLURM: {analysis.family} - {analysis_id}")
             LOG.info(squeue_result.jobs)
-            analysis.progress = float(
-                status_distribution.get(TrailblazerStatus.COMPLETED.value, 0.0)
-            )
-            if status_distribution.get(TrailblazerStatus.FAILED.value) or status_distribution.get(
-                "TIMEOUT"
+            analysis.progress = float(status_distribution.get(SlurmJobStatus.COMPLETED.value, 0.0))
+            if status_distribution.get(SlurmJobStatus.FAILED.value) or status_distribution.get(
+                SlurmJobStatus.TIME_OUT.value
             ):
-                if status_distribution.get(
-                    TrailblazerStatus.RUNNING.value
-                ) or status_distribution.get(TrailblazerStatus.PENDING.value):
+                if status_distribution.get(SlurmJobStatus.RUNNING.value) or status_distribution.get(
+                    SlurmJobStatus.PENDING.value
+                ):
                     analysis.status = TrailblazerStatus.ERROR.value
                 else:
                     analysis.status = TrailblazerStatus.FAILED.value
 
-            elif status_distribution.get(TrailblazerStatus.COMPLETED.value) == 1:
+            elif status_distribution.get(SlurmJobStatus.COMPLETED.value) == 1:
                 analysis.status = TrailblazerStatus.COMPLETED.value
 
-            elif status_distribution.get(TrailblazerStatus.PENDING.value) == 1:
+            elif status_distribution.get(SlurmJobStatus.PENDING.value) == 1:
                 analysis.status = TrailblazerStatus.PENDING.value
 
-            elif status_distribution.get(TrailblazerStatus.RUNNING.value):
+            elif status_distribution.get(SlurmJobStatus.RUNNING.value):
                 analysis.status = TrailblazerStatus.RUNNING.value
 
             elif status_distribution.get(SlurmJobStatus.CANCELLED.value) and not (

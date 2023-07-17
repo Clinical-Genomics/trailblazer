@@ -43,6 +43,11 @@ class SlurmJobStatus(Enum):
     """SLURM allowed status."""
 
     CANCELLED: str = "cancelled"
+    COMPLETED: str = "completed"
+    FAILED: str = "failed"
+    PENDING: str = "pending"
+    RUNNING: str = "running"
+    TIME_OUT: str = "timeout"
 
 
 class TrailblazerStatus(Enum):
