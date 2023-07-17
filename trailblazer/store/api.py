@@ -1,16 +1,13 @@
 """Store backend in Trailblazer."""
 import datetime as dt
-import io
 import logging
 import subprocess
 from pathlib import Path
 from typing import Any, List, Optional, Dict
 
 import alchy
-import pandas as pd
 import sqlalchemy as sqa
 from alchy import Query
-from dateutil.parser import parse as parse_datestr
 
 from trailblazer.apps.slurm.api import get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
@@ -26,11 +23,10 @@ from trailblazer.constants import (
     TrailblazerStatus,
     WorkflowManager,
 )
-from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
+from trailblazer.exc import TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.core import CoreHandler
 from trailblazer.store.models import Analysis, Job, Model
-from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
 
@@ -233,78 +229,6 @@ class BaseHandler(CoreHandler):
                 ]
             )
 
-    @staticmethod
-    def get_time_elapsed_in_min(elapsed_string: Optional[str]) -> Optional[int]:
-        """Parse SLURM elapsed time string into minutes"""
-        if not elapsed_string or not isinstance(elapsed_string, str):
-            return 0
-        days = 0
-        if "-" in elapsed_string:
-            days = int(elapsed_string.split("-")[0])
-            elapsed_string = elapsed_string.split("-")[1]
-        split_timestamp = elapsed_string.split(":")
-        if len(split_timestamp) < 3:
-            split_timestamp = list("0" * (3 - len(split_timestamp))) + split_timestamp
-        return int(
-            (parse_datestr(":".join(split_timestamp)) - parse_datestr("0:0:0")).seconds / 60
-            + days * 24 * 60
-        )
-
-    @staticmethod
-    def parse_squeue_to_df(squeue_response: Any, ssh: bool) -> pd.DataFrame:
-        """Reads queue response into a pandas dataframe for easy parsing.
-        Raises:
-            TrailblazerError: when no entries were returned by squeue command"""
-        if not squeue_response:
-            raise EmptySqueueError("No jobs found in SLURM registry")
-        if ssh:
-            parsed_df = pd.read_csv(
-                io.StringIO(squeue_response),
-                sep=",",
-                header=None,
-                na_values=["nan", "N/A", "None"],
-                names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
-            )
-        else:
-            parsed_df = pd.read_csv(
-                io.BytesIO(squeue_response),
-                sep=",",
-                header=None,
-                na_values=["nan", "N/A", "None"],
-                names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
-            )
-        parsed_df["time_elapsed"] = parsed_df["time_elapsed"].apply(
-            lambda x: Store.get_time_elapsed_in_min(x)
-        )
-        return parsed_df
-
-    def update_slurm_jobs(self, analysis_obj: Analysis, jobs_dataframe: pd.DataFrame) -> None:
-        """Parses job dataframe and creates job objects"""
-        if len(jobs_dataframe) == 0:
-            return
-        formatter_func = formatters.formatter_map.get(
-            analysis_obj.data_analysis, formatters.transform_undefined
-        )
-        jobs_dataframe["step"] = jobs_dataframe["step"].apply(lambda x: formatter_func(x))
-
-        for job_obj in analysis_obj.failed_jobs:
-            job_obj.delete()
-        self.commit()
-        analysis_obj.failed_jobs = [
-            self.Job(
-                analysis_id=analysis_obj.id,
-                slurm_id=val.get("id"),
-                name=val.get("step"),
-                status=val.get("status").lower(),
-                started_at=parse_datestr(val.get("started"))
-                if isinstance(val.get("started"), str)
-                else None,
-                elapsed=val.get("time_elapsed"),
-            )
-            for ind, val in jobs_dataframe.iterrows()
-        ]
-        self.commit()
-
     def update_ongoing_analyses(self, ssh: bool = False) -> None:
         """Iterate over all analysis with ongoing status and query SLURM for current progress"""
         ongoing_analyses = self.analyses(temp=True)
@@ -332,19 +256,12 @@ class BaseHandler(CoreHandler):
         analysis: Analysis = self.analysis(analysis_id)
 
         try:
-            # jobs_dataframe = self.parse_squeue_to_df(
-            #   squeue_response=self.query_slurm(
-            #      job_id_file=analysis.config_path, case_id=analysis.family, ssh=ssh
-            # ),
-            # ssh=ssh,
-            # )
             squeue_result: SqueueResult = get_squeue_result(
                 squeue_response=self.query_slurm(
                     job_id_file=analysis.config_path, case_id=analysis.family, ssh=ssh
                 )
             )
-            # self.update_slurm_jobs(analysis_obj=analysis, jobs_dataframe=jobs_dataframe)z
-            self.update_slurm_jobs_2(analysis=analysis, squeue_result=squeue_result)
+            self.update_slurm_jobs(analysis=analysis, squeue_result=squeue_result)
             status_distribution: Dict[str, int] = {}
             for job in squeue_result.jobs:
                 status_distribution[job.status] = status_distribution.get(job.status, 0) + 1
@@ -352,10 +269,6 @@ class BaseHandler(CoreHandler):
                 status_distribution[status] = round(
                     status_distribution[status] / len(squeue_result.jobs), 2
                 )
-                print(status_distribution[status])
-            # status_distribution = round(
-            #   jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
-            # )
 
             LOG.info(f"Status in SLURM: {analysis.family} - {analysis_id}")
             LOG.info(squeue_result.jobs)

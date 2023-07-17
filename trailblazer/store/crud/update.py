@@ -19,7 +19,7 @@ class UpdateHandler(BaseHandler_2):
         user.is_archived = archive
         self.commit()
 
-    def update_slurm_jobs_2(self, analysis: Analysis, squeue_result: SqueueResult) -> None:
+    def update_slurm_jobs(self, analysis: Analysis, squeue_result: SqueueResult) -> None:
         """Update analysis failed jobs from supplied squeue results."""
         if len(squeue_result.jobs) == 0:
             return

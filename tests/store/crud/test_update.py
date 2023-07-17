@@ -55,7 +55,7 @@ def test_update_slurm_jobs_2(analysis_store: MockStore, squeue_stream_jobs: str)
     squeue_result: SqueueResult = get_squeue_result(squeue_response=squeue_stream_jobs)
 
     # WHEN updating the analysis
-    analysis_store.update_slurm_jobs_2(analysis=analysis, squeue_result=squeue_result)
+    analysis_store.update_slurm_jobs(analysis=analysis, squeue_result=squeue_result)
     updated_analysis: Analysis = analysis_store.get_analysis(
         case_id=analysis.family, started_at=analysis.started_at, status="pending"
     )
