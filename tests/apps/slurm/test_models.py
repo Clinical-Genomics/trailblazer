@@ -65,3 +65,21 @@ def test_instantiate_squeue_result(squeue_stream_pending_job: str):
 
     # THEN assert that it was successfully created
     assert isinstance(squeue_result, SqueueResult)
+
+
+def test_convert_status_to_lower_case(squeue_stream_pending_job: str):
+    """
+    Tests converting status to lower case."""
+    # GIVEN a csv squeue stream
+
+    csv_content: List[dict] = ReadStream.get_content_from_stream(
+        file_format=FileFormat.CSV,
+        stream=squeue_stream_pending_job,
+        read_to_dict=True,
+    )
+    for job in csv_content:
+        # WHEN instantiating a SqueueJob object
+        squeue_job: SqueueJob = SqueueJob(**job)
+
+        # THEN assert status is in lower case
+        assert squeue_job.status.islower()

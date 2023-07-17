@@ -39,6 +39,12 @@ class WorkflowManager(Enum):
         return [task.value for task in cls]
 
 
+class SlurmJobStatus(Enum):
+    """SLURM allowed status."""
+
+    CANCELLED: str = "cancelled"
+
+
 class TrailblazerStatus(Enum):
     """Trailblazer allowed status."""
 

@@ -22,6 +22,7 @@ from trailblazer.constants import (
     FileFormat,
     TrailblazerStatus,
     WorkflowManager,
+    SlurmJobStatus,
 )
 from trailblazer.exc import TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
@@ -272,24 +273,31 @@ class BaseHandler(CoreHandler):
 
             LOG.info(f"Status in SLURM: {analysis.family} - {analysis_id}")
             LOG.info(squeue_result.jobs)
-            analysis.progress = float(status_distribution.get("COMPLETED", 0.0))
-            if status_distribution.get("FAILED") or status_distribution.get("TIMEOUT"):
-                if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):
+            analysis.progress = float(
+                status_distribution.get(TrailblazerStatus.COMPLETED.value, 0.0)
+            )
+            if status_distribution.get(TrailblazerStatus.FAILED.value) or status_distribution.get(
+                "TIMEOUT"
+            ):
+                if status_distribution.get(
+                    TrailblazerStatus.RUNNING.value
+                ) or status_distribution.get(TrailblazerStatus.PENDING.value):
                     analysis.status = TrailblazerStatus.ERROR.value
                 else:
                     analysis.status = TrailblazerStatus.FAILED.value
 
-            elif status_distribution.get("COMPLETED") == 1:
+            elif status_distribution.get(TrailblazerStatus.COMPLETED.value) == 1:
                 analysis.status = TrailblazerStatus.COMPLETED.value
 
-            elif status_distribution.get("PENDING") == 1:
+            elif status_distribution.get(TrailblazerStatus.PENDING.value) == 1:
                 analysis.status = TrailblazerStatus.PENDING.value
 
-            elif status_distribution.get("RUNNING"):
+            elif status_distribution.get(TrailblazerStatus.RUNNING.value):
                 analysis.status = TrailblazerStatus.RUNNING.value
 
-            elif status_distribution.get("CANCELLED") and not (
-                status_distribution.get("RUNNING") or status_distribution.get("PENDING")
+            elif status_distribution.get(SlurmJobStatus.CANCELLED.value) and not (
+                status_distribution.get(TrailblazerStatus.RUNNING.value)
+                or status_distribution.get("PENDING")
             ):
                 analysis.status = TrailblazerStatus.CANCELLED.value
 

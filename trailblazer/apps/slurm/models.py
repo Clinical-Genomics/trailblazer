@@ -17,6 +17,11 @@ class SqueueJob(BaseModel):
     time_elapsed: int
     started: str
 
+    @validator("status", always=True, pre=True)
+    def convert_status_to_lower_case(cls, value: str) -> str:
+        """Convert string to lower case."""
+        return value.lower()
+
     @validator("time_elapsed", always=True, pre=True)
     def convert_time_elapsed_to_min(cls, value: str) -> int:
         """Convert squeue timestamp string into number of minutes."""

@@ -37,7 +37,7 @@ class UpdateHandler(BaseHandler_2):
                 analysis_id=analysis.id,
                 slurm_id=job.id,
                 name=job.step,
-                status=job.status.lower(),
+                status=job.status,
                 started_at=parse_datestr(job.started) if isinstance(job.started, str) else None,
                 elapsed=job.time_elapsed,
             )
