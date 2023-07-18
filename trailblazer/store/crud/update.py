@@ -2,7 +2,6 @@ from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.models import User, Analysis
 from trailblazer.store.utils import formatters
-from dateutil.parser import parse as parse_datestr
 
 
 class UpdateHandler(BaseHandler_2):
@@ -38,7 +37,7 @@ class UpdateHandler(BaseHandler_2):
                 slurm_id=job.id,
                 name=job.step,
                 status=job.status,
-                started_at=parse_datestr(job.started) if isinstance(job.started, str) else None,
+                started_at=job.started,
                 elapsed=job.time_elapsed,
             )
             for job in squeue_result.jobs

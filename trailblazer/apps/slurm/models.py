@@ -1,6 +1,6 @@
 """Model SLURM output."""
 from datetime import datetime
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from pydantic import BaseModel, validator
 
@@ -15,7 +15,7 @@ class SqueueJob(BaseModel):
     status: str
     time_limit: str
     time_elapsed: int
-    started: str
+    started: Optional[datetime] = None
 
     @validator("status", always=True, pre=True)
     def convert_status_to_lower_case(cls, value: str) -> str:
@@ -42,6 +42,12 @@ class SqueueJob(BaseModel):
         return convert_timestamp_to_min(timestamp=time_elapsed) + convert_days_to_min(
             days_nr=day_nr
         )
+
+    @validator("started", always=True)
+    def convert_started_to_date(cls, value: str) -> datetime:
+        if isinstance(value, str):
+            return datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+        return value
 
 
 class SqueueResult(BaseModel):

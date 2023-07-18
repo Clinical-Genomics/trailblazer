@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Dict
 
 from trailblazer.apps.slurm.models import SqueueJob, SqueueResult
@@ -20,7 +21,7 @@ def test_instantiate_squeue_job(squeue_stream_pending_job: str):
         # WHEN instantiating a SqueueJob object
         squeue_job: SqueueJob = SqueueJob(**job)
 
-        # THEN assert that it was successfully created
+        # THEN it was successfully created
         assert isinstance(squeue_job, SqueueJob)
 
 
@@ -44,7 +45,7 @@ def test_squeue_job_convert_time_elapse(squeue_stream_jobs: str):
         # WHEN instantiating a SqueueJob object
         squeue_job: SqueueJob = SqueueJob(**job)
 
-        # THEN assert that it was successfully created
+        # THEN the time elapse should be in min
         assert squeue_job.time_elapsed == expected_time_elapsed[index]
 
 
@@ -63,7 +64,7 @@ def test_instantiate_squeue_result(squeue_stream_pending_job: str):
     # WHEN instantiating a SqueueJob object
     squeue_result: SqueueResult = SqueueResult(jobs=csv_content)
 
-    # THEN assert that it was successfully created
+    # THEN it should be successfully created
     assert isinstance(squeue_result, SqueueResult)
 
 
@@ -81,5 +82,23 @@ def test_convert_status_to_lower_case(squeue_stream_pending_job: str):
         # WHEN instantiating a SqueueJob object
         squeue_job: SqueueJob = SqueueJob(**job)
 
-        # THEN assert status is in lower case
+        # THEN status is in lower case
         assert squeue_job.status.islower()
+
+
+def test_convert_started_to_datetime(squeue_stream_pending_job: str):
+    """
+    Tests converting started to datetime."""
+    # GIVEN a csv squeue stream
+
+    csv_content: List[dict] = ReadStream.get_content_from_stream(
+        file_format=FileFormat.CSV,
+        stream=squeue_stream_pending_job,
+        read_to_dict=True,
+    )
+    for job in csv_content:
+        # WHEN instantiating a SqueueJob object
+        squeue_job: SqueueJob = SqueueJob(**job)
+
+        # THEN started is a datetime object
+        assert isinstance(squeue_job.started, datetime)
