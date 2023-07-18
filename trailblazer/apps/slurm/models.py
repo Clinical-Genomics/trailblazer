@@ -45,6 +45,7 @@ class SqueueJob(BaseModel):
 
     @validator("started", always=True)
     def convert_started_to_date(cls, value: str) -> datetime:
+        """Convert started to datetime object."""
         if isinstance(value, str):
             return datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
         return value

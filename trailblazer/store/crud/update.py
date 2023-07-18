@@ -1,7 +1,7 @@
+from trailblazer.apps.slurm.api import reformat_squeue_result_job_step
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.models import User, Analysis
-from trailblazer.store.utils import formatters
 
 
 class UpdateHandler(BaseHandler_2):
@@ -22,11 +22,10 @@ class UpdateHandler(BaseHandler_2):
         """Update analysis failed jobs from supplied squeue results."""
         if len(squeue_result.jobs) == 0:
             return
-        formatter_func = formatters.formatter_map.get(
-            analysis.data_analysis, formatters.transform_undefined
-        )
         for job in squeue_result.jobs:
-            job.step = formatter_func(job.step)
+            job.step = reformat_squeue_result_job_step(
+                data_analysis=analysis.data_analysis, job_step=job.step
+            )
 
         for job_obj in analysis.failed_jobs:
             job_obj.delete()
