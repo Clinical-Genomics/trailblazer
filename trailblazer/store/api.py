@@ -9,7 +9,7 @@ import alchy
 import sqlalchemy as sqa
 from alchy import Query
 
-from trailblazer.apps.slurm.api import get_squeue_result
+from trailblazer.apps.slurm.api import get_squeue_result, get_current_analysis_status
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import (
@@ -274,31 +274,9 @@ class BaseHandler(CoreHandler):
             LOG.info(f"Status in SLURM: {analysis.family} - {analysis_id}")
             LOG.info(squeue_result.jobs)
             analysis.progress = float(status_distribution.get(SlurmJobStatus.COMPLETED.value, 0.0))
-            if status_distribution.get(SlurmJobStatus.FAILED.value) or status_distribution.get(
-                SlurmJobStatus.TIME_OUT.value
-            ):
-                if status_distribution.get(SlurmJobStatus.RUNNING.value) or status_distribution.get(
-                    SlurmJobStatus.PENDING.value
-                ):
-                    analysis.status = TrailblazerStatus.ERROR.value
-                else:
-                    analysis.status = TrailblazerStatus.FAILED.value
-
-            elif status_distribution.get(SlurmJobStatus.COMPLETED.value) == 1:
-                analysis.status = TrailblazerStatus.COMPLETED.value
-
-            elif status_distribution.get(SlurmJobStatus.PENDING.value) == 1:
-                analysis.status = TrailblazerStatus.PENDING.value
-
-            elif status_distribution.get(SlurmJobStatus.RUNNING.value):
-                analysis.status = TrailblazerStatus.RUNNING.value
-
-            elif status_distribution.get(SlurmJobStatus.CANCELLED.value) and not (
-                status_distribution.get(TrailblazerStatus.RUNNING.value)
-                or status_distribution.get("PENDING")
-            ):
-                analysis.status = TrailblazerStatus.CANCELLED.value
-
+            analysis_status = get_current_analysis_status(status_distribution=status_distribution)
+            if analysis_status:
+                analysis.status = analysis_status
             LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
             self.commit()
 
