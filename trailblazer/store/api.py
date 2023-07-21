@@ -250,9 +250,9 @@ class BaseHandler(CoreHandler):
         if analysis.workflow_manager == WorkflowManager.TOWER.value:
             self.update_tower_run_status(analysis_id=analysis_id)
         elif analysis.workflow_manager == WorkflowManager.SLURM.value:
-            self.update_slurm_run_status(analysis_id=analysis_id, ssh=ssh)
+            self.update_analysis_from_slurm_run_status(analysis_id=analysis_id, ssh=ssh)
 
-    def update_slurm_run_status(self, analysis_id: int, ssh: bool = False) -> None:
+    def update_analysis_from_slurm_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query slurm for entries related to given analysis, and update the Trailblazer database"""
         analysis: Analysis = self.analysis(analysis_id)
 
@@ -280,7 +280,7 @@ class BaseHandler(CoreHandler):
             analysis.logged_at = dt.datetime.now()
         except Exception as e:
             LOG.error(f"Error logging case - {analysis.family} : {e.__class__.__name__}")
-            analysis.status = "error"
+            analysis.status = TrailblazerStatus.ERROR.value
             self.commit()
 
     @staticmethod
