@@ -27,11 +27,11 @@ def reformat_squeue_result_job_step(data_analysis: str, job_step: str) -> str:
     return formatter_func(job_step=job_step)
 
 
-def get_current_analysis_status(status_distribution: dict) -> Optional[str]:
-    """Return current analysis status based on status distribution."""
+def get_current_analysis_status(jobs_status_distribution: dict) -> Optional[str]:
+    """Return current analysis status based on jobs status distribution."""
     is_ongoing: bool = bool(
-        status_distribution.get(SlurmJobStatus.RUNNING.value)
-        or status_distribution.get(SlurmJobStatus.PENDING.value)
+        jobs_status_distribution.get(SlurmJobStatus.RUNNING.value)
+        or jobs_status_distribution.get(SlurmJobStatus.PENDING.value)
     )
 
     analysis_status_map: Dict[str, Optional[str]] = {
@@ -42,10 +42,10 @@ def get_current_analysis_status(status_distribution: dict) -> Optional[str]:
         if is_ongoing
         else TrailblazerStatus.FAILED.value,
         SlurmJobStatus.COMPLETED.value: TrailblazerStatus.COMPLETED.value
-        if status_distribution.get(SlurmJobStatus.COMPLETED.value) == 1
+        if jobs_status_distribution.get(SlurmJobStatus.COMPLETED.value) == 1
         else None,
         SlurmJobStatus.PENDING.value: TrailblazerStatus.PENDING.value
-        if status_distribution.get(SlurmJobStatus.PENDING.value) == 1
+        if jobs_status_distribution.get(SlurmJobStatus.PENDING.value) == 1
         else None,
         SlurmJobStatus.RUNNING.value: TrailblazerStatus.RUNNING.value,
         SlurmJobStatus.CANCELLED.value: None if is_ongoing else TrailblazerStatus.CANCELLED.value,
@@ -59,5 +59,5 @@ def get_current_analysis_status(status_distribution: dict) -> Optional[str]:
         SlurmJobStatus.RUNNING.value,
         SlurmJobStatus.CANCELLED.value,
     ]:
-        if status in status_distribution and analysis_status_map[status]:
+        if status in jobs_status_distribution and analysis_status_map[status]:
             return analysis_status_map[status]

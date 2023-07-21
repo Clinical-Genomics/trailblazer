@@ -1,6 +1,6 @@
 """Model SLURM output."""
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 
 from pydantic import BaseModel, validator
 
@@ -55,3 +55,17 @@ class SqueueResult(BaseModel):
     """This model is used to parse SLURM squeue output."""
 
     jobs: List[SqueueJob]
+    jobs_status_distribution: Optional[Dict[str, float]]
+
+    @validator("jobs_status_distribution", always=True)
+    def set_jobs_status_distribution(
+        cls, _: Optional[List[SqueueJob]], values: Dict[str, Any]
+    ) -> Dict[str, float]:
+        """Set the job status distribution."""
+        jobs: List[SqueueJob] = values["jobs"]
+        status_distribution: Dict[str, float] = {}
+        for job in jobs:
+            status_distribution[job.status] = status_distribution.get(job.status, 0) + 1
+        for status in status_distribution:
+            status_distribution[status] = round(status_distribution[status] / len(jobs), 2)
+            return status_distribution

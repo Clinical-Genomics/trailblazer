@@ -3,7 +3,7 @@ import datetime as dt
 import logging
 import subprocess
 from pathlib import Path
-from typing import Any, List, Optional, Dict
+from typing import Any, List, Optional
 
 import alchy
 import sqlalchemy as sqa
@@ -263,20 +263,17 @@ class BaseHandler(CoreHandler):
                 )
             )
             self.update_slurm_jobs(analysis=analysis, squeue_result=squeue_result)
-            status_distribution: Dict[str, int] = {}
-            for job in squeue_result.jobs:
-                status_distribution[job.status] = status_distribution.get(job.status, 0) + 1
-            for status in status_distribution:
-                status_distribution[status] = round(
-                    status_distribution[status] / len(squeue_result.jobs), 2
-                )
-
             LOG.info(f"Status in SLURM: {analysis.family} - {analysis_id}")
             LOG.info(squeue_result.jobs)
-            analysis.progress = float(status_distribution.get(SlurmJobStatus.COMPLETED.value, 0.0))
-            analysis_status = get_current_analysis_status(status_distribution=status_distribution)
-            if analysis_status:
-                analysis.status = analysis_status
+            analysis.progress = float(
+                squeue_result.jobs_status_distribution.get(SlurmJobStatus.COMPLETED.value, 0.0)
+            )
+            analysis.status = (
+                get_current_analysis_status(
+                    jobs_status_distribution=squeue_result.jobs_status_distribution
+                )
+                or analysis.status
+            )
             LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
             self.commit()
 
