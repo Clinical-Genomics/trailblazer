@@ -13,36 +13,36 @@ class MockStore(Store):
     def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> str:
         """Mock SLURM output."""
         slurm_dict = {
-            "cuddlyhen": Path(
-                "tests", "fixtures", "squeue", "blazinginsect_squeue" + FileExtension.CSV
-            ).as_posix(),
             "blazinginsect": Path(
                 "tests", "fixtures", "squeue", "blazinginsect_squeue" + FileExtension.CSV
-            ).as_posix(),  # running
+            ).as_posix(),
             "crackpanda": Path(
                 "tests", "fixtures", "squeue", "crackpanda_squeue" + FileExtension.CSV
-            ).as_posix(),  # failed
+            ).as_posix(),
+            "cuddlyhen": Path(
+                "tests", "fixtures", "squeue", "cuddlyhen_squeue" + FileExtension.CSV
+            ).as_posix(),
             "escapedgoat": Path(
                 "tests", "fixtures", "squeue", "escapegoat_squeue" + FileExtension.CSV
-            ).as_posix(),  # pending
+            ).as_posix(),
             "fancymole": Path(
                 "tests", "fixtures", "squeue", "fancymole_squeue" + FileExtension.CSV
-            ).as_posix(),  # completed
+            ).as_posix(),
             "happycow": Path(
                 "tests", "fixtures", "squeue", "happycow_squeue" + FileExtension.CSV
-            ).as_posix(),  # pending
+            ).as_posix(),
             "lateraligator": Path(
                 "tests", "fixtures", "squeue", "lateraligator_squeue" + FileExtension.CSV
-            ).as_posix(),  # failed
+            ).as_posix(),
             "nicemice": Path(
                 "tests", "fixtures", "squeue", "nicemice_squeue" + FileExtension.CSV
-            ).as_posix(),  # completed
+            ).as_posix(),
             "rarekitten": Path(
                 "tests", "fixtures", "squeue", "rarekitten_squeue" + FileExtension.CSV
-            ).as_posix(),  # canceled
+            ).as_posix(),
             "trueferret": Path(
                 "tests", "fixtures", "squeue", "trueferret_squeue" + FileExtension.CSV
-            ).as_posix(),  # running
+            ).as_posix(),
         }
         with open(slurm_dict.get(case_id), "r") as file:
             file_content = file.read()
