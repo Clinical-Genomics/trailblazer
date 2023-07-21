@@ -4,6 +4,7 @@ from typing import List, Dict, Optional, Any
 
 from pydantic import BaseModel, validator
 
+from trailblazer.constants import SlurmJobStatus
 from trailblazer.utils.datetime import convert_days_to_min, convert_timestamp_to_min
 
 
@@ -12,7 +13,7 @@ class SqueueJob(BaseModel):
 
     id: int
     step: str
-    status: str
+    status: SlurmJobStatus
     time_limit: str
     time_elapsed: int
     started: Optional[datetime] = None

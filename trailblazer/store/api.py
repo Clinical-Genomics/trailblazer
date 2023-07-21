@@ -266,7 +266,7 @@ class BaseHandler(CoreHandler):
             LOG.info(f"Status in SLURM: {analysis.family} - {analysis_id}")
             LOG.info(squeue_result.jobs)
             analysis.progress = float(
-                squeue_result.jobs_status_distribution.get(SlurmJobStatus.COMPLETED.value, 0.0)
+                squeue_result.jobs_status_distribution.get(SlurmJobStatus.COMPLETED, 0.0)
             )
             analysis.status = (
                 get_current_analysis_status(

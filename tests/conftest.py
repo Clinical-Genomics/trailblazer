@@ -98,7 +98,7 @@ def fixture_job_store(
     store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A Trailblazer database wih a populated job table."""
-    statuses: List[str] = [TrailblazerStatus.COMPLETED.value, TrailblazerStatus.FAILED.value]
+    statuses: List[str] = [TrailblazerStatus.COMPLETED, TrailblazerStatus.FAILED]
     for index, status in enumerate(statuses):
         StoreHelpers.add_job(
             analysis_id=index, name=str(index), slurm_id=index, status=status, store=store
@@ -175,7 +175,7 @@ def fixture_tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> Li
             name=tower_task_name,
             started_at=started_at,
             elapsed=63,
-            status=TrailblazerStatus.COMPLETED.value,
+            status=TrailblazerStatus.COMPLETED,
         ),
         dict(
             analysis_id=analysis_id,
@@ -183,7 +183,7 @@ def fixture_tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> Li
             name="NFCORE_RNAFUSION:RNAFUSION:PIZZLY_WORKFLOW:KALLISTO_QUANT",
             started_at=None,
             elapsed=0,
-            status=TrailblazerStatus.PENDING.value,
+            status=TrailblazerStatus.PENDING,
         ),
         dict(
             analysis_id=analysis_id,

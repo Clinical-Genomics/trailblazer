@@ -143,19 +143,19 @@ class TowerAPI:
         status: str = TOWER_STATUS.get(self.response.workflow.status, TrailblazerStatus.ERROR.value)
 
         # If the whole workflow (analysis) is completed set it as QC instead of COMPLETE
-        if status == TrailblazerStatus.COMPLETED.value:
-            return TrailblazerStatus.QC.value
+        if status == TrailblazerStatus.COMPLETED:
+            return TrailblazerStatus.QC
         return status
 
     @property
     def is_pending(self) -> bool:
         """Returns True if workflow has not started running. Otherwise returns False."""
-        return self.status == TrailblazerStatus.PENDING.value
+        return self.status == TrailblazerStatus.PENDING
 
     @property
     def is_complete(self) -> bool:
         """Returns True if workflow has completed. Otherwise returns False."""
-        return self.status == TrailblazerStatus.QC.value
+        return self.status == TrailblazerStatus.QC
 
     @property
     def processes(self) -> List[TowerProcess]:

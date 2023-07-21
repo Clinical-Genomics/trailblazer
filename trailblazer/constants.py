@@ -40,7 +40,7 @@ class WorkflowManager(Enum):
         return [task.value for task in cls]
 
 
-class SlurmJobStatus(Enum):
+class SlurmJobStatus(str, Enum):
     """SLURM allowed status."""
 
     CANCELLED: str = "cancelled"
@@ -51,7 +51,7 @@ class SlurmJobStatus(Enum):
     TIME_OUT: str = "timeout"
 
 
-class TrailblazerStatus(Enum):
+class TrailblazerStatus(str, Enum):
     """Trailblazer allowed status."""
 
     PENDING: str = "pending"
@@ -69,26 +69,26 @@ class TrailblazerStatus(Enum):
 
 
 TOWER_STATUS: Dict[str, str] = {
-    "ABORTED": TrailblazerStatus.CANCELLED.value,
-    "CACHED": TrailblazerStatus.COMPLETED.value,
-    "CANCELLED": TrailblazerStatus.CANCELLED.value,
-    "COMPLETED": TrailblazerStatus.COMPLETED.value,
-    "FAILED": TrailblazerStatus.FAILED.value,
-    "NEW": TrailblazerStatus.PENDING.value,
-    "RUNNING": TrailblazerStatus.RUNNING.value,
-    "SUBMITTED": TrailblazerStatus.PENDING.value,
-    "SUCCEEDED": TrailblazerStatus.COMPLETED.value,
-    "UNKNOWN": TrailblazerStatus.FAILED.value,
+    "ABORTED": TrailblazerStatus.CANCELLED,
+    "CACHED": TrailblazerStatus.COMPLETED,
+    "CANCELLED": TrailblazerStatus.CANCELLED,
+    "COMPLETED": TrailblazerStatus.COMPLETED,
+    "FAILED": TrailblazerStatus.FAILED,
+    "NEW": TrailblazerStatus.PENDING,
+    "RUNNING": TrailblazerStatus.RUNNING,
+    "SUBMITTED": TrailblazerStatus.PENDING,
+    "SUCCEEDED": TrailblazerStatus.COMPLETED,
+    "UNKNOWN": TrailblazerStatus.FAILED,
 }
 
 
 TOWER_PROCESS_STATUS: Dict[str, str] = {
-    "submitted": TrailblazerStatus.PENDING.value,
-    "pending": TrailblazerStatus.PENDING.value,
-    "running": TrailblazerStatus.RUNNING.value,
-    "cached": TrailblazerStatus.COMPLETED.value,
-    "succeeded": TrailblazerStatus.COMPLETED.value,
-    "failed": TrailblazerStatus.FAILED.value,
+    "submitted": TrailblazerStatus.PENDING,
+    "pending": TrailblazerStatus.PENDING,
+    "running": TrailblazerStatus.RUNNING,
+    "cached": TrailblazerStatus.COMPLETED,
+    "succeeded": TrailblazerStatus.COMPLETED,
+    "failed": TrailblazerStatus.FAILED,
 }
 
 TOWER_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"

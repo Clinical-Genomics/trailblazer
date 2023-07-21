@@ -30,34 +30,32 @@ def reformat_squeue_result_job_step(data_analysis: str, job_step: str) -> str:
 def get_current_analysis_status(jobs_status_distribution: dict) -> Optional[str]:
     """Return current analysis status based on jobs status distribution."""
     is_ongoing: bool = bool(
-        jobs_status_distribution.get(SlurmJobStatus.RUNNING.value)
-        or jobs_status_distribution.get(SlurmJobStatus.PENDING.value)
+        jobs_status_distribution.get(SlurmJobStatus.RUNNING)
+        or jobs_status_distribution.get(SlurmJobStatus.PENDING)
     )
 
     analysis_status_map: Dict[str, Optional[str]] = {
-        SlurmJobStatus.FAILED.value: TrailblazerStatus.ERROR.value
+        SlurmJobStatus.FAILED: TrailblazerStatus.ERROR if is_ongoing else TrailblazerStatus.FAILED,
+        SlurmJobStatus.TIME_OUT: TrailblazerStatus.ERROR
         if is_ongoing
-        else TrailblazerStatus.FAILED.value,
-        SlurmJobStatus.TIME_OUT.value: TrailblazerStatus.ERROR.value
-        if is_ongoing
-        else TrailblazerStatus.FAILED.value,
-        SlurmJobStatus.COMPLETED.value: TrailblazerStatus.COMPLETED.value
-        if jobs_status_distribution.get(SlurmJobStatus.COMPLETED.value) == 1
+        else TrailblazerStatus.FAILED,
+        SlurmJobStatus.COMPLETED: TrailblazerStatus.COMPLETED
+        if jobs_status_distribution.get(SlurmJobStatus.COMPLETED) == 1
         else None,
-        SlurmJobStatus.PENDING.value: TrailblazerStatus.PENDING.value
-        if jobs_status_distribution.get(SlurmJobStatus.PENDING.value) == 1
+        SlurmJobStatus.PENDING: TrailblazerStatus.PENDING
+        if jobs_status_distribution.get(SlurmJobStatus.PENDING) == 1
         else None,
-        SlurmJobStatus.RUNNING.value: TrailblazerStatus.RUNNING.value,
-        SlurmJobStatus.CANCELLED.value: None if is_ongoing else TrailblazerStatus.CANCELLED.value,
+        SlurmJobStatus.RUNNING: TrailblazerStatus.RUNNING,
+        SlurmJobStatus.CANCELLED: None if is_ongoing else TrailblazerStatus.CANCELLED,
     }
 
     for status in [
-        SlurmJobStatus.FAILED.value,
-        SlurmJobStatus.TIME_OUT.value,
-        SlurmJobStatus.COMPLETED.value,
-        SlurmJobStatus.PENDING.value,
-        SlurmJobStatus.RUNNING.value,
-        SlurmJobStatus.CANCELLED.value,
+        SlurmJobStatus.FAILED,
+        SlurmJobStatus.TIME_OUT,
+        SlurmJobStatus.COMPLETED,
+        SlurmJobStatus.PENDING,
+        SlurmJobStatus.RUNNING,
+        SlurmJobStatus.CANCELLED,
     ]:
         if status in jobs_status_distribution and analysis_status_map[status]:
             return analysis_status_map[status]

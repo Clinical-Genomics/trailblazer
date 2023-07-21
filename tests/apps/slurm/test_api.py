@@ -48,30 +48,30 @@ def test_reformat_squeue_result_job_step(
 @pytest.mark.parametrize(
     "analysis_status, job_status_distribution, expected_analysis_status",
     [
-        ("failed", {SlurmJobStatus.FAILED.value: 0.01}, TrailblazerStatus.FAILED.value),
+        ("failed", {SlurmJobStatus.FAILED: 0.01}, TrailblazerStatus.FAILED),
         (
             "failed_ongoing",
-            {SlurmJobStatus.FAILED.value: 0.01, SlurmJobStatus.RUNNING.value: 0.1},
-            TrailblazerStatus.ERROR.value,
+            {SlurmJobStatus.FAILED: 0.01, SlurmJobStatus.RUNNING: 0.1},
+            TrailblazerStatus.ERROR,
         ),
-        ("error", {SlurmJobStatus.TIME_OUT.value: 0.01}, TrailblazerStatus.FAILED.value),
+        ("error", {SlurmJobStatus.TIME_OUT: 0.01}, TrailblazerStatus.FAILED),
         (
             "error_ongoing",
-            {SlurmJobStatus.TIME_OUT.value: 0.01, SlurmJobStatus.PENDING.value: 0.1},
-            TrailblazerStatus.ERROR.value,
+            {SlurmJobStatus.TIME_OUT: 0.01, SlurmJobStatus.PENDING: 0.1},
+            TrailblazerStatus.ERROR,
         ),
-        ("completed", {SlurmJobStatus.COMPLETED.value: 1.0}, TrailblazerStatus.COMPLETED.value),
-        ("pending", {SlurmJobStatus.PENDING.value: 1.0}, TrailblazerStatus.PENDING.value),
+        ("completed", {SlurmJobStatus.COMPLETED: 1.0}, TrailblazerStatus.COMPLETED),
+        ("pending", {SlurmJobStatus.PENDING: 1.0}, TrailblazerStatus.PENDING),
         (
             "running",
-            {SlurmJobStatus.RUNNING.value: 0.01, SlurmJobStatus.PENDING.value: 0.1},
-            TrailblazerStatus.RUNNING.value,
+            {SlurmJobStatus.RUNNING: 0.01, SlurmJobStatus.PENDING: 0.1},
+            TrailblazerStatus.RUNNING,
         ),
-        ("canceled", {SlurmJobStatus.CANCELLED.value: 0.01}, TrailblazerStatus.CANCELLED.value),
+        ("canceled", {SlurmJobStatus.CANCELLED: 0.01}, TrailblazerStatus.CANCELLED),
         (
             "canceled_ongoing",
-            {SlurmJobStatus.CANCELLED.value: 0.01, SlurmJobStatus.RUNNING.value: 0.1},
-            TrailblazerStatus.RUNNING.value,
+            {SlurmJobStatus.CANCELLED: 0.01, SlurmJobStatus.RUNNING: 0.1},
+            TrailblazerStatus.RUNNING,
         ),
     ],
 )

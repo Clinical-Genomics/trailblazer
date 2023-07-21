@@ -122,4 +122,4 @@ def test_set_jobs_status_distribution(squeue_stream_pending_job: str):
     squeue_result: SqueueResult = SqueueResult(jobs=csv_content)
 
     # THEN a job status distribution should be returned
-    assert squeue_result.jobs_status_distribution == {SlurmJobStatus.PENDING.value: 1}
+    assert squeue_result.jobs_status_distribution == {SlurmJobStatus.PENDING: 1}
