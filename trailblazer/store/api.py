@@ -253,7 +253,7 @@ class BaseHandler(CoreHandler):
             self.update_analysis_from_slurm_run_status(analysis_id=analysis_id, ssh=ssh)
 
     def update_analysis_from_slurm_run_status(self, analysis_id: int, ssh: bool = False) -> None:
-        """Query slurm for entries related to given analysis, and update the Trailblazer database"""
+        """Query slurm for entries related to given analysis, and update the analysis in the database."""
         analysis: Analysis = self.analysis(analysis_id)
 
         try:
@@ -278,8 +278,10 @@ class BaseHandler(CoreHandler):
             self.commit()
 
             analysis.logged_at = dt.datetime.now()
-        except Exception as e:
-            LOG.error(f"Error logging case - {analysis.family} : {e.__class__.__name__}")
+        except Exception as exception:
+            LOG.error(
+                f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"
+            )
             analysis.status = TrailblazerStatus.ERROR.value
             self.commit()
 

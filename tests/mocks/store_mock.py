@@ -1,5 +1,8 @@
+from pathlib import Path
+
 from tests.apps.tower.conftest import TOWER_ID, CaseIDs, TowerResponseFile, TowerTaskResponseFile
 from tests.mocks.tower_mock import MockTowerAPI
+from trailblazer.constants import FileExtension
 from trailblazer.store.api import Store
 
 
@@ -10,16 +13,36 @@ class MockStore(Store):
     def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> str:
         """Mock SLURM output."""
         slurm_dict = {
-            "cuddlyhen": "tests/fixtures/sacct/blazinginsect_sacct_2",
-            "blazinginsect": "tests/fixtures/sacct/blazinginsect_sacct_2",  # running
-            "crackpanda": "tests/fixtures/sacct/crackpanda_sacct_2",  # failed
-            "escapedgoat": "tests/fixtures/sacct/escapegoat_sacct_2",  # pending
-            "fancymole": "tests/fixtures/sacct/fancymole_sacct_2",  # completed
-            "happycow": "tests/fixtures/sacct/happycow_sacct_2",  # pending
-            "lateraligator": "tests/fixtures/sacct/lateraligator_sacct_2",  # failed
-            "nicemice": "tests/fixtures/sacct/nicemice_sacct_2",  # completed
-            "rarekitten": "tests/fixtures/sacct/rarekitten_sacct_2",  # canceled
-            "trueferret": "tests/fixtures/sacct/trueferret_sacct_2",  # running
+            "cuddlyhen": Path(
+                "tests", "fixtures", "squeue", "blazinginsect_squeue" + FileExtension.CSV
+            ).as_posix(),
+            "blazinginsect": Path(
+                "tests", "fixtures", "squeue", "blazinginsect_squeue" + FileExtension.CSV
+            ).as_posix(),  # running
+            "crackpanda": Path(
+                "tests", "fixtures", "squeue", "crackpanda_squeue" + FileExtension.CSV
+            ).as_posix(),  # failed
+            "escapedgoat": Path(
+                "tests", "fixtures", "squeue", "escapegoat_squeue" + FileExtension.CSV
+            ).as_posix(),  # pending
+            "fancymole": Path(
+                "tests", "fixtures", "squeue", "fancymole_squeue" + FileExtension.CSV
+            ).as_posix(),  # completed
+            "happycow": Path(
+                "tests", "fixtures", "squeue", "happycow_squeue" + FileExtension.CSV
+            ).as_posix(),  # pending
+            "lateraligator": Path(
+                "tests", "fixtures", "squeue", "lateraligator_squeue" + FileExtension.CSV
+            ).as_posix(),  # failed
+            "nicemice": Path(
+                "tests", "fixtures", "squeue", "nicemice_squeue" + FileExtension.CSV
+            ).as_posix(),  # completed
+            "rarekitten": Path(
+                "tests", "fixtures", "squeue", "rarekitten_squeue" + FileExtension.CSV
+            ).as_posix(),  # canceled
+            "trueferret": Path(
+                "tests", "fixtures", "squeue", "trueferret_squeue" + FileExtension.CSV
+            ).as_posix(),  # running
         }
         with open(slurm_dict.get(case_id), "r") as file:
             file_content = file.read()
