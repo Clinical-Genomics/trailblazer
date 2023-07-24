@@ -1,3 +1,4 @@
+import subprocess
 from pathlib import Path
 
 from tests.apps.tower.conftest import TOWER_ID, CaseIDs, TowerResponseFile, TowerTaskResponseFile
@@ -22,6 +23,9 @@ class MockStore(Store):
             "cuddlyhen": Path(
                 "tests", "fixtures", "squeue", "cuddlyhen_squeue" + FileExtension.CSV
             ).as_posix(),
+            "daringpidgeon": Path(
+                "tests", "fixtures", "squeue", "daringpidgeon_squeue" + FileExtension.CSV
+            ).as_posix(),
             "escapedgoat": Path(
                 "tests", "fixtures", "squeue", "escapegoat_squeue" + FileExtension.CSV
             ).as_posix(),
@@ -44,9 +48,8 @@ class MockStore(Store):
                 "tests", "fixtures", "squeue", "trueferret_squeue" + FileExtension.CSV
             ).as_posix(),
         }
-        with open(slurm_dict.get(case_id), "r") as file:
-            file_content = file.read()
-        return file_content
+
+        return subprocess.check_output(["cat", slurm_dict.get(case_id)])
 
     @staticmethod
     def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
