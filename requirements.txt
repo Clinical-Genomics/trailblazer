@@ -7,7 +7,6 @@ SQLAlchemy<1.4
 marshmallow
 tabulate
 python-dateutil
-pandas
 requests
 
 # server
