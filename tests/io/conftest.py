@@ -22,9 +22,7 @@ def fixture_example_yaml_path(io_dir: Path) -> Path:
 
 
 @pytest.fixture(name="csv_stream", scope="session")
-def fixture_csv_stream() -> bytes:
+def fixture_csv_stream() -> str:
     """Return string with CSV format."""
     return """Lorem,ipsum,sit,amet
-value_1,value_2,value_3,value_4""".encode(
-        "utf-8"
-    )
+value_1,value_2,value_3,value_4"""

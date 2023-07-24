@@ -213,6 +213,7 @@ class BaseHandler(CoreHandler):
                     ],
                     universal_newlines=True,
                 )
+                .decode("utf-8")
                 .strip()
                 .replace("//n", "/n")
             )
@@ -226,7 +227,7 @@ class BaseHandler(CoreHandler):
                     "-o",
                     "%A,%j,%T,%l,%M,%S",
                 ]
-            )
+            ).decode("utf-8")
 
     def update_ongoing_analyses(self, ssh: bool = False) -> None:
         """Iterate over all analysis with ongoing status and query SLURM for current progress"""

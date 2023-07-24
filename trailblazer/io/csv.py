@@ -5,7 +5,6 @@ from typing import List
 
 def read_csv_stream(stream: bytes, read_to_dict: bool = False) -> List[List[str]]:
     """Read CSV formatted stream."""
-    stream = stream.decode("utf-8")
     csv_reader = (
         csv.DictReader(stream.splitlines()) if read_to_dict else csv.reader(stream.splitlines())
     )

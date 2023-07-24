@@ -49,7 +49,7 @@ class MockStore(Store):
             ).as_posix(),
         }
 
-        return subprocess.check_output(["cat", slurm_dict.get(case_id)])
+        return subprocess.check_output(["cat", slurm_dict.get(case_id)]).decode("utf-8")
 
     @staticmethod
     def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
