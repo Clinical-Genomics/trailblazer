@@ -16,7 +16,7 @@ class SqueueJob(BaseModel):
     status: SlurmJobStatus
     time_limit: str
     time_elapsed: int
-    started: Optional[datetime] = None
+    started: Optional[datetime]
 
     @validator("status", always=True, pre=True)
     def convert_status_to_lower_case(cls, value: str) -> str:
@@ -44,12 +44,12 @@ class SqueueJob(BaseModel):
             days_nr=day_nr
         )
 
-    @validator("started", always=True)
-    def convert_started_to_date(cls, value: str) -> datetime:
-        """Convert started to datetime object."""
-        if isinstance(value, str):
-            return datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
-        return value
+    @validator("started", always=True, pre=True)
+    def convert_started_to_date(cls, value: str) -> Optional[datetime]:
+        """Convert started to datetime if string is in datetime format."""
+        raw_started: str = value
+        if isinstance(raw_started, str) and raw_started not in {"N/A"}:
+            return datetime.strptime(raw_started, "%Y-%m-%dT%H:%M:%S")
 
 
 class SqueueResult(BaseModel):

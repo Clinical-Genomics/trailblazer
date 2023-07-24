@@ -108,6 +108,24 @@ def test_convert_started_to_datetime(squeue_stream_pending_job: str):
         assert isinstance(squeue_job.started, datetime)
 
 
+def test_convert_started_to_datetime_no_datetime_format(squeue_stream_pending_job_not_started: str):
+    """
+    Tests converting started to datetime when started is not in datetime format."""
+    # GIVEN a csv squeue stream
+
+    csv_content: List[dict] = ReadStream.get_content_from_stream(
+        file_format=FileFormat.CSV,
+        stream=squeue_stream_pending_job_not_started,
+        read_to_dict=True,
+    )
+    for job in csv_content:
+        # WHEN instantiating a SqueueJob object
+        squeue_job: SqueueJob = SqueueJob(**job)
+
+        # THEN started is a datetime object
+        assert not squeue_job.started
+
+
 def test_set_jobs_status_distribution(squeue_stream_pending_job: str):
     """
     Tests set job status distribution from jobs status."""
