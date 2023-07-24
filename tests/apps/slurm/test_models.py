@@ -105,7 +105,7 @@ def test_convert_started_to_datetime(squeue_stream_pending_job: str):
         squeue_job: SqueueJob = SqueueJob(**job)
 
         # THEN started is a datetime object
-        assert isinstance(squeue_job.started, datetime)
+        assert isinstance(squeue_job.started_at, datetime)
 
 
 def test_convert_started_to_datetime_no_datetime_format(squeue_stream_pending_job_not_started: str):
@@ -123,7 +123,7 @@ def test_convert_started_to_datetime_no_datetime_format(squeue_stream_pending_jo
         squeue_job: SqueueJob = SqueueJob(**job)
 
         # THEN started is a datetime object
-        assert not squeue_job.started
+        assert not squeue_job.started_at
 
 
 def test_set_jobs_status_distribution(squeue_stream_pending_job: str):

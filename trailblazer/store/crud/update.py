@@ -36,7 +36,7 @@ class UpdateHandler(BaseHandler_2):
                 slurm_id=job.id,
                 name=job.step,
                 status=job.status,
-                started_at=job.started,
+                started_at=job.started_at,
                 elapsed=job.time_elapsed,
             )
             for job in squeue_result.jobs
