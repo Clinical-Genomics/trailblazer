@@ -24,4 +24,4 @@ gunicorn
 pymysql
 python-dateutil
 cryptography
-pydantic
+pydantic==1.10.9
