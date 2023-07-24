@@ -1,4 +1,4 @@
-id,step,status,time_limit,time_elapsed,started
+JOBID,NAME,STATE,TIME_LIMIT,TIME,START_TIME
 6123780,gatk_genotypegvcfs1,CANCELLED,10:00:00,0:00,2020-10-22T11:43:33
 6123790,gatk_genotypegvcfs2,CANCELLED,10:00:00,0:00,2020-10-22T11:43:33
 6123800,gatk_genotypegvcfs3,CANCELLED,10:00:00,5:54,2020-10-22T11:43:02
