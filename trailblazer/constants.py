@@ -40,6 +40,17 @@ class WorkflowManager(Enum):
         return [task.value for task in cls]
 
 
+class SlurmSqueueHeader(str, Enum):
+    """SLURM squeue output headers."""
+
+    JOBID: str = "JOBID"
+    NAME: str = "NAME"
+    START_TIME: str = "START_TIME"
+    STATE: str = "STATE"
+    TIME: str = "TIME"
+    TIME_LIMIT: str = "TIME_LIMIT"
+
+
 class SlurmJobStatus(str, Enum):
     """SLURM allowed status."""
 

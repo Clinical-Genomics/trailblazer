@@ -4,19 +4,19 @@ from typing import List, Dict, Optional, Any
 
 from pydantic import BaseModel, Field, validator
 
-from trailblazer.constants import SlurmJobStatus
+from trailblazer.constants import SlurmJobStatus, SlurmSqueueHeader
 from trailblazer.utils.datetime import convert_days_to_min, convert_timestamp_to_min
 
 
 class SqueueJob(BaseModel):
     """Model job meta data from squeue output."""
 
-    id: int = Field(..., alias="JOBID")
-    step: str = Field(..., alias="NAME")
-    status: SlurmJobStatus = Field(..., alias="STATE")
-    time_limit: str = Field(..., alias="TIME_LIMIT")
-    time_elapsed: int = Field(..., alias="TIME")
-    started_at: Optional[datetime] = Field(..., alias="START_TIME")
+    id: int = Field(..., alias=SlurmSqueueHeader.JOBID.value)
+    step: str = Field(..., alias=SlurmSqueueHeader.NAME.value)
+    status: SlurmJobStatus = Field(..., alias=SlurmSqueueHeader.STATE.value)
+    time_limit: str = Field(..., alias=SlurmSqueueHeader.TIME_LIMIT.value)
+    time_elapsed: int = Field(..., alias=SlurmSqueueHeader.TIME.value)
+    started_at: Optional[datetime] = Field(..., alias=SlurmSqueueHeader.START_TIME.value)
 
     @validator("status", always=True, pre=True)
     def convert_status_to_lower_case(cls, value: str) -> str:
