@@ -47,7 +47,7 @@ def test_update_user_is_archived(user_store: MockStore, user_email: str):
     assert archived_user
 
 
-def test_update_slurm_jobs(analysis_store: MockStore, squeue_stream_jobs: str):
+def test_update_analysis_jobs_from_slurm_jobs(analysis_store: MockStore, squeue_stream_jobs: str):
     """Test updating analysis jobs when given squeue results."""
     # GIVEN an analysis and a squeue stream
     analysis: Analysis = analysis_store.get_query(table=Analysis).first()
@@ -56,7 +56,9 @@ def test_update_slurm_jobs(analysis_store: MockStore, squeue_stream_jobs: str):
     squeue_result: SqueueResult = get_squeue_result(squeue_response=squeue_stream_jobs)
 
     # WHEN updating the analysis
-    analysis_store.update_slurm_jobs(analysis=analysis, squeue_result=squeue_result)
+    analysis_store.update_analysis_jobs_from_slurm_jobs(
+        analysis=analysis, squeue_result=squeue_result
+    )
     updated_analysis: Analysis = analysis_store.get_analysis(
         case_id=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.PENDING
     )

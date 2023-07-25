@@ -261,7 +261,9 @@ class BaseHandler(CoreHandler):
                     job_id_file=analysis.config_path, case_id=analysis.family, ssh=ssh
                 )
             )
-            self.update_slurm_jobs(analysis=analysis, squeue_result=squeue_result)
+            self.update_analysis_jobs_from_slurm_jobs(
+                analysis=analysis, squeue_result=squeue_result
+            )
             LOG.info(f"Status in SLURM: {analysis.family} - {analysis_id}")
             LOG.info(squeue_result.jobs)
             analysis.progress = float(

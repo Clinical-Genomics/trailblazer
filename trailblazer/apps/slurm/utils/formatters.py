@@ -1,3 +1,5 @@
+from typing import Dict, Callable
+
 from trailblazer.constants import Pipeline
 
 
@@ -36,7 +38,7 @@ def reformat_undefined(job_step: str) -> str:
     return job_step
 
 
-formatter_map = {
+formatter_map: Dict[str, Callable] = {
     Pipeline.MIP_DNA: reformat_mip_job_step,
     Pipeline.MIP_RNA: reformat_mip_job_step,
     Pipeline.BALSAMIC: reformat_balsamic_job_step,
