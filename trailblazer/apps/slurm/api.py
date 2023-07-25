@@ -10,7 +10,8 @@ from trailblazer.apps.slurm.utils import formatters
 def get_squeue_result(squeue_response: str) -> SqueueResult:
     """Return SqueueResult object from squeue response.
     Raises:
-        TrailblazerError: when no entries were returned by squeue command"""
+        TrailblazerError: when no entries were returned by squeue command.
+    """
     if not squeue_response:
         raise EmptySqueueError("No jobs found in SLURM registry")
     squeue_response_content: List[dict] = ReadStream.get_content_from_stream(

@@ -35,12 +35,10 @@ def test_get_content_from_file_when_json(example_json_path: Path):
 
 
 def test_get_content_from_stream_when_csv(csv_stream: str):
-    """
-    Tests read a CVS stream.
-    """
-    # GIVEN a string in csv format
+    """Tests read a CVS stream."""
+    # GIVEN a string in CSV format
 
-    # WHEN reading the csv content in string
+    # WHEN reading the CSV content in string
     raw_csv_content: list = ReadStream.get_content_from_stream(
         file_format=FileFormat.CSV, stream=csv_stream
     )
@@ -50,12 +48,10 @@ def test_get_content_from_stream_when_csv(csv_stream: str):
 
 
 def test_get_content_from_stream_when_csv_when_dict(csv_stream: str):
-    """
-    Tests read a CVS stream intoo a dict.
-    """
-    # GIVEN a string in csv format
+    """Tests read a CVS stream intoo a dict."""
+    # GIVEN a string in CSV format
 
-    # WHEN reading the csv content in string
+    # WHEN reading the CSV content in string
     raw_csv_content: list = ReadStream.get_content_from_stream(
         file_format=FileFormat.CSV,
         stream=csv_stream,

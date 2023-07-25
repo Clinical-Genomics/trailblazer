@@ -25,7 +25,7 @@ class SqueueJob(BaseModel):
 
     @validator("time_elapsed", always=True, pre=True)
     def convert_time_elapsed_to_min(cls, value: str) -> int:
-        """Convert squeue timestamp string into number of minutes."""
+        """Convert squeue timestamp string into minutes."""
         raw_time_elapsed: str = value
         if not raw_time_elapsed or not isinstance(raw_time_elapsed, str):
             return 0
