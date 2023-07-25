@@ -40,6 +40,15 @@ class WorkflowManager(Enum):
         return [task.value for task in cls]
 
 
+class Pipeline(str, Enum):
+    """Analysis pipeline names"""
+
+    BALSAMIC: str = "BALSAMIC"
+    MIP_DNA: str = "MIP-DNA"
+    MIP_RNA: str = "MIP-RNA"
+    SARS_COV_2: str = "SARS-COV-2"
+
+
 class SlurmSqueueHeader(str, Enum):
     """SLURM squeue output headers."""
 

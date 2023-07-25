@@ -1,3 +1,6 @@
+from trailblazer.constants import Pipeline
+
+
 def reformat_mip_job_step(job_step: str) -> str:
     """Reformat data analysis MIP job step.
     Raise: Exception if unable to split string.
@@ -34,8 +37,8 @@ def reformat_undefined(job_step: str) -> str:
 
 
 formatter_map = {
-    "MIP-DNA": reformat_mip_job_step,
-    "MIP-RNA": reformat_mip_job_step,
-    "BALSAMIC": reformat_balsamic_job_step,
-    "SARS-COV-2": reformat_mutant_job_step,
+    Pipeline.MIP_DNA: reformat_mip_job_step,
+    Pipeline.MIP_RNA: reformat_mip_job_step,
+    Pipeline.BALSAMIC: reformat_balsamic_job_step,
+    Pipeline.SARS_COV_2: reformat_mutant_job_step,
 }

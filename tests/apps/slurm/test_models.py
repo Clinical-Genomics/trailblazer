@@ -11,9 +11,7 @@ SHORT_RUNNING_JOB: int = 5
 
 
 def test_instantiate_squeue_result(squeue_stream_pending_job: str):
-    """
-    Tests squeue output against a pydantic model
-    """
+    """Tests squeue output against a pydantic model"""
     # GIVEN a csv squeue stream
 
     csv_content: List[dict] = ReadStream.get_content_from_stream(
@@ -30,9 +28,7 @@ def test_instantiate_squeue_result(squeue_stream_pending_job: str):
 
 
 def test_instantiate_squeue_job(squeue_stream_pending_job: str):
-    """
-    Tests squeue row output against a pydantic model
-    """
+    """Tests squeue row output against a pydantic model"""
     # GIVEN a csv squeue stream
 
     csv_content: List[dict] = ReadStream.get_content_from_stream(
@@ -68,13 +64,12 @@ def test_squeue_job_convert_time_elapse(squeue_stream_jobs: str):
         # WHEN instantiating a SqueueJob object
         squeue_job: SqueueJob = SqueueJob(**job)
 
-        # THEN the time elapse should be in min
+        # THEN the time elapsed should be in min
         assert squeue_job.time_elapsed == expected_time_elapsed[index]
 
 
 def test_convert_status_to_lower_case(squeue_stream_pending_job: str):
-    """
-    Tests converting status to lower case."""
+    """Tests converting status to lower case."""
     # GIVEN a csv squeue stream
 
     csv_content: List[dict] = ReadStream.get_content_from_stream(
@@ -104,13 +99,12 @@ def test_convert_started_to_datetime(squeue_stream_pending_job: str):
         # WHEN instantiating a SqueueJob object
         squeue_job: SqueueJob = SqueueJob(**job)
 
-        # THEN started is a datetime object
+        # THEN started at is a datetime object
         assert isinstance(squeue_job.started_at, datetime)
 
 
 def test_convert_started_to_datetime_no_datetime_format(squeue_stream_pending_job_not_started: str):
-    """
-    Tests converting started to datetime when started is not in datetime format."""
+    """Tests converting started to datetime when started is not in datetime format."""
     # GIVEN a csv squeue stream
 
     csv_content: List[dict] = ReadStream.get_content_from_stream(
@@ -122,13 +116,12 @@ def test_convert_started_to_datetime_no_datetime_format(squeue_stream_pending_jo
         # WHEN instantiating a SqueueJob object
         squeue_job: SqueueJob = SqueueJob(**job)
 
-        # THEN started is a datetime object
+        # THEN started at is not initialized
         assert not squeue_job.started_at
 
 
 def test_set_jobs_status_distribution(squeue_stream_pending_job: str):
-    """
-    Tests set job status distribution from jobs status."""
+    """Tests set job status distribution from jobs status."""
     # GIVEN a csv squeue stream
     csv_content: List[dict] = ReadStream.get_content_from_stream(
         file_format=FileFormat.CSV,
