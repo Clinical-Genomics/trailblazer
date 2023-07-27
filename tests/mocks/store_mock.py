@@ -3,6 +3,7 @@ import subprocess
 from tests.apps.tower.conftest import TOWER_ID, CaseIDs, TowerResponseFile, TowerTaskResponseFile
 from tests.mocks.tower_mock import MockTowerAPI
 from trailblazer.store.api import Store
+from trailblazer.store.models import Analysis
 
 
 class MockStore(Store):
@@ -29,6 +30,12 @@ class MockStore(Store):
 
     @staticmethod
     def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
+        return
+
+    def cancel_tower_analysis(self, analysis: Analysis) -> None:
+        return
+
+    def update_tower_run_status(self, analysis_id: int) -> None:
         return
 
     @staticmethod
