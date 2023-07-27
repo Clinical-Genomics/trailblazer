@@ -80,7 +80,6 @@ class TowerApiClient:
     def post_request(self, url: str, data: dict = {}) -> dict:
         """Send data via POST request and return response."""
         try:
-            LOG.info(f"Sending POST request with json data to {url}")
             response = requests.post(
                 url, headers=self.headers, params=self.request_params, json=data
             )
@@ -88,7 +87,7 @@ class TowerApiClient:
                 LOG.info(f"POST request failed for url {url}\n with message {str(response)}")
                 response.raise_for_status()
         except (MissingSchema, HTTPError, ConnectionError) as error:
-            LOG.error("Request failed for url %s: Error: %s\n", url, error)
+            LOG.error(f"Request failed for url {url}: Error: {error}\n")
             raise TrailblazerError
         return response.json()
 
