@@ -84,7 +84,7 @@ class TowerApiClient:
             response = requests.post(
                 url, headers=self.headers, params=self.request_params, json=data
             )
-            if response.status_code == 404:
+            if response.status_code in {404, 400}:
                 LOG.info(f"POST request failed for url {url}\n with message {str(response)}")
                 response.raise_for_status()
         except (MissingSchema, HTTPError, ConnectionError) as error:
