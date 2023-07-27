@@ -424,25 +424,38 @@ class BaseHandler(CoreHandler):
         else:
             subprocess.Popen(["scancel", str(slurm_id)])
 
-    def cancel_analysis(self, analysis_id: int, email: str = None, ssh: bool = False) -> None:
-        """Cancel all ongoing slurm jobs associated with the analysis, and set job status to canceled"""
-        analysis_obj = self.analysis(analysis_id=analysis_id)
-        if not analysis_obj:
-            raise TrailblazerError(f"Analysis {analysis_id} does not exist")
-
-        if analysis_obj.status not in ONGOING_STATUSES:
-            raise TrailblazerError(f"Analysis {analysis_id} is not running")
-
-        for job_obj in analysis_obj.failed_jobs:
+    def cancel_slurm_analysis(self, analysis: Analysis, ssh: bool = False) -> None:
+        """Cancel slurm analysis by cancelling all associated slurm jobs."""
+        for job_obj in analysis.failed_jobs:
             if job_obj.status in SLURM_ACTIVE_CATEGORIES:
                 LOG.info(f"Cancelling job {job_obj.slurm_id} - {job_obj.name}")
                 self.cancel_slurm_job(job_obj.slurm_id, ssh=ssh)
+
+    def cancel_tower_analysis(self, analysis: Analysis) -> None:
+        """Cancel a NF-Tower analysis."""
+        self.query_tower(
+            config_file=analysis.config_path, case_id=analysis.family
+        ).tower_client.cancel
+
+    def cancel_analysis(self, analysis_id: int, email: str = None, ssh: bool = False) -> None:
+        """Cancel all ongoing slurm jobs associated with the analysis, and set job status to canceled"""
+        analysis: Analysis = self.analysis(analysis_id=analysis_id)
+        if not analysis:
+            raise TrailblazerError(f"Analysis {analysis_id} does not exist")
+
+        if analysis.status not in ONGOING_STATUSES:
+            raise TrailblazerError(f"Analysis {analysis_id} is not running")
+
+        if analysis.workflow_manager == WorkflowManager.TOWER.value:
+            self.cancel_tower_analysis(analysis=analysis)
+        else:
+            self.cancel_slurm_analysis(analysis=analysis, ssh=ssh)
         LOG.info(
-            f"Case {analysis_obj.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
+            f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )
         self.update_run_status(analysis_id=analysis_id)
-        analysis_obj.status = "canceled"
-        analysis_obj.comment = (
+        analysis.status = TrailblazerStatus.CANCELLED.value
+        analysis.comment = (
             f"Analysis cancelled manually by user:"
             f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
         )
