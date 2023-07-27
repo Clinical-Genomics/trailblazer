@@ -21,11 +21,11 @@ def convert_timestamp_to_min(timestamp: datetime) -> int:
     return int((timestamp - zero_seconds).total_seconds() / SCALE_SECONDS_TO_MINUTES)
 
 
-def datetime_converter(timestamp: str, allowed_formats: List[str]) -> datetime:
+def get_datetime_from_timestamp(timestamp: str, datetime_formats: List[str]) -> datetime:
     """Converts a timestamp into a datatime object."""
-    for dt_format in allowed_formats:
+    for datetime_format in datetime_formats:
         try:
-            return datetime.strptime(timestamp, dt_format)
+            return datetime.strptime(timestamp, datetime_format)
         except ValueError:
             continue
 
@@ -33,4 +33,4 @@ def datetime_converter(timestamp: str, allowed_formats: List[str]) -> datetime:
 def tower_datetime_converter(timestamp: str) -> datetime:
     """Converts a NF Tower timestamp into a datatime object."""
     allowed_formats = [TOWER_TIMESTAMP_FORMAT, TOWER_TIMESTAMP_FORMAT_ALTERNATIVE]
-    return datetime_converter(timestamp, allowed_formats)
+    return get_datetime_from_timestamp(timestamp, allowed_formats)

@@ -5,7 +5,11 @@ from typing import List, Dict, Optional, Any
 from pydantic import BaseModel, Field, validator
 
 from trailblazer.constants import SlurmJobStatus, SlurmSqueueHeader
-from trailblazer.utils.datetime import convert_days_to_min, convert_timestamp_to_min
+from trailblazer.utils.datetime import (
+    convert_days_to_min,
+    convert_timestamp_to_min,
+    get_datetime_from_timestamp,
+)
 
 
 class SqueueJob(BaseModel):
@@ -34,12 +38,9 @@ class SqueueJob(BaseModel):
             timestamps: List[str] = raw_time_elapsed.split("-")
         day_nr: int = int(timestamps[0]) if timestamps else 0
         raw_timestamp: str = timestamps[1] if timestamps else raw_time_elapsed
-        time_format_map: Dict[int, str] = {
-            1: "%M:%S",
-            2: "%H:%M:%S",
-        }
-        delimiter_nr: int = raw_time_elapsed.count(":")
-        time_elapsed: datetime = datetime.strptime(raw_timestamp, time_format_map[delimiter_nr])
+        time_elapsed: datetime = get_datetime_from_timestamp(
+            timestamp=raw_timestamp, datetime_formats=["%M:%S", "%H:%M:%S"]
+        )
         return convert_timestamp_to_min(timestamp=time_elapsed) + convert_days_to_min(
             days_nr=day_nr
         )
