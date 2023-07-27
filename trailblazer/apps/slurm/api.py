@@ -1,4 +1,4 @@
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Callable
 
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.constants import FileFormat, SlurmJobStatus, TrailblazerStatus
@@ -23,9 +23,9 @@ def get_squeue_result(squeue_response: str) -> SqueueResult:
 
 
 def reformat_squeue_result_job_step(data_analysis: str, job_step: str) -> str:
-    """Standardise job step string according to data anlaysis."""
-    formatter_func = formatters.formatter_map.get(data_analysis, formatters.reformat_undefined)
-    return formatter_func(job_step=job_step)
+    """Standardise job step string according to data analysis."""
+    formatter: Callable = formatters.formatter_map.get(data_analysis, formatters.reformat_undefined)
+    return formatter(job_step=job_step)
 
 
 def get_current_analysis_status(jobs_status_distribution: dict) -> Optional[str]:

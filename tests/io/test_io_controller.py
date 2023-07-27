@@ -35,7 +35,7 @@ def test_get_content_from_file_when_json(example_json_path: Path):
 
 
 def test_get_content_from_stream_when_csv(csv_stream: str):
-    """Tests read a CVS stream."""
+    """Tests read a CSV stream."""
     # GIVEN a string in CSV format
 
     # WHEN reading the CSV content in string
@@ -48,7 +48,7 @@ def test_get_content_from_stream_when_csv(csv_stream: str):
 
 
 def test_get_content_from_stream_when_csv_when_dict(csv_stream: str):
-    """Tests read a CVS stream intoo a dict."""
+    """Tests read a CSV stream into a dict."""
     # GIVEN a string in CSV format
 
     # WHEN reading the CSV content in string

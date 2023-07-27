@@ -6,7 +6,7 @@ from trailblazer.constants import (
     TOWER_TIMESTAMP_FORMAT_ALTERNATIVE,
     MINUTES_PER_HOUR,
     HOURS_IN_DAY,
-    SCALE_SECONDS_TO_MINUTES,
+    SECONDS_PER_MINUTE,
 )
 
 
@@ -18,7 +18,7 @@ def convert_days_to_min(days_nr: int) -> int:
 def convert_timestamp_to_min(timestamp: datetime) -> int:
     """Converts timestamp to minutes."""
     zero_seconds: datetime = datetime.strptime("0:0:0", "%H:%M:%S")
-    return int((timestamp - zero_seconds).total_seconds() / SCALE_SECONDS_TO_MINUTES)
+    return int((timestamp - zero_seconds).total_seconds() / SECONDS_PER_MINUTE)
 
 
 def get_datetime_from_timestamp(timestamp: str, datetime_formats: List[str]) -> datetime:

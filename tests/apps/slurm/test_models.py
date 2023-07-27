@@ -11,7 +11,7 @@ SHORT_RUNNING_JOB: int = 5
 
 
 def test_instantiate_squeue_result(squeue_stream_pending_job: str):
-    """Tests squeue output against a pydantic model"""
+    """Tests squeue output against a pydantic model."""
     # GIVEN a csv squeue stream
 
     csv_content: List[dict] = ReadStream.get_content_from_stream(
@@ -28,7 +28,7 @@ def test_instantiate_squeue_result(squeue_stream_pending_job: str):
 
 
 def test_instantiate_squeue_job(squeue_stream_pending_job: str):
-    """Tests squeue row output against a pydantic model"""
+    """Tests squeue row output against a pydantic model."""
     # GIVEN a csv squeue stream
 
     csv_content: List[dict] = ReadStream.get_content_from_stream(
@@ -86,8 +86,7 @@ def test_convert_status_to_lower_case(squeue_stream_pending_job: str):
 
 
 def test_convert_started_to_datetime(squeue_stream_pending_job: str):
-    """
-    Tests converting started to datetime."""
+    """Tests converting started to datetime."""
     # GIVEN a csv squeue stream
 
     csv_content: List[dict] = ReadStream.get_content_from_stream(
