@@ -28,37 +28,54 @@ def reformat_squeue_result_job_step(data_analysis: str, job_step: str) -> str:
     return formatter(job_step=job_step)
 
 
-def get_current_analysis_status(jobs_status_distribution: dict) -> Optional[str]:
-    """Return current analysis status based on jobs status distribution."""
-    is_analysis_ongoing: bool = bool(
+def _get_analysis_single_status(jobs_status_distribution: Dict[str, float]) -> str:
+    """Return true if only one status in jobs statuses."""
+    if len(jobs_status_distribution) == 1:
+        single_status: str = jobs_status_distribution.popitem()[0]
+        return (
+            TrailblazerStatus.FAILED
+            if single_status == SlurmJobStatus.TIME_OUT
+            else TrailblazerStatus[single_status.upper()]
+        )
+
+
+def _is_analysis_broken(jobs_status_distribution: Dict[str, float]) -> bool:
+    """Return true if any job was broken."""
+    broken_statuses: List[str] = [SlurmJobStatus.FAILED, SlurmJobStatus.TIME_OUT]
+    for broken_status in broken_statuses:
+        if jobs_status_distribution.get(broken_status):
+            return True
+
+
+def _is_analysis_ongoing(jobs_status_distribution: Dict[str, float]) -> bool:
+    """Return True if analysis is still ongoing."""
+    return bool(
         jobs_status_distribution.get(SlurmJobStatus.RUNNING)
         or jobs_status_distribution.get(SlurmJobStatus.PENDING)
     )
 
-    analysis_status_map: Dict[str, Optional[str]] = {
-        SlurmJobStatus.FAILED: TrailblazerStatus.ERROR
-        if is_analysis_ongoing
-        else TrailblazerStatus.FAILED,
-        SlurmJobStatus.TIME_OUT: TrailblazerStatus.ERROR
-        if is_analysis_ongoing
-        else TrailblazerStatus.FAILED,
-        SlurmJobStatus.COMPLETED: TrailblazerStatus.COMPLETED
-        if jobs_status_distribution.get(SlurmJobStatus.COMPLETED) == 1
-        else None,
-        SlurmJobStatus.PENDING: TrailblazerStatus.PENDING
-        if jobs_status_distribution.get(SlurmJobStatus.PENDING) == 1
-        else None,
-        SlurmJobStatus.RUNNING: TrailblazerStatus.RUNNING,
-        SlurmJobStatus.CANCELLED: None if is_analysis_ongoing else TrailblazerStatus.CANCELLED,
-    }
 
-    for status in [
-        SlurmJobStatus.FAILED,
-        SlurmJobStatus.TIME_OUT,
-        SlurmJobStatus.COMPLETED,
-        SlurmJobStatus.PENDING,
-        SlurmJobStatus.RUNNING,
-        SlurmJobStatus.CANCELLED,
-    ]:
-        if status in jobs_status_distribution and analysis_status_map[status]:
-            return analysis_status_map[status]
+def _is_analysis_running(jobs_status_distribution: Dict[str, float]) -> bool:
+    """Return True if analysis is still running."""
+    return bool(jobs_status_distribution.get(SlurmJobStatus.RUNNING))
+
+
+def get_current_analysis_status(jobs_status_distribution: Dict[str, float]) -> Optional[str]:
+    """Return current analysis status based on jobs status distribution."""
+    single_analysis_status: Optional[str] = _get_analysis_single_status(
+        jobs_status_distribution=jobs_status_distribution
+    )
+    if single_analysis_status:
+        return single_analysis_status
+    is_analysis_ongoing: bool = _is_analysis_ongoing(
+        jobs_status_distribution=jobs_status_distribution
+    )
+    is_analysis_broken: bool = _is_analysis_broken(
+        jobs_status_distribution=jobs_status_distribution
+    )
+    if is_analysis_broken:
+        return TrailblazerStatus.ERROR if is_analysis_ongoing else TrailblazerStatus.FAILED
+    if _is_analysis_running:
+        return TrailblazerStatus.RUNNING
+    if not is_analysis_ongoing:
+        return TrailblazerStatus.CANCELLED
