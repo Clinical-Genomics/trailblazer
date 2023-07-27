@@ -5,6 +5,7 @@ from typing import List, Dict, Optional, Any
 from pydantic import BaseModel, Field, validator
 
 from trailblazer.constants import SlurmJobStatus, SlurmSqueueHeader
+from trailblazer.exc import MissingSqueueOutput
 from trailblazer.utils.datetime import (
     convert_days_to_min,
     convert_timestamp_to_min,
@@ -63,11 +64,13 @@ class SqueueResult(BaseModel):
     def set_jobs_status_distribution(
         cls, _: Optional[List[SqueueJob]], values: Dict[str, Any]
     ) -> Optional[Dict[str, float]]:
-        """Set the job status distribution."""
+        """ "Set the fraction for each status present in the squeue jobs.
+        Example {PENDING:0.33, RUNNING:0.33, FAILED: 0.33}."""
         jobs: List[SqueueJob] = values["jobs"]
+        if not jobs:
+            raise MissingSqueueOutput("No squeue output")
         status_distribution: Dict[str, float] = {}
-        for job in jobs:
-            status_distribution[job.status] = status_distribution.get(job.status, 0) + 1
-        for status in status_distribution:
-            status_distribution[status] = round(status_distribution[status] / len(jobs), 2)
-            return status_distribution
+        job_statuses: List[str] = [job.status for job in jobs]
+        for job_status in set(job_statuses):
+            status_distribution[job_status] = round(job_statuses.count(job_status) / len(jobs), 2)
+        return status_distribution
