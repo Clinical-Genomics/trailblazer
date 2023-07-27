@@ -14,7 +14,6 @@ from dateutil.parser import parse as parse_datestr
 
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import (
-    COMPLETED_STATUS,
     FAILED_STATUS,
     ONGOING_STATUSES,
     SLURM_ACTIVE_CATEGORIES,
@@ -125,7 +124,7 @@ class BaseHandler(CoreHandler):
     def is_latest_analysis_completed(self, case_id: str) -> bool:
         """Check if the latest analysis is completed for a case_id"""
         latest_analysis = self.analyses(case_id=case_id).first()
-        return bool(latest_analysis and latest_analysis.status == COMPLETED_STATUS)
+        return bool(latest_analysis and latest_analysis.status == TrailblazerStatus.COMPLETED)
 
     def has_latest_analysis_started(self, case_id: str) -> bool:
         """Check if analysis has started"""

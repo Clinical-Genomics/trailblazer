@@ -1,7 +1,6 @@
 from enum import Enum
 from typing import Dict
 
-COMPLETED_STATUS = "completed"
 FAILED_STATUS = "failed"
 ONGOING_STATUSES = ("pending", "running", "error", "completing")
 ONE_MONTH_IN_DAYS: int = 31
