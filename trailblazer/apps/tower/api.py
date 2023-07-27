@@ -15,6 +15,7 @@ from trailblazer.apps.tower.models import (
     TowerWorkflowResponse,
 )
 from trailblazer.constants import TOWER_STATUS, TrailblazerStatus
+from trailblazer.exc import TrailblazerError
 
 LOG = logging.getLogger(__name__)
 
@@ -87,8 +88,8 @@ class TowerApiClient:
                 LOG.info(f"POST request failed for url {url}\n with message {str(response)}")
                 response.raise_for_status()
         except (MissingSchema, HTTPError, ConnectionError) as error:
-            LOG.info("Request failed for url %s: Error: %s\n", url, error)
-            return {}
+            LOG.error("Request failed for url %s: Error: %s\n", url, error)
+            raise TrailblazerError
         return response.json()
 
     @property
