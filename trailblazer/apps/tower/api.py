@@ -80,7 +80,9 @@ class TowerApiClient:
         """Send data via POST request and return response."""
         try:
             LOG.info(f"Sending POST request with json data to {url}")
-            response = requests.post(url, headers=self.headers, json=data)
+            response = requests.post(
+                url, headers=self.headers, params=self.request_params, json=data
+            )
             if response.status_code == 404:
                 LOG.info(f"POST request failed for url {url}\n with message {str(response)}")
                 response.raise_for_status()
