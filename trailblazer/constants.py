@@ -1,14 +1,8 @@
 from enum import Enum
 from typing import Dict
 
-ONGOING_STATUSES = ("pending", "running", "error", "completing")
 ONE_MONTH_IN_DAYS: int = 31
 PRIORITY_OPTIONS = ("low", "normal", "high", "express", "maintenance")
-SLURM_ACTIVE_CATEGORIES = ("running", "pending", "completing")
-SLURM_FAILED_CATEGORIES = ("failed", "cancelled", "timeout")
-SLURM_NORMAL_CATEGORIES = ("completed", "running", "pending", "completing")
-JOB_STATUS_OPTIONS = SLURM_NORMAL_CATEGORIES + SLURM_FAILED_CATEGORIES
-STARTED_STATUSES = ["completed", "failed", "pending", "running", "error", "completing"]
 TYPES = ("other", "rna", "tgs", "wes", "wgs", "wts")
 
 
@@ -77,3 +71,16 @@ TOWER_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 TOWER_TIMESTAMP_FORMAT_ALTERNATIVE = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 STATUS_OPTIONS = tuple(TrailblazerStatus.list())
+SLURM_ACTIVE_CATEGORIES = (
+    TrailblazerStatus.PENDING,
+    TrailblazerStatus.RUNNING,
+    TrailblazerStatus.COMPLETING,
+)
+ONGOING_STATUSES = (*SLURM_ACTIVE_CATEGORIES, TrailblazerStatus.ERROR)
+
+STARTED_STATUSES = ["completed", "failed", "pending", "running", "error", "completing"]
+
+
+SLURM_FAILED_CATEGORIES = ("failed", "cancelled", "timeout")
+SLURM_NORMAL_CATEGORIES = ("completed", "running", "pending", "completing")
+JOB_STATUS_OPTIONS = SLURM_NORMAL_CATEGORIES + SLURM_FAILED_CATEGORIES
