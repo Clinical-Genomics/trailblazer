@@ -38,7 +38,6 @@ class ReadHandler(BaseHandler_2):
             analyses=self.get_query(table=Analysis),
             analysis_id=analysis_id,
         ).first()
-        return self.Analysis.query.get(analysis_id)
 
     def get_user(
         self,
