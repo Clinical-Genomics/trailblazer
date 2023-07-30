@@ -53,9 +53,9 @@ class TrailblazerStatus(Enum):
 
 
 TOWER_STATUS: Dict[str, str] = {
-    "ABORTED": TrailblazerStatus.CANCELLED.value,
+    "ABORTED": TrailblazerStatus.FAILED.value,
     "CACHED": TrailblazerStatus.COMPLETED.value,
-    "CANCELLED": TrailblazerStatus.CANCELLED.value,
+    "CANCELLED": TrailblazerStatus.FAILED.value,
     "COMPLETED": TrailblazerStatus.COMPLETED.value,
     "FAILED": TrailblazerStatus.FAILED.value,
     "NEW": TrailblazerStatus.PENDING.value,
