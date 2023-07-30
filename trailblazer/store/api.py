@@ -230,7 +230,7 @@ class BaseHandler(CoreHandler):
             ).decode("utf-8")
 
     def update_ongoing_analyses(self, ssh: bool = False) -> None:
-        """Iterate over all analysis with ongoing status and query SLURM for current progress"""
+        """Iterate over all analysis with ongoing status and query SLURM for current progress."""
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
             try:
@@ -266,14 +266,11 @@ class BaseHandler(CoreHandler):
             )
             LOG.info(f"Status in SLURM: {analysis.family} - {analysis_id}")
             LOG.debug(squeue_result.jobs)
-            analysis.progress = float(
-                squeue_result.jobs_status_distribution.get(SlurmJobStatus.COMPLETED, 0.0)
+            analysis.progress = squeue_result.jobs_status_distribution.get(
+                SlurmJobStatus.COMPLETED, 0.0
             )
-            analysis.status = (
-                get_current_analysis_status(
-                    jobs_status_distribution=squeue_result.jobs_status_distribution
-                )
-                or analysis.status
+            analysis.status = get_current_analysis_status(
+                jobs_status_distribution=squeue_result.jobs_status_distribution
             )
             LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
             self.commit()
@@ -283,7 +280,7 @@ class BaseHandler(CoreHandler):
             LOG.error(
                 f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"
             )
-            analysis.status = TrailblazerStatus.ERROR.value
+            analysis.status = TrailblazerStatus.ERROR
             self.commit()
 
     @staticmethod

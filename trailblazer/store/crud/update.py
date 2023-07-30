@@ -14,7 +14,7 @@ class UpdateHandler(BaseHandler_2):
         return new_user
 
     def update_user_is_archived(self, user: User, archive: bool = True) -> None:
-        """Update is archived fpr a user in the database."""
+        """Update is archived for a user in the database."""
         user.is_archived = archive
         self.commit()
 

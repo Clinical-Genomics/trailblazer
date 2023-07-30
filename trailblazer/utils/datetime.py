@@ -10,12 +10,12 @@ from trailblazer.constants import (
 )
 
 
-def convert_days_to_min(days_nr: int) -> int:
+def convert_days_to_minutes(days_nr: int) -> int:
     """Converts number of days to minutes."""
     return days_nr * HOURS_IN_DAY * MINUTES_PER_HOUR
 
 
-def convert_timestamp_to_min(timestamp: datetime) -> int:
+def convert_timestamp_to_minutes(timestamp: datetime) -> int:
     """Converts timestamp to minutes."""
     zero_seconds: datetime = datetime.strptime("0:0:0", "%H:%M:%S")
     return int((timestamp - zero_seconds).total_seconds() / SECONDS_PER_MINUTE)

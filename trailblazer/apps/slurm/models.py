@@ -7,8 +7,8 @@ from pydantic import BaseModel, Field, validator
 from trailblazer.constants import SlurmJobStatus, SlurmSqueueHeader
 from trailblazer.exc import MissingSqueueOutput
 from trailblazer.utils.datetime import (
-    convert_days_to_min,
-    convert_timestamp_to_min,
+    convert_days_to_minutes,
+    convert_timestamp_to_minutes,
     get_datetime_from_timestamp,
 )
 
@@ -29,7 +29,7 @@ class SqueueJob(BaseModel):
         return value.lower()
 
     @validator("time_elapsed", always=True, pre=True)
-    def convert_time_elapsed_to_min(cls, value: str) -> int:
+    def convert_time_elapsed_to_minutes(cls, value: str) -> int:
         """Convert squeue timestamp string into minutes."""
         raw_time_elapsed: str = value
         if not raw_time_elapsed or not isinstance(raw_time_elapsed, str):
@@ -42,7 +42,7 @@ class SqueueJob(BaseModel):
         time_elapsed: datetime = get_datetime_from_timestamp(
             timestamp=raw_timestamp, datetime_formats=["%M:%S", "%H:%M:%S"]
         )
-        return convert_timestamp_to_min(timestamp=time_elapsed) + convert_days_to_min(
+        return convert_timestamp_to_minutes(timestamp=time_elapsed) + convert_days_to_minutes(
             days_nr=day_nr
         )
 
