@@ -68,7 +68,7 @@ def analyses():
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])
 def analysis(analysis_id):
     """Display a single analysis."""
-    analysis_obj = store.analysis(analysis_id)
+    analysis_obj = store.get_analysis_with_id(analysis_id=analysis_id)
     if analysis_obj is None:
         return abort(404)
 
