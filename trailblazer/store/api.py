@@ -9,18 +9,17 @@ import alchy
 import sqlalchemy as sqa
 from alchy import Query
 
-from trailblazer.apps.slurm.api import get_squeue_result, get_current_analysis_status
+from trailblazer.apps.slurm.api import get_current_analysis_status, get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import (
     ONGOING_STATUSES,
     SLURM_ACTIVE_CATEGORIES,
-    STARTED_STATUSES,
     STATUS_OPTIONS,
     FileFormat,
+    SlurmJobStatus,
     TrailblazerStatus,
     WorkflowManager,
-    SlurmJobStatus,
 )
 from trailblazer.exc import TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
@@ -117,11 +116,6 @@ class BaseHandler(CoreHandler):
         """Check if the latest analysis is completed for a case_id"""
         latest_analysis = self.analyses(case_id=case_id).first()
         return bool(latest_analysis and latest_analysis.status == TrailblazerStatus.COMPLETED)
-
-    def has_latest_analysis_started(self, case_id: str) -> bool:
-        """Check if analysis has started"""
-        latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
-        return latest_analysis_status in STARTED_STATUSES
 
     def mark_analyses_deleted(self, case_id: str) -> Query:
         """mark analyses connected to a case as deleted"""
