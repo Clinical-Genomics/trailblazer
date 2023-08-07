@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
 
 from trailblazer.constants import (
@@ -34,3 +34,8 @@ def tower_datetime_converter(timestamp: str) -> datetime:
     """Converts a NF Tower timestamp into a datatime object."""
     allowed_formats = [TOWER_TIMESTAMP_FORMAT, TOWER_TIMESTAMP_FORMAT_ALTERNATIVE]
     return get_datetime_from_timestamp(timestamp, allowed_formats)
+
+
+def get_date_days_ago(days_ago: int) -> datetime:
+    """Return the date that was number of 'days_ago'."""
+    return datetime.now() - timedelta(days=days_ago)

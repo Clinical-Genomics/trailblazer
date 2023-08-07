@@ -10,7 +10,7 @@ from google.auth import jwt
 from trailblazer.constants import TrailblazerStatus, ONE_MONTH_IN_DAYS
 from trailblazer.server.ext import store
 from trailblazer.store.models import Info, User, Analysis
-from trailblazer.utils.date import get_date_days_ago
+from trailblazer.utils.datetime import get_date_days_ago
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
