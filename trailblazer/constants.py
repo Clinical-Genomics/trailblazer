@@ -108,11 +108,16 @@ TOWER_TIMESTAMP_FORMAT_ALTERNATIVE = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 STATUS_OPTIONS = tuple(TrailblazerStatus.list())
 SLURM_ACTIVE_CATEGORIES = (
+    SlurmJobStatus.PENDING,
+    SlurmJobStatus.RUNNING,
+    SlurmJobStatus.COMPLETING,
+)
+ONGOING_STATUSES = (
     TrailblazerStatus.PENDING,
     TrailblazerStatus.RUNNING,
     TrailblazerStatus.COMPLETING,
+    TrailblazerStatus.ERROR,
 )
-ONGOING_STATUSES = (*SLURM_ACTIVE_CATEGORIES, TrailblazerStatus.ERROR)
 
 
 SLURM_FAILED_CATEGORIES = ("failed", "cancelled", "timeout")
