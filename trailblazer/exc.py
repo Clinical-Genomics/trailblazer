@@ -22,6 +22,10 @@ class TowerError(Exception):
         return f"TowerError: {self.message}"
 
 
+class MissingSqueueOutput(TrailblazerError):
+    """Raised when squeue results sre missing."""
+
+
 class TowerRequirementsError(TowerError):
     """Raised when Tower requirements are not satisfied."""
 

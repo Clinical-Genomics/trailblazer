@@ -7,7 +7,6 @@ SQLAlchemy<1.4
 marshmallow
 tabulate
 python-dateutil
-pandas
 requests
 
 # server
@@ -24,4 +23,4 @@ gunicorn
 pymysql
 python-dateutil
 cryptography
-pydantic
+pydantic==1.10.9

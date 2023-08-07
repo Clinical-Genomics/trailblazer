@@ -86,7 +86,7 @@ class TowerTask(BaseModel):
     @property
     def is_complete(cls) -> bool:
         """Returns if the process succeded."""
-        return cls.status == TrailblazerStatus.COMPLETED.value
+        return cls.status == TrailblazerStatus.COMPLETED
 
 
 class TowerProcess(BaseModel):
@@ -124,14 +124,14 @@ class TowerProcess(BaseModel):
     @property
     def is_complete(cls) -> bool:
         """Returns if the process succeded."""
-        return cls.status == TrailblazerStatus.COMPLETED.value
+        return cls.status == TrailblazerStatus.COMPLETED
 
     @property
     def status(cls) -> str:
         for status_flag in TOWER_PROCESS_STATUS.keys():
             if cls.dict().get(status_flag, 0):
                 return TOWER_PROCESS_STATUS.get(status_flag)
-        return TrailblazerStatus.ERROR.value
+        return TrailblazerStatus.ERROR
 
 
 class TowerWorkflow(BaseModel):

@@ -19,3 +19,10 @@ def fixture_example_json_path(fixtures_dir: Path) -> Path:
 def fixture_example_yaml_path(io_dir: Path) -> Path:
     """Return the path to a example YAML file."""
     return Path(io_dir, "example_yaml.yaml")
+
+
+@pytest.fixture(name="csv_stream", scope="session")
+def fixture_csv_stream() -> str:
+    """Return string with CSV format."""
+    return """Lorem,ipsum,sit,amet
+value_1,value_2,value_3,value_4"""

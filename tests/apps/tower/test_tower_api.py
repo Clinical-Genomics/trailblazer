@@ -12,9 +12,9 @@ from trailblazer.constants import TrailblazerStatus
 @pytest.mark.parametrize(
     "response_file, expected_status",
     [
-        (TowerResponseFile.PENDING, TrailblazerStatus.PENDING.value),
-        (TowerResponseFile.RUNNING, TrailblazerStatus.RUNNING.value),
-        (TowerResponseFile.COMPLETED, TrailblazerStatus.QC.value),
+        (TowerResponseFile.PENDING, TrailblazerStatus.PENDING),
+        (TowerResponseFile.RUNNING, TrailblazerStatus.RUNNING),
+        (TowerResponseFile.COMPLETED, TrailblazerStatus.QC),
     ],
 )
 def test_tower_api_status(tower_id: str, response_file: Path, expected_status: str) -> None:
@@ -161,7 +161,7 @@ def test_tower_task_properties(
     # THEN properties should be returned
     assert tower_task.process == tower_task_name
     assert tower_task.nativeId == slurm_id
-    assert tower_task.status == TrailblazerStatus.COMPLETED.value
+    assert tower_task.status == TrailblazerStatus.COMPLETED
     assert tower_task.dateCreated == created_at
     assert tower_task.lastUpdated == last_updated
     assert tower_task.start == started_at
