@@ -220,14 +220,14 @@ def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], ca
     analysis: Analysis = analysis_store.get_latest_analysis(case_id=case_id)
     assert not analysis.failed_jobs
 
+    # WHEN analysis jobs are deleted
+    analysis_store.delete_analysis_jobs(analysis=analysis)
+
+    # THEN analysis object should have no failed jobs
+    assert not analysis.failed_jobs
+
     # WHEN jobs are updated
-    analysis_store.update_jobs(analysis=analysis, jobs=tower_jobs)
-
-    # THEN analysis object should have failed jobs
-    assert len(analysis.failed_jobs) == 3
-
-    # WHEN jobs are updated a second time
-    analysis_store.update_jobs(analysis=analysis, jobs=tower_jobs[:2])
+    analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
 
     # THEN failed jobs should be updated
     assert len(analysis.failed_jobs) == 2
