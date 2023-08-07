@@ -27,14 +27,13 @@ from trailblazer.constants import (
 from trailblazer.exc import TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.core import CoreHandler
-from trailblazer.store.models import Analysis, Job, Model
+from trailblazer.store.models import Analysis, Model
 
 LOG = logging.getLogger(__name__)
 
 
 class BaseHandler(CoreHandler):
     Analysis = Analysis
-    Job = Job
 
     def setup(self):
         self.create_all()
