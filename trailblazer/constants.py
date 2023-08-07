@@ -114,8 +114,6 @@ SLURM_ACTIVE_CATEGORIES = (
 )
 ONGOING_STATUSES = (*SLURM_ACTIVE_CATEGORIES, TrailblazerStatus.ERROR)
 
-STARTED_STATUSES = ["completed", "failed", "pending", "running", "error", "completing"]
-
 
 SLURM_FAILED_CATEGORIES = ("failed", "cancelled", "timeout")
 SLURM_NORMAL_CATEGORIES = ("completed", "running", "pending", "completing")
