@@ -1,3 +1,5 @@
+import logging
+
 from datetime import datetime, timedelta
 from typing import List
 
@@ -8,6 +10,9 @@ from trailblazer.constants import (
     HOURS_IN_DAY,
     SECONDS_PER_MINUTE,
 )
+
+
+LOG = logging.getLogger(__name__)
 
 
 def convert_days_to_minutes(days_nr: int) -> int:
@@ -26,7 +31,8 @@ def get_datetime_from_timestamp(timestamp: str, datetime_formats: List[str]) -> 
     for datetime_format in datetime_formats:
         try:
             return datetime.strptime(timestamp, datetime_format)
-        except ValueError:
+        except ValueError as error:
+            LOG.error(f"Error converting timestamp: {error}")
             continue
 
 

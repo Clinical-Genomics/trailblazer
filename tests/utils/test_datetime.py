@@ -6,6 +6,7 @@ from trailblazer.utils.datetime import (
     get_date_days_ago,
     convert_days_to_minutes,
     convert_timestamp_to_minutes,
+    get_datetime_from_timestamp,
 )
 
 NUMBER_OF_MINUTES_IN_TWO_DAYS: int = 2880
@@ -24,7 +25,7 @@ def test_convert_days_to_minutes(nr_of_days: int, expected_minutes: int):
     # WHEN calling the function
     minutes: int = convert_days_to_minutes(days_nr=nr_of_days)
 
-    # THEN assert the return is number of minutes corresponding to the number of days
+    # THEN the return is number of minutes corresponding to the number of days
     assert minutes == expected_minutes
 
 
@@ -43,8 +44,34 @@ def test_convert_timestamp_to_minutes(timestamp: datetime, expected_minutes: int
     # WHEN calling the function
     minutes: int = convert_timestamp_to_minutes(timestamp=timestamp)
 
-    # THEN assert the return is number of minutes corresponding to timestamp
+    # THEN the return is number of minutes corresponding to timestamp
     assert minutes == expected_minutes
+
+
+def test_get_datetime_from_timestamp():
+    """Test returning a datetime object from a timestamp."""
+
+    # GIVEN a timestamp
+
+    # WHEN calling the function
+    date: datetime = get_datetime_from_timestamp(
+        timestamp="23:59:59", datetime_formats=["%H:%M:%S"]
+    )
+
+    # THEN the return should be a datetime object
+    assert isinstance(date, datetime)
+
+
+def test_get_datetime_from_timestamp_with_invalid_timestamp(caplog):
+    """Test returning a datetime object from a timestamp, which is invalid."""
+
+    # GIVEN a timestamp
+
+    # WHEN calling the function
+    get_datetime_from_timestamp(timestamp="not a timestamp", datetime_formats=["%H:%M:%S"])
+
+    # THEN log the error
+    assert "Error converting timestamp" in caplog.text
 
 
 def test_get_date_days_ago(timestamp_now: datetime):
@@ -55,7 +82,7 @@ def test_get_date_days_ago(timestamp_now: datetime):
     # WHEN calling the function
     date: datetime = get_date_days_ago(days_ago=1)
 
-    # THEN assert the return should be a date
+    # THEN the return should be a date
     assert isinstance(date, datetime)
 
     # Then the date returned should be less than then today
