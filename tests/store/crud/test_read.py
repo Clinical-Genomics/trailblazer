@@ -3,8 +3,32 @@ from typing import List, Dict, Union
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.store.models import User
+from trailblazer.store.models import User, Analysis
 from tests.store.utils.store_helper import StoreHelpers
+
+
+def test_get_analysis_with_id(analysis_store: MockStore):
+    """Test getting an analysis when it exists in the database."""
+    # GIVEN a store with an analysis
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # WHEN accessing it by ID
+    analysis: Analysis = analysis_store.get_analysis_with_id(analysis_id=existing_analysis.id)
+
+    # THEN it should return the same analysis
+    assert analysis == existing_analysis
+
+
+def test_get_analysis_with_id_when_missing(analysis_store: MockStore):
+    """Test getting an analysis when it does not exist in the database."""
+    # GIVEN an id that doesn't exist
+    missing_analysis_id = 12312423534
+
+    # WHEN accessing the analysis
+    analysis: Analysis = analysis_store.get_analysis_with_id(analysis_id=missing_analysis_id)
+
+    # THEN it should return None
+    assert not analysis
 
 
 def test_get_nr_jobs_with_status_per_category(job_store: MockStore, timestamp_yesterday: datetime):

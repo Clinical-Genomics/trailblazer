@@ -3,8 +3,9 @@ from typing import Callable, List, Dict, Union, Optional
 
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.filters.job_filters import JobFilter, apply_job_filter
+from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
-from trailblazer.store.models import User, Job
+from trailblazer.store.models import Job, User, Analysis
 
 
 class ReadHandler(BaseHandler_2):
@@ -29,6 +30,14 @@ class ReadHandler(BaseHandler_2):
         )
         categories = categories.group_by(Job.name).all()
         return [{"name": category.name, "count": category.count} for category in categories]
+
+    def get_analysis_with_id(self, analysis_id: int) -> Optional[Analysis]:
+        """Get a single analysis by id."""
+        return apply_analysis_filter(
+            filter_functions=[AnalysisFilter.FILTER_BY_ID],
+            analyses=self.get_query(table=Analysis),
+            analysis_id=analysis_id,
+        ).first()
 
     def get_user(
         self,

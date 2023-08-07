@@ -96,12 +96,6 @@ class BaseHandler(CoreHandler):
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def analysis(self, analysis_id: int) -> Optional[Analysis]:
-        """
-        used by REST
-        Get a single analysis by id."""
-        return self.Analysis.query.get(analysis_id)
-
     def get_latest_analysis(self, case_id: str) -> Optional[Analysis]:
         return self.analyses(case_id=case_id).first()
 
@@ -142,10 +136,10 @@ class BaseHandler(CoreHandler):
 
     def set_analysis_completed(self, analysis_id: int) -> None:
         """Set an analysis status to completed."""
-        analysis_obj = self.analysis(analysis_id=analysis_id)
-        analysis_obj.status = "completed"
+        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
+        analysis.status = TrailblazerStatus.COMPLETED
         self.commit()
-        LOG.info(f"{analysis_obj.family} - status set to COMPLETED")
+        LOG.info(f"{analysis.family} - status set to {TrailblazerStatus.COMPLETED}")
 
     def set_analysis_uploaded(self, case_id: str, uploaded_at: dt.datetime) -> None:
         """Setting analysis uploaded at."""
@@ -175,16 +169,16 @@ class BaseHandler(CoreHandler):
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis output."""
-        analysis_obj = self.analysis(analysis_id=analysis_id)
-        if not analysis_obj:
+        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
+        if not analysis:
             raise TrailblazerError("Analysis not found")
 
-        if not force and analysis_obj.status in ONGOING_STATUSES:
+        if not force and analysis.status in ONGOING_STATUSES:
             raise TrailblazerError(
-                f"Analysis for {analysis_obj.family} is currently running! Use --force flag to delete anyway."
+                f"Analysis for {analysis.family} is currently running! Use --force flag to delete anyway."
             )
-        LOG.info(f"Deleting analysis {analysis_id} for case {analysis_obj.family}")
-        analysis_obj.delete()
+        LOG.info(f"Deleting analysis {analysis_id} for case {analysis.family}")
+        analysis.delete()
         self.commit()
 
     @staticmethod
@@ -242,7 +236,7 @@ class BaseHandler(CoreHandler):
 
     def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
-        analysis: Analysis = self.analysis(analysis_id)
+        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
             LOG.warning(f"Analysis {analysis_id} not found!")
             return
@@ -253,8 +247,7 @@ class BaseHandler(CoreHandler):
 
     def update_analysis_from_slurm_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query slurm for entries related to given analysis, and update the analysis in the database."""
-        analysis: Analysis = self.analysis(analysis_id)
-
+        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
         try:
             squeue_result: SqueueResult = get_squeue_result(
                 squeue_response=self.query_slurm(
@@ -297,7 +290,7 @@ class BaseHandler(CoreHandler):
 
     def update_tower_run_status(self, analysis_id: int) -> None:
         """Query tower for entries related to given analysis, and update the Trailblazer database."""
-        analysis: Analysis = self.analysis(analysis_id)
+        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
         tower_api: TowerAPI = self.query_tower(
             config_file=analysis.config_path, case_id=analysis.family
         )
@@ -317,7 +310,7 @@ class BaseHandler(CoreHandler):
             LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
         except Exception as error:
             LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
-            analysis.status: str = TrailblazerStatus.ERROR.value
+            analysis.status: str = TrailblazerStatus.ERROR
             self.commit()
 
     @staticmethod
@@ -332,23 +325,23 @@ class BaseHandler(CoreHandler):
 
     def cancel_analysis(self, analysis_id: int, email: str = None, ssh: bool = False) -> None:
         """Cancel all ongoing slurm jobs associated with the analysis, and set job status to canceled"""
-        analysis_obj = self.analysis(analysis_id=analysis_id)
-        if not analysis_obj:
+        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
+        if not analysis:
             raise TrailblazerError(f"Analysis {analysis_id} does not exist")
 
-        if analysis_obj.status not in ONGOING_STATUSES:
+        if analysis.status not in ONGOING_STATUSES:
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
 
-        for job_obj in analysis_obj.failed_jobs:
+        for job_obj in analysis.failed_jobs:
             if job_obj.status in SLURM_ACTIVE_CATEGORIES:
                 LOG.info(f"Cancelling job {job_obj.slurm_id} - {job_obj.name}")
                 self.cancel_slurm_job(job_obj.slurm_id, ssh=ssh)
         LOG.info(
-            f"Case {analysis_obj.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
+            f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )
         self.update_run_status(analysis_id=analysis_id)
-        analysis_obj.status = "canceled"
-        analysis_obj.comment = (
+        analysis.status = TrailblazerStatus.CANCELLED
+        analysis.comment = (
             f"Analysis cancelled manually by user:"
             f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
         )
