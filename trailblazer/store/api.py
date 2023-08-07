@@ -1,17 +1,16 @@
 """Store backend in Trailblazer."""
 import datetime as dt
-import io
 import logging
 import subprocess
 from pathlib import Path
 from typing import Any, List, Optional
 
 import alchy
-import pandas as pd
 import sqlalchemy as sqa
 from alchy import Query
-from dateutil.parser import parse as parse_datestr
 
+from trailblazer.apps.slurm.api import get_squeue_result, get_current_analysis_status
+from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import (
     ONGOING_STATUSES,
@@ -21,12 +20,12 @@ from trailblazer.constants import (
     FileFormat,
     TrailblazerStatus,
     WorkflowManager,
+    SlurmJobStatus,
 )
-from trailblazer.exc import EmptySqueueError, TowerRequirementsError, TrailblazerError
+from trailblazer.exc import TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.core import CoreHandler
 from trailblazer.store.models import Analysis, Job, Model
-from trailblazer.store.utils import formatters
 
 LOG = logging.getLogger(__name__)
 
@@ -95,12 +94,6 @@ class BaseHandler(CoreHandler):
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def analysis(self, analysis_id: int) -> Optional[Analysis]:
-        """
-        used by REST
-        Get a single analysis by id."""
-        return self.Analysis.query.get(analysis_id)
-
     def get_latest_analysis(self, case_id: str) -> Optional[Analysis]:
         return self.analyses(case_id=case_id).first()
 
@@ -141,10 +134,10 @@ class BaseHandler(CoreHandler):
 
     def set_analysis_completed(self, analysis_id: int) -> None:
         """Set an analysis status to completed."""
-        analysis_obj = self.analysis(analysis_id=analysis_id)
-        analysis_obj.status = "completed"
+        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
+        analysis.status = TrailblazerStatus.COMPLETED
         self.commit()
-        LOG.info(f"{analysis_obj.family} - status set to COMPLETED")
+        LOG.info(f"{analysis.family} - status set to {TrailblazerStatus.COMPLETED}")
 
     def set_analysis_uploaded(self, case_id: str, uploaded_at: dt.datetime) -> None:
         """Setting analysis uploaded at."""
@@ -174,16 +167,16 @@ class BaseHandler(CoreHandler):
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis output."""
-        analysis_obj = self.analysis(analysis_id=analysis_id)
-        if not analysis_obj:
+        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
+        if not analysis:
             raise TrailblazerError("Analysis not found")
 
-        if not force and analysis_obj.status in ONGOING_STATUSES:
+        if not force and analysis.status in ONGOING_STATUSES:
             raise TrailblazerError(
-                f"Analysis for {analysis_obj.family} is currently running! Use --force flag to delete anyway."
+                f"Analysis for {analysis.family} is currently running! Use --force flag to delete anyway."
             )
-        LOG.info(f"Deleting analysis {analysis_id} for case {analysis_obj.family}")
-        analysis_obj.delete()
+        LOG.info(f"Deleting analysis {analysis_id} for case {analysis.family}")
+        analysis.delete()
         self.commit()
 
     @staticmethod
@@ -206,13 +199,13 @@ class BaseHandler(CoreHandler):
                         "squeue",
                         "-j",
                         job_ids_string,
-                        "-h",
                         "--states=all",
                         "-o",
                         "%A,%j,%T,%l,%M,%S",
                     ],
                     universal_newlines=True,
                 )
+                .decode("utf-8")
                 .strip()
                 .replace("//n", "/n")
             )
@@ -222,87 +215,14 @@ class BaseHandler(CoreHandler):
                     "squeue",
                     "-j",
                     job_ids_string,
-                    "-h",
                     "--states=all",
                     "-o",
                     "%A,%j,%T,%l,%M,%S",
                 ]
-            )
-
-    @staticmethod
-    def get_time_elapsed_in_min(elapsed_string: Optional[str]) -> Optional[int]:
-        """Parse SLURM elapsed time string into minutes"""
-        if not elapsed_string or not isinstance(elapsed_string, str):
-            return 0
-        days = 0
-        if "-" in elapsed_string:
-            days = int(elapsed_string.split("-")[0])
-            elapsed_string = elapsed_string.split("-")[1]
-        split_timestamp = elapsed_string.split(":")
-        if len(split_timestamp) < 3:
-            split_timestamp = list("0" * (3 - len(split_timestamp))) + split_timestamp
-        return int(
-            (parse_datestr(":".join(split_timestamp)) - parse_datestr("0:0:0")).seconds / 60
-            + days * 24 * 60
-        )
-
-    @staticmethod
-    def parse_squeue_to_df(squeue_response: Any, ssh: bool) -> pd.DataFrame:
-        """Reads queue response into a pandas dataframe for easy parsing.
-        Raises:
-            TrailblazerError: when no entries were returned by squeue command"""
-        if not squeue_response:
-            raise EmptySqueueError("No jobs found in SLURM registry")
-        if ssh:
-            parsed_df = pd.read_csv(
-                io.StringIO(squeue_response),
-                sep=",",
-                header=None,
-                na_values=["nan", "N/A", "None"],
-                names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
-            )
-        else:
-            parsed_df = pd.read_csv(
-                io.BytesIO(squeue_response),
-                sep=",",
-                header=None,
-                na_values=["nan", "N/A", "None"],
-                names=["id", "step", "status", "time_limit", "time_elapsed", "started"],
-            )
-        parsed_df["time_elapsed"] = parsed_df["time_elapsed"].apply(
-            lambda x: Store.get_time_elapsed_in_min(x)
-        )
-        return parsed_df
-
-    def update_slurm_jobs(self, analysis_obj: Analysis, jobs_dataframe: pd.DataFrame) -> None:
-        """Parses job dataframe and creates job objects"""
-        if len(jobs_dataframe) == 0:
-            return
-        formatter_func = formatters.formatter_map.get(
-            analysis_obj.data_analysis, formatters.transform_undefined
-        )
-        jobs_dataframe["step"] = jobs_dataframe["step"].apply(lambda x: formatter_func(x))
-
-        for job_obj in analysis_obj.failed_jobs:
-            job_obj.delete()
-        self.commit()
-        analysis_obj.failed_jobs = [
-            self.Job(
-                analysis_id=analysis_obj.id,
-                slurm_id=val.get("id"),
-                name=val.get("step"),
-                status=val.get("status").lower(),
-                started_at=parse_datestr(val.get("started"))
-                if isinstance(val.get("started"), str)
-                else None,
-                elapsed=val.get("time_elapsed"),
-            )
-            for ind, val in jobs_dataframe.iterrows()
-        ]
-        self.commit()
+            ).decode("utf-8")
 
     def update_ongoing_analyses(self, ssh: bool = False) -> None:
-        """Iterate over all analysis with ongoing status and query SLURM for current progress"""
+        """Iterate over all analysis with ongoing status and query SLURM for current progress."""
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
             try:
@@ -314,61 +234,44 @@ class BaseHandler(CoreHandler):
 
     def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
-        analysis: Analysis = self.analysis(analysis_id)
+        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
             LOG.warning(f"Analysis {analysis_id} not found!")
             return
         if analysis.workflow_manager == WorkflowManager.TOWER.value:
             self.update_tower_run_status(analysis_id=analysis_id)
         elif analysis.workflow_manager == WorkflowManager.SLURM.value:
-            self.update_slurm_run_status(analysis_id=analysis_id, ssh=ssh)
+            self.update_analysis_from_slurm_run_status(analysis_id=analysis_id, ssh=ssh)
 
-    def update_slurm_run_status(self, analysis_id: int, ssh: bool = False) -> None:
-        """Query slurm for entries related to given analysis, and update the Trailblazer database"""
-        analysis: Analysis = self.analysis(analysis_id)
+    def update_analysis_from_slurm_run_status(self, analysis_id: int, ssh: bool = False) -> None:
+        """Query slurm for entries related to given analysis, and update the analysis in the database."""
+        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
         try:
-            jobs_dataframe = self.parse_squeue_to_df(
+            squeue_result: SqueueResult = get_squeue_result(
                 squeue_response=self.query_slurm(
                     job_id_file=analysis.config_path, case_id=analysis.family, ssh=ssh
-                ),
-                ssh=ssh,
+                )
             )
-            self.update_slurm_jobs(analysis_obj=analysis, jobs_dataframe=jobs_dataframe)
-
-            status_distribution = round(
-                jobs_dataframe.status.value_counts() / len(jobs_dataframe), 2
+            self.update_analysis_jobs_from_slurm_jobs(
+                analysis=analysis, squeue_result=squeue_result
             )
-
             LOG.info(f"Status in SLURM: {analysis.family} - {analysis_id}")
-            LOG.info(jobs_dataframe)
-            analysis.progress = float(status_distribution.get("COMPLETED", 0.0))
-            if status_distribution.get("FAILED") or status_distribution.get("TIMEOUT"):
-                if status_distribution.get("RUNNING") or status_distribution.get("PENDING"):
-                    analysis.status = TrailblazerStatus.ERROR.value
-                else:
-                    analysis.status = TrailblazerStatus.FAILED.value
-
-            elif status_distribution.get("COMPLETED") == 1:
-                analysis.status = TrailblazerStatus.COMPLETED.value
-
-            elif status_distribution.get("PENDING") == 1:
-                analysis.status = TrailblazerStatus.PENDING.value
-
-            elif status_distribution.get("RUNNING"):
-                analysis.status = TrailblazerStatus.RUNNING.value
-
-            elif status_distribution.get("CANCELLED") and not (
-                status_distribution.get("RUNNING") or status_distribution.get("PENDING")
-            ):
-                analysis.status = TrailblazerStatus.CANCELLED.value
-
+            LOG.debug(squeue_result.jobs)
+            analysis.progress = squeue_result.jobs_status_distribution.get(
+                SlurmJobStatus.COMPLETED, 0.0
+            )
+            analysis.status = get_current_analysis_status(
+                jobs_status_distribution=squeue_result.jobs_status_distribution
+            )
             LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
             self.commit()
 
             analysis.logged_at = dt.datetime.now()
-        except Exception as e:
-            LOG.error(f"Error logging case - {analysis.family} : {e.__class__.__name__}")
-            analysis.status = "error"
+        except Exception as exception:
+            LOG.error(
+                f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"
+            )
+            analysis.status = TrailblazerStatus.ERROR
             self.commit()
 
     @staticmethod
@@ -385,7 +288,7 @@ class BaseHandler(CoreHandler):
 
     def update_tower_run_status(self, analysis_id: int) -> None:
         """Query tower for entries related to given analysis, and update the Trailblazer database."""
-        analysis: Analysis = self.analysis(analysis_id)
+        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
         tower_api: TowerAPI = self.query_tower(
             config_file=analysis.config_path, case_id=analysis.family
         )
@@ -402,7 +305,7 @@ class BaseHandler(CoreHandler):
             LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
         except Exception as error:
             LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
-            analysis.status: str = TrailblazerStatus.ERROR.value
+            analysis.status: str = TrailblazerStatus.ERROR
             self.commit()
 
     def update_jobs(self, analysis: Analysis, jobs: List[dict]) -> None:
@@ -424,23 +327,23 @@ class BaseHandler(CoreHandler):
 
     def cancel_analysis(self, analysis_id: int, email: str = None, ssh: bool = False) -> None:
         """Cancel all ongoing slurm jobs associated with the analysis, and set job status to canceled"""
-        analysis_obj = self.analysis(analysis_id=analysis_id)
-        if not analysis_obj:
+        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
+        if not analysis:
             raise TrailblazerError(f"Analysis {analysis_id} does not exist")
 
-        if analysis_obj.status not in ONGOING_STATUSES:
+        if analysis.status not in ONGOING_STATUSES:
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
 
-        for job_obj in analysis_obj.failed_jobs:
+        for job_obj in analysis.failed_jobs:
             if job_obj.status in SLURM_ACTIVE_CATEGORIES:
                 LOG.info(f"Cancelling job {job_obj.slurm_id} - {job_obj.name}")
                 self.cancel_slurm_job(job_obj.slurm_id, ssh=ssh)
         LOG.info(
-            f"Case {analysis_obj.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
+            f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )
         self.update_run_status(analysis_id=analysis_id)
-        analysis_obj.status = "canceled"
-        analysis_obj.comment = (
+        analysis.status = TrailblazerStatus.CANCELLED
+        analysis.comment = (
             f"Analysis cancelled manually by user:"
             f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
         )

@@ -18,24 +18,22 @@ def test_setup_db(store: MockStore):
     assert store.engine.table_names()
 
 
-def test_analysis(analysis_store: MockStore):
-    # GIVEN a store with an analysis
-    existing_analysis = analysis_store.analyses().first()
+def test_update_analysis_from_slurm_run_status(analysis_store: MockStore, squeue_stream_jobs: str):
+    """Test updating analysis jobs when given squeue results."""
+    # GIVEN an analysis and a squeue stream
+    analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+    assert not analysis.failed_jobs
 
-    # WHEN accessing it by ID
-    analysis_obj = analysis_store.analysis(existing_analysis.id)
+    # WHEN updating the analysis
+    analysis_store.update_analysis_from_slurm_run_status(analysis_id=analysis.id)
+    updated_analysis: Analysis = analysis_store.get_analysis(
+        case_id=analysis.family,
+        started_at=analysis.started_at,
+        status=TrailblazerStatus.RUNNING,
+    )
 
-    # THEN it should return the same analysis
-    assert analysis_obj == existing_analysis
-
-    # GIVEN an id that doesn't exist
-    missing_analysis_id = 12312423534
-
-    # WHEN accessing the analysis
-    analysis_obj = analysis_store.analysis(missing_analysis_id)
-
-    # THEN it should return None
-    assert analysis_obj is None
+    # THEN it should update the analysis jobs
+    assert updated_analysis.failed_jobs
 
 
 @pytest.mark.parametrize(
@@ -238,9 +236,9 @@ def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], ca
 @pytest.mark.parametrize(
     "case_id, status, progress",
     [
-        (CaseIDs.RUNNING, TrailblazerStatus.RUNNING.value, 0.15),
-        (CaseIDs.PENDING, TrailblazerStatus.PENDING.value, 0),
-        (CaseIDs.COMPLETED, TrailblazerStatus.QC.value, 1),
+        (CaseIDs.RUNNING, TrailblazerStatus.RUNNING, 0.15),
+        (CaseIDs.PENDING, TrailblazerStatus.PENDING, 0),
+        (CaseIDs.COMPLETED, TrailblazerStatus.QC, 1),
     ],
 )
 def test_update_tower_run_status(
@@ -250,7 +248,7 @@ def test_update_tower_run_status(
 
     # GIVEN an analysis with pending status
     analysis: Analysis = analysis_store.get_latest_analysis(case_id=case_id)
-    assert analysis.status == TrailblazerStatus.PENDING.value
+    assert analysis.status == TrailblazerStatus.PENDING
 
     # WHEN database is updated once
     analysis_store.update_run_status(analysis_id=analysis.id)

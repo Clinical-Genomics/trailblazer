@@ -68,7 +68,7 @@ def analyses():
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])
 def analysis(analysis_id):
     """Display a single analysis."""
-    analysis_obj = store.analysis(analysis_id)
+    analysis_obj = store.get_analysis_with_id(analysis_id=analysis_id)
     if analysis_obj is None:
         return abort(404)
 
@@ -102,7 +102,7 @@ def aggregate_jobs():
         days_ago=int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
     )
     failed_jobs: List[Dict[str, Union[str, int]]] = store.get_nr_jobs_with_status_per_category(
-        status=TrailblazerStatus.FAILED.value, since_when=time_window
+        status=TrailblazerStatus.FAILED, since_when=time_window
     )
     return jsonify(jobs=failed_jobs)
 

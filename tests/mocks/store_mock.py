@@ -1,7 +1,9 @@
 import subprocess
+from pathlib import Path
 
 from tests.apps.tower.conftest import TOWER_ID, CaseIDs, TowerResponseFile, TowerTaskResponseFile
 from tests.mocks.tower_mock import MockTowerAPI
+from trailblazer.constants import FileExtension
 from trailblazer.store.api import Store
 
 
@@ -9,23 +11,45 @@ class MockStore(Store):
     """Instance of Store that mimics workflow manager outputs and interactions."""
 
     @staticmethod
-    def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> bytes:
+    def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> str:
         """Mock SLURM output."""
         slurm_dict = {
-            "blazinginsect": "tests/fixtures/sacct/blazinginsect_sacct",  # running
-            "crackpanda": "tests/fixtures/sacct/crackpanda_sacct",  # failed
-            "daringpidgeon": "tests/fixtures/sacct/daringpidgeon_sacct",  # failed
-            "emptydinosaur": "tests/fixtures/sacct/emptydinosaur_sacct",  # failed
-            "escapedgoat": "tests/fixtures/sacct/escapegoat_sacct",  # pending
-            "fancymole": "tests/fixtures/sacct/fancymole_sacct",  # completed
-            "happycow": "tests/fixtures/sacct/happycow_sacct",  # pending
-            "lateraligator": "tests/fixtures/sacct/lateraligator_sacct",  # failed
-            "liberatedunicorn": "tests/fixtures/sacct/liberatedunicorn_sacct",  # error
-            "nicemice": "tests/fixtures/sacct/nicemice_sacct",  # completed
-            "rarekitten": "tests/fixtures/sacct/rarekitten_sacct",  # canceled
-            "trueferret": "tests/fixtures/sacct/trueferret_sacct",  # running
+            "blazinginsect": Path(
+                "tests", "fixtures", "squeue", "blazinginsect_squeue" + FileExtension.CSV
+            ).as_posix(),
+            "crackpanda": Path(
+                "tests", "fixtures", "squeue", "crackpanda_squeue" + FileExtension.CSV
+            ).as_posix(),
+            "cuddlyhen": Path(
+                "tests", "fixtures", "squeue", "cuddlyhen_squeue" + FileExtension.CSV
+            ).as_posix(),
+            "daringpidgeon": Path(
+                "tests", "fixtures", "squeue", "daringpidgeon_squeue" + FileExtension.CSV
+            ).as_posix(),
+            "escapedgoat": Path(
+                "tests", "fixtures", "squeue", "escapegoat_squeue" + FileExtension.CSV
+            ).as_posix(),
+            "fancymole": Path(
+                "tests", "fixtures", "squeue", "fancymole_squeue" + FileExtension.CSV
+            ).as_posix(),
+            "happycow": Path(
+                "tests", "fixtures", "squeue", "happycow_squeue" + FileExtension.CSV
+            ).as_posix(),
+            "lateraligator": Path(
+                "tests", "fixtures", "squeue", "lateraligator_squeue" + FileExtension.CSV
+            ).as_posix(),
+            "nicemice": Path(
+                "tests", "fixtures", "squeue", "nicemice_squeue" + FileExtension.CSV
+            ).as_posix(),
+            "rarekitten": Path(
+                "tests", "fixtures", "squeue", "rarekitten_squeue" + FileExtension.CSV
+            ).as_posix(),
+            "trueferret": Path(
+                "tests", "fixtures", "squeue", "trueferret_squeue" + FileExtension.CSV
+            ).as_posix(),
         }
-        return subprocess.check_output(["cat", slurm_dict.get(case_id)])
+
+        return subprocess.check_output(["cat", slurm_dict.get(case_id)]).decode("utf-8")
 
     @staticmethod
     def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
