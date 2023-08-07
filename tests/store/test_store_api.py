@@ -38,6 +38,24 @@ def test_analysis(analysis_store: MockStore):
     assert analysis_obj is None
 
 
+def test_update_analysis_from_slurm_run_status(analysis_store: MockStore, squeue_stream_jobs: str):
+    """Test updating analysis jobs when given squeue results."""
+    # GIVEN an analysis and a squeue stream
+    analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+    assert not analysis.failed_jobs
+
+    # WHEN updating the analysis
+    analysis_store.update_analysis_from_slurm_run_status(analysis_id=analysis.id)
+    updated_analysis: Analysis = analysis_store.get_analysis(
+        case_id=analysis.family,
+        started_at=analysis.started_at,
+        status=TrailblazerStatus.RUNNING,
+    )
+
+    # THEN it should update the analysis jobs
+    assert updated_analysis.failed_jobs
+
+
 @pytest.mark.parametrize(
     "family, expected_bool",
     [
@@ -238,9 +256,9 @@ def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], ca
 @pytest.mark.parametrize(
     "case_id, status, progress",
     [
-        (CaseIDs.RUNNING, TrailblazerStatus.RUNNING.value, 0.15),
-        (CaseIDs.PENDING, TrailblazerStatus.PENDING.value, 0),
-        (CaseIDs.COMPLETED, TrailblazerStatus.QC.value, 1),
+        (CaseIDs.RUNNING, TrailblazerStatus.RUNNING, 0.15),
+        (CaseIDs.PENDING, TrailblazerStatus.PENDING, 0),
+        (CaseIDs.COMPLETED, TrailblazerStatus.QC, 1),
     ],
 )
 def test_update_tower_run_status(
@@ -250,7 +268,7 @@ def test_update_tower_run_status(
 
     # GIVEN an analysis with pending status
     analysis: Analysis = analysis_store.get_latest_analysis(case_id=case_id)
-    assert analysis.status == TrailblazerStatus.PENDING.value
+    assert analysis.status == TrailblazerStatus.PENDING
 
     # WHEN database is updated once
     analysis_store.update_run_status(analysis_id=analysis.id)

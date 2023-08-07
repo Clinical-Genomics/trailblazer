@@ -44,11 +44,11 @@ def test_filter_jobs_by_status(job_store: MockStore):
 
     # WHEN retrieving a job by status
     jobs: Query = filter_jobs_by_status(
-        jobs=job_store.get_query(table=Job), status=TrailblazerStatus.COMPLETED.value
+        jobs=job_store.get_query(table=Job), status=TrailblazerStatus.COMPLETED
     )
 
     # ASSERT that the jobs is a query
     assert isinstance(jobs, Query)
 
     # THEN the jobs attribute status should match the original
-    assert jobs[0].status == TrailblazerStatus.COMPLETED.value
+    assert jobs[0].status == TrailblazerStatus.COMPLETED

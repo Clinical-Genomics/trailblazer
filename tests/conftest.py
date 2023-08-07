@@ -54,6 +54,17 @@ def fixture_analysis_data(analysis_data_path: Path) -> Dict[str, list]:
     return ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=analysis_data_path)
 
 
+@pytest.fixture(scope="session", name="squeue_stream_jobs")
+def fixture_squeue_stream_jobs() -> str:
+    """Return a squeue output stream."""
+    return """JOBID,NAME,STATE,TIME_LIMIT,TIME,START_TIME
+690994,gatk_genotypegvcfs2,COMPLETED,10:00:00,1:01:52,2020-10-22T11:43:33
+702463,bwa_mem_ACC3218A1,COMPLETED,1-06:00:00,1-1:28:12,2020-10-27T23:06:34
+690992,gatk_genotypegvcfs3,COMPLETED,10:00:00,5:54,2020-10-22T11:43:02
+690988,gatk_genotypegvcfs4,RUNNING,10:00:00,0:19,N/A
+690989,gatk_genotypegvcfs5,PENDING,10:00:00,0:00,N/A"""
+
+
 @pytest.fixture(name="trailblazer_tmp_dir")
 def fixture_trailblazer_tmp_dir(tmpdir_factory) -> Path:
     """Return a temporary directory for Trailblazer testing."""
@@ -87,7 +98,7 @@ def fixture_job_store(
     store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A Trailblazer database wih a populated job table."""
-    statuses: List[str] = [TrailblazerStatus.COMPLETED.value, TrailblazerStatus.FAILED.value]
+    statuses: List[str] = [TrailblazerStatus.COMPLETED, TrailblazerStatus.FAILED]
     for index, status in enumerate(statuses):
         StoreHelpers.add_job(
             analysis_id=index, name=str(index), slurm_id=index, status=status, store=store
@@ -164,7 +175,7 @@ def fixture_tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> Li
             name=tower_task_name,
             started_at=started_at,
             elapsed=63,
-            status=TrailblazerStatus.COMPLETED.value,
+            status=TrailblazerStatus.COMPLETED,
         ),
         dict(
             analysis_id=analysis_id,
@@ -172,7 +183,7 @@ def fixture_tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> Li
             name="NFCORE_RNAFUSION:RNAFUSION:PIZZLY_WORKFLOW:KALLISTO_QUANT",
             started_at=None,
             elapsed=0,
-            status=TrailblazerStatus.PENDING.value,
+            status=TrailblazerStatus.PENDING,
         ),
         dict(
             analysis_id=analysis_id,

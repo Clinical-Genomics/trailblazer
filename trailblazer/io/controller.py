@@ -1,7 +1,8 @@
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, Callable
 
 from trailblazer.constants import FileFormat
+from trailblazer.io.csv import read_csv_stream
 from trailblazer.io.json import read_json
 from trailblazer.io.yaml import read_yaml
 
@@ -18,3 +19,16 @@ class ReadFile:
     def get_content_from_file(cls, file_format: str, file_path: Path) -> Any:
         """Read file using file format dispatch table."""
         return cls.read_file[file_format](file_path=file_path)
+
+
+class ReadStream:
+    """Reading stream using different methods."""
+
+    read_stream: Dict[str, Callable] = {
+        FileFormat.CSV: read_csv_stream,
+    }
+
+    @classmethod
+    def get_content_from_stream(cls, file_format: str, stream: Any, **kwargs) -> Any:
+        """Read stream using file format dispatch table."""
+        return cls.read_stream[file_format](stream=stream, **kwargs)
