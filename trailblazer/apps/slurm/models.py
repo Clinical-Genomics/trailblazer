@@ -64,7 +64,7 @@ class SqueueResult(BaseModel):
     def set_jobs_status_distribution(
         cls, _: Optional[List[SqueueJob]], values: Dict[str, Any]
     ) -> Optional[Dict[str, float]]:
-        """ "Set the fraction for each status present in the squeue jobs.
+        """Set the fraction for each status present in the squeue jobs.
         Example {PENDING:0.33, RUNNING:0.33, FAILED: 0.33}."""
         jobs: List[SqueueJob] = values["jobs"]
         if not jobs:
