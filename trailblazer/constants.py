@@ -6,6 +6,8 @@ HOURS_IN_DAY: int = 24
 MINUTES_PER_HOUR: int = 60
 SECONDS_PER_MINUTE: int = 60
 PRIORITY_OPTIONS = ("low", "normal", "high", "express", "maintenance")
+TOWER_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+TOWER_TIMESTAMP_FORMAT_ALTERNATIVE = "%Y-%m-%dT%H:%M:%S.%fZ"
 TYPES = ("other", "rna", "tgs", "wes", "wgs", "wts")
 
 
@@ -107,9 +109,6 @@ TOWER_PROCESS_STATUS: Dict[str, str] = {
     "failed": TrailblazerStatus.FAILED,
 }
 
-TOWER_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
-TOWER_TIMESTAMP_FORMAT_ALTERNATIVE = "%Y-%m-%dT%H:%M:%S.%fZ"
-
 STATUS_OPTIONS = tuple(TrailblazerStatus.list())
 ONGOING_STATUSES = (
     TrailblazerStatus.PENDING,
@@ -117,11 +116,9 @@ ONGOING_STATUSES = (
     TrailblazerStatus.COMPLETING,
     TrailblazerStatus.ERROR,
 )
-
+JOB_STATUS_OPTIONS = tuple(SlurmJobStatus.list())
 SLURM_ACTIVE_CATEGORIES = (
     SlurmJobStatus.PENDING,
     SlurmJobStatus.RUNNING,
     SlurmJobStatus.COMPLETING,
 )
-
-JOB_STATUS_OPTIONS = tuple(SlurmJobStatus.list())
