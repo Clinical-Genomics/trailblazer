@@ -62,6 +62,10 @@ class SlurmJobStatus(str, Enum):
     RUNNING: str = "running"
     TIME_OUT: str = "timeout"
 
+    @classmethod
+    def list(cls):
+        return [status.value for status in cls]
+
 
 class TrailblazerStatus(str, Enum):
     """Trailblazer allowed status."""
@@ -107,11 +111,6 @@ TOWER_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 TOWER_TIMESTAMP_FORMAT_ALTERNATIVE = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 STATUS_OPTIONS = tuple(TrailblazerStatus.list())
-SLURM_ACTIVE_CATEGORIES = (
-    SlurmJobStatus.PENDING,
-    SlurmJobStatus.RUNNING,
-    SlurmJobStatus.COMPLETING,
-)
 ONGOING_STATUSES = (
     TrailblazerStatus.PENDING,
     TrailblazerStatus.RUNNING,
@@ -119,7 +118,10 @@ ONGOING_STATUSES = (
     TrailblazerStatus.ERROR,
 )
 
+SLURM_ACTIVE_CATEGORIES = (
+    SlurmJobStatus.PENDING,
+    SlurmJobStatus.RUNNING,
+    SlurmJobStatus.COMPLETING,
+)
 
-SLURM_FAILED_CATEGORIES = ("failed", "cancelled", "timeout")
-SLURM_NORMAL_CATEGORIES = ("completed", "running", "pending", "completing")
-JOB_STATUS_OPTIONS = SLURM_NORMAL_CATEGORIES + SLURM_FAILED_CATEGORIES
+JOB_STATUS_OPTIONS = tuple(SlurmJobStatus.list())
