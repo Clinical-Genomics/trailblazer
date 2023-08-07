@@ -59,6 +59,7 @@ class SlurmJobStatus(str, Enum):
 
     CANCELLED: str = "cancelled"
     COMPLETED: str = "completed"
+    COMPLETING: str = "completing"
     FAILED: str = "failed"
     PENDING: str = "pending"
     RUNNING: str = "running"
