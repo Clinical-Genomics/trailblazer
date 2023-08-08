@@ -31,6 +31,6 @@ def get_datetime_from_timestamp(timestamp: str, datetime_formats: List[str]) -> 
 
 
 def tower_datetime_converter(timestamp: str) -> datetime:
-    """Converts a NF Tower timestamp into a datatime object."""
+    """Converts a NF Tower timestamp into a datetime object."""
     allowed_formats = [TOWER_TIMESTAMP_FORMAT, TOWER_TIMESTAMP_FORMAT_EXTENDED]
     return get_datetime_from_timestamp(timestamp, allowed_formats)

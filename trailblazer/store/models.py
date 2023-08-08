@@ -82,7 +82,7 @@ class Analysis(Model):
 
     @property
     def has_ongoing_status(self):
-        """Check if the log has an ongoing status: 'running|'pending'"""
+        """Check if the log has an ongoing status."""
         return self.status in TrailblazerStatus.ongoing_statuses()
 
 
