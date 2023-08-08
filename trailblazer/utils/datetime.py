@@ -1,4 +1,6 @@
-from datetime import datetime
+import logging
+
+from datetime import datetime, timedelta
 from typing import List
 
 from trailblazer.constants import (
@@ -8,6 +10,9 @@ from trailblazer.constants import (
     HOURS_IN_DAY,
     SECONDS_PER_MINUTE,
 )
+
+
+LOG = logging.getLogger(__name__)
 
 
 def convert_days_to_minutes(days_nr: int) -> int:
@@ -26,7 +31,8 @@ def get_datetime_from_timestamp(timestamp: str, datetime_formats: List[str]) -> 
     for datetime_format in datetime_formats:
         try:
             return datetime.strptime(timestamp, datetime_format)
-        except ValueError:
+        except ValueError as error:
+            LOG.error(f"Error converting timestamp: {error}")
             continue
 
 
@@ -34,3 +40,8 @@ def tower_datetime_converter(timestamp: str) -> datetime:
     """Converts a NF Tower timestamp into a datatime object."""
     allowed_formats = [TOWER_TIMESTAMP_FORMAT, TOWER_TIMESTAMP_FORMAT_ALTERNATIVE]
     return get_datetime_from_timestamp(timestamp, allowed_formats)
+
+
+def get_date_number_of_days_ago(number_of_days_ago: int) -> datetime:
+    """Return the date that was number of 'days_ago'."""
+    return datetime.now() - timedelta(days=number_of_days_ago)
