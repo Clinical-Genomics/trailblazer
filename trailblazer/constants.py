@@ -7,7 +7,7 @@ MINUTES_PER_HOUR: int = 60
 SECONDS_PER_MINUTE: int = 60
 PRIORITY_OPTIONS = ("low", "normal", "high", "express", "maintenance")
 TOWER_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
-TOWER_TIMESTAMP_FORMAT_ALTERNATIVE = "%Y-%m-%dT%H:%M:%S.%fZ"
+TOWER_TIMESTAMP_FORMAT_EXTENDED = "%Y-%m-%dT%H:%M:%S.%fZ"
 TYPES = ("other", "rna", "tgs", "wes", "wgs", "wts")
 
 
