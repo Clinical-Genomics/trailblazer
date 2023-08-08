@@ -4,7 +4,6 @@ import alchy
 from sqlalchemy import Column, ForeignKey, UniqueConstraint, orm, types
 
 from trailblazer.constants import (
-    ONGOING_STATUSES,
     PRIORITY_OPTIONS,
     TYPES,
     SlurmJobStatus,
@@ -84,7 +83,7 @@ class Analysis(Model):
     @property
     def has_ongoing_status(self):
         """Check if the log has an ongoing status: 'running|'pending'"""
-        return self.status in ONGOING_STATUSES
+        return self.status in TrailblazerStatus.ongoing_statuses()
 
 
 class Job(Model):

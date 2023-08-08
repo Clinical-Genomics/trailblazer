@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 ONE_MONTH_IN_DAYS: int = 31
 HOURS_IN_DAY: int = 24
@@ -30,12 +30,12 @@ class WorkflowManager(Enum):
     TOWER: str = "nf_tower"
 
     @classmethod
-    def list(cls):
+    def list(cls) -> List:
         return [task.value for task in cls]
 
 
 class Pipeline(str, Enum):
-    """Analysis pipeline names"""
+    """Analysis pipeline names."""
 
     BALSAMIC: str = "BALSAMIC"
     MIP_DNA: str = "MIP-DNA"
@@ -66,8 +66,12 @@ class SlurmJobStatus(str, Enum):
     TIME_OUT: str = "timeout"
 
     @classmethod
-    def statuses(cls):
+    def statuses(cls) -> Tuple:
         return tuple(status.value for status in cls)
+
+    @classmethod
+    def ongoing_statuses(cls) -> Tuple:
+        return cls.PENDING.value, cls.RUNNING.value, cls.COMPLETING.value
 
 
 class TrailblazerStatus(str, Enum):
@@ -83,8 +87,12 @@ class TrailblazerStatus(str, Enum):
     QC: str = "qc"
 
     @classmethod
-    def statuses(cls):
+    def statuses(cls) -> Tuple:
         return tuple(status.value for status in cls)
+
+    @classmethod
+    def ongoing_statuses(cls) -> Tuple:
+        return cls.PENDING.value, cls.RUNNING.value, cls.COMPLETING.value, cls.ERROR.value
 
 
 TOWER_STATUS: Dict[str, str] = {
@@ -109,15 +117,3 @@ TOWER_PROCESS_STATUS: Dict[str, str] = {
     "succeeded": TrailblazerStatus.COMPLETED,
     "failed": TrailblazerStatus.FAILED,
 }
-
-ONGOING_STATUSES: Tuple = (
-    TrailblazerStatus.PENDING,
-    TrailblazerStatus.RUNNING,
-    TrailblazerStatus.COMPLETING,
-    TrailblazerStatus.ERROR,
-)
-SLURM_ACTIVE_CATEGORIES: Tuple = (
-    SlurmJobStatus.PENDING,
-    SlurmJobStatus.RUNNING,
-    SlurmJobStatus.COMPLETING,
-)
