@@ -110,13 +110,13 @@ TOWER_PROCESS_STATUS: Dict[str, str] = {
     "failed": TrailblazerStatus.FAILED,
 }
 
-ONGOING_STATUSES = (
+ONGOING_STATUSES: Tuple = (
     TrailblazerStatus.PENDING,
     TrailblazerStatus.RUNNING,
     TrailblazerStatus.COMPLETING,
     TrailblazerStatus.ERROR,
 )
-SLURM_ACTIVE_CATEGORIES = (
+SLURM_ACTIVE_CATEGORIES: Tuple = (
     SlurmJobStatus.PENDING,
     SlurmJobStatus.RUNNING,
     SlurmJobStatus.COMPLETING,
