@@ -9,11 +9,11 @@ from dateutil.parser import parse as parse_date
 
 import trailblazer
 from trailblazer.cli.utils.user_helper import is_existing_user, is_user_archived
-from trailblazer.constants import FileFormat
+from trailblazer.constants import FileFormat, TrailblazerStatus
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.api import Store
-from trailblazer.store.models import STATUS_OPTIONS, User
+from trailblazer.store.models import User
 
 LOG = logging.getLogger(__name__)
 LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
@@ -190,7 +190,7 @@ def set_analysis_completed(context, analysis_id):
     "--status",
     is_flag=False,
     type=str,
-    help=f"Status to be set. Can take the values:{STATUS_OPTIONS}",
+    help=f"Status to be set. Can take the values:{TrailblazerStatus.statuses()}",
 )
 @click.argument("case_id", type=str)
 @click.pass_context
@@ -227,7 +227,10 @@ def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
 
 @base.command("ls")
 @click.option(
-    "-s", "--status", type=click.Choice(STATUS_OPTIONS), help="Find analysis with specified status"
+    "-s",
+    "--status",
+    type=click.Choice(TrailblazerStatus.statuses()),
+    help="Find analysis with specified status",
 )
 @click.option("-b", "--before", help="Find analyses started before date")
 @click.option("-c", "--comment", help="Find analysis with comment")

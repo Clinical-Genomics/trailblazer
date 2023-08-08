@@ -1,20 +1,14 @@
 from enum import Enum
-from typing import Dict
+from typing import Dict, List, Tuple
 
-COMPLETED_STATUS = "completed"
-FAILED_STATUS = "failed"
+ONE_MONTH_IN_DAYS: int = 31
 HOURS_IN_DAY: int = 24
 MINUTES_PER_HOUR: int = 60
-ONGOING_STATUSES = ("pending", "running", "error", "completing")
-ONE_MONTH_IN_DAYS: int = 31
-PRIORITY_OPTIONS = ("low", "normal", "high", "express", "maintenance")
 SECONDS_PER_MINUTE: int = 60
-SLURM_ACTIVE_CATEGORIES = ("running", "pending", "completing")
-SLURM_FAILED_CATEGORIES = ("failed", "cancelled", "timeout")
-SLURM_NORMAL_CATEGORIES = ("completed", "running", "pending", "completing")
-JOB_STATUS_OPTIONS = SLURM_NORMAL_CATEGORIES + SLURM_FAILED_CATEGORIES
-STARTED_STATUSES = ["completed", "failed", "pending", "running", "error", "completing"]
-TYPES = ("other", "rna", "tgs", "wes", "wgs", "wts")
+PRIORITY_OPTIONS: Tuple = ("low", "normal", "high", "express", "maintenance")
+TOWER_TIMESTAMP_FORMAT: str = "%Y-%m-%dT%H:%M:%SZ"
+TOWER_TIMESTAMP_FORMAT_EXTENDED: str = "%Y-%m-%dT%H:%M:%S.%fZ"
+TYPES: Tuple = ("other", "rna", "tgs", "wes", "wgs", "wts")
 
 
 class FileFormat(str, Enum):
@@ -36,12 +30,12 @@ class WorkflowManager(Enum):
     TOWER: str = "nf_tower"
 
     @classmethod
-    def list(cls):
+    def list(cls) -> List:
         return [task.value for task in cls]
 
 
 class Pipeline(str, Enum):
-    """Analysis pipeline names"""
+    """Analysis pipeline names."""
 
     BALSAMIC: str = "BALSAMIC"
     MIP_DNA: str = "MIP-DNA"
@@ -65,10 +59,19 @@ class SlurmJobStatus(str, Enum):
 
     CANCELLED: str = "cancelled"
     COMPLETED: str = "completed"
+    COMPLETING: str = "completing"
     FAILED: str = "failed"
     PENDING: str = "pending"
     RUNNING: str = "running"
     TIME_OUT: str = "timeout"
+
+    @classmethod
+    def statuses(cls) -> Tuple:
+        return tuple(status.value for status in cls)
+
+    @classmethod
+    def ongoing_statuses(cls) -> Tuple:
+        return cls.PENDING.value, cls.RUNNING.value, cls.COMPLETING.value
 
 
 class TrailblazerStatus(str, Enum):
@@ -84,8 +87,12 @@ class TrailblazerStatus(str, Enum):
     QC: str = "qc"
 
     @classmethod
-    def list(cls):
-        return [status.value for status in cls]
+    def statuses(cls) -> Tuple:
+        return tuple(status.value for status in cls)
+
+    @classmethod
+    def ongoing_statuses(cls) -> Tuple:
+        return cls.PENDING.value, cls.RUNNING.value, cls.COMPLETING.value, cls.ERROR.value
 
 
 TOWER_STATUS: Dict[str, str] = {
@@ -110,8 +117,3 @@ TOWER_PROCESS_STATUS: Dict[str, str] = {
     "succeeded": TrailblazerStatus.COMPLETED,
     "failed": TrailblazerStatus.FAILED,
 }
-
-TOWER_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
-TOWER_TIMESTAMP_FORMAT_ALTERNATIVE = "%Y-%m-%dT%H:%M:%S.%fZ"
-
-STATUS_OPTIONS = tuple(TrailblazerStatus.list())
