@@ -2,7 +2,7 @@ from datetime import datetime
 
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.base import BaseHandler_2
-from trailblazer.store.models import Analysis
+from trailblazer.store.models import Analysis, User
 
 
 class CreateHandler(BaseHandler_2):
@@ -36,3 +36,9 @@ class CreateHandler(BaseHandler_2):
         new_analysis.user = self.get_user(email=email) if email else None
         self.add_commit(new_analysis)
         return new_analysis
+
+    def add_user(self, name: str, email: str) -> User:
+        """Add a new user to the database."""
+        new_user: User = User(email=email, name=name)
+        self.add_commit(new_user)
+        return new_user
