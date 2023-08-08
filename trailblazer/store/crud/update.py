@@ -31,11 +31,9 @@ class UpdateHandler(BaseHandler_2):
                 data_analysis=analysis.data_analysis, job_step=job.step
             )
 
-        for job_obj in analysis.failed_jobs:
-            job_obj.delete()
-        self.commit()
+        self.delete_analysis_jobs(analysis=analysis)
         analysis.failed_jobs = [
-            self.Job(
+            Job(
                 analysis_id=analysis.id,
                 slurm_id=job.id,
                 name=job.step,
