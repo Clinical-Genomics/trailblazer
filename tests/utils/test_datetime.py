@@ -3,7 +3,7 @@ import pytest
 from datetime import datetime
 
 from trailblazer.utils.datetime import (
-    get_date_days_ago,
+    get_date_number_of_days_ago,
     convert_days_to_minutes,
     convert_timestamp_to_minutes,
     get_datetime_from_timestamp,
@@ -74,13 +74,13 @@ def test_get_datetime_from_timestamp_with_invalid_timestamp(caplog):
     assert "Error converting timestamp" in caplog.text
 
 
-def test_get_date_days_ago(timestamp_now: datetime):
+def test_get_date_number_of_days_ago(timestamp_now: datetime):
     """Test returning a date corresponding to number of days ago."""
 
     # GIVEN days ago
 
     # WHEN calling the function
-    date: datetime = get_date_days_ago(days_ago=1)
+    date: datetime = get_date_number_of_days_ago(number_of_days_ago=1)
 
     # THEN the return should be a date
     assert isinstance(date, datetime)

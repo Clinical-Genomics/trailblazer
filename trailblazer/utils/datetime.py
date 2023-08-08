@@ -42,6 +42,6 @@ def tower_datetime_converter(timestamp: str) -> datetime:
     return get_datetime_from_timestamp(timestamp, allowed_formats)
 
 
-def get_date_days_ago(days_ago: int) -> datetime:
+def get_date_number_of_days_ago(number_of_days_ago: int) -> datetime:
     """Return the date that was number of 'days_ago'."""
-    return datetime.now() - timedelta(days=days_ago)
+    return datetime.now() - timedelta(days=number_of_days_ago)
