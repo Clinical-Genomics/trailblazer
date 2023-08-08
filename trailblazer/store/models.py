@@ -4,11 +4,11 @@ import alchy
 from sqlalchemy import Column, ForeignKey, UniqueConstraint, orm, types
 
 from trailblazer.constants import (
-    JOB_STATUS_OPTIONS,
     ONGOING_STATUSES,
     PRIORITY_OPTIONS,
-    STATUS_OPTIONS,
     TYPES,
+    SlurmJobStatus,
+    TrailblazerStatus,
     WorkflowManager,
 )
 
@@ -62,7 +62,7 @@ class Analysis(Model):
     logged_at = Column(types.DateTime, default=datetime.datetime.now)
     started_at = Column(types.DateTime)
     completed_at = Column(types.DateTime)
-    status = Column(types.Enum(*STATUS_OPTIONS))
+    status = Column(types.Enum(*TrailblazerStatus.statuses()))
     priority = Column(types.Enum(*PRIORITY_OPTIONS))
     out_dir = Column(types.Text)
     config_path = Column(types.Text)
@@ -99,4 +99,4 @@ class Job(Model):
     context = Column(types.String(64))
     started_at = Column(types.DateTime)
     elapsed = Column(types.Integer)
-    status = Column(types.Enum(*JOB_STATUS_OPTIONS))
+    status = Column(types.Enum(*SlurmJobStatus.statuses()))

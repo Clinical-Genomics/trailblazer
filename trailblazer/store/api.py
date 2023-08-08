@@ -15,7 +15,6 @@ from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import (
     ONGOING_STATUSES,
     SLURM_ACTIVE_CATEGORIES,
-    STATUS_OPTIONS,
     FileFormat,
     SlurmJobStatus,
     TrailblazerStatus,
@@ -142,8 +141,8 @@ class BaseHandler(CoreHandler):
     def set_analysis_status(self, case_id: str, status: str):
         """Setting analysis status."""
         status = status.lower()
-        if status not in set(STATUS_OPTIONS):
-            raise ValueError(f"Invalid status. Allowed values are: {STATUS_OPTIONS}")
+        if status not in set(TrailblazerStatus.statuses()):
+            raise ValueError(f"Invalid status. Allowed values are: {TrailblazerStatus.statuses()}")
         analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
         analysis_obj.status: str = status
         self.commit()

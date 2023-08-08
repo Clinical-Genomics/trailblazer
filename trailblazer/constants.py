@@ -66,8 +66,8 @@ class SlurmJobStatus(str, Enum):
     TIME_OUT: str = "timeout"
 
     @classmethod
-    def list(cls):
-        return [status.value for status in cls]
+    def statuses(cls):
+        return tuple(status.value for status in cls)
 
 
 class TrailblazerStatus(str, Enum):
@@ -83,8 +83,8 @@ class TrailblazerStatus(str, Enum):
     QC: str = "qc"
 
     @classmethod
-    def list(cls):
-        return [status.value for status in cls]
+    def statuses(cls):
+        return tuple(status.value for status in cls)
 
 
 TOWER_STATUS: Dict[str, str] = {
@@ -110,14 +110,12 @@ TOWER_PROCESS_STATUS: Dict[str, str] = {
     "failed": TrailblazerStatus.FAILED,
 }
 
-STATUS_OPTIONS = tuple(TrailblazerStatus.list())
 ONGOING_STATUSES = (
     TrailblazerStatus.PENDING,
     TrailblazerStatus.RUNNING,
     TrailblazerStatus.COMPLETING,
     TrailblazerStatus.ERROR,
 )
-JOB_STATUS_OPTIONS = tuple(SlurmJobStatus.list())
 SLURM_ACTIVE_CATEGORIES = (
     SlurmJobStatus.PENDING,
     SlurmJobStatus.RUNNING,
