@@ -81,8 +81,8 @@ class Analysis(Model):
     failed_jobs = orm.relationship("Job", backref="analysis")
 
     @property
-    def has_ongoing_status(self):
-        """Check if the log has an ongoing status."""
+    def has_ongoing_status(self) -> bool:
+        """Check if analysis status is ongoing."""
         return self.status in TrailblazerStatus.ongoing_statuses()
 
 
