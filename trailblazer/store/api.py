@@ -9,21 +9,10 @@ import alchy
 import sqlalchemy as sqa
 from alchy import Query
 
-from trailblazer.apps.slurm.api import get_squeue_result, get_current_analysis_status
+from trailblazer.apps.slurm.api import get_current_analysis_status, get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.tower.api import TowerAPI
-from trailblazer.constants import (
-    COMPLETED_STATUS,
-    FAILED_STATUS,
-    ONGOING_STATUSES,
-    SLURM_ACTIVE_CATEGORIES,
-    STARTED_STATUSES,
-    STATUS_OPTIONS,
-    FileFormat,
-    TrailblazerStatus,
-    WorkflowManager,
-    SlurmJobStatus,
-)
+from trailblazer.constants import FileFormat, SlurmJobStatus, TrailblazerStatus, WorkflowManager
 from trailblazer.exc import TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.core import CoreHandler
@@ -82,7 +71,9 @@ class BaseHandler(CoreHandler):
         if isinstance(deleted, bool):
             analysis_query = analysis_query.filter_by(is_deleted=deleted)
         if temp:
-            analysis_query = analysis_query.filter(self.Analysis.status.in_(ONGOING_STATUSES))
+            analysis_query = analysis_query.filter(
+                self.Analysis.status.in_(TrailblazerStatus.ongoing_statuses())
+            )
         if before:
             analysis_query = analysis_query.filter(self.Analysis.started_at < before)
         if is_visible is not None:
@@ -108,22 +99,17 @@ class BaseHandler(CoreHandler):
     def is_latest_analysis_ongoing(self, case_id: str) -> bool:
         """Check if the latest analysis is ongoing for a case_id"""
         latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
-        return latest_analysis_status in ONGOING_STATUSES
+        return latest_analysis_status in TrailblazerStatus.ongoing_statuses()
 
     def is_latest_analysis_failed(self, case_id: str) -> bool:
         """Check if the latest analysis is failed for a case_id"""
         latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
-        return latest_analysis_status == FAILED_STATUS
+        return latest_analysis_status == TrailblazerStatus.FAILED
 
     def is_latest_analysis_completed(self, case_id: str) -> bool:
         """Check if the latest analysis is completed for a case_id"""
         latest_analysis = self.analyses(case_id=case_id).first()
-        return bool(latest_analysis and latest_analysis.status == COMPLETED_STATUS)
-
-    def has_latest_analysis_started(self, case_id: str) -> bool:
-        """Check if analysis has started"""
-        latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
-        return latest_analysis_status in STARTED_STATUSES
+        return bool(latest_analysis and latest_analysis.status == TrailblazerStatus.COMPLETED)
 
     def mark_analyses_deleted(self, case_id: str) -> Query:
         """mark analyses connected to a case as deleted"""
@@ -150,8 +136,8 @@ class BaseHandler(CoreHandler):
     def set_analysis_status(self, case_id: str, status: str):
         """Setting analysis status."""
         status = status.lower()
-        if status not in set(STATUS_OPTIONS):
-            raise ValueError(f"Invalid status. Allowed values are: {STATUS_OPTIONS}")
+        if status not in set(TrailblazerStatus.statuses()):
+            raise ValueError(f"Invalid status. Allowed values are: {TrailblazerStatus.statuses()}")
         analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
         analysis_obj.status: str = status
         self.commit()
@@ -173,7 +159,7 @@ class BaseHandler(CoreHandler):
         if not analysis:
             raise TrailblazerError("Analysis not found")
 
-        if not force and analysis.status in ONGOING_STATUSES:
+        if not force and analysis.status in TrailblazerStatus.ongoing_statuses():
             raise TrailblazerError(
                 f"Analysis for {analysis.family} is currently running! Use --force flag to delete anyway."
             )
@@ -329,11 +315,11 @@ class BaseHandler(CoreHandler):
         if not analysis:
             raise TrailblazerError(f"Analysis {analysis_id} does not exist")
 
-        if analysis.status not in ONGOING_STATUSES:
+        if analysis.status not in TrailblazerStatus.ongoing_statuses():
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
 
         for job_obj in analysis.failed_jobs:
-            if job_obj.status in SLURM_ACTIVE_CATEGORIES:
+            if job_obj.status in SlurmJobStatus.ongoing_statuses():
                 LOG.info(f"Cancelling job {job_obj.slurm_id} - {job_obj.name}")
                 self.cancel_slurm_job(job_obj.slurm_id, ssh=ssh)
         LOG.info(

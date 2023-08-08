@@ -4,11 +4,11 @@ from datetime import datetime, timedelta
 from typing import List
 
 from trailblazer.constants import (
-    TOWER_TIMESTAMP_FORMAT,
-    TOWER_TIMESTAMP_FORMAT_ALTERNATIVE,
-    MINUTES_PER_HOUR,
     HOURS_IN_DAY,
+    MINUTES_PER_HOUR,
     SECONDS_PER_MINUTE,
+    TOWER_TIMESTAMP_FORMAT,
+    TOWER_TIMESTAMP_FORMAT_EXTENDED,
 )
 
 
@@ -37,8 +37,8 @@ def get_datetime_from_timestamp(timestamp: str, datetime_formats: List[str]) -> 
 
 
 def tower_datetime_converter(timestamp: str) -> datetime:
-    """Converts a NF Tower timestamp into a datatime object."""
-    allowed_formats = [TOWER_TIMESTAMP_FORMAT, TOWER_TIMESTAMP_FORMAT_ALTERNATIVE]
+    """Converts a NF Tower timestamp into a datetime object."""
+    allowed_formats = [TOWER_TIMESTAMP_FORMAT, TOWER_TIMESTAMP_FORMAT_EXTENDED]
     return get_datetime_from_timestamp(timestamp, allowed_formats)
 
 
