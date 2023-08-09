@@ -1,8 +1,10 @@
+from datetime import datetime
 from typing import Dict
 
 import pytest
-
 import trailblazer
+
+from click.testing import CliRunner
 from tests.mocks.store_mock import MockStore
 from trailblazer.cli.core import (
     archive_user,
@@ -18,6 +20,7 @@ from trailblazer.cli.core import (
     set_analysis_status,
     unarchive_user,
 )
+from trailblazer.store.api import Store
 
 
 def test_base(cli_runner):
@@ -384,17 +387,28 @@ def test_scan(cli_runner, trailblazer_context, caplog):
         ("happycow", "pending"),
     ],
 )
-def test_ls(cli_runner, trailblazer_context, caplog, case_id, status):
+def test_ls(
+    cli_runner: CliRunner,
+    process_exit_success: int,
+    trailblazer_context: Dict[str, MockStore],
+    case_id: str,
+    status: str,
+    timestamp_now: datetime,
+):
+    """Test the Traiblazer ls CLI command using different cases and statuses."""
     # GIVEN populated Trailblazer database with pending analyses
+    trailblazer_db: Store = trailblazer_context["trailblazer"]
 
     # Update analyses to their expected status
-    trailblazer_context["trailblazer"].update_ongoing_analyses()
+    trailblazer_db.update_ongoing_analyses()
 
     # WHEN running ls command while filtering by status
-    result = cli_runner.invoke(ls_cmd, ["--status", status], obj=trailblazer_context)
+    result = cli_runner.invoke(
+        ls_cmd, ["--status", status, "--before", str(timestamp_now.date())], obj=trailblazer_context
+    )
 
     # THEN command runs successfully with provided options
-    assert result.exit_code == 0
+    assert result.exit_code == process_exit_success
 
     # THEN ls print info about cases with that status
     assert case_id in result.output

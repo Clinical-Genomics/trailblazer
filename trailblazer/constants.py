@@ -77,14 +77,14 @@ class SlurmJobStatus(str, Enum):
 class TrailblazerStatus(str, Enum):
     """Trailblazer allowed status."""
 
-    PENDING: str = "pending"
-    RUNNING: str = "running"
-    COMPLETED: str = "completed"
-    FAILED: str = "failed"
-    ERROR: str = "error"
     CANCELLED: str = "canceled"
+    COMPLETED: str = "completed"
     COMPLETING: str = "completing"
+    ERROR: str = "error"
+    FAILED: str = "failed"
+    PENDING: str = "pending"
     QC: str = "qc"
+    RUNNING: str = "running"
 
     @classmethod
     def statuses(cls) -> Tuple:
@@ -93,6 +93,15 @@ class TrailblazerStatus(str, Enum):
     @classmethod
     def ongoing_statuses(cls) -> Tuple:
         return cls.PENDING.value, cls.RUNNING.value, cls.COMPLETING.value, cls.ERROR.value
+
+
+class TrailblazerStatusColor(str, Enum):
+    """Trailblazer status colors."""
+
+    COMPLETED: str = "green"
+    FAILED: str = "red"
+    PENDING: str = "yellow"
+    RUNNING: str = "blue"
 
 
 TOWER_STATUS: Dict[str, str] = {
