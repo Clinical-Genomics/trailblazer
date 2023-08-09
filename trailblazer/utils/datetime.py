@@ -9,7 +9,6 @@ from trailblazer.constants import (
     TOWER_TIMESTAMP_FORMAT,
     TOWER_TIMESTAMP_FORMAT_EXTENDED,
 )
-from trailblazer.exc import ValidationError
 
 LOG = logging.getLogger(__name__)
 
@@ -34,7 +33,6 @@ def get_datetime_from_timestamp(timestamp: str, datetime_formats: List[str]) -> 
             error_message = f"Error converting timestamp: {error}"
             continue
     LOG.error(error_message)
-    raise ValidationError
 
 
 def tower_datetime_converter(timestamp: str) -> datetime:
