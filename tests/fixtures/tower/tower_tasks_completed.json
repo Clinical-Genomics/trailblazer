@@ -6,7 +6,7 @@
         "taskId": 1,
         "status": "COMPLETED",
         "dateCreated": "2023-04-04T08:11:24Z",
-        "lastUpdated": "2023-04-04T08:11:28Z",
+        "lastUpdated": "2023-06-20T08:01:57.661819Z",
         "executor": "slurm",
         "submit": "2023-04-04T08:11:23Z",
         "container": "string",
