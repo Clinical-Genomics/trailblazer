@@ -10,7 +10,7 @@ import coloredlogs
 import trailblazer
 from trailblazer.cli.utils.ls_helper import _get_ls_analysis_message
 from trailblazer.cli.utils.user_helper import is_existing_user, is_user_archived
-from trailblazer.constants import FileFormat, TrailblazerStatus
+from trailblazer.constants import FileFormat, TrailblazerStatus, TRAILBLAZER_TIME_STAMP
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.api import Store
@@ -233,18 +233,19 @@ def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
     type=click.Choice(TrailblazerStatus.statuses()),
     help="Find analysis with specified status",
 )
-@click.option("-b", "--before", help="Find analyses started before date")
-@click.option("-c", "--comment", help="Find analysis with comment")
+@click.option("-b", "--before", type=str, help="Find analyses started before date")
+@click.option("-c", "--comment", type=str, help="Find analysis with comment")
+@click.option("--limit", type=int, help="Limit the number of analysis returned")
 @click.pass_context
-def ls_cmd(context, before: str, status: TrailblazerStatus, comment: str):
+def ls_cmd(context, before: str, status: TrailblazerStatus, comment: str, limit: int = 30):
     """Display recent logs for the latest analyses."""
     trailblazer_db: Store = context.obj["trailblazer"]
     analyses: List[Analysis] = trailblazer_db.analyses(
         status=status,
         deleted=False,
-        before=datetime.strptime(before, "%Y-%m-%d").date() if before else None,
+        before=datetime.strptime(before, TRAILBLAZER_TIME_STAMP).date() if before else None,
         comment=comment,
-    ).limit(30)
+    ).limit(limit)
     for analysis in analyses:
         (message, color) = _get_ls_analysis_message(analysis=analysis)
         click.echo(click.style(message, fg=color))

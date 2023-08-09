@@ -6,6 +6,7 @@ HOURS_IN_DAY: int = 24
 MINUTES_PER_HOUR: int = 60
 SECONDS_PER_MINUTE: int = 60
 PRIORITY_OPTIONS: Tuple = ("low", "normal", "high", "express", "maintenance")
+TRAILBLAZER_TIME_STAMP: str = "%Y-%m-%d"
 TOWER_TIMESTAMP_FORMAT: str = "%Y-%m-%dT%H:%M:%SZ"
 TOWER_TIMESTAMP_FORMAT_EXTENDED: str = "%Y-%m-%dT%H:%M:%S.%fZ"
 TYPES: Tuple = ("other", "rna", "tgs", "wes", "wgs", "wts")
@@ -99,6 +100,7 @@ class TrailblazerStatusColor(str, Enum):
     """Trailblazer status colors."""
 
     COMPLETED: str = "green"
+    DEFAULT: str = "white"
     FAILED: str = "red"
     PENDING: str = "yellow"
     RUNNING: str = "blue"

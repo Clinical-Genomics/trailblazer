@@ -1,12 +1,13 @@
 import datetime
 import multiprocessing
 import os
+from http import HTTPStatus
 from typing import Dict, Mapping, List, Union
 
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 
-from trailblazer.constants import TrailblazerStatus, ONE_MONTH_IN_DAYS
+from trailblazer.constants import TrailblazerStatus, ONE_MONTH_IN_DAYS, TRAILBLAZER_TIME_STAMP
 from trailblazer.server.ext import store
 from trailblazer.store.models import Info, User, Analysis
 from trailblazer.utils.datetime import get_date_number_of_days_ago
@@ -167,8 +168,8 @@ def delete(analysis_id):
 def post_query_analyses():
     """Return list of analyses matching the query terms."""
     post_request: Response.json = request.json
-    query_analyses = store.analyses(
-        before=datetime.strptime(post_request.get("before"), "%Y-%m-%d").date()
+    query_analyses: List[Analysis] = store.analyses(
+        before=datetime.strptime(post_request.get("before"), TRAILBLAZER_TIME_STAMP).date()
         if post_request.get("before")
         else None,
         case_id=post_request.get("case_id"),
@@ -183,7 +184,7 @@ def post_query_analyses():
     raw_analyses: List[Dict[str, str]] = [
         stringify_timestamps(analysis_obj.to_dict()) for analysis_obj in query_analyses
     ]
-    return jsonify(*raw_analyses), 200
+    return jsonify(*raw_analyses), HTTPStatus.OK
 
 
 @blueprint.route("/get-latest-analysis", methods=["POST"])
@@ -199,17 +200,17 @@ def post_get_latest_analysis():
 
 @blueprint.route("/find-analysis", methods=["POST"])
 def post_find_analysis():
-    """Find analysis using case_id, date, and status"""
+    """Find analysis using case_id, date, and status."""
     post_request: Response.json = request.json
     analysis: Analysis = store.get_analysis(
         case_id=post_request.get("case_id"),
-        started_at=datetime.strptime(post_request.get("started_at"), "%Y-%m-%d").date(),
+        started_at=datetime.strptime(post_request.get("started_at"), TRAILBLAZER_TIME_STAMP).date(),
         status=post_request.get("status"),
     )
     if analysis:
         raw_analysis: Dict[str, str] = stringify_timestamps(analysis.to_dict())
-        return jsonify(**raw_analysis), 200
-    return jsonify(None), 200
+        return jsonify(**raw_analysis), HTTPStatus.OK
+    return jsonify(None), HTTPStatus.OK
 
 
 @blueprint.route("/delete-analysis", methods=["POST"])
