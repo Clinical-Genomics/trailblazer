@@ -1,5 +1,4 @@
 import logging
-
 from datetime import datetime, timedelta
 from typing import List
 
@@ -10,7 +9,6 @@ from trailblazer.constants import (
     TOWER_TIMESTAMP_FORMAT,
     TOWER_TIMESTAMP_FORMAT_EXTENDED,
 )
-
 
 LOG = logging.getLogger(__name__)
 
@@ -32,8 +30,8 @@ def get_datetime_from_timestamp(timestamp: str, datetime_formats: List[str]) -> 
         try:
             return datetime.strptime(timestamp, datetime_format)
         except ValueError as error:
-            LOG.error(f"Error converting timestamp: {error}")
             continue
+    LOG.error(f"Error converting timestamp: {error}")
 
 
 def tower_datetime_converter(timestamp: str) -> datetime:
