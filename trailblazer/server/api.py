@@ -1,13 +1,13 @@
 import datetime
 import multiprocessing
 import os
+from http import HTTPStatus
 from typing import Dict, Mapping, List, Union
 
-from dateutil.parser import parse as parse_datestr
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 
-from trailblazer.constants import TrailblazerStatus, ONE_MONTH_IN_DAYS
+from trailblazer.constants import TrailblazerStatus, ONE_MONTH_IN_DAYS, TRAILBLAZER_TIME_STAMP
 from trailblazer.server.ext import store
 from trailblazer.store.models import Info, User, Analysis
 from trailblazer.utils.datetime import get_date_number_of_days_ago
@@ -166,21 +166,25 @@ def delete(analysis_id):
 
 @blueprint.route("/query-analyses", methods=["POST"])
 def post_query_analyses():
-    """Return list of analyses matching the query terms"""
-    content = request.json
-    query_analyses = store.analyses(
-        case_id=content.get("case_id"),
-        query=content.get("query"),
-        status=content.get("status"),
-        deleted=content.get("deleted"),
-        temp=content.get("temp"),
-        before=parse_datestr(content.get("before")) if content.get("before") else None,
-        is_visible=content.get("visible"),
-        family=content.get("family"),
-        data_analysis=content.get("data_analysis"),
+    """Return list of analyses matching the query terms."""
+    post_request: Response.json = request.json
+    query_analyses: List[Analysis] = store.analyses(
+        before=datetime.strptime(post_request.get("before"), TRAILBLAZER_TIME_STAMP).date()
+        if post_request.get("before")
+        else None,
+        case_id=post_request.get("case_id"),
+        data_analysis=post_request.get("data_analysis"),
+        deleted=post_request.get("deleted"),
+        family=post_request.get("family"),
+        is_visible=post_request.get("visible"),
+        query=post_request.get("query"),
+        status=post_request.get("status"),
+        temp=post_request.get("temp"),
     )
-    data = [stringify_timestamps(analysis_obj.to_dict()) for analysis_obj in query_analyses]
-    return jsonify(*data), 200
+    raw_analyses: List[Dict[str, str]] = [
+        stringify_timestamps(analysis_obj.to_dict()) for analysis_obj in query_analyses
+    ]
+    return jsonify(*raw_analyses), HTTPStatus.OK
 
 
 @blueprint.route("/get-latest-analysis", methods=["POST"])
@@ -196,17 +200,17 @@ def post_get_latest_analysis():
 
 @blueprint.route("/find-analysis", methods=["POST"])
 def post_find_analysis():
-    """Find analysis using case_id, date, and status"""
-    content = request.json
-    analysis_obj = store.get_analysis(
-        case_id=content.get("case_id"),
-        started_at=parse_datestr(content.get("started_at")),
-        status=content.get("status"),
+    """Find analysis using case_id, date, and status."""
+    post_request: Response.json = request.json
+    analysis: Analysis = store.get_analysis(
+        case_id=post_request.get("case_id"),
+        started_at=datetime.strptime(post_request.get("started_at"), TRAILBLAZER_TIME_STAMP).date(),
+        status=post_request.get("status"),
     )
-    if analysis_obj:
-        data = stringify_timestamps(analysis_obj.to_dict())
-        return jsonify(**data), 200
-    return jsonify(None), 200
+    if analysis:
+        raw_analysis: Dict[str, str] = stringify_timestamps(analysis.to_dict())
+        return jsonify(**raw_analysis), HTTPStatus.OK
+    return jsonify(None), HTTPStatus.OK
 
 
 @blueprint.route("/delete-analysis", methods=["POST"])

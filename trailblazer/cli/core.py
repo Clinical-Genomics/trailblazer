@@ -1,19 +1,20 @@
 import logging
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import List
 
 import click
 import coloredlogs
-from dateutil.parser import parse as parse_date
 
 import trailblazer
+from trailblazer.cli.utils.ls_helper import _get_ls_analysis_message
 from trailblazer.cli.utils.user_helper import is_existing_user, is_user_archived
-from trailblazer.constants import FileFormat, TrailblazerStatus
+from trailblazer.constants import FileFormat, TrailblazerStatus, TRAILBLAZER_TIME_STAMP
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.api import Store
-from trailblazer.store.models import User
+from trailblazer.store.models import User, Analysis
 
 LOG = logging.getLogger(__name__)
 LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
@@ -232,33 +233,19 @@ def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
     type=click.Choice(TrailblazerStatus.statuses()),
     help="Find analysis with specified status",
 )
-@click.option("-b", "--before", help="Find analyses started before date")
-@click.option("-c", "--comment", help="Find analysis with comment")
+@click.option("-b", "--before", type=str, help="Find analyses started before date")
+@click.option("-c", "--comment", type=str, help="Find analysis with comment")
+@click.option("--limit", type=int, default=30, help="Limit the number of analysis returned")
 @click.pass_context
-def ls_cmd(context, before, status, comment):
-    """Display recent logs for analyses."""
-    runs = (
-        context.obj["trailblazer"]
-        .analyses(
-            status=status,
-            deleted=False,
-            before=parse_date(before) if before else None,
-            comment=comment,
-        )
-        .limit(30)
-    )
-    for run_obj in runs:
-        if run_obj.status == "pending":
-            message = f"{run_obj.id} | {run_obj.family} [{run_obj.status.upper()}]"
-        else:
-            message = (
-                f"{run_obj.id} | {run_obj.family} {run_obj.started_at.date()} "
-                f"[{run_obj.type.upper()}/{run_obj.status.upper()}]"
-            )
-            if run_obj.status == "running":
-                message = click.style(f"{message} - {run_obj.progress * 100}/100", fg="blue")
-            elif run_obj.status == "completed":
-                message = click.style(f"{message} - {run_obj.completed_at}", fg="green")
-            elif run_obj.status == "failed":
-                message = click.style(message, fg="red")
-        click.echo(message)
+def ls_cmd(context, before: str, status: TrailblazerStatus, comment: str, limit: int = 30):
+    """Display recent logs for the latest analyses."""
+    trailblazer_db: Store = context.obj["trailblazer"]
+    analyses: List[Analysis] = trailblazer_db.analyses(
+        status=status,
+        deleted=False,
+        before=datetime.strptime(before, TRAILBLAZER_TIME_STAMP).date() if before else None,
+        comment=comment,
+    ).limit(limit)
+    for analysis in analyses:
+        (message, color) = _get_ls_analysis_message(analysis=analysis)
+        click.echo(click.style(message, fg=color))
