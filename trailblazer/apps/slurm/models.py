@@ -1,6 +1,6 @@
 """Model SLURM output."""
 from datetime import datetime
-from typing import List, Dict, Optional, Any
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, validator
 
@@ -21,13 +21,17 @@ class SqueueJob(BaseModel):
     status: SlurmJobStatus = Field(..., alias=SlurmSqueueHeader.STATE.value)
     time_limit: str = Field(..., alias=SlurmSqueueHeader.TIME_LIMIT.value)
     time_elapsed: int = Field(..., alias=SlurmSqueueHeader.TIME.value)
-    started_at: Optional[datetime] = Field(..., alias=SlurmSqueueHeader.START_TIME.value)
+    started_at: Optional[datetime] = Field(None, alias=SlurmSqueueHeader.START_TIME.value)
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("status", always=True, pre=True)
     def convert_status_to_lower_case(cls, value: str) -> str:
         """Convert string to lower case."""
         return value.lower()
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("time_elapsed", always=True, pre=True)
     def convert_time_elapsed_to_minutes(cls, value: str) -> int:
         """Convert squeue timestamp string into minutes."""
@@ -46,6 +50,8 @@ class SqueueJob(BaseModel):
             days_nr=day_nr
         )
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("started_at", always=True, pre=True)
     def convert_started_at_to_datetime(cls, value: str) -> Optional[datetime]:
         """Convert started to datetime if string is in datetime format."""
@@ -58,8 +64,10 @@ class SqueueResult(BaseModel):
     """Model used to parse SLURM squeue output."""
 
     jobs: List[SqueueJob]
-    jobs_status_distribution: Optional[Dict[str, float]]
+    jobs_status_distribution: Optional[Dict[str, float]] = None
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("jobs_status_distribution", always=True)
     def set_jobs_status_distribution(
         cls, _: Optional[List[SqueueJob]], values: Dict[str, Any]
