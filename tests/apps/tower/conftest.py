@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from trailblazer.constants import TOWER_TIMESTAMP_FORMAT
+from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TOWER_TIMESTAMP_FORMAT_EXTENDED
 
 TOWER_RESPONSE_DIR: Path = Path("tests", "fixtures", "tower")
 TOWER_ID: str = "1m759EPcbjuK7n"
@@ -56,7 +56,7 @@ def fixture_created_at() -> dt.datetime:
 @pytest.fixture(name="last_updated")
 def fixture_last_updated() -> dt.datetime:
     """Returns a last updated date."""
-    return dt.datetime.strptime("2023-04-04T08:11:28Z", TOWER_TIMESTAMP_FORMAT)
+    return dt.datetime.strptime("2023-06-20T08:01:57.661819Z", TOWER_TIMESTAMP_FORMAT_EXTENDED)
 
 
 @pytest.fixture(name="tower_task_duration")
