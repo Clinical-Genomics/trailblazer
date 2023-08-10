@@ -6,6 +6,12 @@ from click.testing import CliRunner
 from trailblazer.cli.core import base
 
 
+@pytest.fixture(name="process_exit_success", scope="session")
+def fixture_process_exit_success() -> int:
+    """Return the exit code for a successful process."""
+    return 0
+
+
 @pytest.fixture(name="cli_runner", scope="session")
 def fixture_cli_runner() -> CliRunner:
     """Return a CliRunner fixture."""
