@@ -235,7 +235,7 @@ def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
 )
 @click.option("-b", "--before", type=str, help="Find analyses started before date")
 @click.option("-c", "--comment", type=str, help="Find analysis with comment")
-@click.option("--limit", type=int, help="Limit the number of analysis returned")
+@click.option("--limit", type=int, default=30, help="Limit the number of analysis returned")
 @click.pass_context
 def ls_cmd(context, before: str, status: TrailblazerStatus, comment: str, limit: int = 30):
     """Display recent logs for the latest analyses."""
