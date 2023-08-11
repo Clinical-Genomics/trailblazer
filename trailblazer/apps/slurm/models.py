@@ -1,8 +1,8 @@
 """Model SLURM output."""
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from trailblazer.constants import SlurmJobStatus, SlurmSqueueHeader
 from trailblazer.exc import MissingSqueueOutput
@@ -23,16 +23,14 @@ class SqueueJob(BaseModel):
     time_elapsed: int = Field(..., alias=SlurmSqueueHeader.TIME.value)
     started_at: Optional[datetime] = Field(None, alias=SlurmSqueueHeader.START_TIME.value)
 
-    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
-    @validator("status", always=True, pre=True)
-    def convert_status_to_lower_case(cls, value: str) -> str:
+    @field_validator("status", mode="before")
+    @classmethod
+    def convert_status_to_lower_case(cls, status: str) -> str:
         """Convert string to lower case."""
-        return value.lower()
+        return status.lower()
 
-    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
-    @validator("time_elapsed", always=True, pre=True)
+    @field_validator("time_elapsed", mode="before")
+    @classmethod
     def convert_time_elapsed_to_minutes(cls, value: str) -> int:
         """Convert squeue timestamp string into minutes."""
         raw_time_elapsed: str = value
@@ -50,9 +48,8 @@ class SqueueJob(BaseModel):
             days_nr=day_nr
         )
 
-    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
-    @validator("started_at", always=True, pre=True)
+    @field_validator("started_at", mode="before")
+    @classmethod
     def convert_started_at_to_datetime(cls, value: str) -> Optional[datetime]:
         """Convert started to datetime if string is in datetime format."""
         raw_started: str = value
@@ -66,19 +63,14 @@ class SqueueResult(BaseModel):
     jobs: List[SqueueJob]
     jobs_status_distribution: Optional[Dict[str, float]] = None
 
-    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
-    @validator("jobs_status_distribution", always=True)
-    def set_jobs_status_distribution(
-        cls, _: Optional[List[SqueueJob]], values: Dict[str, Any]
-    ) -> Optional[Dict[str, float]]:
+    @model_validator(mode="after")
+    def set_jobs_status_distribution(self):
         """Set the fraction for each status present in the squeue jobs.
         Example {PENDING:0.33, RUNNING:0.33, FAILED: 0.33}."""
-        jobs: List[SqueueJob] = values["jobs"]
-        if not jobs:
+        if not self.jobs:
             raise MissingSqueueOutput("No squeue output")
-        status_distribution: Dict[str, float] = {}
-        job_statuses: List[str] = [job.status for job in jobs]
-        for job_status in set(job_statuses):
-            status_distribution[job_status] = round(job_statuses.count(job_status) / len(jobs), 2)
-        return status_distribution
+        job_statuses: List[str] = [job.status for job in self.jobs]
+        self.jobs_status_distribution = {
+            job_status: round(job_statuses.count(job_status) / len(self.jobs), 2)
+            for job_status in set(job_statuses)
+        }
