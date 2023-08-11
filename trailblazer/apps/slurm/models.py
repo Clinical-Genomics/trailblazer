@@ -25,15 +25,14 @@ class SqueueJob(BaseModel):
 
     @field_validator("status", mode="before")
     @classmethod
-    def convert_status_to_lower_case(cls, status: str) -> str:
+    def convert_status_to_lower_case(cls, raw_status: str) -> str:
         """Convert string to lower case."""
-        return status.lower()
+        return raw_status.lower()
 
     @field_validator("time_elapsed", mode="before")
     @classmethod
-    def convert_time_elapsed_to_minutes(cls, value: str) -> int:
+    def convert_time_elapsed_to_minutes(cls, raw_time_elapsed: str) -> int:
         """Convert squeue timestamp string into minutes."""
-        raw_time_elapsed: str = value
         if not raw_time_elapsed or not isinstance(raw_time_elapsed, str):
             return 0
         timestamps: List[str] = []
@@ -50,9 +49,8 @@ class SqueueJob(BaseModel):
 
     @field_validator("started_at", mode="before")
     @classmethod
-    def convert_started_at_to_datetime(cls, value: str) -> Optional[datetime]:
+    def convert_started_at_to_datetime(cls, raw_started: str) -> Optional[datetime]:
         """Convert started to datetime if string is in datetime format."""
-        raw_started: str = value
         if isinstance(raw_started, str) and raw_started not in {"N/A"}:
             return datetime.strptime(raw_started, "%Y-%m-%dT%H:%M:%S")
 
