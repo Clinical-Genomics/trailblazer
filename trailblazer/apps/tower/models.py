@@ -65,22 +65,22 @@ class TowerTask(BaseModel):
 
     @field_validator("duration")
     @classmethod
-    def set_duration(cls, duration: Optional[int]) -> int:
+    def set_duration(cls, raw_duration: Optional[int]) -> int:
         """Convert milliseconds to seconds or return 0 if empty."""
-        return round(duration / SCALE_TO_MILLISEC) if duration else 0
+        return round(raw_duration / SCALE_TO_MILLISEC) if raw_duration else 0
 
     @field_validator("status")
     @classmethod
-    def set_status(cls, status) -> str:
-        return TOWER_STATUS.get(status)
+    def set_status(cls, raw_status) -> str:
+        return TOWER_STATUS.get(raw_status)
 
     @field_validator("start", "dateCreated", "lastUpdated")
     @classmethod
-    def set_datetime(cls, time) -> Optional[Union[str, datetime]]:
-        if type(time) is str:
-            return tower_datetime_converter(timestamp=time)
-        elif type(time) is datetime:
-            return time
+    def set_datetime(cls, raw_time) -> Optional[Union[str, datetime]]:
+        if type(raw_time) is str:
+            return tower_datetime_converter(timestamp=raw_time)
+        elif type(raw_time) is datetime:
+            return raw_time
         else:
             return None
 
@@ -113,11 +113,11 @@ class TowerProcess(BaseModel):
 
     @field_validator("dateCreated", "lastUpdated")
     @classmethod
-    def set_datetime(cls, time) -> Optional[Union[str, datetime]]:
-        if type(time) is str:
-            return tower_datetime_converter(timestamp=time)
-        elif type(time) is datetime:
-            return time
+    def set_datetime(cls, raw_time) -> Optional[Union[str, datetime]]:
+        if type(raw_time) is str:
+            return tower_datetime_converter(timestamp=raw_time)
+        elif type(raw_time) is datetime:
+            return raw_time
         else:
             return None
 
