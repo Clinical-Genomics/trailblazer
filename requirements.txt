@@ -20,5 +20,5 @@ markupsafe==2.0.1
 
 # misc
 cryptography
-pydantic==1.10.9
+pydantic
 pymysql
