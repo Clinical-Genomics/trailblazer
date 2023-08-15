@@ -78,7 +78,7 @@ class Analysis(Model):
         types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM.value
     )
 
-    failed_jobs = orm.relationship("Job", backref="analysis")
+    failed_jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
 
     @property
     def has_ongoing_status(self) -> bool:
