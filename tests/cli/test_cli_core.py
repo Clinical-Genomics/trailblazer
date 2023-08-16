@@ -2,13 +2,13 @@ from datetime import datetime
 from typing import Dict
 
 import pytest
-import trailblazer
-
 from click.testing import CliRunner
+
+import trailblazer
 from tests.mocks.store_mock import MockStore
 from trailblazer.cli.core import (
-    archive_user,
     add_user_to_db,
+    archive_user,
     base,
     cancel,
     delete,
@@ -138,7 +138,7 @@ def test_cancel_ongoing(cli_runner, trailblazer_context, caplog):
         )
 
         # Analysis should have jobs that can be cancelled
-        assert analysis_obj.failed_jobs
+        assert analysis_obj.jobs
 
         # WHEN running cancel command
         result = cli_runner.invoke(cancel, [str(analysis_obj.id)], obj=trailblazer_context)

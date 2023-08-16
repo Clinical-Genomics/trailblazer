@@ -2,14 +2,18 @@ import datetime
 import multiprocessing
 import os
 from http import HTTPStatus
-from typing import Dict, Mapping, List, Union
+from typing import Dict, List, Mapping, Union
 
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 
-from trailblazer.constants import TrailblazerStatus, ONE_MONTH_IN_DAYS, TRAILBLAZER_TIME_STAMP
+from trailblazer.constants import (
+    ONE_MONTH_IN_DAYS,
+    TRAILBLAZER_TIME_STAMP,
+    TrailblazerStatus,
+)
 from trailblazer.server.ext import store
-from trailblazer.store.models import Info, User, Analysis
+from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
@@ -59,7 +63,7 @@ def analyses():
     for analysis_obj in query_page.items:
         analysis_data = analysis_obj.to_dict()
         analysis_data["user"] = analysis_obj.user.to_dict() if analysis_obj.user else None
-        analysis_data["failed_jobs"] = [job_obj.to_dict() for job_obj in analysis_obj.failed_jobs]
+        analysis_data["failed_jobs"] = [job_obj.to_dict() for job_obj in analysis_obj.jobs]
         data.append(analysis_data)
 
     return jsonify(analyses=data)
@@ -77,7 +81,7 @@ def analysis(analysis_id):
         store.commit()
 
     data = analysis_obj.to_dict()
-    data["failed_jobs"] = [job_obj.to_dict() for job_obj in analysis_obj.failed_jobs]
+    data["failed_jobs"] = [job_obj.to_dict() for job_obj in analysis_obj.jobs]
     data["user"] = analysis_obj.user.to_dict() if analysis_obj.user else None
     return jsonify(**data)
 

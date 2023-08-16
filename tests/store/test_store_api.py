@@ -22,7 +22,7 @@ def test_update_analysis_from_slurm_run_status(analysis_store: MockStore, squeue
     """Test updating analysis jobs when given squeue results."""
     # GIVEN an analysis and a squeue stream
     analysis: Analysis = analysis_store.get_query(table=Analysis).first()
-    assert not analysis.failed_jobs
+    assert not analysis.jobs
 
     # WHEN updating the analysis
     analysis_store.update_analysis_from_slurm_run_status(analysis_id=analysis.id)
@@ -33,7 +33,7 @@ def test_update_analysis_from_slurm_run_status(analysis_store: MockStore, squeue
     )
 
     # THEN it should update the analysis jobs
-    assert updated_analysis.failed_jobs
+    assert updated_analysis.jobs
 
 
 @pytest.mark.parametrize(
@@ -218,19 +218,19 @@ def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], ca
 
     # GIVEN an analysis without failed jobs
     analysis: Analysis = analysis_store.get_latest_analysis(case_id=case_id)
-    assert not analysis.failed_jobs
+    assert not analysis.jobs
 
     # WHEN analysis jobs are deleted
     analysis_store.delete_analysis_jobs(analysis=analysis)
 
     # THEN analysis object should have no failed jobs
-    assert not analysis.failed_jobs
+    assert not analysis.jobs
 
     # WHEN jobs are updated
     analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
 
     # THEN failed jobs should be updated
-    assert len(analysis.failed_jobs) == 2
+    assert len(analysis.jobs) == 2
 
 
 @pytest.mark.parametrize(
