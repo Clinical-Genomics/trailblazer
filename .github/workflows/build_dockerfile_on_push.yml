@@ -34,7 +34,7 @@ jobs:
          tags: "clinicalgenomics/trailblazer-stage:${{steps.get_branch_name.outputs.branch}}, clinicalgenomics/trailblazer-stage:latest"
 
      - name: Build and push cli
-       id: docker_build
+       id: docker_build_cli
        uses: docker/build-push-action@v3.2.0
        with:
          context: ./
