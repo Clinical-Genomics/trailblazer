@@ -1,0 +1,15 @@
+FROM python:3.8-slim-bullseye
+
+RUN pip install -U pip
+
+WORKDIR /trailblazer
+
+COPY *.* .
+COPY ./trailblazer ./trailblazer
+
+RUN pip install -r requirements.txt
+RUN pip install -e .
+
+
+
+
