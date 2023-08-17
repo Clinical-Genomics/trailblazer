@@ -40,5 +40,5 @@ jobs:
          context: ./
          file: ./Dockerfile-cli
          push: true
-         tags: "clinicalgenomics/trailblazer-cli--stage:${{steps.get_branch_name.outputs.branch}}, clinicalgenomics/trailblazer-cli-stage:latest"
+         tags: "clinicalgenomics/trailblazer-cli-stage:${{steps.get_branch_name.outputs.branch}}, clinicalgenomics/trailblazer-cli-stage:latest"
 
