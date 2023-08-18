@@ -4,8 +4,8 @@ from tests.mocks.store_mock import MockStore
 from trailblazer.apps.slurm.api import get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.store.filters.user_filters import apply_user_filter, UserFilter
-from trailblazer.store.models import User, Analysis
+from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
+from trailblazer.store.models import Analysis, User
 
 
 def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
@@ -58,7 +58,7 @@ def test_update_analysis_jobs_from_slurm_jobs(analysis_store: MockStore, squeue_
         analysis=analysis, squeue_result=squeue_result
     )
     updated_analysis: Analysis = analysis_store.get_analysis(
-        case_id=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.PENDING
+        case=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.PENDING
     )
 
     # THEN it should update the analysis jobs

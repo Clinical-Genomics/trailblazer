@@ -2,14 +2,18 @@ import datetime
 import multiprocessing
 import os
 from http import HTTPStatus
-from typing import Dict, Mapping, List, Union
+from typing import Dict, List, Mapping, Union
 
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 
-from trailblazer.constants import TrailblazerStatus, ONE_MONTH_IN_DAYS, TRAILBLAZER_TIME_STAMP
+from trailblazer.constants import (
+    ONE_MONTH_IN_DAYS,
+    TRAILBLAZER_TIME_STAMP,
+    TrailblazerStatus,
+)
 from trailblazer.server.ext import store
-from trailblazer.store.models import Info, User, Analysis
+from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
@@ -200,10 +204,10 @@ def post_get_latest_analysis():
 
 @blueprint.route("/find-analysis", methods=["POST"])
 def post_find_analysis():
-    """Find analysis using case_id, date, and status."""
+    """Find analysis using case id, date, and status."""
     post_request: Response.json = request.json
     analysis: Analysis = store.get_analysis(
-        case_id=post_request.get("case_id"),
+        case=post_request.get("case_id"),
         started_at=datetime.strptime(post_request.get("started_at"), TRAILBLAZER_TIME_STAMP).date(),
         status=post_request.get("status"),
     )

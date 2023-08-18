@@ -12,12 +12,16 @@ from alchy import Query
 from trailblazer.apps.slurm.api import get_current_analysis_status, get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.tower.api import TowerAPI
-from trailblazer.constants import FileFormat, SlurmJobStatus, TrailblazerStatus, WorkflowManager
+from trailblazer.constants import (
+    FileFormat,
+    SlurmJobStatus,
+    TrailblazerStatus,
+    WorkflowManager,
+)
 from trailblazer.exc import TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.core import CoreHandler
 from trailblazer.store.models import Analysis, Model
-
 
 LOG = logging.getLogger(__name__)
 
@@ -27,13 +31,6 @@ class BaseHandler(CoreHandler):
 
     def setup(self):
         self.create_all()
-
-    def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> Analysis:
-        """
-        used in LOG
-        Find a single analysis."""
-        query = self.Analysis.query.filter_by(family=case_id, started_at=started_at, status=status)
-        return query.first()
 
     def analyses(
         self,

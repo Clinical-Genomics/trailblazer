@@ -1,7 +1,7 @@
 from typing import List
 
 from tests.mocks.store_mock import MockStore
-from trailblazer.store.filters.user_filters import apply_user_filter, UserFilter
+from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, User
 
 
@@ -25,7 +25,7 @@ def test_add_pending_analysis(raw_analyses: List[dict], store: MockStore, user_e
 
     # THEN it should be stored in the database
     stored_analysis: Analysis = store.get_analysis(
-        case_id=analysis.get("family"),
+        case=analysis.get("family"),
         started_at=new_analysis.started_at,
         status=analysis.get("status"),
     )
