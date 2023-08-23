@@ -28,11 +28,11 @@ def test_filter_analyses_by_id(analysis_store: MockStore):
 
 
 def test_filter_analyses_by_case_name(analysis_store: MockStore):
-    """Test return analysis by case when existing."""
+    """Test return analysis by case name when existing."""
     # GIVEN a store containing analyses
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
-    # WHEN retrieving an analysis by case
+    # WHEN retrieving an analysis by case name
     analysis: Query = filter_analyses_by_case_name(
         analyses=analysis_store.get_query(table=Analysis), case_name=existing_analysis.family
     )
