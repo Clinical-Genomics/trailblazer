@@ -232,6 +232,18 @@ def case_name_not_in_db() -> str:
     return "case_name_not_in_db"
 
 
+@pytest.fixture(scope="session")
+def failed_analysis_case_name() -> str:
+    """Return a case name for a failed analysis."""
+    return "crackpanda"
+
+
+@pytest.fixture(scope="session")
+def ongoing_analysis_case_name() -> str:
+    """Return a case name for an ongoing analysis."""
+    return "blazinginsect"
+
+
 @pytest.fixture(name="tower_task", scope="session")
 def fixture_tower_task() -> TowerTask:
     """Return a Tower task."""
