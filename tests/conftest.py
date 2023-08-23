@@ -1,15 +1,15 @@
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Generator
+from typing import Dict, Generator, List
 
 import pytest
 
 from tests.apps.tower.conftest import CaseIDs, TowerTaskResponseFile
 from tests.mocks.store_mock import MockStore
-from trailblazer.apps.tower.models import TowerTask
-from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TrailblazerStatus, FileFormat
-from trailblazer.io.controller import ReadFile
 from tests.store.utils.store_helper import StoreHelpers
+from trailblazer.apps.tower.models import TowerTask
+from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, FileFormat, TrailblazerStatus
+from trailblazer.io.controller import ReadFile
 
 
 @pytest.fixture(scope="session", name="username")
@@ -224,6 +224,12 @@ def fixture_tower_task_name() -> str:
 def fixture_case_id() -> str:
     """Return a case ID."""
     return CaseIDs.RUNNING
+
+
+@pytest.fixture(scope="session")
+def case_name_not_in_db() -> str:
+    """Return a case name not present in database."""
+    return "case_name_not_in_db"
 
 
 @pytest.fixture(name="tower_task", scope="session")

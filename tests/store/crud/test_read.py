@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
@@ -23,13 +23,43 @@ def test_get_analysis(analysis_store: MockStore):
     assert analysis == existing_analysis
 
 
+def test_get_latest_analysis_for_case(analysis_store: MockStore):
+    """Test getting an analysis fora case when it exists in the database."""
+    # GIVEN a store with an analysis
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # WHEN accessing it by case name
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+        case_name=existing_analysis.family
+    )
+
+    # THEN it should return the same analysis
+    assert analysis == existing_analysis
+
+
+def test_get_latest_analysis_for_case_when_missing(
+    analysis_store: MockStore, case_name_not_in_db: str
+):
+    """Test getting an analysis fora case when it does not exist in the database."""
+
+    # WHEN accessing it by case name
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+        case_name=case_name_not_in_db
+    )
+
+    # THEN no analysis should be returned
+    assert not analysis
+
+
 def test_get_analysis_with_id(analysis_store: MockStore):
     """Test getting an analysis by id when it exists in the database."""
     # GIVEN a store with an analysis
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
     # WHEN accessing it by ID
-    analysis: Analysis = analysis_store.get_analysis_with_id(analysis_id=existing_analysis.id)
+    analysis: Optional[Analysis] = analysis_store.get_analysis_with_id(
+        analysis_id=existing_analysis.id
+    )
 
     # THEN it should return the same analysis
     assert analysis == existing_analysis
@@ -41,7 +71,9 @@ def test_get_analysis_with_id_when_missing(analysis_store: MockStore):
     missing_analysis_id: int = 12312423534
 
     # WHEN accessing the analysis
-    analysis: Analysis = analysis_store.get_analysis_with_id(analysis_id=missing_analysis_id)
+    analysis: Optional[Analysis] = analysis_store.get_analysis_with_id(
+        analysis_id=missing_analysis_id
+    )
 
     # THEN it should return None
     assert not analysis

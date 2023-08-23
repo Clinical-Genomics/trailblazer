@@ -48,6 +48,16 @@ class ReadHandler(BaseHandler_2):
             status=status,
         ).first()
 
+    def get_latest_analysis_for_case(self, case_name: str) -> Optional[Analysis]:
+        """Return the latest analysis for a case."""
+        return apply_analysis_filter(
+            filter_functions=[
+                AnalysisFilter.FILTER_BY_CASE_NAME,
+            ],
+            analyses=self.get_query(table=Analysis),
+            case_name=case_name,
+        ).first()
+
     def get_analysis_with_id(self, analysis_id: int) -> Optional[Analysis]:
         """Get a single analysis by id."""
         return apply_analysis_filter(
