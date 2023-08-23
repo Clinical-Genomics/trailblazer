@@ -103,11 +103,6 @@ class BaseHandler(CoreHandler):
         latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
         return latest_analysis_status == TrailblazerStatus.FAILED
 
-    def is_latest_analysis_completed(self, case_id: str) -> bool:
-        """Check if the latest analysis is completed for a case_id"""
-        latest_analysis = self.analyses(case_id=case_id).first()
-        return bool(latest_analysis and latest_analysis.status == TrailblazerStatus.COMPLETED)
-
     def mark_analyses_deleted(self, case_id: str) -> Query:
         """mark analyses connected to a case as deleted"""
         old_analyses = self.analyses(case_id=case_id)
