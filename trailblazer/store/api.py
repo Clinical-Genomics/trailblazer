@@ -12,12 +12,16 @@ from alchy import Query
 from trailblazer.apps.slurm.api import get_current_analysis_status, get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.tower.api import TowerAPI
-from trailblazer.constants import FileFormat, SlurmJobStatus, TrailblazerStatus, WorkflowManager
+from trailblazer.constants import (
+    FileFormat,
+    SlurmJobStatus,
+    TrailblazerStatus,
+    WorkflowManager,
+)
 from trailblazer.exc import TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.core import CoreHandler
 from trailblazer.store.models import Analysis, Model
-
 
 LOG = logging.getLogger(__name__)
 
@@ -318,10 +322,10 @@ class BaseHandler(CoreHandler):
         if analysis.status not in TrailblazerStatus.ongoing_statuses():
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
 
-        for job_obj in analysis.failed_jobs:
-            if job_obj.status in SlurmJobStatus.ongoing_statuses():
-                LOG.info(f"Cancelling job {job_obj.slurm_id} - {job_obj.name}")
-                self.cancel_slurm_job(job_obj.slurm_id, ssh=ssh)
+        for job in analysis.jobs:
+            if job.status in SlurmJobStatus.ongoing_statuses():
+                LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
+                self.cancel_slurm_job(job.slurm_id, ssh=ssh)
         LOG.info(
             f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )

@@ -1,9 +1,9 @@
-from trailblazer.apps.slurm.api import reformat_squeue_result_job_step
-from trailblazer.apps.slurm.models import SqueueResult
 from typing import List
 
+from trailblazer.apps.slurm.api import reformat_squeue_result_job_step
+from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.store.base import BaseHandler_2
-from trailblazer.store.models import User, Analysis, Job
+from trailblazer.store.models import Analysis, Job, User
 
 
 class UpdateHandler(BaseHandler_2):
@@ -11,8 +11,7 @@ class UpdateHandler(BaseHandler_2):
 
     def update_analysis_jobs(self, analysis: Analysis, jobs: List[dict]) -> None:
         """Update jobs in the analysis."""
-        # failed_jobs is misnamed and actually contains all jobs irrespective of status
-        analysis.failed_jobs = [Job(**job) for job in jobs]
+        analysis.jobs = [Job(**job) for job in jobs]
         self.commit()
 
     def update_user_is_archived(self, user: User, archive: bool = True) -> None:
@@ -23,7 +22,7 @@ class UpdateHandler(BaseHandler_2):
     def update_analysis_jobs_from_slurm_jobs(
         self, analysis: Analysis, squeue_result: SqueueResult
     ) -> None:
-        """Update analysis failed jobs from supplied squeue results."""
+        """Update analysis jobs from supplied squeue results."""
         if len(squeue_result.jobs) == 0:
             return
         for job in squeue_result.jobs:
@@ -32,7 +31,7 @@ class UpdateHandler(BaseHandler_2):
             )
 
         self.delete_analysis_jobs(analysis=analysis)
-        analysis.failed_jobs = [
+        analysis.jobs = [
             Job(
                 analysis_id=analysis.id,
                 slurm_id=job.id,

@@ -2,13 +2,13 @@ from datetime import datetime
 from typing import Dict
 
 import pytest
-import trailblazer
-
 from click.testing import CliRunner
+
+import trailblazer
 from tests.mocks.store_mock import MockStore
 from trailblazer.cli.core import (
-    archive_user,
     add_user_to_db,
+    archive_user,
     base,
     cancel,
     delete,
@@ -20,7 +20,9 @@ from trailblazer.cli.core import (
     set_analysis_status,
     unarchive_user,
 )
+from trailblazer.constants import SlurmJobStatus, TrailblazerStatus
 from trailblazer.store.api import Store
+from trailblazer.store.models import Analysis
 
 
 def test_base(cli_runner):
@@ -129,33 +131,34 @@ def test_cancel_not_running(cli_runner, trailblazer_context, caplog):
         assert "is not running" in caplog.text
 
 
-def test_cancel_ongoing(cli_runner, trailblazer_context, caplog):
-    with caplog.at_level("INFO"):
-        # GIVEN an analysis that is running
-        trailblazer_context["trailblazer"].update_ongoing_analyses()
-        analysis_obj = trailblazer_context["trailblazer"].get_latest_analysis(
-            case_id="blazinginsect"
-        )
+def test_cancel_ongoing_analysis(cli_runner, trailblazer_context, caplog):
+    """Test all ongoing analysis jobs are cancelled."""
+    caplog.set_level("INFO")
 
-        # Analysis should have jobs that can be cancelled
-        assert analysis_obj.failed_jobs
+    # GIVEN an ongoing analysis
+    trailblazer_db: Store = trailblazer_context["trailblazer"]
+    trailblazer_db.update_ongoing_analyses()
+    analysis: Analysis = trailblazer_db.get_latest_analysis(case_id="blazinginsect")
 
-        # WHEN running cancel command
-        result = cli_runner.invoke(cancel, [str(analysis_obj.id)], obj=trailblazer_context)
+    # Analysis should have jobs that can be cancelled
+    assert analysis.jobs
 
-        # THEN command should run successfully
-        assert result.exit_code == 0
+    # WHEN running cancel command
+    result = cli_runner.invoke(cancel, [str(analysis.id)], obj=trailblazer_context)
 
-        # THEN log should inform of successful cancellation
-        assert "all ongoing jobs cancelled successfully" in caplog.text
-        assert "Cancelling" in caplog.text
+    # THEN command should run successfully
+    assert result.exit_code == 0
 
-        # THEN job id from squeue output will be cancelled
-        assert "690988" in caplog.text
+    # THEN log should inform of successful cancellation
+    assert "all ongoing jobs cancelled successfully" in caplog.text
+    assert "Cancelling" in caplog.text
 
-        # THEN analysis status is set to cancelled
-        assert "cancelled" in analysis_obj.comment
-        assert analysis_obj.status == "canceled"
+    # THEN job id from squeue output will be cancelled
+    assert f"{analysis.jobs[3].slurm_id}" in caplog.text
+
+    # THEN analysis status is set to cancelled
+    assert SlurmJobStatus.CANCELLED in analysis.comment
+    assert analysis.status == TrailblazerStatus.CANCELLED
 
 
 def test_delete_nonexisting(cli_runner, trailblazer_context, caplog):
