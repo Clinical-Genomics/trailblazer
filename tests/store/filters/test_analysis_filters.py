@@ -2,7 +2,7 @@ from sqlalchemy.orm import Query
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.store.filters.analyses_filters import (
-    filter_analyses_by_case,
+    filter_analyses_by_case_name,
     filter_analyses_by_id,
     filter_analyses_by_started_at,
     filter_analyses_by_status,
@@ -27,14 +27,14 @@ def test_filter_analyses_by_id(analysis_store: MockStore):
     assert existing_analysis == analysis.first()
 
 
-def test_filter_analyses_by_case(analysis_store: MockStore):
+def test_filter_analyses_by_case_name(analysis_store: MockStore):
     """Test return analysis by case when existing."""
     # GIVEN a store containing analyses
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
     # WHEN retrieving an analysis by case
-    analysis: Query = filter_analyses_by_case(
-        analyses=analysis_store.get_query(table=Analysis), case=existing_analysis.family
+    analysis: Query = filter_analyses_by_case_name(
+        analyses=analysis_store.get_query(table=Analysis), case_name=existing_analysis.family
     )
 
     # THEN that the analysis is a query

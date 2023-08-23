@@ -58,7 +58,7 @@ def test_update_analysis_jobs_from_slurm_jobs(analysis_store: MockStore, squeue_
         analysis=analysis, squeue_result=squeue_result
     )
     updated_analysis: Analysis = analysis_store.get_analysis(
-        case=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.PENDING
+        case_namme=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.PENDING
     )
 
     # THEN it should update the analysis jobs

@@ -27,7 +27,7 @@ def test_update_analysis_from_slurm_run_status(analysis_store: MockStore, squeue
     # WHEN updating the analysis
     analysis_store.update_analysis_from_slurm_run_status(analysis_id=analysis.id)
     updated_analysis: Analysis = analysis_store.get_analysis(
-        case=analysis.family,
+        case_namme=analysis.family,
         started_at=analysis.started_at,
         status=TrailblazerStatus.RUNNING,
     )

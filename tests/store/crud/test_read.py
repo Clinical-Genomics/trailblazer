@@ -14,7 +14,7 @@ def test_get_analysis(analysis_store: MockStore):
 
     # WHEN getting analysis
     analysis: Analysis = analysis_store.get_analysis(
-        case=existing_analysis.family,
+        case_namme=existing_analysis.family,
         started_at=existing_analysis.started_at,
         status=existing_analysis.status,
     )
