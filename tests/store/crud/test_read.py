@@ -38,7 +38,7 @@ def test_get_analysis_with_id(analysis_store: MockStore):
 def test_get_analysis_with_id_when_missing(analysis_store: MockStore):
     """Test getting an analysis by id when it does not exist in the database."""
     # GIVEN an id that doesn't exist
-    missing_analysis_id = 12312423534
+    missing_analysis_id: int = 12312423534
 
     # WHEN accessing the analysis
     analysis: Analysis = analysis_store.get_analysis_with_id(analysis_id=missing_analysis_id)
