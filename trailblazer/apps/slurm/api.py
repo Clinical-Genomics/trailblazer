@@ -1,10 +1,10 @@
-from typing import List, Dict, Optional, Callable
+from typing import Callable, Dict, List, Optional
 
 from trailblazer.apps.slurm.models import SqueueResult
+from trailblazer.apps.slurm.utils import formatters
 from trailblazer.constants import FileFormat, SlurmJobStatus, TrailblazerStatus
 from trailblazer.exc import EmptySqueueError
 from trailblazer.io.controller import ReadStream
-from trailblazer.apps.slurm.utils import formatters
 
 
 def get_squeue_result(squeue_response: str) -> SqueueResult:
@@ -49,9 +49,9 @@ def _is_analysis_failed(jobs_status_distribution: Dict[str, float]) -> bool:
 
 def _is_analysis_ongoing(jobs_status_distribution: Dict[str, float]) -> bool:
     """Return True if analysis is still ongoing."""
-    return bool(
-        jobs_status_distribution.get(SlurmJobStatus.RUNNING)
-        or jobs_status_distribution.get(SlurmJobStatus.PENDING)
+    return any(
+        ongoing_status in jobs_status_distribution
+        for ongoing_status in TrailblazerStatus.ongoing_statuses()
     )
 
 

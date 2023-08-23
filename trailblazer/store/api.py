@@ -315,10 +315,10 @@ class BaseHandler(CoreHandler):
         if analysis.status not in TrailblazerStatus.ongoing_statuses():
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
 
-        for job_obj in analysis.failed_jobs:
-            if job_obj.status in SlurmJobStatus.ongoing_statuses():
-                LOG.info(f"Cancelling job {job_obj.slurm_id} - {job_obj.name}")
-                self.cancel_slurm_job(job_obj.slurm_id, ssh=ssh)
+        for job in analysis.jobs:
+            if job.status in SlurmJobStatus.ongoing_statuses():
+                LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
+                self.cancel_slurm_job(job.slurm_id, ssh=ssh)
         LOG.info(
             f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )

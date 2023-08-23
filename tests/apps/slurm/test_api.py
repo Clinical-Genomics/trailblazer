@@ -8,7 +8,7 @@ from trailblazer.apps.slurm.api import (
     reformat_squeue_result_job_step,
 )
 from trailblazer.apps.slurm.models import SqueueResult
-from trailblazer.constants import TrailblazerStatus, SlurmJobStatus, Pipeline
+from trailblazer.constants import Pipeline, SlurmJobStatus, TrailblazerStatus
 
 
 def test_get_squeue_result(squeue_stream_jobs):
@@ -99,6 +99,11 @@ def test_reformat_squeue_result_job_step_malformed_job_step(
         (
             "canceled_ongoing",
             {SlurmJobStatus.CANCELLED: 0.01, SlurmJobStatus.RUNNING: 0.1},
+            TrailblazerStatus.RUNNING,
+        ),
+        (
+            "canceled_ongoing_round_to_zero",
+            {SlurmJobStatus.CANCELLED: 0.01, SlurmJobStatus.RUNNING: 0.00},
             TrailblazerStatus.RUNNING,
         ),
     ],
