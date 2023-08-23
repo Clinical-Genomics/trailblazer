@@ -93,11 +93,6 @@ class BaseHandler(CoreHandler):
         if latest_analysis:
             return latest_analysis.status
 
-    def is_latest_analysis_ongoing(self, case_id: str) -> bool:
-        """Check if the latest analysis is ongoing for a case_id"""
-        latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
-        return latest_analysis_status in TrailblazerStatus.ongoing_statuses()
-
     def is_latest_analysis_failed(self, case_id: str) -> bool:
         """Check if the latest analysis is failed for a case_id"""
         latest_analysis_status = self.get_latest_analysis_status(case_id=case_id)
