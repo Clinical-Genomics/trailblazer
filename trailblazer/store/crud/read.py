@@ -1,11 +1,14 @@
 from datetime import datetime
-from typing import Callable, List, Dict, Union, Optional
+from typing import Callable, Dict, List, Optional, Union
 
 from trailblazer.store.base import BaseHandler_2
+from trailblazer.store.filters.analyses_filters import (
+    AnalysisFilter,
+    apply_analysis_filter,
+)
 from trailblazer.store.filters.job_filters import JobFilter, apply_job_filter
-from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
-from trailblazer.store.models import Job, User, Analysis
+from trailblazer.store.models import Analysis, Job, User
 
 
 class ReadHandler(BaseHandler_2):
@@ -30,6 +33,20 @@ class ReadHandler(BaseHandler_2):
         )
         categories = categories.group_by(Job.name).all()
         return [{"name": category.name, "count": category.count} for category in categories]
+
+    def get_analysis(self, case_name: str, started_at: datetime, status: str) -> Optional[Analysis]:
+        """Return the latest analysis for supplied parameters."""
+        return apply_analysis_filter(
+            filter_functions=[
+                AnalysisFilter.FILTER_BY_CASE_NAME,
+                AnalysisFilter.FILTER_BY_STARTED_AT,
+                AnalysisFilter.FILTER_BY_STATUS,
+            ],
+            analyses=self.get_query(table=Analysis),
+            case_name=case_name,
+            started_at=started_at,
+            status=status,
+        ).first()
 
     def get_analysis_with_id(self, analysis_id: int) -> Optional[Analysis]:
         """Get a single analysis by id."""

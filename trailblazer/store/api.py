@@ -32,13 +32,6 @@ class BaseHandler(CoreHandler):
     def setup(self):
         self.create_all()
 
-    def get_analysis(self, case_id: str, started_at: dt.datetime, status: str) -> Analysis:
-        """
-        used in LOG
-        Find a single analysis."""
-        query = self.Analysis.query.filter_by(family=case_id, started_at=started_at, status=status)
-        return query.first()
-
     def analyses(
         self,
         case_id: str = None,

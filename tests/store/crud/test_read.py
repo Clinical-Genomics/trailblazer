@@ -1,14 +1,30 @@
 from datetime import datetime
-from typing import List, Dict, Union
+from typing import Dict, List, Union
 
 from tests.mocks.store_mock import MockStore
-from trailblazer.constants import TrailblazerStatus
-from trailblazer.store.models import User, Analysis
 from tests.store.utils.store_helper import StoreHelpers
+from trailblazer.constants import TrailblazerStatus
+from trailblazer.store.models import Analysis, User
+
+
+def test_get_analysis(analysis_store: MockStore):
+    """Test getting an analysis when it exists in the database."""
+    # GIVEN a store with an analysis
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # WHEN getting analysis
+    analysis: Analysis = analysis_store.get_analysis(
+        case_name=existing_analysis.family,
+        started_at=existing_analysis.started_at,
+        status=existing_analysis.status,
+    )
+
+    # THEN it should return the same analysis
+    assert analysis == existing_analysis
 
 
 def test_get_analysis_with_id(analysis_store: MockStore):
-    """Test getting an analysis when it exists in the database."""
+    """Test getting an analysis by id when it exists in the database."""
     # GIVEN a store with an analysis
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
@@ -20,9 +36,9 @@ def test_get_analysis_with_id(analysis_store: MockStore):
 
 
 def test_get_analysis_with_id_when_missing(analysis_store: MockStore):
-    """Test getting an analysis when it does not exist in the database."""
+    """Test getting an analysis by database entry id when it does not exist in the database."""
     # GIVEN an id that doesn't exist
-    missing_analysis_id = 12312423534
+    missing_analysis_id: int = 12312423534
 
     # WHEN accessing the analysis
     analysis: Analysis = analysis_store.get_analysis_with_id(analysis_id=missing_analysis_id)
