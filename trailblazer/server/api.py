@@ -207,7 +207,7 @@ def post_find_analysis():
     """Find analysis using case id, date, and status."""
     post_request: Response.json = request.json
     analysis: Analysis = store.get_analysis(
-        case_namme=post_request.get("case_id"),
+        case_name=post_request.get("case_id"),
         started_at=datetime.strptime(post_request.get("started_at"), TRAILBLAZER_TIME_STAMP).date(),
         status=post_request.get("status"),
     )

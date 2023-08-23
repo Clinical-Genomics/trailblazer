@@ -34,9 +34,7 @@ class ReadHandler(BaseHandler_2):
         categories = categories.group_by(Job.name).all()
         return [{"name": category.name, "count": category.count} for category in categories]
 
-    def get_analysis(
-        self, case_namme: str, started_at: datetime, status: str
-    ) -> Optional[Analysis]:
+    def get_analysis(self, case_name: str, started_at: datetime, status: str) -> Optional[Analysis]:
         """Return the latest analysis for supplied parameters."""
         return apply_analysis_filter(
             filter_functions=[
@@ -45,7 +43,7 @@ class ReadHandler(BaseHandler_2):
                 AnalysisFilter.FILTER_BY_STATUS,
             ],
             analyses=self.get_query(table=Analysis),
-            case_name=case_namme,
+            case_name=case_name,
             started_at=started_at,
             status=status,
         ).first()
