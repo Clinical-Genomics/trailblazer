@@ -40,6 +40,7 @@ def test_set_analysis_completed(
     trailblazer_context: Dict[str, MockStore],
     caplog,
     failed_analysis_case_name: str,
+    process_exit_success: int,
 ):
     """Test setting an analysis to status complete."""
     # GIVEN an analysis with status failed
@@ -55,7 +56,7 @@ def test_set_analysis_completed(
     result = cli_runner.invoke(set_analysis_completed, [str(analysis.id)], obj=trailblazer_context)
 
     # THEN command runs successfully
-    assert result.exit_code == 0
+    assert result.exit_code == process_exit_success
 
     # THEN status will be set to "complete"
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
@@ -69,6 +70,7 @@ def test_set_analysis_status(
     trailblazer_context: Dict[str, MockStore],
     caplog,
     failed_analysis_case_name: str,
+    process_exit_success: int,
 ):
     """Test that the latest analysis status is updated for a given case name."""
 
@@ -87,7 +89,7 @@ def test_set_analysis_status(
     )
 
     # THEN command runs successfully
-    assert result.exit_code == 0
+    assert result.exit_code == process_exit_success
 
     # THEN status will be set to COMPLETED
     analysis = trailblazer_db.get_latest_analysis_for_case(case_name=failed_analysis_case_name)
@@ -117,7 +119,10 @@ def test_set_analysis_status_error(
 
 
 def test_cancel_non_existent_analysis_id(
-    cli_runner: CliRunner, trailblazer_context: Dict[str, MockStore], caplog
+    cli_runner: CliRunner,
+    trailblazer_context: Dict[str, MockStore],
+    caplog,
+    process_exit_success: int,
 ):
     """Test cancelling an analysis using a non existing analysis id."""
     caplog.set_level("ERROR")
@@ -130,7 +135,7 @@ def test_cancel_non_existent_analysis_id(
     result = cli_runner.invoke(cancel, ["123"], obj=trailblazer_context)
 
     # THEN command runs successfully
-    assert result.exit_code == 0
+    assert result.exit_code == process_exit_success
 
     # THEN error log informs user that analysis does not exist
     assert "does not exist" in caplog.text
@@ -141,6 +146,7 @@ def test_cancel_not_running(
     trailblazer_context: Dict[str, MockStore],
     caplog,
     failed_analysis_case_name: str,
+    process_exit_success: int,
 ):
     """Test cancelling an analysis, which is not running."""
     caplog.set_level("ERROR")
@@ -156,7 +162,7 @@ def test_cancel_not_running(
     result = cli_runner.invoke(cancel, [str(analysis.id)], obj=trailblazer_context)
 
     # THEN command runs successfully
-    assert result.exit_code == 0
+    assert result.exit_code == process_exit_success
 
     # THEN error log informs user that analysis cannot be cancelled as it is not running
     assert "is not running" in caplog.text
@@ -167,6 +173,7 @@ def test_cancel_ongoing_analysis(
     trailblazer_context: Dict[str, MockStore],
     caplog,
     ongoing_analysis_case_name: str,
+    process_exit_success: int,
 ):
     """Test all ongoing analysis jobs are cancelled."""
     caplog.set_level("INFO")
@@ -185,7 +192,7 @@ def test_cancel_ongoing_analysis(
     result = cli_runner.invoke(cancel, [str(analysis.id)], obj=trailblazer_context)
 
     # THEN command should run successfully
-    assert result.exit_code == 0
+    assert result.exit_code == process_exit_success
 
     # THEN log should inform of successful cancellation
     assert "all ongoing jobs cancelled successfully" in caplog.text
@@ -218,7 +225,8 @@ def test_delete_ongoing_fail(
     cli_runner: CliRunner,
     trailblazer_context: Dict[str, MockStore],
     caplog,
-    ongoing_analysis_case_name,
+    ongoing_analysis_case_name: str,
+    process_exit_success: int,
 ):
     """Test deleting an ongoing analysis without using the force flag."""
     caplog.set_level("ERROR")
@@ -236,7 +244,7 @@ def test_delete_ongoing_fail(
     result = cli_runner.invoke(delete, [str(analysis.id)], obj=trailblazer_context)
 
     # THEN command executes successfully
-    assert result.exit_code == 0
+    assert result.exit_code == process_exit_success
 
     # THEN error log informs user that ongoing analysis cannot be deleted without --force flag
     assert "--force" in caplog.text
@@ -250,6 +258,7 @@ def test_delete_ongoing_force(
     trailblazer_context: Dict[str, MockStore],
     caplog,
     ongoing_analysis_case_name,
+    process_exit_success: int,
 ):
     caplog.set_level("INFO")
 
@@ -264,7 +273,7 @@ def test_delete_ongoing_force(
     result = cli_runner.invoke(delete, [str(analysis.id), "--force"], obj=trailblazer_context)
 
     # THEN command runs successfully
-    assert result.exit_code == 0
+    assert result.exit_code == process_exit_success
 
     # THEN log informs user that Trailblazer is deleting analysis
     assert "Deleting" in caplog.text
@@ -441,31 +450,44 @@ def test_unarchive_user(
     assert f"User unarchived: {archived_user_email}" in caplog.text
 
 
-def test_scan(cli_runner: CliRunner, trailblazer_context: Dict[str, MockStore], caplog):
-    with caplog.at_level("INFO"):
-        # GIVEN populated Trailblazer database with pending analyses
+def test_scan(
+    cli_runner: CliRunner,
+    trailblazer_context: Dict[str, MockStore],
+    caplog,
+    ongoing_analysis_case_name: str,
+):
+    """Test scanning for analyses and updating analysis status."""
+    caplog.set_level("INFO")
 
-        # GIVEN an analysis that is pending
-        trailblazer_db: MockStore = trailblazer_context["trailblazer"]
-        analysis_obj = trailblazer_db.get_latest_analysis(case_id="blazinginsect")
-        assert analysis_obj.status == "pending"
+    # GIVEN populated Trailblazer database with pending analyses
 
-        # WHEN running trailblazer scan command
-        cli_runner.invoke(scan, [], obj=trailblazer_context)
-        assert "All analyses updated" in caplog.text
-        analysis_obj = trailblazer_db.get_latest_analysis(case_id="blazinginsect")
+    # GIVEN an analysis that is pending
+    trailblazer_db: MockStore = trailblazer_context["trailblazer"]
+    analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
+        case_name=ongoing_analysis_case_name
+    )
+    assert analysis.status == TrailblazerStatus.PENDING
 
-        # THEN the stats of analysis should be updated as expected
-        assert analysis_obj.status == "running"
+    # WHEN running trailblazer scan command
+    cli_runner.invoke(scan, [], obj=trailblazer_context)
+
+    # THEN log that analyses are updated
+    assert "All analyses updated" in caplog.text
+    analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
+        case_name=ongoing_analysis_case_name
+    )
+
+    # THEN the status of analysis should be updated
+    assert analysis.status == TrailblazerStatus.RUNNING
 
 
 @pytest.mark.parametrize(
     "case_id, status",
     [
-        ("blazinginsect", "running"),
-        ("crackpanda", "failed"),
-        ("fancymole", "completed"),
-        ("happycow", "pending"),
+        ("blazinginsect", TrailblazerStatus.RUNNING),
+        ("crackpanda", TrailblazerStatus.FAILED),
+        ("fancymole", TrailblazerStatus.COMPLETED),
+        ("happycow", TrailblazerStatus.PENDING),
     ],
 )
 def test_ls(
@@ -476,7 +498,7 @@ def test_ls(
     status: str,
     timestamp_now: datetime,
 ):
-    """Test the Traiblazer ls CLI command using different cases and statuses."""
+    """Test the Trailblazer ls CLI command using different cases and statuses."""
     # GIVEN populated Trailblazer database with pending analyses
     trailblazer_db: MockStore = trailblazer_context["trailblazer"]
 
