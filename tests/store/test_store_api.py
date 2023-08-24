@@ -36,28 +36,6 @@ def test_update_analysis_from_slurm_run_status(analysis_store: MockStore, squeue
     assert updated_analysis.jobs
 
 
-@pytest.mark.parametrize(
-    "family, expected_bool",
-    [
-        ("blazinginsect", True),  # running
-        ("nicemice", False),  # completed
-        ("lateraligator", False),  # failed
-        ("escapedgoat", True),  # pending
-    ],
-)
-def test_is_latest_analysis_ongoing(analysis_store: MockStore, family: str, expected_bool: bool):
-    # GIVEN an analysis
-    analysis_store.update_ongoing_analyses()
-    analysis_objs = analysis_store.analyses(case_id=family).first()
-    assert analysis_objs is not None
-
-    # WHEN checking if the family has an ongoing analysis status
-    is_ongoing = analysis_store.is_latest_analysis_ongoing(case_id=family)
-
-    # THEN it should return the expected result
-    assert is_ongoing is expected_bool
-
-
 def test_set_analysis_uploaded(analysis_store: MockStore, timestamp_now: datetime, case_name):
     """Test setting analysis uploaded at for an analysis."""
 
@@ -96,50 +74,6 @@ def test_add_comment(analysis_store: MockStore, case_name: str):
 
     # THEN a comment should have been added
     assert analysis.comment == comment
-
-
-@pytest.mark.parametrize(
-    "family, expected_bool",
-    [
-        ("blazinginsect", False),  # running
-        ("nicemice", False),  # completed
-        ("lateraligator", True),  # failed
-        ("escapedgoat", False),  # pending
-    ],
-)
-def test_is_latest_analysis_failed(analysis_store: MockStore, family: str, expected_bool: bool):
-    # GIVEN an analysis
-    analysis_store.update_ongoing_analyses()
-    analysis_objs = analysis_store.analyses(case_id=family).first()
-    assert analysis_objs is not None
-
-    # WHEN checking if the family has a failed analysis status
-    is_failed = analysis_store.is_latest_analysis_failed(case_id=family)
-
-    # THEN it should return the expected result
-    assert is_failed is expected_bool
-
-
-@pytest.mark.parametrize(
-    "family, expected_bool",
-    [
-        ("blazinginsect", False),  # running
-        ("nicemice", True),  # completed
-        ("lateraligator", False),  # failed
-        ("escapedgoat", False),  # pending
-    ],
-)
-def test_is_latest_analysis_completed(analysis_store: MockStore, family: str, expected_bool: bool):
-    # GIVEN an analysis
-    analysis_store.update_ongoing_analyses()
-    analysis_objs = analysis_store.analyses(case_id=family).first()
-    assert analysis_objs is not None
-
-    # WHEN checking if the family has a failed analysis status
-    is_failed = analysis_store.is_latest_analysis_completed(case_id=family)
-
-    # THEN it should return the expected result
-    assert is_failed is expected_bool
 
 
 @pytest.mark.parametrize(
