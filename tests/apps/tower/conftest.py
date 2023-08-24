@@ -3,7 +3,10 @@ from pathlib import Path
 
 import pytest
 
-from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TOWER_TIMESTAMP_FORMAT_EXTENDED
+from trailblazer.constants import (
+    TOWER_TIMESTAMP_FORMAT,
+    TOWER_TIMESTAMP_FORMAT_EXTENDED,
+)
 
 TOWER_RESPONSE_DIR: Path = Path("tests", "fixtures", "tower")
 TOWER_ID: str = "1m759EPcbjuK7n"
@@ -23,7 +26,7 @@ class TowerTaskResponseFile:
     EMPTY: Path = Path(TOWER_RESPONSE_DIR, "tower_tasks_empty.json")
 
 
-class CaseIDs:
+class CaseName:
     PENDING: str = "cuddlyhen_pending"
     RUNNING: str = "cuddlyhen"
     COMPLETED: str = "cuddlyhen_completed"

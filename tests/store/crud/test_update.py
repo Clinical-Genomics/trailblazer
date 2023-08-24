@@ -8,11 +8,11 @@ from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, User
 
 
-def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
+def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_name: str):
     """Test jobs are successfully updated."""
 
     # GIVEN an analysis with no jobs
-    analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_name=case_id)
+    analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_name=case_name)
     assert not analysis.jobs
 
     # WHEN jobs are updated

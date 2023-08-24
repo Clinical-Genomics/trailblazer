@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import pytest
 
-from tests.apps.tower.conftest import CaseIDs
+from tests.apps.tower.conftest import CaseName
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Analysis
@@ -58,11 +58,11 @@ def test_is_latest_analysis_ongoing(analysis_store: MockStore, family: str, expe
     assert is_ongoing is expected_bool
 
 
-def test_set_analysis_uploaded(analysis_store: MockStore, timestamp_now: datetime, case_id):
+def test_set_analysis_uploaded(analysis_store: MockStore, timestamp_now: datetime, case_name):
     """Test setting analysis uploaded at for an analysis."""
 
     # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_id)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
 
     # WHEN setting an analysis uploaded at
     analysis_store.set_analysis_uploaded(case_id=analysis.family, uploaded_at=timestamp_now)
@@ -71,11 +71,11 @@ def test_set_analysis_uploaded(analysis_store: MockStore, timestamp_now: datetim
     assert analysis.uploaded_at == timestamp_now
 
 
-def test_set_analysis_failed(analysis_store: MockStore, case_id: str):
+def test_set_analysis_failed(analysis_store: MockStore, case_name: str):
     """Test setting analysis to failed for an analysis."""
 
     # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_id)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
 
     # WHEN setting analysis to failed
     analysis_store.set_analysis_status(case_id=analysis.family, status=TrailblazerStatus.FAILED)
@@ -84,11 +84,11 @@ def test_set_analysis_failed(analysis_store: MockStore, case_id: str):
     assert analysis.status == TrailblazerStatus.FAILED
 
 
-def test_add_comment(analysis_store: MockStore, case_id: str):
+def test_add_comment(analysis_store: MockStore, case_name: str):
     """Test adding comment to an analysis object."""
 
     # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_id)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
     comment: str = "test comment"
 
     # WHEN adding a comment
@@ -168,7 +168,7 @@ def test_get_latest_analysis_status(
 
 
 @pytest.mark.parametrize(
-    "case_id, status",
+    "case_name, status",
     [
         ("blazinginsect", TrailblazerStatus.RUNNING),
         ("crackpanda", TrailblazerStatus.FAILED),
@@ -184,10 +184,10 @@ def test_get_latest_analysis_status(
         ("trueferret", TrailblazerStatus.RUNNING),
     ],
 )
-def test_update_run_status(analysis_store: MockStore, case_id: str, status: str):
+def test_update_run_status(analysis_store: MockStore, case_name: str, status: str):
     """Test updating an analysis status."""
     # GIVEN an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_id)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
 
     # WHEN database is updated once
     analysis_store.update_run_status(analysis_id=analysis.id)
@@ -220,11 +220,11 @@ def test_mark_analyses_deleted(analysis_store: MockStore, ongoing_analysis_case_
     assert analysis.is_deleted
 
 
-def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
+def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_name: str):
     """Assess that jobs are successfully updated when using NF Tower."""
 
     # GIVEN an analysis without failed jobs
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_id)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
     assert not analysis.jobs
 
     # WHEN analysis jobs are deleted
@@ -241,20 +241,20 @@ def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], ca
 
 
 @pytest.mark.parametrize(
-    "case_id, status, progress",
+    "case_name, status, progress",
     [
-        (CaseIDs.RUNNING, TrailblazerStatus.RUNNING, 0.15),
-        (CaseIDs.PENDING, TrailblazerStatus.PENDING, 0),
-        (CaseIDs.COMPLETED, TrailblazerStatus.QC, 1),
+        (CaseName.RUNNING, TrailblazerStatus.RUNNING, 0.15),
+        (CaseName.PENDING, TrailblazerStatus.PENDING, 0),
+        (CaseName.COMPLETED, TrailblazerStatus.QC, 1),
     ],
 )
 def test_update_tower_run_status(
-    analysis_store: MockStore, case_id: str, status: str, progress: int
+    analysis_store: MockStore, case_name: str, status: str, progress: int
 ):
     """Assess that an analysis status is successfully updated when using NF Tower."""
 
     # GIVEN an analysis with pending status
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_id)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
     assert analysis.status == TrailblazerStatus.PENDING
 
     # WHEN database is updated once

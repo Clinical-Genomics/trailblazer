@@ -482,7 +482,7 @@ def test_scan(
 
 
 @pytest.mark.parametrize(
-    "case_id, status",
+    "case_name, status",
     [
         ("blazinginsect", TrailblazerStatus.RUNNING),
         ("crackpanda", TrailblazerStatus.FAILED),
@@ -494,7 +494,7 @@ def test_ls(
     cli_runner: CliRunner,
     process_exit_success: int,
     trailblazer_context: Dict[str, MockStore],
-    case_id: str,
+    case_name: str,
     status: str,
     timestamp_now: datetime,
 ):
@@ -514,4 +514,4 @@ def test_ls(
     assert result.exit_code == process_exit_success
 
     # THEN ls print info about cases with that status
-    assert case_id in result.output
+    assert case_name in result.output
