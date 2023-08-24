@@ -63,9 +63,8 @@ def analyses():
     for analysis_obj in query_page.items:
         analysis_data = analysis_obj.to_dict()
         analysis_data["user"] = analysis_obj.user.to_dict() if analysis_obj.user else None
-        analysis_data["failed_jobs"] = [job.to_dict() for job in analysis_obj.jobs]
+        analysis_data["jobs"] = [job.to_dict() for job in analysis_obj.jobs]
         data.append(analysis_data)
-
     return jsonify(analyses=data)
 
 
@@ -81,7 +80,7 @@ def analysis(analysis_id):
         store.commit()
 
     data = analysis_obj.to_dict()
-    data["failed_jobs"] = [job.to_dict() for job in analysis_obj.jobs]
+    data["jobs"] = [job.to_dict() for job in analysis_obj.jobs]
     data["user"] = analysis_obj.user.to_dict() if analysis_obj.user else None
     return jsonify(**data)
 
