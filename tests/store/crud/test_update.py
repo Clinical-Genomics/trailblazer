@@ -11,8 +11,8 @@ from trailblazer.store.models import Analysis, User
 def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
     """Test jobs are successfully updated."""
 
-    # GIVEN an analysis without failed jobs
-    analysis: Analysis = analysis_store.get_latest_analysis(case_id=case_id)
+    # GIVEN an analysis with no jobs
+    analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_name=case_id)
     assert not analysis.jobs
 
     # WHEN jobs are updated
