@@ -1,10 +1,47 @@
-from typing import Callable, Dict, List, Optional
+import subprocess
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional
 
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.slurm.utils import formatters
 from trailblazer.constants import FileFormat, SlurmJobStatus, TrailblazerStatus
 from trailblazer.exc import EmptySqueueError
-from trailblazer.io.controller import ReadStream
+from trailblazer.io.controller import ReadFile, ReadStream
+
+
+def _get_squeue_jobs_flag_input(slurm_job_id_file_content: dict) -> str:
+    """Return SLURM squeue jobs flag formatted input."""
+    job_ids: List[str] = slurm_job_id_file_content.get(next(iter(slurm_job_id_file_content)))
+    joined_job_ids: str = ",".join(map(str, job_ids))
+    return joined_job_ids
+
+
+def get_slurm_squeue_output(slurm_job_id_file: Path) -> Any:
+    """Return squeue output from ongoing analyses in SLURM."""
+    slurm_job_id_file_content: dict = ReadFile.get_content_from_file(
+        file_format=FileFormat.YAML, file_path=slurm_job_id_file
+    )
+    slurm_jobs: str = _get_squeue_jobs_flag_input(
+        slurm_job_id_file_content=slurm_job_id_file_content
+    )
+    return (
+        subprocess.check_output(
+            [
+                "ssh",
+                "hiseq.clinical@hasta.scilifelab.se",
+                "squeue",
+                "--jobs",
+                slurm_jobs,
+                "--states=all",
+                "--format",
+                "%A,%j,%T,%l,%M,%S",
+            ],
+            universal_newlines=True,
+        )
+        .decode("utf-8")
+        .strip()
+        .replace("//n", "/n")
+    )
 
 
 def get_squeue_result(squeue_response: str) -> SqueueResult:

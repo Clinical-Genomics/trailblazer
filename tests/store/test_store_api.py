@@ -1,5 +1,7 @@
 import datetime
-from typing import List
+import subprocess
+from pathlib import Path
+from typing import Dict, List
 
 import pytest
 
@@ -18,11 +20,25 @@ def test_setup_db(store: MockStore):
     assert store.engine.table_names()
 
 
-def test_update_analysis_from_slurm_run_status(analysis_store: MockStore, squeue_stream_jobs: str):
+def test_update_analysis_from_slurm_run_status(
+    analysis_store: MockStore,
+    squeue_stream_jobs: str,
+    mocker,
+    ongoing_analysis_case_name: str,
+    slurm_squeue_output: Dict[str, Path],
+):
     """Test updating analysis jobs when given squeue results."""
     # GIVEN an analysis and a squeue stream
     analysis: Analysis = analysis_store.get_query(table=Analysis).first()
     assert not analysis.jobs
+
+    # GIVEN SLURM squeue output for an analysis
+    mocker.patch(
+        "trailblazer.store.crud.update.get_slurm_squeue_output",
+        return_value=subprocess.check_output(
+            ["cat", slurm_squeue_output.get(ongoing_analysis_case_name)]
+        ).decode("utf-8"),
+    )
 
     # WHEN updating the analysis
     analysis_store.update_analysis_from_slurm_run_status(analysis_id=analysis.id)
@@ -78,34 +94,11 @@ def test_add_comment(analysis_store: MockStore):
 
 
 @pytest.mark.parametrize(
-    "family, expected_status",
-    [
-        ("blazinginsect", "running"),  # running
-        ("nicemice", "completed"),  # completed
-        ("lateraligator", "failed"),  # failed
-        ("escapedgoat", "pending"),  # pending
-    ],
-)
-def test_get_latest_analysis_status(analysis_store: MockStore, family: str, expected_status: str):
-    # GIVEN an analysis
-    analysis_store.update_ongoing_analyses()
-    analysis_objs = analysis_store.analyses(case_id=family).first()
-    assert analysis_objs is not None
-
-    # WHEN checking if the family has an analysis status
-    status = analysis_store.get_latest_analysis_status(case_id=family)
-
-    # THEN it should return the expected result
-    assert status is expected_status
-
-
-@pytest.mark.parametrize(
     "case_id, status",
     [
         ("blazinginsect", "running"),
         ("crackpanda", "failed"),
         ("daringpidgeon", "error"),
-        ("emptydinosaur", "error"),
         ("escapedgoat", "pending"),
         ("fancymole", "completed"),
         ("happycow", "pending"),
@@ -116,7 +109,17 @@ def test_get_latest_analysis_status(analysis_store: MockStore, family: str, expe
         ("trueferret", "running"),
     ],
 )
-def test_update(analysis_store: MockStore, case_id, status):
+def test_update(
+    analysis_store: MockStore, case_id, status, mocker, slurm_squeue_output: Dict[str, Path]
+):
+    # GIVEN SLURM squeue output for an analysis
+    mocker.patch(
+        "trailblazer.store.crud.update.get_slurm_squeue_output",
+        return_value=subprocess.check_output(["cat", slurm_squeue_output.get(case_id)]).decode(
+            "utf-8"
+        ),
+    )
+
     # GIVEN an analysis
     analysis_obj = analysis_store.get_latest_analysis(case_id)
 

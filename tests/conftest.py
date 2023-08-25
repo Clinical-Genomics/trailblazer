@@ -1,15 +1,20 @@
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Generator
+from typing import Dict, Generator, List
 
 import pytest
 
 from tests.apps.tower.conftest import CaseIDs, TowerTaskResponseFile
 from tests.mocks.store_mock import MockStore
-from trailblazer.apps.tower.models import TowerTask
-from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, TrailblazerStatus, FileFormat
-from trailblazer.io.controller import ReadFile
 from tests.store.utils.store_helper import StoreHelpers
+from trailblazer.apps.tower.models import TowerTask
+from trailblazer.constants import (
+    TOWER_TIMESTAMP_FORMAT,
+    FileExtension,
+    FileFormat,
+    TrailblazerStatus,
+)
+from trailblazer.io.controller import ReadFile
 
 
 @pytest.fixture(scope="session", name="username")
@@ -226,6 +231,18 @@ def fixture_case_id() -> str:
     return CaseIDs.RUNNING
 
 
+@pytest.fixture(scope="session")
+def failed_analysis_case_name() -> str:
+    """Return a case name for a failed analysis."""
+    return "crackpanda"
+
+
+@pytest.fixture(scope="session")
+def ongoing_analysis_case_name() -> str:
+    """Return a case name for an ongoing analysis."""
+    return "blazinginsect"
+
+
 @pytest.fixture(name="tower_task", scope="session")
 def fixture_tower_task() -> TowerTask:
     """Return a Tower task."""
@@ -233,3 +250,82 @@ def fixture_tower_task() -> TowerTask:
         file_format=FileFormat.JSON, file_path=TowerTaskResponseFile.RUNNING
     )
     return TowerTask(**tower_task_running_content["tasks"][0]["task"])
+
+
+@pytest.fixture(scope="session")
+def slurm_squeue_output() -> Dict[str, Path]:
+    """Return SLURM squeue output for analysis started via SLURM."""
+    return {
+        "blazinginsect": Path(
+            "tests",
+            "fixtures",
+            "squeue",
+            f"blazinginsect_squeue{FileExtension.CSV}",
+        ).as_posix(),
+        "crackpanda": Path(
+            "tests",
+            "fixtures",
+            "squeue",
+            f"crackpanda_squeue{FileExtension.CSV}",
+        ).as_posix(),
+        "cuddlyhen": Path(
+            "tests",
+            "fixtures",
+            "squeue",
+            f"cuddlyhen_squeue{FileExtension.CSV}",
+        ).as_posix(),
+        "daringpidgeon": Path(
+            "tests",
+            "fixtures",
+            "squeue",
+            f"daringpidgeon_squeue{FileExtension.CSV}",
+        ).as_posix(),
+        "escapedgoat": Path(
+            "tests",
+            "fixtures",
+            "squeue",
+            f"escapegoat_squeue{FileExtension.CSV}",
+        ).as_posix(),
+        "fancymole": Path(
+            "tests",
+            "fixtures",
+            "squeue",
+            f"fancymole_squeue{FileExtension.CSV}",
+        ).as_posix(),
+        "happycow": Path(
+            "tests",
+            "fixtures",
+            "squeue",
+            f"happycow_squeue{FileExtension.CSV}",
+        ).as_posix(),
+        "lateraligator": Path(
+            "tests",
+            "fixtures",
+            "squeue",
+            f"lateraligator_squeue{FileExtension.CSV}",
+        ).as_posix(),
+        "liberatedunicorn": Path(
+            "tests",
+            "fixtures",
+            "squeue",
+            f"liberatedunicorn_squeue{FileExtension.CSV}",
+        ).as_posix(),
+        "nicemice": Path(
+            "tests",
+            "fixtures",
+            "squeue",
+            f"nicemice_squeue{FileExtension.CSV}",
+        ).as_posix(),
+        "rarekitten": Path(
+            "tests",
+            "fixtures",
+            "squeue",
+            f"rarekitten_squeue{FileExtension.CSV}",
+        ).as_posix(),
+        "trueferret": Path(
+            "tests",
+            "fixtures",
+            "squeue",
+            f"trueferret_squeue{FileExtension.CSV}",
+        ).as_posix(),
+    }
