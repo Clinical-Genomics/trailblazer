@@ -91,7 +91,7 @@ def test_set_analysis_status(
     # THEN command runs successfully
     assert result.exit_code == process_exit_success
 
-    # THEN status will be set to COMPLETED
+    # THEN status will be set to "qc
     analysis = trailblazer_db.get_latest_analysis_for_case(case_name=failed_analysis_case_name)
     assert analysis.status == TrailblazerStatus.QC
 
@@ -277,6 +277,9 @@ def test_delete_ongoing_force(
 
     # THEN log informs user that Trailblazer is deleting analysis
     assert "Deleting" in caplog.text
+
+    # THEN the analysis should have been deleted from the database
+    assert not trailblazer_db.get_latest_analysis_for_case(case_name=analysis.family)
 
 
 def test_get_user_not_in_database(
