@@ -78,28 +78,6 @@ def test_add_comment(analysis_store: MockStore):
 
 
 @pytest.mark.parametrize(
-    "family, expected_status",
-    [
-        ("blazinginsect", "running"),  # running
-        ("nicemice", "completed"),  # completed
-        ("lateraligator", "failed"),  # failed
-        ("escapedgoat", "pending"),  # pending
-    ],
-)
-def test_get_latest_analysis_status(analysis_store: MockStore, family: str, expected_status: str):
-    # GIVEN an analysis
-    analysis_store.update_ongoing_analyses()
-    analysis_objs = analysis_store.analyses(case_id=family).first()
-    assert analysis_objs is not None
-
-    # WHEN checking if the family has an analysis status
-    status = analysis_store.get_latest_analysis_status(case_id=family)
-
-    # THEN it should return the expected result
-    assert status is expected_status
-
-
-@pytest.mark.parametrize(
     "case_id, status",
     [
         ("blazinginsect", "running"),
