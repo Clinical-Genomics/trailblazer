@@ -147,7 +147,7 @@ class BaseHandler(CoreHandler):
         analysis.delete()
         self.commit()
 
-    def update_ongoing_analyses(self, ssh: bool = False) -> None:
+    def update_ongoing_analyses(self) -> None:
         """Iterate over all analysis with ongoing status and query SLURM for current progress."""
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
