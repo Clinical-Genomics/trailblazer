@@ -84,12 +84,6 @@ class BaseHandler(CoreHandler):
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def get_latest_analysis_status(self, case_id: str) -> Optional[str]:
-        """Get the latest analysis status for a case name."""
-        latest_analysis = self.get_latest_analysis_for_case(case_name=case_id)
-        if latest_analysis:
-            return latest_analysis.status
-
     def mark_analyses_deleted(self, case_id: str) -> Query:
         """mark analyses connected to a case as deleted"""
         old_analyses = self.analyses(case_id=case_id)

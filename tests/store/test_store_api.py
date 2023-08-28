@@ -77,31 +77,6 @@ def test_add_comment(analysis_store: MockStore, case_name: str):
 
 
 @pytest.mark.parametrize(
-    "case_name, expected_status",
-    [
-        ("blazinginsect", TrailblazerStatus.RUNNING),
-        ("nicemice", TrailblazerStatus.COMPLETED),
-        ("lateraligator", TrailblazerStatus.FAILED),
-        ("escapedgoat", TrailblazerStatus.PENDING),
-    ],
-)
-def test_get_latest_analysis_status(
-    analysis_store: MockStore, case_name: str, expected_status: str
-):
-    """Test getting the status for the latest case analysis."""
-    # GIVEN an analysis
-    analysis_store.update_ongoing_analyses()
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
-    assert analysis is not None
-
-    # WHEN getting analysis status for case
-    status: Optional[str] = analysis_store.get_latest_analysis_status(case_id=case_name)
-
-    # THEN it should return the expected result
-    assert status == expected_status
-
-
-@pytest.mark.parametrize(
     "case_name, status",
     [
         ("blazinginsect", TrailblazerStatus.RUNNING),
