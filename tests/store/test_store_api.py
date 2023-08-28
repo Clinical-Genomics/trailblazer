@@ -10,6 +10,8 @@ from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Analysis
 
+FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH: str = "trailblazer.store.crud.update.get_slurm_squeue_output"
+
 
 def test_setup_db(store: MockStore):
     """Test store contains tables."""
@@ -34,7 +36,7 @@ def test_update_analysis_from_slurm_run_status(
 
     # GIVEN SLURM squeue output for an analysis
     mocker.patch(
-        "trailblazer.store.crud.update.get_slurm_squeue_output",
+        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
         return_value=subprocess.check_output(
             ["cat", slurm_squeue_output.get(ongoing_analysis_case_name)]
         ).decode("utf-8"),
@@ -114,7 +116,7 @@ def test_update(
 ):
     # GIVEN SLURM squeue output for an analysis
     mocker.patch(
-        "trailblazer.store.crud.update.get_slurm_squeue_output",
+        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
         return_value=subprocess.check_output(["cat", slurm_squeue_output.get(case_id)]).decode(
             "utf-8"
         ),

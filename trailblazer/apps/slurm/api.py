@@ -9,16 +9,15 @@ from trailblazer.exc import EmptySqueueError
 from trailblazer.io.controller import ReadFile, ReadStream
 
 
-def _get_squeue_jobs_flag_input(slurm_job_id_file_content: dict) -> str:
+def _get_squeue_jobs_flag_input(slurm_job_id_file_content: Dict[str, List[str]]) -> str:
     """Return SLURM squeue jobs flag formatted input."""
     job_ids: List[str] = slurm_job_id_file_content.get(next(iter(slurm_job_id_file_content)))
-    joined_job_ids: str = ",".join(map(str, job_ids))
-    return joined_job_ids
+    return ",".join(map(str, job_ids))
 
 
 def get_slurm_squeue_output(slurm_job_id_file: Path) -> Any:
     """Return squeue output from ongoing analyses in SLURM."""
-    slurm_job_id_file_content: dict = ReadFile.get_content_from_file(
+    slurm_job_id_file_content: Dict[str, List[str]] = ReadFile.get_content_from_file(
         file_format=FileFormat.YAML, file_path=slurm_job_id_file
     )
     slurm_jobs: str = _get_squeue_jobs_flag_input(

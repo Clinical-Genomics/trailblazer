@@ -3,6 +3,7 @@ from typing import Dict, Optional
 import pytest
 
 from trailblazer.apps.slurm.api import (
+    _get_squeue_jobs_flag_input,
     get_current_analysis_status,
     get_squeue_result,
     reformat_squeue_result_job_step,
@@ -20,6 +21,18 @@ def test_get_squeue_result(squeue_stream_jobs):
     # THEN it should return squeue results and jobs
     assert isinstance(squeue_result, SqueueResult)
     assert isinstance(squeue_result.jobs, list)
+
+
+def test_get_squeue_jobs_flag_input(case_id: str):
+    """Test return of squeue jobs flag formatted string."""
+    # GIVEN a job ids
+    job_id: dict = {case_id: [1, 2]}
+
+    # WHEN getting the squeue jobs flag input
+    squeue_job_input: str = _get_squeue_jobs_flag_input(slurm_job_id_file_content=job_id)
+
+    # THEN it should return job ids as comma joined string
+    assert squeue_job_input == "1,2"
 
 
 @pytest.mark.parametrize(

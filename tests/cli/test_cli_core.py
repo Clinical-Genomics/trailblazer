@@ -26,6 +26,8 @@ from trailblazer.constants import SlurmJobStatus, TrailblazerStatus
 from trailblazer.store.api import Store
 from trailblazer.store.models import Analysis
 
+FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH: str = "trailblazer.store.crud.update.get_slurm_squeue_output"
+
 
 def test_base(cli_runner):
     # GIVEN the cli
@@ -125,7 +127,7 @@ def test_cancel_not_running(
 ):
     # GIVEN SLURM squeue output for an analysis
     mocker.patch(
-        "trailblazer.store.crud.update.get_slurm_squeue_output",
+        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
         return_value=subprocess.check_output(
             ["cat", slurm_squeue_output.get(failed_analysis_case_name)]
         ).decode("utf-8"),
@@ -158,7 +160,7 @@ def test_cancel_ongoing_analysis(
     """Test all ongoing analysis jobs are cancelled."""
     # GIVEN SLURM squeue output for an analysis
     mocker.patch(
-        "trailblazer.store.crud.update.get_slurm_squeue_output",
+        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
         return_value=subprocess.check_output(
             ["cat", slurm_squeue_output.get(ongoing_analysis_case_name)]
         ).decode("utf-8"),
@@ -402,7 +404,7 @@ def test_scan(
     with caplog.at_level("INFO"):
         # GIVEN SLURM squeue output for an analysis
         mocker.patch(
-            "trailblazer.store.crud.update.get_slurm_squeue_output",
+            FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
             return_value=subprocess.check_output(
                 ["cat", slurm_squeue_output.get(ongoing_analysis_case_name)]
             ).decode("utf-8"),
@@ -449,7 +451,7 @@ def test_ls(
     """Test the Traiblazer ls CLI command using different cases and statuses."""
     # GIVEN SLURM squeue output for an analysis
     mocker.patch(
-        "trailblazer.store.crud.update.get_slurm_squeue_output",
+        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
         return_value=subprocess.check_output(["cat", slurm_squeue_output.get(case_name)]).decode(
             "utf-8"
         ),

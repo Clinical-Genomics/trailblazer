@@ -123,7 +123,7 @@ def update_analysis(analysis_id):
     """Update a specific analysis"""
     try:
         process = multiprocessing.Process(
-            target=store.update_run_status, kwargs={"analysis_id": analysis_id, "ssh": True}
+            target=store.update_run_status, kwargs={"analysis_id": analysis_id}
         )
         process.start()
         return jsonify("Success! Update request sent"), 201

@@ -152,13 +152,13 @@ class BaseHandler(CoreHandler):
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
             try:
-                self.update_run_status(analysis_id=analysis_obj.id, ssh=ssh)
+                self.update_run_status(analysis_id=analysis_obj.id)
             except Exception as error:
                 LOG.error(
                     f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {type(error).__name__}"
                 )
 
-    def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
+    def update_run_status(self, analysis_id: int) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
@@ -175,7 +175,7 @@ class BaseHandler(CoreHandler):
         """
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         try:
-            self._update_analysis_status_from_slurm_jobs(analysis=analysis, analysis_id=analysis_id)
+            self._update_analysis_status_from_slurm_jobs(analysis=analysis)
         except Exception as exception:
             LOG.error(
                 f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"
