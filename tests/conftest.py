@@ -4,7 +4,7 @@ from typing import Dict, Generator, List
 
 import pytest
 
-from tests.apps.tower.conftest import CaseIDs, TowerTaskResponseFile
+from tests.apps.tower.conftest import CaseName, TowerTaskResponseFile
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
 from trailblazer.apps.tower.models import TowerTask
@@ -132,7 +132,7 @@ def fixture_raw_analyses(analysis_data: Dict[str, List[Dict]]) -> List[dict]:
     """Return raw analyses data."""
     analyses: List[dict] = []
     for analysis in analysis_data["analyses"]:
-        analysis["case_id"] = analysis["family"]
+        analysis["case_name"] = analysis["family"]
         analyses.append(analysis)
     return analyses
 
@@ -225,10 +225,16 @@ def fixture_tower_task_name() -> str:
     return "NFCORE_RNAFUSION:RNAFUSION:INPUT_CHECK:SAMPLESHEET_CHECK"
 
 
-@pytest.fixture(name="case_id", scope="session")
-def fixture_case_id() -> str:
-    """Return a case ID."""
-    return CaseIDs.RUNNING
+@pytest.fixture(scope="session")
+def case_name() -> str:
+    """Return a case name."""
+    return CaseName.RUNNING
+
+
+@pytest.fixture(scope="session")
+def case_name_not_in_db() -> str:
+    """Return a case name not present in database."""
+    return "case_name_not_in_db"
 
 
 @pytest.fixture(scope="session")

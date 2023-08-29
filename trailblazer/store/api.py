@@ -82,15 +82,6 @@ class BaseHandler(CoreHandler):
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def get_latest_analysis(self, case_id: str) -> Optional[Analysis]:
-        return self.analyses(case_id=case_id).first()
-
-    def get_latest_analysis_status(self, case_id: str) -> Optional[str]:
-        """Get the latest analysis status for a case_id"""
-        latest_analysis = self.get_latest_analysis(case_id=case_id)
-        if latest_analysis:
-            return latest_analysis.status
-
     def mark_analyses_deleted(self, case_id: str) -> Query:
         """mark analyses connected to a case as deleted"""
         old_analyses = self.analyses(case_id=case_id)
@@ -109,29 +100,27 @@ class BaseHandler(CoreHandler):
 
     def set_analysis_uploaded(self, case_id: str, uploaded_at: dt.datetime) -> None:
         """Setting analysis uploaded at."""
-        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
-        analysis_obj.uploaded_at: dt.datetime = uploaded_at
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_name=case_id)
+        analysis.uploaded_at = uploaded_at
         self.commit()
 
     def set_analysis_status(self, case_id: str, status: str):
         """Setting analysis status."""
-        status = status.lower()
+        status: str = status.lower()
         if status not in set(TrailblazerStatus.statuses()):
             raise ValueError(f"Invalid status. Allowed values are: {TrailblazerStatus.statuses()}")
-        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
-        analysis_obj.status: str = status
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_name=case_id)
+        analysis.status = status
         self.commit()
-        LOG.info(f"{analysis_obj.family} - Status set to {status.upper()}")
+        LOG.info(f"{analysis.family} - Status set to {status.upper()}")
 
     def add_comment(self, case_id: str, comment: str):
-        analysis_obj: Analysis = self.get_latest_analysis(case_id=case_id)
-        analysis_obj.comment: str = (
-            " ".join([analysis_obj.comment, comment]) if analysis_obj.comment else comment
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_name=case_id)
+        analysis.comment: str = (
+            " ".join([analysis.comment, comment]) if analysis.comment else comment
         )
-
         self.commit()
-
-        LOG.info(f"Adding comment {comment} to analysis {analysis_obj.family}")
+        LOG.info(f"Adding comment {comment} to analysis {analysis.family}")
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis output."""

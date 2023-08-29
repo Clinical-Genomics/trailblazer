@@ -2,7 +2,7 @@ import datetime
 import multiprocessing
 import os
 from http import HTTPStatus
-from typing import Dict, List, Mapping, Union
+from typing import Dict, List, Mapping, Optional, Union
 
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
@@ -192,13 +192,15 @@ def post_query_analyses():
 
 @blueprint.route("/get-latest-analysis", methods=["POST"])
 def post_get_latest_analysis():
-    """Return latest analysis entry for specified case"""
-    content = request.json
-    analysis_obj = store.get_latest_analysis(case_id=content.get("case_id"))
-    if analysis_obj:
-        data = stringify_timestamps(analysis_obj.to_dict())
-        return jsonify(**data), 200
-    return jsonify(None), 200
+    """Return latest analysis entry for specified case name."""
+    post_request: Response.json = request.json
+    latest_case_analysis: Optional[Analysis] = store.get_latest_analysis_for_case(
+        case_name=post_request.get("case_id")
+    )
+    if latest_case_analysis:
+        raw_analysis: Dict[str, str] = stringify_timestamps(latest_case_analysis.to_dict())
+        return jsonify(**raw_analysis), HTTPStatus.OK
+    return jsonify(None), HTTPStatus.OK
 
 
 @blueprint.route("/find-analysis", methods=["POST"])
