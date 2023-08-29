@@ -1,9 +1,9 @@
 import datetime
-from typing import List
+from typing import List, Optional
 
 import pytest
 
-from tests.apps.tower.conftest import CaseIDs
+from tests.apps.tower.conftest import CaseName
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Analysis
@@ -36,100 +36,104 @@ def test_update_analysis_from_slurm_run_status(analysis_store: MockStore, squeue
     assert updated_analysis.jobs
 
 
-def test_set_analysis_uploaded(analysis_store: MockStore, timestamp_now: datetime):
+def test_set_analysis_uploaded(analysis_store: MockStore, timestamp_now: datetime, case_name):
     """Test setting analysis uploaded at for an analysis."""
 
     # GIVEN a store with an analysis
-    analysis_obj: Analysis = analysis_store.analyses().first()
-    uploaded_at: datetime = timestamp_now
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
 
     # WHEN setting an analysis uploaded at
-    analysis_store.set_analysis_uploaded(case_id=analysis_obj.family, uploaded_at=uploaded_at)
+    analysis_store.set_analysis_uploaded(case_id=analysis.family, uploaded_at=timestamp_now)
 
     # THEN the column uploaded_at should be updated
-    assert analysis_obj.uploaded_at == uploaded_at
+    assert analysis.uploaded_at == timestamp_now
 
 
-def test_set_analysis_failed(analysis_store: MockStore):
+def test_set_analysis_failed(analysis_store: MockStore, case_name: str):
     """Test setting analysis to failed for an analysis."""
 
     # GIVEN a store with an analysis
-    analysis_obj: Analysis = analysis_store.analyses().first()
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
 
     # WHEN setting analysis to failed
-    analysis_store.set_analysis_status(case_id=analysis_obj.family, status="failed")
+    analysis_store.set_analysis_status(case_id=analysis.family, status=TrailblazerStatus.FAILED)
 
-    # THEN the column status should be updated with failed.
-    assert analysis_obj.status == "failed"
+    # THEN the analysis status should be updated to failed.
+    assert analysis.status == TrailblazerStatus.FAILED
 
 
-def test_add_comment(analysis_store: MockStore):
+def test_add_comment(analysis_store: MockStore, case_name: str):
     """Test adding comment to an analysis object."""
 
     # GIVEN a store with an analysis
-    analysis_obj: Analysis = analysis_store.analyses().first()
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
     comment: str = "test comment"
 
     # WHEN adding a comment
-    analysis_store.add_comment(case_id=analysis_obj.family, comment=comment)
+    analysis_store.add_comment(case_id=analysis.family, comment=comment)
 
     # THEN a comment should have been added
-    assert analysis_obj.comment == comment
+    assert analysis.comment == comment
 
 
 @pytest.mark.parametrize(
-    "case_id, status",
+    "case_name, status",
     [
-        ("blazinginsect", "running"),
-        ("crackpanda", "failed"),
-        ("daringpidgeon", "error"),
-        ("emptydinosaur", "error"),
-        ("escapedgoat", "pending"),
-        ("fancymole", "completed"),
-        ("happycow", "pending"),
-        ("lateraligator", "failed"),
-        ("liberatedunicorn", "error"),
-        ("nicemice", "completed"),
-        ("rarekitten", "canceled"),
-        ("trueferret", "running"),
+        ("blazinginsect", TrailblazerStatus.RUNNING),
+        ("crackpanda", TrailblazerStatus.FAILED),
+        ("daringpidgeon", TrailblazerStatus.ERROR),
+        ("emptydinosaur", TrailblazerStatus.ERROR),
+        ("escapedgoat", TrailblazerStatus.PENDING),
+        ("fancymole", TrailblazerStatus.COMPLETED),
+        ("happycow", TrailblazerStatus.PENDING),
+        ("lateraligator", TrailblazerStatus.FAILED),
+        ("liberatedunicorn", TrailblazerStatus.ERROR),
+        ("nicemice", TrailblazerStatus.COMPLETED),
+        ("rarekitten", TrailblazerStatus.CANCELLED),
+        ("trueferret", TrailblazerStatus.RUNNING),
     ],
 )
-def test_update(analysis_store: MockStore, case_id, status):
+def test_update_run_status(analysis_store: MockStore, case_name: str, status: str):
+    """Test updating an analysis status."""
     # GIVEN an analysis
-    analysis_obj = analysis_store.get_latest_analysis(case_id)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
 
     # WHEN database is updated once
-    analysis_store.update_run_status(analysis_obj.id)
+    analysis_store.update_run_status(analysis_id=analysis.id)
 
-    # THEN analysis status is changed to what is expected
-    assert analysis_obj.status == status
+    # THEN analysis status is updated
+    assert analysis.status == status
 
     # WHEN database is updated a second time
-    analysis_store.update_run_status(analysis_obj.id)
+    analysis_store.update_run_status(analysis_id=analysis.id)
 
-    # THEN the status is still what is expected, and no database errors were raised
-    assert analysis_obj.status == status
+    # THEN the status is unchanged, and no database errors were raised
+    assert analysis.status == status
 
 
-def test_mark_analyses_deleted(analysis_store: MockStore):
-    # GIVEN case_id for a case that is not deleted
-    case_id = "liberatedunicorn"
-    analysis_obj = analysis_store.get_latest_analysis(case_id)
-    assert not analysis_obj.is_deleted
+def test_mark_analyses_deleted(analysis_store: MockStore, ongoing_analysis_case_name: str):
+    """Test marking an ongoing analysis as deleted."""
+    # GIVEN case name for a case that is not deleted
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+        case_name=ongoing_analysis_case_name
+    )
+    assert not analysis.is_deleted
 
-    # WHEN running command
-    analysis_store.mark_analyses_deleted(case_id=case_id)
-    analysis_obj = analysis_store.get_latest_analysis(case_id)
+    # WHEN marking analysis as deleted
+    analysis_store.mark_analyses_deleted(case_id=ongoing_analysis_case_name)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+        case_name=ongoing_analysis_case_name
+    )
 
     # THEN analysis is marked deleted
-    assert analysis_obj.is_deleted
+    assert analysis.is_deleted
 
 
-def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
+def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_name: str):
     """Assess that jobs are successfully updated when using NF Tower."""
 
     # GIVEN an analysis without failed jobs
-    analysis: Analysis = analysis_store.get_latest_analysis(case_id=case_id)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
     assert not analysis.jobs
 
     # WHEN analysis jobs are deleted
@@ -141,37 +145,37 @@ def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], ca
     # WHEN jobs are updated
     analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
 
-    # THEN failed jobs should be updated
+    # THEN jobs should be updated
     assert len(analysis.jobs) == 2
 
 
 @pytest.mark.parametrize(
-    "case_id, status, progress",
+    "case_name, status, progress",
     [
-        (CaseIDs.RUNNING, TrailblazerStatus.RUNNING, 0.15),
-        (CaseIDs.PENDING, TrailblazerStatus.PENDING, 0),
-        (CaseIDs.COMPLETED, TrailblazerStatus.QC, 1),
+        (CaseName.RUNNING, TrailblazerStatus.RUNNING, 0.15),
+        (CaseName.PENDING, TrailblazerStatus.PENDING, 0),
+        (CaseName.COMPLETED, TrailblazerStatus.QC, 1),
     ],
 )
 def test_update_tower_run_status(
-    analysis_store: MockStore, case_id: str, status: str, progress: int
+    analysis_store: MockStore, case_name: str, status: str, progress: int
 ):
     """Assess that an analysis status is successfully updated when using NF Tower."""
 
     # GIVEN an analysis with pending status
-    analysis: Analysis = analysis_store.get_latest_analysis(case_id=case_id)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
     assert analysis.status == TrailblazerStatus.PENDING
 
     # WHEN database is updated once
     analysis_store.update_run_status(analysis_id=analysis.id)
 
-    # THEN analysis status is changed to what is expected
+    # THEN analysis status is updated
     assert analysis.status == status
     assert analysis.progress == progress
 
     # WHEN database is updated a second time
     analysis_store.update_run_status(analysis_id=analysis.id)
 
-    # THEN the status is still as before, and no database errors were raised
+    # THEN the status is unchanged, and no database errors were raised
     assert analysis.status == status
     assert analysis.progress == progress
