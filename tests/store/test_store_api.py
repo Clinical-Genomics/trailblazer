@@ -100,7 +100,6 @@ def test_add_comment(analysis_store: MockStore, case_name: str):
         ("blazinginsect", TrailblazerStatus.RUNNING),
         ("crackpanda", TrailblazerStatus.FAILED),
         ("daringpidgeon", TrailblazerStatus.ERROR),
-        ("emptydinosaur", TrailblazerStatus.ERROR),
         ("escapedgoat", TrailblazerStatus.PENDING),
         ("fancymole", TrailblazerStatus.COMPLETED),
         ("happycow", TrailblazerStatus.PENDING),

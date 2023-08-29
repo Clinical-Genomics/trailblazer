@@ -23,10 +23,10 @@ def test_get_squeue_result(squeue_stream_jobs):
     assert isinstance(squeue_result.jobs, list)
 
 
-def test_get_squeue_jobs_flag_input(case_id: str):
+def test_get_squeue_jobs_flag_input(case_name: str):
     """Test return of squeue jobs flag formatted string."""
     # GIVEN a job ids
-    job_id: dict = {case_id: [1, 2]}
+    job_id: dict = {case_name: [1, 2]}
 
     # WHEN getting the squeue jobs flag input
     squeue_job_input: str = _get_squeue_jobs_flag_input(slurm_job_id_file_content=job_id)
