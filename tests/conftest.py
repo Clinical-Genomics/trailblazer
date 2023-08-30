@@ -265,20 +265,24 @@ def fixture_tower_task() -> TowerTask:
 
 
 @pytest.fixture(scope="session")
-def slurm_squeue_output(squeue_dir: Path) -> Dict[str, Path]:
+def slurm_squeue_output(squeue_dir: Path) -> Dict[str, str]:
     """Return SLURM squeue output for analysis started via SLURM."""
     file_postfix: str = f"squeue{FileExtension.CSV}"
+    case_names: List[str] = [
+        "blazinginsect",
+        "crackpanda",
+        "cuddlyhen",
+        "daringpidgeon",
+        "escapedgoat",
+        "fancymole",
+        "happycow",
+        "lateraligator",
+        "liberatedunicorn",
+        "nicemice",
+        "rarekitten",
+        "trueferret",
+    ]
     return {
-        "blazinginsect": Path(squeue_dir, f"blazinginsect_{file_postfix}").as_posix(),
-        "crackpanda": Path(squeue_dir, f"crackpanda_{file_postfix}").as_posix(),
-        "cuddlyhen": Path(squeue_dir, f"cuddlyhen_{file_postfix}").as_posix(),
-        "daringpidgeon": Path(squeue_dir, f"daringpidgeon_{file_postfix}").as_posix(),
-        "escapedgoat": Path(squeue_dir, f"escapegoat_{file_postfix}").as_posix(),
-        "fancymole": Path(squeue_dir, f"fancymole_{file_postfix}").as_posix(),
-        "happycow": Path(squeue_dir, f"happycow_{file_postfix}").as_posix(),
-        "lateraligator": Path(squeue_dir, f"lateraligator_{file_postfix}").as_posix(),
-        "liberatedunicorn": Path(squeue_dir, f"liberatedunicorn_{file_postfix}").as_posix(),
-        "nicemice": Path(squeue_dir, f"nicemice_{file_postfix}").as_posix(),
-        "rarekitten": Path(squeue_dir, f"rarekitten_{file_postfix}").as_posix(),
-        "trueferret": Path(squeue_dir, f"trueferret_{file_postfix}").as_posix(),
+        case_name: Path(squeue_dir, f"{case_name}_{file_postfix}").as_posix()
+        for case_name in case_names
     }

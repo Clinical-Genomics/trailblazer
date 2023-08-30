@@ -55,7 +55,7 @@ class UpdateHandler(BaseHandler_2):
         ]
         self.commit()
 
-    def _update_analysis_status_from_slurm_jobs(
+    def _update_analysis_from_slurm_squeue_output(
         self, analysis: Analysis, use_ssh: bool = False
     ) -> None:
         """Update analysis status based on current SLURM jobs status."""

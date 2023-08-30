@@ -1,6 +1,5 @@
 import subprocess
 from datetime import datetime
-from pathlib import Path
 from typing import Dict, Optional
 
 import pytest
@@ -152,7 +151,7 @@ def test_cancel_not_running(
     failed_analysis_case_name: str,
     mocker,
     process_exit_success: int,
-    slurm_squeue_output: Dict[str, Path],
+    slurm_squeue_output: Dict[str, str],
 ):
     """Test cancelling an analysis, which is not running."""
     caplog.set_level("ERROR")
@@ -188,7 +187,7 @@ def test_cancel_ongoing_analysis(
     caplog,
     mocker,
     ongoing_analysis_case_name: str,
-    slurm_squeue_output: Dict[str, Path],
+    slurm_squeue_output: Dict[str, str],
     process_exit_success: int,
 ):
     """Test all ongoing analysis jobs are cancelled."""
@@ -483,7 +482,7 @@ def test_scan(
     caplog,
     mocker,
     ongoing_analysis_case_name: str,
-    slurm_squeue_output: Dict[str, Path],
+    slurm_squeue_output: Dict[str, str],
 ):
     """Test scanning for analyses and updating analysis status."""
     caplog.set_level("INFO")
@@ -534,7 +533,7 @@ def test_ls(
     case_name: str,
     mocker,
     status: str,
-    slurm_squeue_output: Dict[str, Path],
+    slurm_squeue_output: Dict[str, str],
     timestamp_now: datetime,
 ):
     """Test the Trailblazer ls CLI command using different cases and statuses."""

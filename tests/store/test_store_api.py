@@ -1,6 +1,5 @@
 import datetime
 import subprocess
-from pathlib import Path
 from typing import Dict, List, Optional
 
 import pytest
@@ -27,7 +26,7 @@ def test_update_analysis_from_slurm_run_status(
     squeue_stream_jobs: str,
     mocker,
     ongoing_analysis_case_name: str,
-    slurm_squeue_output: Dict[str, Path],
+    slurm_squeue_output: Dict[str, str],
 ):
     """Test updating analysis jobs when given squeue results."""
     # GIVEN an analysis and a squeue stream
@@ -43,7 +42,7 @@ def test_update_analysis_from_slurm_run_status(
     )
 
     # WHEN updating the analysis
-    analysis_store.update_analysis_from_slurm_run_status(analysis_id=analysis.id)
+    analysis_store.update_analysis_from_slurm_output(analysis_id=analysis.id)
     updated_analysis: Analysis = analysis_store.get_analysis(
         case_name=analysis.family,
         started_at=analysis.started_at,
@@ -115,7 +114,7 @@ def test_update_run_status(
     case_name: str,
     status: str,
     mocker,
-    slurm_squeue_output: Dict[str, Path],
+    slurm_squeue_output: Dict[str, str],
 ):
     """Test updating an analysis status."""
     # GIVEN SLURM squeue output for an analysis

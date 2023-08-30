@@ -156,15 +156,13 @@ class BaseHandler(CoreHandler):
         if analysis.workflow_manager == WorkflowManager.TOWER.value:
             self.update_tower_run_status(analysis_id=analysis_id)
         elif analysis.workflow_manager == WorkflowManager.SLURM.value:
-            self.update_analysis_from_slurm_run_status(analysis_id=analysis_id, use_ssh=use_ssh)
+            self.update_analysis_from_slurm_output(analysis_id=analysis_id, use_ssh=use_ssh)
 
-    def update_analysis_from_slurm_run_status(
-        self, analysis_id: int, use_ssh: bool = False
-    ) -> None:
-        """Query slurm for entries related to given analysis, and update the analysis in the database."""
+    def update_analysis_from_slurm_output(self, analysis_id: int, use_ssh: bool = False) -> None:
+        """Query SLURM for entries related to given analysis, and update the analysis in the database."""
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         try:
-            self._update_analysis_status_from_slurm_jobs(analysis=analysis, use_ssh=use_ssh)
+            self._update_analysis_from_slurm_squeue_output(analysis=analysis, use_ssh=use_ssh)
         except Exception as exception:
             LOG.error(
                 f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"
