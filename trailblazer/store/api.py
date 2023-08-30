@@ -136,18 +136,18 @@ class BaseHandler(CoreHandler):
         analysis.delete()
         self.commit()
 
-    def update_ongoing_analyses(self) -> None:
+    def update_ongoing_analyses(self, use_ssh: bool = False) -> None:
         """Iterate over all analysis with ongoing status and query SLURM for current progress."""
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
             try:
-                self.update_run_status(analysis_id=analysis_obj.id)
+                self.update_run_status(analysis_id=analysis_obj.id, use_ssh=use_ssh)
             except Exception as error:
                 LOG.error(
                     f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {type(error).__name__}"
                 )
 
-    def update_run_status(self, analysis_id: int) -> None:
+    def update_run_status(self, analysis_id: int, use_ssh: bool = False) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
@@ -156,15 +156,17 @@ class BaseHandler(CoreHandler):
         if analysis.workflow_manager == WorkflowManager.TOWER.value:
             self.update_tower_run_status(analysis_id=analysis_id)
         elif analysis.workflow_manager == WorkflowManager.SLURM.value:
-            self.update_analysis_from_slurm_run_status(analysis_id=analysis_id)
+            self.update_analysis_from_slurm_run_status(analysis_id=analysis_id, use_ssh=use_ssh)
 
-    def update_analysis_from_slurm_run_status(self, analysis_id: int) -> None:
+    def update_analysis_from_slurm_run_status(
+        self, analysis_id: int, use_ssh: bool = False
+    ) -> None:
         """Query slurm for entries related to given analysis, and update the analysis in the database.
         Raises: Exception if unable to parse SLURM jobs
         """
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         try:
-            self._update_analysis_status_from_slurm_jobs(analysis=analysis)
+            self._update_analysis_status_from_slurm_jobs(analysis=analysis, use_ssh=use_ssh)
         except Exception as exception:
             LOG.error(
                 f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"

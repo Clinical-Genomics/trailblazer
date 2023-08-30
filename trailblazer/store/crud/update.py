@@ -55,10 +55,14 @@ class UpdateHandler(BaseHandler_2):
         ]
         self.commit()
 
-    def _update_analysis_status_from_slurm_jobs(self, analysis: Analysis) -> None:
+    def _update_analysis_status_from_slurm_jobs(
+        self, analysis: Analysis, use_ssh: bool = False
+    ) -> None:
         """Update analysis status based on current SLURM jobs status."""
         squeue_result: SqueueResult = get_squeue_result(
-            squeue_response=get_slurm_squeue_output(slurm_job_id_file=Path(analysis.config_path))
+            squeue_response=get_slurm_squeue_output(
+                slurm_job_id_file=Path(analysis.config_path, use_ssh=use_ssh)
+            )
         )
         self.update_analysis_jobs_from_slurm_jobs(analysis=analysis, squeue_result=squeue_result)
         LOG.info(f"Status in SLURM: {analysis.family} - {analysis.id}")

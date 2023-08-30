@@ -1,6 +1,6 @@
 import subprocess
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional
 
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.slurm.utils import formatters
@@ -17,7 +17,7 @@ def _get_squeue_jobs_flag_input(slurm_job_id_file_content: Dict[str, List[str]])
     return ",".join(job_ids)
 
 
-def get_slurm_squeue_output(slurm_job_id_file: Path) -> Any:
+def get_slurm_squeue_output(slurm_job_id_file: Path, use_ssh: bool = False) -> str:
     """Return squeue output from ongoing analyses in SLURM."""
     slurm_job_id_file_content: Dict[str, List[str]] = ReadFile.get_content_from_file(
         file_format=FileFormat.YAML, file_path=slurm_job_id_file
@@ -25,24 +25,35 @@ def get_slurm_squeue_output(slurm_job_id_file: Path) -> Any:
     slurm_jobs: str = _get_squeue_jobs_flag_input(
         slurm_job_id_file_content=slurm_job_id_file_content
     )
-    return (
-        subprocess.check_output(
-            [
-                "ssh",
-                "hiseq.clinical@hasta.scilifelab.se",
-                "squeue",
-                "--jobs",
-                slurm_jobs,
-                "--states=all",
-                "--format",
-                "%A,%j,%T,%l,%M,%S",
-            ],
-            universal_newlines=True,
+    if use_ssh:
+        return (
+            subprocess.check_output(
+                [
+                    "ssh",
+                    "hiseq.clinical@hasta.scilifelab.se",
+                    "squeue",
+                    "--jobs",
+                    slurm_jobs,
+                    "--states=all",
+                    "--format",
+                    "%A,%j,%T,%l,%M,%S",
+                ],
+                universal_newlines=True,
+            )
+            .decode("utf-8")
+            .strip()
+            .replace("//n", "/n")
         )
-        .decode("utf-8")
-        .strip()
-        .replace("//n", "/n")
-    )
+    return subprocess.check_output(
+        [
+            "squeue",
+            "--jobs",
+            slurm_jobs,
+            "--states=all",
+            "--format",
+            "%A,%j,%T,%l,%M,%S",
+        ]
+    ).decode("utf-8")
 
 
 def get_squeue_result(squeue_response: str) -> SqueueResult:
