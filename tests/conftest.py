@@ -47,6 +47,12 @@ def fixture_fixtures_dir() -> Path:
     return Path("tests", "fixtures")
 
 
+@pytest.fixture(scope="session")
+def squeue_dir(fixtures_dir: Path) -> Path:
+    """Return the path to the squeue fixture directory."""
+    return Path(fixtures_dir, "squeue")
+
+
 @pytest.fixture(scope="session", name="analysis_data_path")
 def fixture_analysis_data_path(fixtures_dir: Path) -> Path:
     """Return the path to an analysis data file."""
@@ -259,79 +265,53 @@ def fixture_tower_task() -> TowerTask:
 
 
 @pytest.fixture(scope="session")
-def slurm_squeue_output() -> Dict[str, Path]:
+def slurm_squeue_output(squeue_dir: Path) -> Dict[str, Path]:
     """Return SLURM squeue output for analysis started via SLURM."""
+    file_postfix: str = f"squeue{FileExtension.CSV}"
     return {
-        "blazinginsect": Path(
-            "tests",
-            "fixtures",
-            "squeue",
-            f"blazinginsect_squeue{FileExtension.CSV}",
-        ).as_posix(),
+        "blazinginsect": Path(squeue_dir, f"blazinginsect_{file_postfix}").as_posix(),
         "crackpanda": Path(
-            "tests",
-            "fixtures",
-            "squeue",
-            f"crackpanda_squeue{FileExtension.CSV}",
+            squeue_dir,
+            f"crackpanda_{file_postfix}",
         ).as_posix(),
         "cuddlyhen": Path(
-            "tests",
-            "fixtures",
-            "squeue",
-            f"cuddlyhen_squeue{FileExtension.CSV}",
+            squeue_dir,
+            f"cuddlyhen_{file_postfix}",
         ).as_posix(),
         "daringpidgeon": Path(
-            "tests",
-            "fixtures",
-            "squeue",
-            f"daringpidgeon_squeue{FileExtension.CSV}",
+            squeue_dir,
+            f"daringpidgeon_{file_postfix}",
         ).as_posix(),
         "escapedgoat": Path(
-            "tests",
-            "fixtures",
-            "squeue",
-            f"escapegoat_squeue{FileExtension.CSV}",
+            squeue_dir,
+            f"escapegoat_{file_postfix}",
         ).as_posix(),
         "fancymole": Path(
-            "tests",
-            "fixtures",
-            "squeue",
-            f"fancymole_squeue{FileExtension.CSV}",
+            squeue_dir,
+            f"fancymole_{file_postfix}",
         ).as_posix(),
         "happycow": Path(
-            "tests",
-            "fixtures",
-            "squeue",
-            f"happycow_squeue{FileExtension.CSV}",
+            squeue_dir,
+            f"happycow_{file_postfix}",
         ).as_posix(),
         "lateraligator": Path(
-            "tests",
-            "fixtures",
-            "squeue",
-            f"lateraligator_squeue{FileExtension.CSV}",
+            squeue_dir,
+            f"lateraligator_{file_postfix}",
         ).as_posix(),
         "liberatedunicorn": Path(
-            "tests",
-            "fixtures",
-            "squeue",
-            f"liberatedunicorn_squeue{FileExtension.CSV}",
+            squeue_dir,
+            f"liberatedunicorn_{file_postfix}",
         ).as_posix(),
         "nicemice": Path(
-            "tests",
-            "fixtures",
-            "squeue",
-            f"nicemice_squeue{FileExtension.CSV}",
+            squeue_dir,
+            f"nicemice_{file_postfix}",
         ).as_posix(),
         "rarekitten": Path(
-            "tests",
-            "fixtures",
-            "squeue",
-            f"rarekitten_squeue{FileExtension.CSV}",
+            squeue_dir,
+            f"rarekitten_{file_postfix}",
         ).as_posix(),
         "trueferret": Path(
-            "tests",
-            "fixtures",
-            "squeue",
-            f"trueferret_squeue{FileExtension.CSV}",
+            squeue_dir,
+            f"trueferret_{file_postfix}",
         ).as_posix(),
     }
