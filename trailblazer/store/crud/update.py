@@ -65,7 +65,7 @@ class UpdateHandler(BaseHandler_2):
             )
         )
         self.update_analysis_jobs_from_slurm_jobs(analysis=analysis, squeue_result=squeue_result)
-        LOG.info(f"Status in SLURM: {analysis.family} - {analysis.id}")
+        LOG.debug(f"Status in SLURM: {analysis.family} - {analysis.id}")
         LOG.debug(squeue_result.jobs)
         analysis.progress = squeue_result.jobs_status_distribution.get(
             SlurmJobStatus.COMPLETED, 0.0

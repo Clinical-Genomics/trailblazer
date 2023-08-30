@@ -161,9 +161,7 @@ class BaseHandler(CoreHandler):
     def update_analysis_from_slurm_run_status(
         self, analysis_id: int, use_ssh: bool = False
     ) -> None:
-        """Query slurm for entries related to given analysis, and update the analysis in the database.
-        Raises: Exception if unable to parse SLURM jobs
-        """
+        """Query slurm for entries related to given analysis, and update the analysis in the database."""
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         try:
             self._update_analysis_status_from_slurm_jobs(analysis=analysis, use_ssh=use_ssh)

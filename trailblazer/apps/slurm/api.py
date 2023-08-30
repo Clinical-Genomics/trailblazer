@@ -25,35 +25,26 @@ def get_slurm_squeue_output(slurm_job_id_file: Path, use_ssh: bool = False) -> s
     slurm_jobs: str = _get_squeue_jobs_flag_input(
         slurm_job_id_file_content=slurm_job_id_file_content
     )
+    squeue_commands: List[str] = [
+        "squeue",
+        "--jobs",
+        slurm_jobs,
+        "--states=all",
+        "--format",
+        "%A,%j,%T,%l,%M,%S",
+    ]
     if use_ssh:
+        squeue_commands = ["ssh", "hiseq.clinical@hasta.scilifelab.se"] + squeue_commands
         return (
             subprocess.check_output(
-                [
-                    "ssh",
-                    "hiseq.clinical@hasta.scilifelab.se",
-                    "squeue",
-                    "--jobs",
-                    slurm_jobs,
-                    "--states=all",
-                    "--format",
-                    "%A,%j,%T,%l,%M,%S",
-                ],
+                squeue_commands,
                 universal_newlines=True,
             )
             .decode("utf-8")
             .strip()
             .replace("//n", "/n")
         )
-    return subprocess.check_output(
-        [
-            "squeue",
-            "--jobs",
-            slurm_jobs,
-            "--states=all",
-            "--format",
-            "%A,%j,%T,%l,%M,%S",
-        ]
-    ).decode("utf-8")
+    return subprocess.check_output(squeue_commands).decode("utf-8")
 
 
 def get_squeue_result(squeue_response: str) -> SqueueResult:
