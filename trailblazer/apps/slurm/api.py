@@ -10,9 +10,11 @@ from trailblazer.io.controller import ReadFile, ReadStream
 
 
 def _get_squeue_jobs_flag_input(slurm_job_id_file_content: Dict[str, List[str]]) -> str:
-    """Return SLURM squeue jobs flag formatted input."""
-    job_ids: List[str] = slurm_job_id_file_content.get(next(iter(slurm_job_id_file_content)))
-    return ",".join(map(str, job_ids))
+    """Return a string of comma separated SLURM job ids to be used as input for squeue jobs flag."""
+    job_ids: List[str] = []
+    for slurm_job_ids in slurm_job_id_file_content.values():
+        [job_ids.append(str(job_id)) for job_id in slurm_job_ids]
+    return ",".join(job_ids)
 
 
 def get_slurm_squeue_output(slurm_job_id_file: Path) -> Any:

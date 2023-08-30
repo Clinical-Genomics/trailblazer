@@ -488,6 +488,7 @@ def test_scan(
     """Test scanning for analyses and updating analysis status."""
     caplog.set_level("INFO")
 
+    # GIVEN SLURM squeue output for an analysis
     mocker.patch(
         FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
         return_value=subprocess.check_output(
