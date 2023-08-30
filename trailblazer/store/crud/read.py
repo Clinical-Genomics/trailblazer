@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Callable, Dict, List, Optional, Union
 
-from sqlalchemy import asc
+from sqlalchemy import desc
 
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.filters.analyses_filters import (
@@ -60,7 +60,7 @@ class ReadHandler(BaseHandler_2):
                 analyses=self.get_query(table=Analysis),
                 case_name=case_name,
             )
-            .order_by(Analysis.started_at)
+            .order_by(desc(Analysis.started_at))
             .first()
         )
 
