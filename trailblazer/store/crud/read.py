@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Callable, Dict, List, Optional, Union
 
+from sqlalchemy import asc
+
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.filters.analyses_filters import (
     AnalysisFilter,
@@ -56,7 +58,7 @@ class ReadHandler(BaseHandler_2):
             ],
             analyses=self.get_query(table=Analysis),
             case_name=case_name,
-        ).first()
+        ).order_by(Analysis.started_at).first()
 
     def get_analysis_with_id(self, analysis_id: int) -> Optional[Analysis]:
         """Get a single analysis by id."""
