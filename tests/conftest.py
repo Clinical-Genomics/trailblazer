@@ -270,48 +270,15 @@ def slurm_squeue_output(squeue_dir: Path) -> Dict[str, Path]:
     file_postfix: str = f"squeue{FileExtension.CSV}"
     return {
         "blazinginsect": Path(squeue_dir, f"blazinginsect_{file_postfix}").as_posix(),
-        "crackpanda": Path(
-            squeue_dir,
-            f"crackpanda_{file_postfix}",
-        ).as_posix(),
-        "cuddlyhen": Path(
-            squeue_dir,
-            f"cuddlyhen_{file_postfix}",
-        ).as_posix(),
-        "daringpidgeon": Path(
-            squeue_dir,
-            f"daringpidgeon_{file_postfix}",
-        ).as_posix(),
-        "escapedgoat": Path(
-            squeue_dir,
-            f"escapegoat_{file_postfix}",
-        ).as_posix(),
-        "fancymole": Path(
-            squeue_dir,
-            f"fancymole_{file_postfix}",
-        ).as_posix(),
-        "happycow": Path(
-            squeue_dir,
-            f"happycow_{file_postfix}",
-        ).as_posix(),
-        "lateraligator": Path(
-            squeue_dir,
-            f"lateraligator_{file_postfix}",
-        ).as_posix(),
-        "liberatedunicorn": Path(
-            squeue_dir,
-            f"liberatedunicorn_{file_postfix}",
-        ).as_posix(),
-        "nicemice": Path(
-            squeue_dir,
-            f"nicemice_{file_postfix}",
-        ).as_posix(),
-        "rarekitten": Path(
-            squeue_dir,
-            f"rarekitten_{file_postfix}",
-        ).as_posix(),
-        "trueferret": Path(
-            squeue_dir,
-            f"trueferret_{file_postfix}",
-        ).as_posix(),
+        "crackpanda": Path(squeue_dir, f"crackpanda_{file_postfix}").as_posix(),
+        "cuddlyhen": Path(squeue_dir, f"cuddlyhen_{file_postfix}").as_posix(),
+        "daringpidgeon": Path(squeue_dir, f"daringpidgeon_{file_postfix}").as_posix(),
+        "escapedgoat": Path(squeue_dir, f"escapegoat_{file_postfix}").as_posix(),
+        "fancymole": Path(squeue_dir, f"fancymole_{file_postfix}").as_posix(),
+        "happycow": Path(squeue_dir, f"happycow_{file_postfix}").as_posix(),
+        "lateraligator": Path(squeue_dir, f"lateraligator_{file_postfix}").as_posix(),
+        "liberatedunicorn": Path(squeue_dir, f"liberatedunicorn_{file_postfix}").as_posix(),
+        "nicemice": Path(squeue_dir, f"nicemice_{file_postfix}").as_posix(),
+        "rarekitten": Path(squeue_dir, f"rarekitten_{file_postfix}").as_posix(),
+        "trueferret": Path(squeue_dir, f"trueferret_{file_postfix}").as_posix(),
     }
