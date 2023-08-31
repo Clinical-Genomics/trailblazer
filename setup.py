@@ -17,8 +17,6 @@ import os
 # Always prefer setuptools over distutils
 from setuptools import find_packages, setup
 
-from trailblazer.constants import CharacterFormat
-
 AUTHOR = "henrik.stranneheim"
 DESCRIPTION = "Trailblazer is a tool to manage and track state of analyses"
 EMAIL = "henrik.stranneheim@scilifelab.se"
@@ -46,9 +44,7 @@ def parse_reqs(req_path="./requirements.txt"):
 # Import the README and use it as the long-description.
 # Note: this will only work if 'README.md' is present in your MANIFEST.in file!
 try:
-    with io.open(
-        os.path.join(HERE, "README.md"), encoding=CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8
-    ) as f:
+    with io.open(os.path.join(HERE, "README.md"), encoding="utf-8") as f:
         LONG_DESCRIPTION = "\n" + f.read()
 except FileNotFoundError:
     LONG_DESCRIPTION = DESCRIPTION
