@@ -112,7 +112,7 @@ def aggregate_jobs():
 
 @blueprint.route("/update-all")
 def update_analyses():
-    """Update all ongoing analysis by querying SLURM"""
+    """Update all ongoing analysis by querying SLURM."""
     process = multiprocessing.Process(
         target=store.update_ongoing_analyses, kwargs={"use_ssh": True}
     )
