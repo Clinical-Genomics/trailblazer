@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Callable, Dict, List, Optional, Union
 
+from sqlalchemy import desc
+
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.filters.analyses_filters import (
     AnalysisFilter,
@@ -50,13 +52,17 @@ class ReadHandler(BaseHandler_2):
 
     def get_latest_analysis_for_case(self, case_name: str) -> Optional[Analysis]:
         """Return the latest analysis for a case."""
-        return apply_analysis_filter(
-            filter_functions=[
-                AnalysisFilter.FILTER_BY_CASE_NAME,
-            ],
-            analyses=self.get_query(table=Analysis),
-            case_name=case_name,
-        ).first()
+        return (
+            apply_analysis_filter(
+                filter_functions=[
+                    AnalysisFilter.FILTER_BY_CASE_NAME,
+                ],
+                analyses=self.get_query(table=Analysis),
+                case_name=case_name,
+            )
+            .order_by(desc(Analysis.started_at))
+            .first()
+        )
 
     def get_analysis_with_id(self, analysis_id: int) -> Optional[Analysis]:
         """Get a single analysis by id."""
