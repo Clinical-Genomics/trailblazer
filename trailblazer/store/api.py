@@ -82,15 +82,6 @@ class BaseHandler(CoreHandler):
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def mark_analyses_deleted(self, case_id: str) -> Query:
-        """mark analyses connected to a case as deleted"""
-        old_analyses = self.analyses(case_id=case_id)
-        if old_analyses.count() > 0:
-            for old_analysis in old_analyses:
-                old_analysis.is_deleted = True
-            self.commit()
-        return old_analyses
-
     def set_analysis_completed(self, analysis_id: int) -> None:
         """Set an analysis status to completed."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)

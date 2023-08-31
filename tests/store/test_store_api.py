@@ -141,24 +141,6 @@ def test_update_run_status(
     assert analysis.status == status
 
 
-def test_mark_analyses_deleted(analysis_store: MockStore, ongoing_analysis_case_name: str):
-    """Test marking an ongoing analysis as deleted."""
-    # GIVEN case name for a case that is not deleted
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
-        case_name=ongoing_analysis_case_name
-    )
-    assert not analysis.is_deleted
-
-    # WHEN marking analysis as deleted
-    analysis_store.mark_analyses_deleted(case_id=ongoing_analysis_case_name)
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
-        case_name=ongoing_analysis_case_name
-    )
-
-    # THEN analysis is marked deleted
-    assert analysis.is_deleted
-
-
 def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_name: str):
     """Assess that jobs are successfully updated when using NF Tower."""
 

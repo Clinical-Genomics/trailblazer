@@ -79,6 +79,17 @@ def test_get_analysis_with_id_when_missing(analysis_store: MockStore):
     assert not analysis
 
 
+def test_get_analyses_for_case(analysis_store: MockStore, case_name: str):
+    """Test getting analyses for a case when it exists in the database."""
+    # GIVEN a store with an analysis
+
+    # WHEN accessing it by case name
+    analyses: Optional[List[Analysis]] = analysis_store.get_analyses_for_case(case_name=case_name)
+
+    # THEN it should return the analyses
+    assert analyses
+
+
 def test_get_nr_jobs_with_status_per_category(job_store: MockStore, timestamp_yesterday: datetime):
     """Test getting the number of failed jobs per category since a supplied date from the database."""
     # GIVEN a database with jobs
