@@ -113,9 +113,11 @@ def aggregate_jobs():
 @blueprint.route("/update-all")
 def update_analyses():
     """Update all ongoing analysis by querying SLURM"""
-    process = multiprocessing.Process(target=store.update_ongoing_analyses, kwargs={"ssh": True})
+    process = multiprocessing.Process(
+        target=store.update_ongoing_analyses, kwargs={"use_ssh": True}
+    )
     process.start()
-    return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), 201
+    return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), HTTPStatus.CREATED
 
 
 @blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
@@ -126,9 +128,9 @@ def update_analysis(analysis_id):
             target=store.update_run_status, kwargs={"analysis_id": analysis_id, "use_ssh": True}
         )
         process.start()
-        return jsonify("Success! Update request sent"), 201
+        return jsonify("Success! Update request sent"), HTTPStatus.CREATED
     except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
+        return jsonify(f"Exception: {e}"), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])
