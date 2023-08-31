@@ -69,7 +69,7 @@ def test_update_case_analyses_as_deleted(
     analysis_store: MockStore, ongoing_analysis_case_name: str
 ):
     """Test marking case analyses as deleted."""
-    # GIVEN case name for a case that is not deleted
+    # GIVEN case name for a case with analyses that are not deleted
     analyses: Optional[List[Analysis]] = analysis_store.get_analyses_for_case(
         case_name=ongoing_analysis_case_name
     )
