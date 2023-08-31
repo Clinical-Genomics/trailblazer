@@ -4,7 +4,12 @@ from typing import Callable, Dict, List, Optional
 
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.slurm.utils import formatters
-from trailblazer.constants import FileFormat, SlurmJobStatus, TrailblazerStatus
+from trailblazer.constants import (
+    CharacterFormat,
+    FileFormat,
+    SlurmJobStatus,
+    TrailblazerStatus,
+)
 from trailblazer.exc import EmptySqueueError
 from trailblazer.io.controller import ReadFile, ReadStream
 
@@ -40,11 +45,13 @@ def get_slurm_squeue_output(slurm_job_id_file: Path, use_ssh: bool = False) -> s
                 squeue_commands,
                 universal_newlines=True,
             )
-            .decode("utf-8")
+            .decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8)
             .strip()
             .replace("//n", "/n")
         )
-    return subprocess.check_output(squeue_commands).decode("utf-8")
+    return subprocess.check_output(squeue_commands).decode(
+        CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8
+    )
 
 
 def get_squeue_result(squeue_response: str) -> SqueueResult:

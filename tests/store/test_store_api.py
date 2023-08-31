@@ -6,7 +6,7 @@ import pytest
 
 from tests.apps.tower.conftest import CaseName
 from tests.mocks.store_mock import MockStore
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.constants import CharacterFormat, TrailblazerStatus
 from trailblazer.store.models import Analysis
 
 FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH: str = "trailblazer.store.crud.update.get_slurm_squeue_output"
@@ -38,7 +38,7 @@ def test_update_analysis_from_slurm_run_status(
         FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
         return_value=subprocess.check_output(
             ["cat", slurm_squeue_output.get(ongoing_analysis_case_name)]
-        ).decode("utf-8"),
+        ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
     )
 
     # WHEN updating the analysis
@@ -121,7 +121,7 @@ def test_update_run_status(
     mocker.patch(
         FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
         return_value=subprocess.check_output(["cat", slurm_squeue_output.get(case_name)]).decode(
-            "utf-8"
+            CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8
         ),
     )
 

@@ -75,6 +75,12 @@ class SlurmJobStatus(str, Enum):
         return cls.PENDING.value, cls.RUNNING.value, cls.COMPLETING.value
 
 
+class CharacterFormat(str, Enum):
+    """Define xharacter encoding/decoding to use."""
+
+    UNICODE_TRANSFORMATION_FORMAT_8: str = "utf-8"
+
+
 class TrailblazerStatus(str, Enum):
     """Trailblazer allowed status."""
 
