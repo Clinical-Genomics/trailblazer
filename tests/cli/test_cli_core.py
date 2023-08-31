@@ -1,3 +1,4 @@
+import subprocess
 from datetime import datetime
 from typing import Dict, Optional
 
@@ -20,8 +21,10 @@ from trailblazer.cli.core import (
     set_analysis_status,
     unarchive_user,
 )
-from trailblazer.constants import SlurmJobStatus, TrailblazerStatus
+from trailblazer.constants import CharacterFormat, SlurmJobStatus, TrailblazerStatus
 from trailblazer.store.models import Analysis
+
+FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH: str = "trailblazer.store.crud.update.get_slurm_squeue_output"
 
 
 def test_base(cli_runner):
@@ -146,10 +149,20 @@ def test_cancel_not_running(
     trailblazer_context: Dict[str, MockStore],
     caplog,
     failed_analysis_case_name: str,
+    mocker,
     process_exit_success: int,
+    slurm_squeue_output: Dict[str, str],
 ):
     """Test cancelling an analysis, which is not running."""
     caplog.set_level("ERROR")
+
+    # GIVEN SLURM squeue output for an analysis
+    mocker.patch(
+        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
+        return_value=subprocess.check_output(
+            ["cat", slurm_squeue_output.get(failed_analysis_case_name)]
+        ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
+    )
 
     # GIVEN an analysis that is NOT running
     trailblazer_db: MockStore = trailblazer_context["trailblazer"]
@@ -172,10 +185,20 @@ def test_cancel_ongoing_analysis(
     cli_runner: CliRunner,
     trailblazer_context: Dict[str, MockStore],
     caplog,
+    mocker,
     ongoing_analysis_case_name: str,
+    slurm_squeue_output: Dict[str, str],
     process_exit_success: int,
 ):
     """Test all ongoing analysis jobs are cancelled."""
+    # GIVEN SLURM squeue output for an analysis
+    mocker.patch(
+        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
+        return_value=subprocess.check_output(
+            ["cat", slurm_squeue_output.get(ongoing_analysis_case_name)]
+        ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
+    )
+
     caplog.set_level("INFO")
 
     # GIVEN an ongoing analysis
@@ -457,10 +480,20 @@ def test_scan(
     cli_runner: CliRunner,
     trailblazer_context: Dict[str, MockStore],
     caplog,
+    mocker,
     ongoing_analysis_case_name: str,
+    slurm_squeue_output: Dict[str, str],
 ):
     """Test scanning for analyses and updating analysis status."""
     caplog.set_level("INFO")
+
+    # GIVEN SLURM squeue output for an analysis
+    mocker.patch(
+        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
+        return_value=subprocess.check_output(
+            ["cat", slurm_squeue_output.get(ongoing_analysis_case_name)]
+        ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
+    )
 
     # GIVEN populated Trailblazer database with pending analyses
 
@@ -498,10 +531,19 @@ def test_ls(
     process_exit_success: int,
     trailblazer_context: Dict[str, MockStore],
     case_name: str,
+    mocker,
     status: str,
+    slurm_squeue_output: Dict[str, str],
     timestamp_now: datetime,
 ):
     """Test the Trailblazer ls CLI command using different cases and statuses."""
+    # GIVEN SLURM squeue output for an analysis
+    mocker.patch(
+        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
+        return_value=subprocess.check_output(["cat", slurm_squeue_output.get(case_name)]).decode(
+            CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8
+        ),
+    )
     # GIVEN populated Trailblazer database with pending analyses
     trailblazer_db: MockStore = trailblazer_context["trailblazer"]
 

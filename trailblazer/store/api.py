@@ -3,14 +3,12 @@ import datetime as dt
 import logging
 import subprocess
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 import alchy
 import sqlalchemy as sqa
 from alchy import Query
 
-from trailblazer.apps.slurm.api import get_current_analysis_status, get_squeue_result
-from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import (
     FileFormat,
@@ -138,60 +136,18 @@ class BaseHandler(CoreHandler):
         analysis.delete()
         self.commit()
 
-    @staticmethod
-    def query_slurm(job_id_file: str, case_id: str, ssh: bool) -> Any:
-        """Args:
-        job_id_file: Path to slurm id .YAML file as string
-        case_id: Unique internal case identifier which is expected to by the only item in the .YAML dict
-        ssh : Whether the request is executed from hasta or clinical-db"""
-        job_id: dict = ReadFile.get_content_from_file(
-            file_format=FileFormat.YAML, file_path=Path(job_id_file)
-        )
-        submitted_job_ids = job_id.get(next(iter(job_id)))
-        job_ids_string = ",".join(map(str, submitted_job_ids))
-        if ssh:
-            return (
-                subprocess.check_output(
-                    [
-                        "ssh",
-                        "hiseq.clinical@hasta.scilifelab.se",
-                        "squeue",
-                        "-j",
-                        job_ids_string,
-                        "--states=all",
-                        "-o",
-                        "%A,%j,%T,%l,%M,%S",
-                    ],
-                    universal_newlines=True,
-                )
-                .decode("utf-8")
-                .strip()
-                .replace("//n", "/n")
-            )
-        else:
-            return subprocess.check_output(
-                [
-                    "squeue",
-                    "-j",
-                    job_ids_string,
-                    "--states=all",
-                    "-o",
-                    "%A,%j,%T,%l,%M,%S",
-                ]
-            ).decode("utf-8")
-
-    def update_ongoing_analyses(self, ssh: bool = False) -> None:
+    def update_ongoing_analyses(self, use_ssh: bool = False) -> None:
         """Iterate over all analysis with ongoing status and query SLURM for current progress."""
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
             try:
-                self.update_run_status(analysis_id=analysis_obj.id, ssh=ssh)
+                self.update_run_status(analysis_id=analysis_obj.id, use_ssh=use_ssh)
             except Exception as error:
                 LOG.error(
                     f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {type(error).__name__}"
                 )
 
-    def update_run_status(self, analysis_id: int, ssh: bool = False) -> None:
+    def update_run_status(self, analysis_id: int, use_ssh: bool = False) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
@@ -200,32 +156,13 @@ class BaseHandler(CoreHandler):
         if analysis.workflow_manager == WorkflowManager.TOWER.value:
             self.update_tower_run_status(analysis_id=analysis_id)
         elif analysis.workflow_manager == WorkflowManager.SLURM.value:
-            self.update_analysis_from_slurm_run_status(analysis_id=analysis_id, ssh=ssh)
+            self.update_analysis_from_slurm_output(analysis_id=analysis_id, use_ssh=use_ssh)
 
-    def update_analysis_from_slurm_run_status(self, analysis_id: int, ssh: bool = False) -> None:
-        """Query slurm for entries related to given analysis, and update the analysis in the database."""
-        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
+    def update_analysis_from_slurm_output(self, analysis_id: int, use_ssh: bool = False) -> None:
+        """Query SLURM for entries related to given analysis, and update the analysis in the database."""
+        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         try:
-            squeue_result: SqueueResult = get_squeue_result(
-                squeue_response=self.query_slurm(
-                    job_id_file=analysis.config_path, case_id=analysis.family, ssh=ssh
-                )
-            )
-            self.update_analysis_jobs_from_slurm_jobs(
-                analysis=analysis, squeue_result=squeue_result
-            )
-            LOG.info(f"Status in SLURM: {analysis.family} - {analysis_id}")
-            LOG.debug(squeue_result.jobs)
-            analysis.progress = squeue_result.jobs_status_distribution.get(
-                SlurmJobStatus.COMPLETED, 0.0
-            )
-            analysis.status = get_current_analysis_status(
-                jobs_status_distribution=squeue_result.jobs_status_distribution
-            )
-            LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
-            self.commit()
-
-            analysis.logged_at = dt.datetime.now()
+            self._update_analysis_from_slurm_squeue_output(analysis=analysis, use_ssh=use_ssh)
         except Exception as exception:
             LOG.error(
                 f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"

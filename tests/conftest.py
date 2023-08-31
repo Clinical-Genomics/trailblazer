@@ -8,7 +8,12 @@ from tests.apps.tower.conftest import CaseName, TowerTaskResponseFile
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
 from trailblazer.apps.tower.models import TowerTask
-from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, FileFormat, TrailblazerStatus
+from trailblazer.constants import (
+    TOWER_TIMESTAMP_FORMAT,
+    FileExtension,
+    FileFormat,
+    TrailblazerStatus,
+)
 from trailblazer.io.controller import ReadFile
 
 
@@ -40,6 +45,12 @@ def fixture_user_email() -> str:
 def fixture_fixtures_dir() -> Path:
     """Return the path to the fixtures' dir."""
     return Path("tests", "fixtures")
+
+
+@pytest.fixture(scope="session")
+def squeue_dir(fixtures_dir: Path) -> Path:
+    """Return the path to the squeue fixture directory."""
+    return Path(fixtures_dir, "squeue")
 
 
 @pytest.fixture(scope="session", name="analysis_data_path")
@@ -251,3 +262,27 @@ def fixture_tower_task() -> TowerTask:
         file_format=FileFormat.JSON, file_path=TowerTaskResponseFile.RUNNING
     )
     return TowerTask(**tower_task_running_content["tasks"][0]["task"])
+
+
+@pytest.fixture(scope="session")
+def slurm_squeue_output(squeue_dir: Path) -> Dict[str, str]:
+    """Return SLURM squeue output for analysis started via SLURM."""
+    file_postfix: str = f"squeue{FileExtension.CSV}"
+    case_names: List[str] = [
+        "blazinginsect",
+        "crackpanda",
+        "cuddlyhen",
+        "daringpidgeon",
+        "escapedgoat",
+        "fancymole",
+        "happycow",
+        "lateraligator",
+        "liberatedunicorn",
+        "nicemice",
+        "rarekitten",
+        "trueferret",
+    ]
+    return {
+        case_name: Path(squeue_dir, f"{case_name}_{file_postfix}").as_posix()
+        for case_name in case_names
+    }

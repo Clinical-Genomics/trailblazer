@@ -1,12 +1,15 @@
 import datetime
-from typing import List, Optional
+import subprocess
+from typing import Dict, List, Optional
 
 import pytest
 
 from tests.apps.tower.conftest import CaseName
 from tests.mocks.store_mock import MockStore
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.constants import CharacterFormat, TrailblazerStatus
 from trailblazer.store.models import Analysis
+
+FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH: str = "trailblazer.store.crud.update.get_slurm_squeue_output"
 
 
 def test_setup_db(store: MockStore):
@@ -18,14 +21,28 @@ def test_setup_db(store: MockStore):
     assert store.engine.table_names()
 
 
-def test_update_analysis_from_slurm_run_status(analysis_store: MockStore, squeue_stream_jobs: str):
+def test_update_analysis_from_slurm_run_status(
+    analysis_store: MockStore,
+    squeue_stream_jobs: str,
+    mocker,
+    ongoing_analysis_case_name: str,
+    slurm_squeue_output: Dict[str, str],
+):
     """Test updating analysis jobs when given squeue results."""
     # GIVEN an analysis and a squeue stream
     analysis: Analysis = analysis_store.get_query(table=Analysis).first()
     assert not analysis.jobs
 
+    # GIVEN SLURM squeue output for an analysis
+    mocker.patch(
+        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
+        return_value=subprocess.check_output(
+            ["cat", slurm_squeue_output.get(ongoing_analysis_case_name)]
+        ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
+    )
+
     # WHEN updating the analysis
-    analysis_store.update_analysis_from_slurm_run_status(analysis_id=analysis.id)
+    analysis_store.update_analysis_from_slurm_output(analysis_id=analysis.id)
     updated_analysis: Analysis = analysis_store.get_analysis(
         case_name=analysis.family,
         started_at=analysis.started_at,
@@ -82,7 +99,6 @@ def test_add_comment(analysis_store: MockStore, case_name: str):
         ("blazinginsect", TrailblazerStatus.RUNNING),
         ("crackpanda", TrailblazerStatus.FAILED),
         ("daringpidgeon", TrailblazerStatus.ERROR),
-        ("emptydinosaur", TrailblazerStatus.ERROR),
         ("escapedgoat", TrailblazerStatus.PENDING),
         ("fancymole", TrailblazerStatus.COMPLETED),
         ("happycow", TrailblazerStatus.PENDING),
@@ -93,8 +109,22 @@ def test_add_comment(analysis_store: MockStore, case_name: str):
         ("trueferret", TrailblazerStatus.RUNNING),
     ],
 )
-def test_update_run_status(analysis_store: MockStore, case_name: str, status: str):
+def test_update_run_status(
+    analysis_store: MockStore,
+    case_name: str,
+    status: str,
+    mocker,
+    slurm_squeue_output: Dict[str, str],
+):
     """Test updating an analysis status."""
+    # GIVEN SLURM squeue output for an analysis
+    mocker.patch(
+        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
+        return_value=subprocess.check_output(["cat", slurm_squeue_output.get(case_name)]).decode(
+            CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8
+        ),
+    )
+
     # GIVEN an analysis
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
 
