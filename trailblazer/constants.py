@@ -76,7 +76,7 @@ class SlurmJobStatus(str, Enum):
 
 
 class CharacterFormat(str, Enum):
-    """Define xharacter encoding/decoding to use."""
+    """Define character encoding/decoding to use."""
 
     UNICODE_TRANSFORMATION_FORMAT_8: str = "utf-8"
 
