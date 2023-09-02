@@ -25,7 +25,7 @@ def test_add_pending_analysis(raw_analyses: List[dict], store: MockStore, user_e
 
     # THEN it should be stored in the database
     stored_analysis: Analysis = store.get_analysis(
-        case_name=analysis.get("family"),
+        case_id=analysis.get("family"),
         started_at=new_analysis.started_at,
         status=analysis.get("status"),
     )

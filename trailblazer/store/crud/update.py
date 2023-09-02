@@ -77,9 +77,9 @@ class UpdateHandler(BaseHandler_2):
         analysis.logged_at = datetime.now()
         self.commit()
 
-    def update_case_analyses_as_deleted(self, case_name: str) -> Optional[List[Analysis]]:
+    def update_case_analyses_as_deleted(self, case_id: str) -> Optional[List[Analysis]]:
         """Mark analyses connected to a case as deleted."""
-        analyses: Optional[List[Analysis]] = self.get_analyses_for_case(case_name=case_name)
+        analyses: Optional[List[Analysis]] = self.get_analyses_for_case(case_id=case_id)
         if analyses:
             for analysis in analyses:
                 analysis.is_deleted = True
