@@ -1,7 +1,6 @@
 """Store backend in Trailblazer."""
 import datetime as dt
 import logging
-import subprocess
 from pathlib import Path
 from typing import Optional
 
@@ -9,6 +8,7 @@ import alchy
 import sqlalchemy as sqa
 from alchy import Query
 
+from trailblazer.apps.slurm.api import cancel_slurm_job
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import (
     FileFormat,
@@ -207,19 +207,9 @@ class BaseHandler(CoreHandler):
             analysis.status: str = TrailblazerStatus.ERROR
             self.commit()
 
-    @staticmethod
-    def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
-        """Cancel slurm job by slurm job ID"""
-        if ssh:
-            subprocess.Popen(
-                ["ssh", "hiseq.clinical@hasta.scilifelab.se", "scancel", str(slurm_id)]
-            )
-        else:
-            subprocess.Popen(["scancel", str(slurm_id)])
-
     def cancel_analysis(self, analysis_id: int, email: str = None, ssh: bool = False) -> None:
-        """Cancel all ongoing slurm jobs associated with the analysis, and set job status to canceled"""
-        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
+        """Cancel all ongoing slurm jobs associated with the analysis, and set analysis status to 'cancelled'."""
+        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
             raise TrailblazerError(f"Analysis {analysis_id} does not exist")
 
@@ -229,7 +219,7 @@ class BaseHandler(CoreHandler):
         for job in analysis.jobs:
             if job.status in SlurmJobStatus.ongoing_statuses():
                 LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
-                self.cancel_slurm_job(job.slurm_id, ssh=ssh)
+                cancel_slurm_job(slurm_id=job.slurm_id, use_ssh=ssh)
         LOG.info(
             f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )

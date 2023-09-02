@@ -12,7 +12,7 @@ class MockStore(Store):
     """Instance of Store that mimics workflow manager outputs and interactions."""
 
     @staticmethod
-    def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
+    def cancel_slurm_job(slurm_id: int, use_ssh: bool = False) -> None:
         return
 
     @staticmethod
