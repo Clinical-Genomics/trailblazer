@@ -45,17 +45,17 @@ def base(
 
     coloredlogs.install(level=log_level, fmt=log_format)
 
-    config = (
+    raw_config: dict = dict(
         Config(
             **ReadFile.get_content_from_file(
                 file_format=FileFormat.YAML, file_path=Path(config.name)
             )
         )
         if config
-        else {}
+        else {"database": database}
     )
-    context.obj = dict(config) if config else {}
-    context.obj["trailblazer"] = Store(database) or Store(context.obj.get("database_url"))
+    context.obj = raw_config
+    context.obj["trailblazer"] = Store(raw_config["database"])
 
 
 @base.command()
