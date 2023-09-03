@@ -10,11 +10,12 @@ import coloredlogs
 import trailblazer
 from trailblazer.cli.utils.ls_helper import _get_ls_analysis_message
 from trailblazer.cli.utils.user_helper import is_existing_user, is_user_archived
-from trailblazer.constants import FileFormat, TrailblazerStatus, TRAILBLAZER_TIME_STAMP
+from trailblazer.constants import TRAILBLAZER_TIME_STAMP, FileFormat, TrailblazerStatus
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
+from trailblazer.models import Config
 from trailblazer.store.api import Store
-from trailblazer.store.models import User, Analysis
+from trailblazer.store.models import Analysis, User
 
 LOG = logging.getLogger(__name__)
 LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
@@ -44,13 +45,17 @@ def base(
 
     coloredlogs.install(level=log_level, fmt=log_format)
 
-    context.obj = (
-        ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=Path(config.name))
+    config = (
+        Config(
+            **ReadFile.get_content_from_file(
+                file_format=FileFormat.YAML, file_path=Path(config.name)
+            )
+        )
         if config
         else {}
     )
-    context.obj["database"] = database or context.obj.get("database", "sqlite:///:memory:")
-    context.obj["trailblazer"] = Store(context.obj["database"])
+    context.obj = dict(config) if config else {}
+    context.obj["trailblazer"] = Store(database) or Store(context.obj.get("database_url"))
 
 
 @base.command()
