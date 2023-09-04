@@ -4,5 +4,5 @@ from pydantic import BaseModel, Field
 class Config(BaseModel):
     """Initialize base settings."""
 
-    database_url: str = Field("sqlite:///:memory:", Alias="database")
-    root: str = Field(..., Alias="root")
+    database_url: str = Field("sqlite:///:memory:", alias="database")
+    root: str = Field(..., alias="root")
