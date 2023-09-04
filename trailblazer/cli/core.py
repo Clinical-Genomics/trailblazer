@@ -22,8 +22,7 @@ LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
 
 
 @click.group()
-@click.option("-c", "--config", type=click.File())
-@click.option("-d", "--database", help="path/URI of the SQL database")
+@click.option("-c", "--config", required=True, type=click.File())
 @click.option(
     "-l", "--log-level", type=click.Choice(LEVELS), default="INFO", help="lowest level to log at"
 )
@@ -33,7 +32,6 @@ LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
 def base(
     context,
     config,
-    database,
     log_level: str,
     verbose: bool,
 ):
@@ -45,17 +43,11 @@ def base(
 
     coloredlogs.install(level=log_level, fmt=log_format)
 
-    raw_config: dict = dict(
-        Config(
-            **ReadFile.get_content_from_file(
-                file_format=FileFormat.YAML, file_path=Path(config.name)
-            )
-        )
-        if config
-        else {"database": database}
+    validated_config = Config(
+        **ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=Path(config.name))
     )
-    context.obj = raw_config
-    context.obj["trailblazer"] = Store(raw_config["database"])
+    context.obj = dict(validated_config)
+    context.obj["trailblazer"] = Store(validated_config.database_url)
 
 
 @base.command()
