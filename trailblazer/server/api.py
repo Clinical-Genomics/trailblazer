@@ -12,6 +12,7 @@ from trailblazer.constants import (
     TRAILBLAZER_TIME_STAMP,
     TrailblazerStatus,
 )
+from trailblazer.server.app import ANALYSIS_HOST
 from trailblazer.server.ext import store
 from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
@@ -114,7 +115,8 @@ def aggregate_jobs():
 def update_analyses():
     """Update all ongoing analysis by querying SLURM."""
     process = multiprocessing.Process(
-        target=store.update_ongoing_analyses, kwargs={"use_ssh": True}
+        target=store.update_ongoing_analyses,
+        kwargs={"analysis_host": ANALYSIS_HOST, "use_ssh": True},
     )
     process.start()
     return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), HTTPStatus.CREATED
@@ -122,10 +124,11 @@ def update_analyses():
 
 @blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
 def update_analysis(analysis_id):
-    """Update a specific analysis"""
+    """Update a specific analysis."""
     try:
         process = multiprocessing.Process(
-            target=store.update_run_status, kwargs={"analysis_id": analysis_id, "use_ssh": True}
+            target=store.update_run_status,
+            kwargs={"analysis_id": analysis_id, "analysis_host": ANALYSIS_HOST, "use_ssh": True},
         )
         process.start()
         return jsonify("Success! Update request sent"), HTTPStatus.CREATED
@@ -142,7 +145,12 @@ def cancel(analysis_id):
     try:
         process = multiprocessing.Process(
             target=store.cancel_analysis,
-            kwargs={"analysis_id": analysis_id, "email": user_data["email"], "ssh": True},
+            kwargs={
+                "analysis_id": analysis_id,
+                "analysis_host": ANALYSIS_HOST,
+                "email": user_data["email"],
+                "ssh": True,
+            },
         )
         process.start()
         return jsonify("Success! Cancel request sent"), 201

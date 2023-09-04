@@ -11,6 +11,7 @@ app = Flask(__name__)
 
 SECRET_KEY = "unsafe!!!"
 TEMPLATES_AUTO_RELOAD = True
+ANALYSIS_HOST = os.environ.get("ANALYSIS_HOST")
 SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI", "sqlite:///:memory:")
 SQLALCHEMY_POOL_RECYCLE = os.environ.get("SQLALCHEMY_POOL_RECYCLE", 7200)
 SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get("FLASK_DEBUG", False)

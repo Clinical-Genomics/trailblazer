@@ -42,7 +42,9 @@ def test_update_analysis_from_slurm_run_status(
     )
 
     # WHEN updating the analysis
-    analysis_store.update_analysis_from_slurm_output(analysis_id=analysis.id)
+    analysis_store.update_analysis_from_slurm_output(
+        analysis_id=analysis.id, analysis_host="a_host"
+    )
     updated_analysis: Analysis = analysis_store.get_analysis(
         case_name=analysis.family,
         started_at=analysis.started_at,

@@ -136,18 +136,24 @@ class BaseHandler(CoreHandler):
         analysis.delete()
         self.commit()
 
-    def update_ongoing_analyses(self, use_ssh: bool = False) -> None:
+    def update_ongoing_analyses(
+        self, analysis_host: Optional[str] = None, use_ssh: bool = False
+    ) -> None:
         """Iterate over all analysis with ongoing status and query SLURM for current progress."""
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
             try:
-                self.update_run_status(analysis_id=analysis_obj.id, use_ssh=use_ssh)
+                self.update_run_status(
+                    analysis_id=analysis_obj.id, analysis_host=analysis_host, use_ssh=use_ssh
+                )
             except Exception as error:
                 LOG.error(
                     f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {type(error).__name__}"
                 )
 
-    def update_run_status(self, analysis_id: int, use_ssh: bool = False) -> None:
+    def update_run_status(
+        self, analysis_id: int, analysis_host: Optional[str] = None, use_ssh: bool = False
+    ) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
@@ -156,13 +162,19 @@ class BaseHandler(CoreHandler):
         if analysis.workflow_manager == WorkflowManager.TOWER.value:
             self.update_tower_run_status(analysis_id=analysis_id)
         elif analysis.workflow_manager == WorkflowManager.SLURM.value:
-            self.update_analysis_from_slurm_output(analysis_id=analysis_id, use_ssh=use_ssh)
+            self.update_analysis_from_slurm_output(
+                analysis_id=analysis_id, analysis_host=analysis_host, use_ssh=use_ssh
+            )
 
-    def update_analysis_from_slurm_output(self, analysis_id: int, use_ssh: bool = False) -> None:
+    def update_analysis_from_slurm_output(
+        self, analysis_id: int, analysis_host: str, use_ssh: bool = False
+    ) -> None:
         """Query SLURM for entries related to given analysis, and update the analysis in the database."""
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         try:
-            self._update_analysis_from_slurm_squeue_output(analysis=analysis, use_ssh=use_ssh)
+            self._update_analysis_from_slurm_squeue_output(
+                analysis=analysis, analysis_host=analysis_host, use_ssh=use_ssh
+            )
         except Exception as exception:
             LOG.error(
                 f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"
@@ -217,7 +229,13 @@ class BaseHandler(CoreHandler):
         else:
             subprocess.Popen(["scancel", str(slurm_id)])
 
-    def cancel_analysis(self, analysis_id: int, email: str = None, ssh: bool = False) -> None:
+    def cancel_analysis(
+        self,
+        analysis_id: int,
+        analysis_host: Optional[str] = None,
+        email: str = None,
+        ssh: bool = False,
+    ) -> None:
         """Cancel all ongoing slurm jobs associated with the analysis, and set job status to canceled"""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
@@ -233,7 +251,7 @@ class BaseHandler(CoreHandler):
         LOG.info(
             f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )
-        self.update_run_status(analysis_id=analysis_id)
+        self.update_run_status(analysis_id=analysis_id, analysis_host=analysis_host)
         analysis.status = TrailblazerStatus.CANCELLED
         analysis.comment = (
             f"Analysis cancelled manually by user:"

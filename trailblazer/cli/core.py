@@ -73,7 +73,8 @@ def init(context, reset, force):
 @click.pass_context
 def scan(context):
     """Scan ongoing analyses in SLURM"""
-    context.obj["trailblazer_db"].update_ongoing_analyses()
+    trailblazer_db: Store = context.obj["trailblazer_db"]
+    trailblazer_db.update_ongoing_analyses(analysis_host=context.obj["analysis_host"])
     LOG.info("All analyses updated!")
 
 
@@ -82,7 +83,10 @@ def scan(context):
 @click.pass_context
 def update_analysis(context, analysis_id: int):
     """Update status of a single analysis"""
-    context.obj["trailblazer_db"].update_run_status(analysis_id=analysis_id)
+    trailblazer_db: Store = context.obj["trailblazer_db"]
+    trailblazer_db.update_run_status(
+        analysis_id=analysis_id, analysis_host=context.obj["analysis_host"]
+    )
 
 
 @base.command("add-user")
@@ -166,9 +170,12 @@ def unarchive_user(context, email: str) -> None:
 @click.pass_context
 def cancel(context, analysis_id):
     """Cancel all jobs in a run."""
+    trailblazer_db: Store = context.obj["trailblazer_db"]
     try:
-        context.obj["trailblazer_db"].cancel_analysis(
-            analysis_id=analysis_id, email=environ_email()
+        trailblazer_db.cancel_analysis(
+            analysis_id=analysis_id,
+            analysis_host=context.obj["analysis_host"],
+            email=environ_email(),
         )
     except Exception as e:
         LOG.error(e)
@@ -215,12 +222,14 @@ def set_analysis_status(
 @click.argument("analysis_id", type=int)
 @click.pass_context
 def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
-    """Delete analysis completely from database, and optionally cancel all ongoing jobs"""
+    """Delete analysis completely from database, and optionally cancel all ongoing jobs."""
+    trailblazer_db: Store = context.obj["trailblazer_db"]
     try:
         if cancel_jobs:
-            context.obj["trailblazer_db"].cancel_analysis(analysis_id=analysis_id)
-
-        context.obj["trailblazer_db"].delete_analysis(analysis_id=analysis_id, force=force)
+            trailblazer_db.cancel_analysis(
+                analysis_id=analysis_id, analysis_host=context.obj["analysis_host"]
+            )
+        trailblazer_db.delete_analysis(analysis_id=analysis_id, force=force)
     except Exception as e:
         LOG.error(e)
 

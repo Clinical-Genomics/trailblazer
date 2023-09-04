@@ -22,7 +22,9 @@ def _get_squeue_jobs_flag_input(slurm_job_id_file_content: Dict[str, List[str]])
     return ",".join(job_ids)
 
 
-def get_slurm_squeue_output(slurm_job_id_file: Path, use_ssh: bool = False) -> str:
+def get_slurm_squeue_output(
+    analysis_host: str, slurm_job_id_file: Path, use_ssh: bool = False
+) -> str:
     """Return squeue output from ongoing analyses in SLURM."""
     slurm_job_id_file_content: Dict[str, List[str]] = ReadFile.get_content_from_file(
         file_format=FileFormat.YAML, file_path=slurm_job_id_file
@@ -39,7 +41,7 @@ def get_slurm_squeue_output(slurm_job_id_file: Path, use_ssh: bool = False) -> s
         "%A,%j,%T,%l,%M,%S",
     ]
     if use_ssh:
-        squeue_commands = ["ssh", "hiseq.clinical@hasta.scilifelab.se"] + squeue_commands
+        squeue_commands = ["ssh", analysis_host] + squeue_commands
         return (
             subprocess.check_output(
                 squeue_commands,

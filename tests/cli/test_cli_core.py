@@ -132,7 +132,7 @@ def test_cancel_non_existent_analysis_id(
 
     # GIVEN Trailblazer database with analyses and jobs
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
-    trailblazer_db.update_ongoing_analyses()
+    trailblazer_db.update_ongoing_analyses(analysis_host=trailblazer_context.get("analysis_host"))
 
     # WHEN running cancel on non-existing entry
     result = cli_runner.invoke(cancel, ["123"], obj=trailblazer_context)
