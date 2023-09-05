@@ -6,7 +6,7 @@ def test_instantiate_config():
     # GIVEN config raw input
 
     # WHEN instantiating a Config object
-    config = Config(database="a_database", analysis_host="a_name@host.se")
+    config = Config(database_url="a_database", analysis_host="a_name@host.se")
 
     # THEN it was successfully created
     assert isinstance(config, Config)
