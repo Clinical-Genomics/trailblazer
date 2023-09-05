@@ -1,6 +1,6 @@
 from tests.apps.tower.conftest import (
     TOWER_ID,
-    CaseName,
+    CaseId,
     TowerResponseFile,
     TowerTaskResponseFile,
 )
@@ -19,19 +19,19 @@ class MockStore(Store):
     def query_tower(config_file: str, case_id: str) -> MockTowerAPI:
         """Return a mocked NF Tower API response."""
         configs = {
-            CaseName.RUNNING: {
+            CaseId.RUNNING: {
                 "workflow_response_file": TowerResponseFile.RUNNING,
                 "tasks_response_file": TowerTaskResponseFile.RUNNING,
                 "tower_id": TOWER_ID,
                 "analysis_id": 1,
             },
-            CaseName.PENDING: {
+            CaseId.PENDING: {
                 "workflow_response_file": TowerResponseFile.PENDING,
                 "tasks_response_file": TowerTaskResponseFile.PENDING,
                 "tower_id": TOWER_ID,
                 "analysis_id": 1,
             },
-            CaseName.COMPLETED: {
+            CaseId.COMPLETED: {
                 "workflow_response_file": TowerResponseFile.COMPLETED,
                 "tasks_response_file": TowerTaskResponseFile.COMPLETED,
                 "tower_id": TOWER_ID,

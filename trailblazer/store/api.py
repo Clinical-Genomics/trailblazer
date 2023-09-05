@@ -82,15 +82,6 @@ class BaseHandler(CoreHandler):
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def mark_analyses_deleted(self, case_id: str) -> Query:
-        """mark analyses connected to a case as deleted"""
-        old_analyses = self.analyses(case_id=case_id)
-        if old_analyses.count() > 0:
-            for old_analysis in old_analyses:
-                old_analysis.is_deleted = True
-            self.commit()
-        return old_analyses
-
     def set_analysis_completed(self, analysis_id: int) -> None:
         """Set an analysis status to completed."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
@@ -100,7 +91,7 @@ class BaseHandler(CoreHandler):
 
     def set_analysis_uploaded(self, case_id: str, uploaded_at: dt.datetime) -> None:
         """Setting analysis uploaded at."""
-        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_name=case_id)
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.uploaded_at = uploaded_at
         self.commit()
 
@@ -109,13 +100,13 @@ class BaseHandler(CoreHandler):
         status: str = status.lower()
         if status not in set(TrailblazerStatus.statuses()):
             raise ValueError(f"Invalid status. Allowed values are: {TrailblazerStatus.statuses()}")
-        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_name=case_id)
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.status = status
         self.commit()
         LOG.info(f"{analysis.family} - Status set to {status.upper()}")
 
     def add_comment(self, case_id: str, comment: str):
-        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_name=case_id)
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.comment: str = (
             " ".join([analysis.comment, comment]) if analysis.comment else comment
         )

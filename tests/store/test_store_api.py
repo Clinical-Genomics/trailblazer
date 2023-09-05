@@ -4,7 +4,7 @@ from typing import Dict, List, Optional
 
 import pytest
 
-from tests.apps.tower.conftest import CaseName
+from tests.apps.tower.conftest import CaseId
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import CharacterFormat, TrailblazerStatus
 from trailblazer.store.models import Analysis
@@ -25,7 +25,7 @@ def test_update_analysis_from_slurm_run_status(
     analysis_store: MockStore,
     squeue_stream_jobs: str,
     mocker,
-    ongoing_analysis_case_name: str,
+    ongoing_analysis_case_id: str,
     slurm_squeue_output: Dict[str, str],
 ):
     """Test updating analysis jobs when given squeue results."""
@@ -37,27 +37,25 @@ def test_update_analysis_from_slurm_run_status(
     mocker.patch(
         FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
         return_value=subprocess.check_output(
-            ["cat", slurm_squeue_output.get(ongoing_analysis_case_name)]
+            ["cat", slurm_squeue_output.get(ongoing_analysis_case_id)]
         ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
     )
 
     # WHEN updating the analysis
     analysis_store.update_analysis_from_slurm_output(analysis_id=analysis.id)
     updated_analysis: Analysis = analysis_store.get_analysis(
-        case_name=analysis.family,
-        started_at=analysis.started_at,
-        status=TrailblazerStatus.RUNNING,
+        case_id=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.RUNNING
     )
 
     # THEN it should update the analysis jobs
     assert updated_analysis.jobs
 
 
-def test_set_analysis_uploaded(analysis_store: MockStore, timestamp_now: datetime, case_name):
+def test_set_analysis_uploaded(analysis_store: MockStore, timestamp_now: datetime, case_id):
     """Test setting analysis uploaded at for an analysis."""
 
     # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
 
     # WHEN setting an analysis uploaded at
     analysis_store.set_analysis_uploaded(case_id=analysis.family, uploaded_at=timestamp_now)
@@ -66,11 +64,11 @@ def test_set_analysis_uploaded(analysis_store: MockStore, timestamp_now: datetim
     assert analysis.uploaded_at == timestamp_now
 
 
-def test_set_analysis_failed(analysis_store: MockStore, case_name: str):
+def test_set_analysis_failed(analysis_store: MockStore, case_id: str):
     """Test setting analysis to failed for an analysis."""
 
     # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
 
     # WHEN setting analysis to failed
     analysis_store.set_analysis_status(case_id=analysis.family, status=TrailblazerStatus.FAILED)
@@ -79,11 +77,11 @@ def test_set_analysis_failed(analysis_store: MockStore, case_name: str):
     assert analysis.status == TrailblazerStatus.FAILED
 
 
-def test_add_comment(analysis_store: MockStore, case_name: str):
+def test_add_comment(analysis_store: MockStore, case_id: str):
     """Test adding comment to an analysis object."""
 
     # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     comment: str = "test comment"
 
     # WHEN adding a comment
@@ -94,7 +92,7 @@ def test_add_comment(analysis_store: MockStore, case_name: str):
 
 
 @pytest.mark.parametrize(
-    "case_name, status",
+    "case_id, status",
     [
         ("blazinginsect", TrailblazerStatus.RUNNING),
         ("crackpanda", TrailblazerStatus.FAILED),
@@ -111,7 +109,7 @@ def test_add_comment(analysis_store: MockStore, case_name: str):
 )
 def test_update_run_status(
     analysis_store: MockStore,
-    case_name: str,
+    case_id: str,
     status: str,
     mocker,
     slurm_squeue_output: Dict[str, str],
@@ -120,13 +118,13 @@ def test_update_run_status(
     # GIVEN SLURM squeue output for an analysis
     mocker.patch(
         FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
-        return_value=subprocess.check_output(["cat", slurm_squeue_output.get(case_name)]).decode(
+        return_value=subprocess.check_output(["cat", slurm_squeue_output.get(case_id)]).decode(
             CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8
         ),
     )
 
     # GIVEN an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
 
     # WHEN database is updated once
     analysis_store.update_run_status(analysis_id=analysis.id)
@@ -141,29 +139,11 @@ def test_update_run_status(
     assert analysis.status == status
 
 
-def test_mark_analyses_deleted(analysis_store: MockStore, ongoing_analysis_case_name: str):
-    """Test marking an ongoing analysis as deleted."""
-    # GIVEN case name for a case that is not deleted
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
-        case_name=ongoing_analysis_case_name
-    )
-    assert not analysis.is_deleted
-
-    # WHEN marking analysis as deleted
-    analysis_store.mark_analyses_deleted(case_id=ongoing_analysis_case_name)
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
-        case_name=ongoing_analysis_case_name
-    )
-
-    # THEN analysis is marked deleted
-    assert analysis.is_deleted
-
-
-def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_name: str):
+def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
     """Assess that jobs are successfully updated when using NF Tower."""
 
     # GIVEN an analysis without failed jobs
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert not analysis.jobs
 
     # WHEN analysis jobs are deleted
@@ -180,20 +160,20 @@ def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], ca
 
 
 @pytest.mark.parametrize(
-    "case_name, status, progress",
+    "case_id, status, progress",
     [
-        (CaseName.RUNNING, TrailblazerStatus.RUNNING, 0.15),
-        (CaseName.PENDING, TrailblazerStatus.PENDING, 0),
-        (CaseName.COMPLETED, TrailblazerStatus.QC, 1),
+        (CaseId.RUNNING, TrailblazerStatus.RUNNING, 0.15),
+        (CaseId.PENDING, TrailblazerStatus.PENDING, 0),
+        (CaseId.COMPLETED, TrailblazerStatus.QC, 1),
     ],
 )
 def test_update_tower_run_status(
-    analysis_store: MockStore, case_name: str, status: str, progress: int
+    analysis_store: MockStore, case_id: str, status: str, progress: int
 ):
     """Assess that an analysis status is successfully updated when using NF Tower."""
 
     # GIVEN an analysis with pending status
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert analysis.status == TrailblazerStatus.PENDING
 
     # WHEN database is updated once

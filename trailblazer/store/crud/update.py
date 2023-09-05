@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from trailblazer.apps.slurm.api import (
     get_current_analysis_status,
@@ -76,3 +76,12 @@ class UpdateHandler(BaseHandler_2):
         LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
         analysis.logged_at = datetime.now()
         self.commit()
+
+    def update_case_analyses_as_deleted(self, case_id: str) -> Optional[List[Analysis]]:
+        """Mark analyses connected to a case as deleted."""
+        analyses: Optional[List[Analysis]] = self.get_analyses_for_case(case_id=case_id)
+        if analyses:
+            for analysis in analyses:
+                analysis.is_deleted = True
+            self.commit()
+        return analyses

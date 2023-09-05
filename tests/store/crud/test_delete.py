@@ -4,11 +4,11 @@ from tests.mocks.store_mock import MockStore
 from trailblazer.store.models import Analysis
 
 
-def test_delete_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_name: str):
+def test_delete_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
     """Test jobs are successfully deleted."""
 
     # GIVEN an analysis without failed jobs
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_name=case_name)
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert not analysis.jobs
 
     # WHEN jobs are updated
