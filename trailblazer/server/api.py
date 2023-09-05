@@ -12,9 +12,11 @@ from trailblazer.constants import (
     TRAILBLAZER_TIME_STAMP,
     TrailblazerStatus,
 )
-from trailblazer.server.ext import ANALYSIS_HOST, store
+from trailblazer.server.ext import store
 from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
+
+ANALYSIS_HOST = os.environ.get("ANALYSIS_HOST")
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
