@@ -13,9 +13,9 @@ def filter_analyses_by_id(analyses: Query, analysis_id: int, **kwargs) -> Query:
     return analyses.filter(Analysis.id == analysis_id)
 
 
-def filter_analyses_by_case_name(analyses: Query, case_name: str, **kwargs) -> Query:
-    """Filter analyses by case name."""
-    return analyses.filter(Analysis.family == case_name)
+def filter_analyses_by_case_id(analyses: Query, case_id: str, **kwargs) -> Query:
+    """Filter analyses by case id."""
+    return analyses.filter(Analysis.family == case_id)
 
 
 def filter_analyses_by_started_at(analyses: Query, started_at: datetime, **kwargs) -> Query:
@@ -32,7 +32,7 @@ class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
     FILTER_BY_ID: Callable = filter_analyses_by_id
-    FILTER_BY_CASE_NAME: Callable = filter_analyses_by_case_name
+    FILTER_BY_CASE_ID: Callable = filter_analyses_by_case_id
     FILTER_BY_STARTED_AT: Callable = filter_analyses_by_started_at
     FILTER_BY_STATUS: Callable = filter_analyses_by_status
 
@@ -41,7 +41,7 @@ def apply_analysis_filter(
     analyses: Query,
     filter_functions: List[Callable],
     analysis_id: Optional[int] = None,
-    case_name: Optional[str] = None,
+    case_id: Optional[str] = None,
     started_at: Optional[datetime] = None,
     status: Optional[str] = None,
 ) -> Query:
@@ -50,7 +50,7 @@ def apply_analysis_filter(
         analyses: Query = function(
             analyses=analyses,
             analysis_id=analysis_id,
-            case_name=case_name,
+            case_id=case_id,
             started_at=started_at,
             status=status,
         )

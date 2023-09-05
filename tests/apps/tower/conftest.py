@@ -26,7 +26,7 @@ class TowerTaskResponseFile:
     EMPTY: Path = Path(TOWER_RESPONSE_DIR, "tower_tasks_empty.json")
 
 
-class CaseName:
+class CaseId:
     PENDING: str = "cuddlyhen_pending"
     RUNNING: str = "cuddlyhen"
     COMPLETED: str = "cuddlyhen_completed"

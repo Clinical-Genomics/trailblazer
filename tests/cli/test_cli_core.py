@@ -42,14 +42,14 @@ def test_set_analysis_completed(
     cli_runner: CliRunner,
     trailblazer_context: Dict[str, MockStore],
     caplog,
-    failed_analysis_case_name: str,
+    failed_analysis_case_id: str,
     process_exit_success: int,
 ):
     """Test setting an analysis to status complete."""
     # GIVEN an analysis with status failed
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
-        case_name=failed_analysis_case_name
+        case_id=failed_analysis_case_id
     )
 
     # Make sure status is not "completed"
@@ -63,7 +63,7 @@ def test_set_analysis_completed(
 
     # THEN status will be set to "complete"
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
-        case_name=failed_analysis_case_name
+        case_id=failed_analysis_case_id
     )
     assert analysis.status == TrailblazerStatus.COMPLETED
 
@@ -72,15 +72,15 @@ def test_set_analysis_status(
     cli_runner: CliRunner,
     trailblazer_context: Dict[str, MockStore],
     caplog,
-    failed_analysis_case_name: str,
+    failed_analysis_case_id: str,
     process_exit_success: int,
 ):
-    """Test that the latest analysis status is updated for a given case name."""
+    """Test that the latest analysis status is updated for a given case id."""
 
     # GIVEN an analysis with status failed
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
-        case_name=failed_analysis_case_name
+        case_id=failed_analysis_case_id
     )
 
     # Make sure status is not "qc"
@@ -88,14 +88,14 @@ def test_set_analysis_status(
 
     # WHEN running command
     result = cli_runner.invoke(
-        set_analysis_status, ["--status", "qc", failed_analysis_case_name], obj=trailblazer_context
+        set_analysis_status, ["--status", "qc", failed_analysis_case_id], obj=trailblazer_context
     )
 
     # THEN command runs successfully
     assert result.exit_code == process_exit_success
 
     # THEN status will be set to "qc
-    analysis = trailblazer_db.get_latest_analysis_for_case(case_name=failed_analysis_case_name)
+    analysis = trailblazer_db.get_latest_analysis_for_case(case_id=failed_analysis_case_id)
     assert analysis.status == TrailblazerStatus.QC
 
 
@@ -103,7 +103,7 @@ def test_set_analysis_status_error(
     cli_runner: CliRunner,
     trailblazer_context: Dict[str, MockStore],
     caplog,
-    failed_analysis_case_name: str,
+    failed_analysis_case_id: str,
 ):
     """Test that setting the status to a non-accepted value raises an error."""
 
@@ -112,7 +112,7 @@ def test_set_analysis_status_error(
     # WHEN running command
     result = cli_runner.invoke(
         set_analysis_status,
-        ["--status", "non_existing_status", failed_analysis_case_name],
+        ["--status", "non_existing_status", failed_analysis_case_id],
         obj=trailblazer_context,
     )
 
@@ -148,7 +148,7 @@ def test_cancel_not_running(
     cli_runner: CliRunner,
     trailblazer_context: Dict[str, MockStore],
     caplog,
-    failed_analysis_case_name: str,
+    failed_analysis_case_id: str,
     mocker,
     process_exit_success: int,
     slurm_squeue_output: Dict[str, str],
@@ -160,14 +160,14 @@ def test_cancel_not_running(
     mocker.patch(
         FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
         return_value=subprocess.check_output(
-            ["cat", slurm_squeue_output.get(failed_analysis_case_name)]
+            ["cat", slurm_squeue_output.get(failed_analysis_case_id)]
         ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
     )
 
     # GIVEN an analysis that is NOT running
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
-        case_name=failed_analysis_case_name
+        case_id=failed_analysis_case_id
     )
     trailblazer_db.update_ongoing_analyses()
 
@@ -186,7 +186,7 @@ def test_cancel_ongoing_analysis(
     trailblazer_context: Dict[str, MockStore],
     caplog,
     mocker,
-    ongoing_analysis_case_name: str,
+    ongoing_analysis_case_id: str,
     slurm_squeue_output: Dict[str, str],
     process_exit_success: int,
 ):
@@ -195,9 +195,12 @@ def test_cancel_ongoing_analysis(
     mocker.patch(
         FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
         return_value=subprocess.check_output(
-            ["cat", slurm_squeue_output.get(ongoing_analysis_case_name)]
+            ["cat", slurm_squeue_output.get(ongoing_analysis_case_id)]
         ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
     )
+
+    # GIVEN SLURM scancel output for an analysis
+    mocker.patch("trailblazer.store.api.cancel_slurm_job", return_value=None)
 
     caplog.set_level("INFO")
 
@@ -205,7 +208,7 @@ def test_cancel_ongoing_analysis(
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     trailblazer_db.update_ongoing_analyses()
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
-        case_name=ongoing_analysis_case_name
+        case_id=ongoing_analysis_case_id
     )
 
     # Analysis should have jobs that can be cancelled
@@ -248,7 +251,7 @@ def test_delete_ongoing_fail(
     cli_runner: CliRunner,
     trailblazer_context: Dict[str, MockStore],
     caplog,
-    ongoing_analysis_case_name: str,
+    ongoing_analysis_case_id: str,
     process_exit_success: int,
 ):
     """Test deleting an ongoing analysis without using the force flag."""
@@ -260,7 +263,7 @@ def test_delete_ongoing_fail(
 
     # GIVEN an analysis that is ongoing
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
-        case_name=ongoing_analysis_case_name
+        case_id=ongoing_analysis_case_id
     )
 
     # WHEN trying to delete ongoing analysis without --force flag
@@ -280,7 +283,7 @@ def test_delete_ongoing_force(
     cli_runner: CliRunner,
     trailblazer_context: Dict[str, MockStore],
     caplog,
-    ongoing_analysis_case_name,
+    ongoing_analysis_case_id,
     process_exit_success: int,
 ):
     caplog.set_level("INFO")
@@ -289,7 +292,7 @@ def test_delete_ongoing_force(
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     trailblazer_db.update_ongoing_analyses()
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
-        case_name=ongoing_analysis_case_name
+        case_id=ongoing_analysis_case_id
     )
 
     # WHEN running command with --force flag
@@ -302,7 +305,7 @@ def test_delete_ongoing_force(
     assert "Deleting" in caplog.text
 
     # THEN the analysis should have been deleted from the database
-    assert not trailblazer_db.get_latest_analysis_for_case(case_name=analysis.family)
+    assert not trailblazer_db.get_latest_analysis_for_case(case_id=analysis.family)
 
 
 def test_get_user_not_in_database(
@@ -481,7 +484,7 @@ def test_scan(
     trailblazer_context: Dict[str, MockStore],
     caplog,
     mocker,
-    ongoing_analysis_case_name: str,
+    ongoing_analysis_case_id: str,
     slurm_squeue_output: Dict[str, str],
 ):
     """Test scanning for analyses and updating analysis status."""
@@ -491,7 +494,7 @@ def test_scan(
     mocker.patch(
         FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
         return_value=subprocess.check_output(
-            ["cat", slurm_squeue_output.get(ongoing_analysis_case_name)]
+            ["cat", slurm_squeue_output.get(ongoing_analysis_case_id)]
         ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
     )
 
@@ -500,7 +503,7 @@ def test_scan(
     # GIVEN an analysis that is pending
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
-        case_name=ongoing_analysis_case_name
+        case_id=ongoing_analysis_case_id
     )
     assert analysis.status == TrailblazerStatus.PENDING
 
@@ -510,7 +513,7 @@ def test_scan(
     # THEN log that analyses are updated
     assert "All analyses updated" in caplog.text
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
-        case_name=ongoing_analysis_case_name
+        case_id=ongoing_analysis_case_id
     )
 
     # THEN the status of analysis should be updated
@@ -518,7 +521,7 @@ def test_scan(
 
 
 @pytest.mark.parametrize(
-    "case_name, status",
+    "case_id, status",
     [
         ("blazinginsect", TrailblazerStatus.RUNNING),
         ("crackpanda", TrailblazerStatus.FAILED),
@@ -530,7 +533,7 @@ def test_ls(
     cli_runner: CliRunner,
     process_exit_success: int,
     trailblazer_context: Dict[str, MockStore],
-    case_name: str,
+    case_id: str,
     mocker,
     status: str,
     slurm_squeue_output: Dict[str, str],
@@ -540,7 +543,7 @@ def test_ls(
     # GIVEN SLURM squeue output for an analysis
     mocker.patch(
         FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
-        return_value=subprocess.check_output(["cat", slurm_squeue_output.get(case_name)]).decode(
+        return_value=subprocess.check_output(["cat", slurm_squeue_output.get(case_id)]).decode(
             CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8
         ),
     )
@@ -559,4 +562,4 @@ def test_ls(
     assert result.exit_code == process_exit_success
 
     # THEN ls print info about cases with that status
-    assert case_name in result.output
+    assert case_id in result.output

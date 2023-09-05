@@ -202,10 +202,10 @@ def post_query_analyses():
 
 @blueprint.route("/get-latest-analysis", methods=["POST"])
 def post_get_latest_analysis():
-    """Return latest analysis entry for specified case name."""
+    """Return latest analysis entry for specified case id."""
     post_request: Response.json = request.json
     latest_case_analysis: Optional[Analysis] = store.get_latest_analysis_for_case(
-        case_name=post_request.get("case_id")
+        case_id=post_request.get("case_id")
     )
     if latest_case_analysis:
         raw_analysis: Dict[str, str] = stringify_timestamps(latest_case_analysis.to_dict())
@@ -218,7 +218,7 @@ def post_find_analysis():
     """Find analysis using case id, date, and status."""
     post_request: Response.json = request.json
     analysis: Analysis = store.get_analysis(
-        case_name=post_request.get("case_id"),
+        case_id=post_request.get("case_id"),
         started_at=datetime.strptime(post_request.get("started_at"), TRAILBLAZER_TIME_STAMP).date(),
         status=post_request.get("status"),
     )
@@ -243,13 +243,17 @@ def post_delete_analysis():
 
 @blueprint.route("/mark-analyses-deleted", methods=["POST"])
 def post_mark_analyses_deleted():
-    """Mark all analysis belonging to a case deleted"""
-    content = request.json
-    old_analyses = store.mark_analyses_deleted(case_id=content.get("case_id"))
-    data = [stringify_timestamps(analysis_obj.to_dict()) for analysis_obj in old_analyses]
-    if data:
-        return jsonify(*data), 201
-    return jsonify(None), 201
+    """Mark all analysis belonging to a case as deleted."""
+    post_request: Response.json = request.json
+    case_analyses: Optional[List[Analysis]] = store.update_case_analyses_as_deleted(
+        case_id=post_request.get("case_id")
+    )
+    raw_analysis = [
+        stringify_timestamps(case_analysis.to_dict()) for case_analysis in case_analyses
+    ]
+    if raw_analysis:
+        return jsonify(*raw_analysis), HTTPStatus.CREATED
+    return jsonify(None), HTTPStatus.CREATED
 
 
 @blueprint.route("/add-pending-analysis", methods=["POST"])

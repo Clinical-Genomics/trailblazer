@@ -1,7 +1,6 @@
 """Store backend in Trailblazer."""
 import datetime as dt
 import logging
-import subprocess
 from pathlib import Path
 from typing import Optional
 
@@ -9,6 +8,7 @@ import alchy
 import sqlalchemy as sqa
 from alchy import Query
 
+from trailblazer.apps.slurm.api import cancel_slurm_job
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import (
     FileFormat,
@@ -82,15 +82,6 @@ class BaseHandler(CoreHandler):
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def mark_analyses_deleted(self, case_id: str) -> Query:
-        """mark analyses connected to a case as deleted"""
-        old_analyses = self.analyses(case_id=case_id)
-        if old_analyses.count() > 0:
-            for old_analysis in old_analyses:
-                old_analysis.is_deleted = True
-            self.commit()
-        return old_analyses
-
     def set_analysis_completed(self, analysis_id: int) -> None:
         """Set an analysis status to completed."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
@@ -100,7 +91,7 @@ class BaseHandler(CoreHandler):
 
     def set_analysis_uploaded(self, case_id: str, uploaded_at: dt.datetime) -> None:
         """Setting analysis uploaded at."""
-        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_name=case_id)
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.uploaded_at = uploaded_at
         self.commit()
 
@@ -109,13 +100,13 @@ class BaseHandler(CoreHandler):
         status: str = status.lower()
         if status not in set(TrailblazerStatus.statuses()):
             raise ValueError(f"Invalid status. Allowed values are: {TrailblazerStatus.statuses()}")
-        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_name=case_id)
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.status = status
         self.commit()
         LOG.info(f"{analysis.family} - Status set to {status.upper()}")
 
     def add_comment(self, case_id: str, comment: str):
-        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_name=case_id)
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.comment: str = (
             " ".join([analysis.comment, comment]) if analysis.comment else comment
         )
@@ -219,16 +210,6 @@ class BaseHandler(CoreHandler):
             analysis.status: str = TrailblazerStatus.ERROR
             self.commit()
 
-    @staticmethod
-    def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
-        """Cancel slurm job by slurm job ID"""
-        if ssh:
-            subprocess.Popen(
-                ["ssh", "hiseq.clinical@hasta.scilifelab.se", "scancel", str(slurm_id)]
-            )
-        else:
-            subprocess.Popen(["scancel", str(slurm_id)])
-
     def cancel_analysis(
         self,
         analysis_id: int,
@@ -236,8 +217,8 @@ class BaseHandler(CoreHandler):
         email: str = None,
         ssh: bool = False,
     ) -> None:
-        """Cancel all ongoing slurm jobs associated with the analysis, and set job status to canceled"""
-        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
+        """Cancel all ongoing slurm jobs associated with the analysis, and set analysis status to 'cancelled'."""
+        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
             raise TrailblazerError(f"Analysis {analysis_id} does not exist")
 
@@ -247,7 +228,7 @@ class BaseHandler(CoreHandler):
         for job in analysis.jobs:
             if job.status in SlurmJobStatus.ongoing_statuses():
                 LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
-                self.cancel_slurm_job(job.slurm_id, ssh=ssh)
+                cancel_slurm_job(slurm_id=job.slurm_id, use_ssh=ssh)
         LOG.info(
             f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )

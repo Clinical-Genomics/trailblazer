@@ -4,7 +4,7 @@ from typing import Dict, Generator, List
 
 import pytest
 
-from tests.apps.tower.conftest import CaseName, TowerTaskResponseFile
+from tests.apps.tower.conftest import CaseId, TowerTaskResponseFile
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
 from trailblazer.apps.tower.models import TowerTask
@@ -138,7 +138,7 @@ def fixture_raw_analyses(analysis_data: Dict[str, List[Dict]]) -> List[dict]:
     """Return raw analyses data."""
     analyses: List[dict] = []
     for analysis in analysis_data["analyses"]:
-        analysis["case_name"] = analysis["family"]
+        analysis["case_id"] = analysis["family"]
         analyses.append(analysis)
     return analyses
 
@@ -232,26 +232,26 @@ def fixture_tower_task_name() -> str:
 
 
 @pytest.fixture(scope="session")
-def case_name() -> str:
-    """Return a case name."""
-    return CaseName.RUNNING
+def case_id() -> str:
+    """Return a case id."""
+    return CaseId.RUNNING
 
 
 @pytest.fixture(scope="session")
-def case_name_not_in_db() -> str:
-    """Return a case name not present in database."""
-    return "case_name_not_in_db"
+def case_id_not_in_db() -> str:
+    """Return a case id not present in database."""
+    return "case_id_not_in_db"
 
 
 @pytest.fixture(scope="session")
-def failed_analysis_case_name() -> str:
-    """Return a case name for a failed analysis."""
+def failed_analysis_case_id() -> str:
+    """Return a case id for a failed analysis."""
     return "crackpanda"
 
 
 @pytest.fixture(scope="session")
-def ongoing_analysis_case_name() -> str:
-    """Return a case name for an ongoing analysis."""
+def ongoing_analysis_case_id() -> str:
+    """Return a case id for an ongoing analysis."""
     return "blazinginsect"
 
 
@@ -268,7 +268,7 @@ def fixture_tower_task() -> TowerTask:
 def slurm_squeue_output(squeue_dir: Path) -> Dict[str, str]:
     """Return SLURM squeue output for analysis started via SLURM."""
     file_postfix: str = f"squeue{FileExtension.CSV}"
-    case_names: List[str] = [
+    case_ids: List[str] = [
         "blazinginsect",
         "crackpanda",
         "cuddlyhen",
@@ -283,6 +283,5 @@ def slurm_squeue_output(squeue_dir: Path) -> Dict[str, str]:
         "trueferret",
     ]
     return {
-        case_name: Path(squeue_dir, f"{case_name}_{file_postfix}").as_posix()
-        for case_name in case_names
+        case_id: Path(squeue_dir, f"{case_id}_{file_postfix}").as_posix() for case_id in case_ids
     }

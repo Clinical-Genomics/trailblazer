@@ -22,6 +22,16 @@ def _get_squeue_jobs_flag_input(slurm_job_id_file_content: Dict[str, List[str]])
     return ",".join(job_ids)
 
 
+def cancel_slurm_job(slurm_id: int, use_ssh: bool = False) -> None:
+    """Cancel SLURM job by SLURM job id."""
+    scancel_commands: List[str] = ["scancel", str(slurm_id)]
+    if use_ssh:
+        scancel_commands = ["ssh", "hiseq.clinical@hasta.scilifelab.se"] + scancel_commands
+        subprocess.Popen(scancel_commands)
+        return
+    subprocess.Popen(scancel_commands)
+
+
 def get_slurm_squeue_output(
     analysis_host: str, slurm_job_id_file: Path, use_ssh: bool = False
 ) -> str:
