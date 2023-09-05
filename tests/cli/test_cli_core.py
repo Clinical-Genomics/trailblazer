@@ -199,6 +199,9 @@ def test_cancel_ongoing_analysis(
         ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
     )
 
+    # GIVEN SLURM scancel output for an analysis
+    mocker.patch("trailblazer.store.api.cancel_slurm_job", return_value=None)
+
     caplog.set_level("INFO")
 
     # GIVEN an ongoing analysis

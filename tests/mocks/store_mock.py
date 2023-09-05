@@ -12,10 +12,6 @@ class MockStore(Store):
     """Instance of Store that mimics workflow manager outputs and interactions."""
 
     @staticmethod
-    def cancel_slurm_job(slurm_id: int, ssh: bool = False) -> None:
-        return
-
-    @staticmethod
     def query_tower(config_file: str, case_id: str) -> MockTowerAPI:
         """Return a mocked NF Tower API response."""
         configs = {
