@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.apps.slurm.api import get_squeue_result
@@ -8,11 +8,11 @@ from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, User
 
 
-def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_name: str):
+def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
     """Test jobs are successfully updated."""
 
     # GIVEN an analysis with no jobs
-    analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_name=case_name)
+    analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert not analysis.jobs
 
     # WHEN jobs are updated
@@ -58,8 +58,43 @@ def test_update_analysis_jobs_from_slurm_jobs(analysis_store: MockStore, squeue_
         analysis=analysis, squeue_result=squeue_result
     )
     updated_analysis: Analysis = analysis_store.get_analysis(
-        case_name=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.PENDING
+        case_id=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.PENDING
     )
 
     # THEN it should update the analysis jobs
     assert updated_analysis.jobs
+
+
+def test_update_case_analyses_as_deleted(analysis_store: MockStore, ongoing_analysis_case_id: str):
+    """Test marking case analyses as deleted."""
+    # GIVEN case id for a case with analyses that are not deleted
+    analyses: Optional[List[Analysis]] = analysis_store.get_analyses_for_case(
+        case_id=ongoing_analysis_case_id
+    )
+    for analysis in analyses:
+        assert not analysis.is_deleted
+
+    # WHEN marking analyses as deleted
+    analysis_store.update_case_analyses_as_deleted(case_id=ongoing_analysis_case_id)
+    analyses: Optional[List[Analysis]] = analysis_store.get_analyses_for_case(
+        case_id=ongoing_analysis_case_id
+    )
+
+    # THEN analyses are marked as deleted
+    for analysis in analyses:
+        assert analysis.is_deleted
+
+
+def test_update_case_analyses_as_deleted_with_non_existing_case(
+    analysis_store: MockStore, case_id_not_in_db: str
+):
+    """Test marking case analyses as deleted."""
+    # GIVEN case id for that do not exist
+
+    # WHEN marking analyses as deleted
+    analyses: Optional[List[Analysis]] = analysis_store.update_case_analyses_as_deleted(
+        case_id=case_id_not_in_db
+    )
+
+    # THEN no analyses are returned
+    assert not analyses

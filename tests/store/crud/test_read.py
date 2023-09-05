@@ -14,7 +14,7 @@ def test_get_analysis(analysis_store: MockStore):
 
     # WHEN getting analysis
     analysis: Analysis = analysis_store.get_analysis(
-        case_name=existing_analysis.family,
+        case_id=existing_analysis.family,
         started_at=existing_analysis.started_at,
         status=existing_analysis.status,
     )
@@ -28,9 +28,9 @@ def test_get_latest_analysis_for_case(analysis_store: MockStore):
     # GIVEN a store with an analysis
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
-    # WHEN accessing it by case name
+    # WHEN accessing it by case id
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
-        case_name=existing_analysis.family
+        case_id=existing_analysis.family
     )
 
     # THEN it should return the same analysis
@@ -38,13 +38,13 @@ def test_get_latest_analysis_for_case(analysis_store: MockStore):
 
 
 def test_get_latest_analysis_for_case_when_missing(
-    analysis_store: MockStore, case_name_not_in_db: str
+    analysis_store: MockStore, case_id_not_in_db: str
 ):
     """Test getting an analysis fora case when it does not exist in the database."""
 
-    # WHEN accessing it by case name
+    # WHEN accessing it by case id
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
-        case_name=case_name_not_in_db
+        case_id=case_id_not_in_db
     )
 
     # THEN no analysis should be returned
@@ -77,6 +77,17 @@ def test_get_analysis_with_id_when_missing(analysis_store: MockStore):
 
     # THEN it should return None
     assert not analysis
+
+
+def test_get_analyses_for_case(analysis_store: MockStore, case_id: str):
+    """Test getting analyses for a case when it exists in the database."""
+    # GIVEN a store with an analysis
+
+    # WHEN accessing it by case id
+    analyses: Optional[List[Analysis]] = analysis_store.get_analyses_for_case(case_id=case_id)
+
+    # THEN it should return the analyses
+    assert analyses
 
 
 def test_get_nr_jobs_with_status_per_category(job_store: MockStore, timestamp_yesterday: datetime):
