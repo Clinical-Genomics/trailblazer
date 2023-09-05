@@ -215,7 +215,7 @@ class BaseHandler(CoreHandler):
         analysis_id: int,
         analysis_host: Optional[str] = None,
         email: str = None,
-        ssh: bool = False,
+        use_ssh: bool = False,
     ) -> None:
         """Cancel all ongoing slurm jobs associated with the analysis, and set analysis status to 'cancelled'."""
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
@@ -228,7 +228,9 @@ class BaseHandler(CoreHandler):
         for job in analysis.jobs:
             if job.status in SlurmJobStatus.ongoing_statuses():
                 LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
-                cancel_slurm_job(slurm_id=job.slurm_id, use_ssh=ssh)
+                cancel_slurm_job(
+                    analysis_host=analysis_host, slurm_id=job.slurm_id, use_ssh=use_ssh
+                )
         LOG.info(
             f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )

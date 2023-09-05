@@ -138,7 +138,7 @@ def update_analysis(analysis_id):
 
 @blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])
 def cancel(analysis_id):
-    """Cancel an analysis and all slurm jobs associated with it"""
+    """Cancel an analysis and all slurm jobs associated with it."""
     auth_header = request.headers.get("Authorization")
     jwt_token = auth_header.split("Bearer ")[-1]
     user_data = jwt.decode(jwt_token, verify=False)
@@ -149,13 +149,13 @@ def cancel(analysis_id):
                 "analysis_id": analysis_id,
                 "analysis_host": ANALYSIS_HOST,
                 "email": user_data["email"],
-                "ssh": True,
+                "use_ssh": True,
             },
         )
         process.start()
-        return jsonify("Success! Cancel request sent"), 201
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
+        return jsonify("Success! Cancel request sent"), HTTPStatus.CREATED
+    except Exception as error:
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/delete/<int:analysis_id>", methods=["PUT"])
