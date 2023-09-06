@@ -17,31 +17,31 @@ from trailblazer.constants import (
 from trailblazer.io.controller import ReadFile
 
 
-@pytest.fixture(scope="session", name="username")
+@pytest.fixture(scope="session")
 def username() -> str:
     """Return a username."""
     return "Paul Anderson"
 
 
-@pytest.fixture(scope="session", name="archived_username")
+@pytest.fixture(scope="session")
 def archived_username() -> str:
     """Return an archived username."""
     return "Archived User"
 
 
-@pytest.fixture(scope="session", name="archived_user_email")
+@pytest.fixture(scope="session")
 def archived_user_email() -> str:
     """Return an archived user email."""
     return "archived.user@magnolia.com"
 
 
-@pytest.fixture(scope="session", name="user_email")
+@pytest.fixture(scope="session")
 def user_email() -> str:
     """Return an user email."""
     return "paul.anderson@magnolia.com"
 
 
-@pytest.fixture(scope="session", name="fixtures_dir")
+@pytest.fixture(scope="session")
 def fixtures_dir() -> Path:
     """Return the path to the fixtures' dir."""
     return Path("tests", "fixtures")
@@ -53,19 +53,19 @@ def squeue_dir(fixtures_dir: Path) -> Path:
     return Path(fixtures_dir, "squeue")
 
 
-@pytest.fixture(scope="session", name="analysis_data_path")
+@pytest.fixture(scope="session")
 def analysis_data_path(fixtures_dir: Path) -> Path:
     """Return the path to an analysis data file."""
     return Path(fixtures_dir, "analysis-data.yaml")
 
 
-@pytest.fixture(name="analysis_data", scope="function")
+@pytest.fixture(scope="function")
 def analysis_data(analysis_data_path: Path) -> Dict[str, list]:
     """Return content of the analysis data file."""
     return ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=analysis_data_path)
 
 
-@pytest.fixture(scope="session", name="squeue_stream_jobs")
+@pytest.fixture(scope="session")
 def squeue_stream_jobs() -> str:
     """Return a squeue output stream."""
     return """JOBID,NAME,STATE,TIME_LIMIT,TIME,START_TIME
@@ -76,19 +76,19 @@ def squeue_stream_jobs() -> str:
 690989,gatk_genotypegvcfs5,PENDING,10:00:00,0:00,N/A"""
 
 
-@pytest.fixture(name="trailblazer_tmp_dir")
+@pytest.fixture()
 def trailblazer_tmp_dir(tmpdir_factory) -> Path:
     """Return a temporary directory for Trailblazer testing."""
     return tmpdir_factory.mktemp("trailblazer_tmp")
 
 
-@pytest.fixture(name="trailblazer_context")
+@pytest.fixture()
 def trailblazer_context(analysis_store: MockStore) -> Dict[str, MockStore]:
     """Trailblazer context to be used in CLI."""
     return {"trailblazer_db": analysis_store}
 
 
-@pytest.fixture(name="store")
+@pytest.fixture()
 def store() -> Generator[MockStore, None, None]:
     """Empty Trailblazer database."""
     _store = MockStore(uri="sqlite://")
@@ -97,14 +97,14 @@ def store() -> Generator[MockStore, None, None]:
     _store.drop_all()
 
 
-@pytest.fixture(scope="function", name="info_store")
+@pytest.fixture(scope="function")
 def info_store(store: MockStore) -> Generator[MockStore, None, None]:
     """A Trailblazer database wih a populated info table."""
     StoreHelpers.add_info(store=store)
     yield store
 
 
-@pytest.fixture(scope="function", name="job_store")
+@pytest.fixture(scope="function")
 def job_store(
     store: MockStore,
 ) -> Generator[MockStore, None, None]:
@@ -117,7 +117,7 @@ def job_store(
     yield store
 
 
-@pytest.fixture(scope="function", name="user_store")
+@pytest.fixture(scope="function")
 def user_store(
     archived_user_email: str,
     archived_username: str,
@@ -133,7 +133,7 @@ def user_store(
     yield store
 
 
-@pytest.fixture(name="raw_analyses", scope="function")
+@pytest.fixture(scope="function")
 def raw_analyses(analysis_data: Dict[str, List[Dict]]) -> List[dict]:
     """Return raw analyses data."""
     analyses: List[dict] = []
@@ -143,7 +143,7 @@ def raw_analyses(analysis_data: Dict[str, List[Dict]]) -> List[dict]:
     return analyses
 
 
-@pytest.fixture(name="analysis_store")
+@pytest.fixture()
 def analysis_store(
     analysis_data: Dict[str, list],
     archived_user_email: str,
@@ -164,19 +164,19 @@ def analysis_store(
     yield store
 
 
-@pytest.fixture(name="timestamp_now", scope="session")
+@pytest.fixture(scope="session")
 def timestamp_now() -> datetime:
     """Return a time stamp of today's date in date time format."""
     return datetime.now()
 
 
-@pytest.fixture(name="timestamp_yesterday", scope="session")
+@pytest.fixture(scope="session")
 def timestamp_yesterday(timestamp_now: datetime) -> datetime:
     """Return a time stamp of yesterday's date in date time format."""
     return timestamp_now - timedelta(days=1)
 
 
-@pytest.fixture(name="tower_jobs")
+@pytest.fixture()
 def tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> List[dict]:
     """Return a list of Tower Jobs."""
     return [
@@ -207,25 +207,25 @@ def tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> List[dict]
     ]
 
 
-@pytest.fixture(name="analysis_id")
+@pytest.fixture()
 def analysis_id() -> int:
     """Return a mock ID of the analysis in the Trailblazer database."""
     return 1
 
 
-@pytest.fixture(name="started_at", scope="session")
+@pytest.fixture(scope="session")
 def started_at() -> datetime:
     """Returns a started at date."""
     return datetime.strptime("2023-04-04T08:11:27Z", TOWER_TIMESTAMP_FORMAT)
 
 
-@pytest.fixture(name="slurm_id", scope="session")
+@pytest.fixture(scope="session")
 def slurm_id() -> str:
     """Returns a slurm id."""
     return "4611827"
 
 
-@pytest.fixture(name="tower_task_name", scope="session")
+@pytest.fixture(scope="session")
 def tower_task_name() -> str:
     """Returns a NF Tower task name."""
     return "NFCORE_RNAFUSION:RNAFUSION:INPUT_CHECK:SAMPLESHEET_CHECK"
@@ -255,7 +255,7 @@ def ongoing_analysis_case_id() -> str:
     return "blazinginsect"
 
 
-@pytest.fixture(name="tower_task", scope="session")
+@pytest.fixture(scope="session")
 def tower_task() -> TowerTask:
     """Return a Tower task."""
     tower_task_running_content: dict = ReadFile.get_content_from_file(
