@@ -151,7 +151,9 @@ class BaseHandler(CoreHandler):
                 analysis_id=analysis_id, analysis_host=analysis_host
             )
 
-    def update_analysis_from_slurm_output(self, analysis_id: int, analysis_host: str) -> None:
+    def update_analysis_from_slurm_output(
+        self, analysis_id: int, analysis_host: Optional[str] = False
+    ) -> None:
         """Query SLURM for entries related to given analysis, and update the analysis in the database."""
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         try:
@@ -203,7 +205,7 @@ class BaseHandler(CoreHandler):
             self.commit()
 
     def cancel_analysis(
-        self, analysis_id: int, analysis_host: Optional[str] = None, email: str = None
+        self, analysis_id: int, analysis_host: Optional[str] = None, email: Optional[str] = None
     ) -> None:
         """Cancel all ongoing slurm jobs associated with the analysis, and set analysis status to 'cancelled'."""
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
