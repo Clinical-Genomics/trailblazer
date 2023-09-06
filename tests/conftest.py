@@ -85,7 +85,7 @@ def fixture_trailblazer_tmp_dir(tmpdir_factory) -> Path:
 @pytest.fixture(name="trailblazer_context")
 def fixture_trailblazer_context(analysis_store: MockStore) -> Dict[str, MockStore]:
     """Trailblazer context to be used in CLI."""
-    return {"analysis_host": "a_name@host.se", "trailblazer_db": analysis_store}
+    return {"trailblazer_db": analysis_store}
 
 
 @pytest.fixture(name="store")

@@ -129,7 +129,7 @@ def update_analysis(analysis_id):
     try:
         process = multiprocessing.Process(
             target=store.update_run_status,
-            kwargs={"analysis_id": analysis_id, "analysis_host": ANALYSIS_HOST, "use_ssh": True},
+            kwargs={"analysis_id": analysis_id, "analysis_host": ANALYSIS_HOST},
         )
         process.start()
         return jsonify("Success! Update request sent"), HTTPStatus.CREATED
@@ -150,7 +150,6 @@ def cancel(analysis_id):
                 "analysis_id": analysis_id,
                 "analysis_host": ANALYSIS_HOST,
                 "email": user_data["email"],
-                "use_ssh": True,
             },
         )
         process.start()

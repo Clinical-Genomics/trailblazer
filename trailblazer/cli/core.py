@@ -74,7 +74,7 @@ def init(context, reset, force):
 def scan(context):
     """Scan ongoing analyses in SLURM"""
     trailblazer_db: Store = context.obj["trailblazer_db"]
-    trailblazer_db.update_ongoing_analyses(analysis_host=context.obj["analysis_host"])
+    trailblazer_db.update_ongoing_analyses()
     LOG.info("All analyses updated!")
 
 
@@ -84,9 +84,7 @@ def scan(context):
 def update_analysis(context, analysis_id: int):
     """Update status of a single analysis"""
     trailblazer_db: Store = context.obj["trailblazer_db"]
-    trailblazer_db.update_run_status(
-        analysis_id=analysis_id, analysis_host=context.obj["analysis_host"]
-    )
+    trailblazer_db.update_run_status(analysis_id=analysis_id)
 
 
 @base.command("add-user")
@@ -172,11 +170,7 @@ def cancel(context, analysis_id):
     """Cancel all jobs in a run."""
     trailblazer_db: Store = context.obj["trailblazer_db"]
     try:
-        trailblazer_db.cancel_analysis(
-            analysis_id=analysis_id,
-            analysis_host=context.obj["analysis_host"],
-            email=environ_email(),
-        )
+        trailblazer_db.cancel_analysis(analysis_id=analysis_id, email=environ_email())
     except Exception as e:
         LOG.error(e)
 
@@ -226,9 +220,7 @@ def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
     trailblazer_db: Store = context.obj["trailblazer_db"]
     try:
         if cancel_jobs:
-            trailblazer_db.cancel_analysis(
-                analysis_id=analysis_id, analysis_host=context.obj["analysis_host"]
-            )
+            trailblazer_db.cancel_analysis(analysis_id=analysis_id)
         trailblazer_db.delete_analysis(analysis_id=analysis_id, force=force)
     except Exception as e:
         LOG.error(e)
