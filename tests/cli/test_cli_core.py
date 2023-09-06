@@ -47,7 +47,7 @@ def test_set_analysis_completed(
 ):
     """Test setting an analysis to status complete."""
     # GIVEN an analysis with status failed
-    trailblazer_db: MockStore = trailblazer_context["trailblazer"]
+    trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
         case_id=failed_analysis_case_id
     )
@@ -78,7 +78,7 @@ def test_set_analysis_status(
     """Test that the latest analysis status is updated for a given case id."""
 
     # GIVEN an analysis with status failed
-    trailblazer_db: MockStore = trailblazer_context["trailblazer"]
+    trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
         case_id=failed_analysis_case_id
     )
@@ -131,7 +131,7 @@ def test_cancel_non_existent_analysis_id(
     caplog.set_level("ERROR")
 
     # GIVEN Trailblazer database with analyses and jobs
-    trailblazer_db: MockStore = trailblazer_context["trailblazer"]
+    trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     trailblazer_db.update_ongoing_analyses()
 
     # WHEN running cancel on non-existing entry
@@ -165,7 +165,7 @@ def test_cancel_not_running(
     )
 
     # GIVEN an analysis that is NOT running
-    trailblazer_db: MockStore = trailblazer_context["trailblazer"]
+    trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
         case_id=failed_analysis_case_id
     )
@@ -205,7 +205,7 @@ def test_cancel_ongoing_analysis(
     caplog.set_level("INFO")
 
     # GIVEN an ongoing analysis
-    trailblazer_db: MockStore = trailblazer_context["trailblazer"]
+    trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     trailblazer_db.update_ongoing_analyses()
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
@@ -237,7 +237,7 @@ def test_delete_nonexisting(
 ):
     with caplog.at_level("ERROR"):
         # GIVEN Trailblazer database with analyses and jobs
-        trailblazer_db: MockStore = trailblazer_context["trailblazer"]
+        trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
         trailblazer_db.update_ongoing_analyses()
 
         # WHEN trying to delete analysis not in database
@@ -258,7 +258,7 @@ def test_delete_ongoing_fail(
     caplog.set_level("ERROR")
 
     # GIVEN Trailblazer database with analyses and jobs
-    trailblazer_db: MockStore = trailblazer_context["trailblazer"]
+    trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     trailblazer_db.update_ongoing_analyses()
 
     # GIVEN an analysis that is ongoing
@@ -289,7 +289,7 @@ def test_delete_ongoing_force(
     caplog.set_level("INFO")
 
     # GIVEN Trailblazer database with analyses and jobs and an ongoing analysis
-    trailblazer_db: MockStore = trailblazer_context["trailblazer"]
+    trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     trailblazer_db.update_ongoing_analyses()
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
@@ -501,7 +501,7 @@ def test_scan(
     # GIVEN populated Trailblazer database with pending analyses
 
     # GIVEN an analysis that is pending
-    trailblazer_db: MockStore = trailblazer_context["trailblazer"]
+    trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
@@ -548,7 +548,7 @@ def test_ls(
         ),
     )
     # GIVEN populated Trailblazer database with pending analyses
-    trailblazer_db: MockStore = trailblazer_context["trailblazer"]
+    trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
 
     # Update analyses to their expected status
     trailblazer_db.update_ongoing_analyses()
