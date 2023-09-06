@@ -117,7 +117,7 @@ def update_analyses():
     """Update all ongoing analysis by querying SLURM."""
     process = multiprocessing.Process(
         target=store.update_ongoing_analyses,
-        kwargs={"analysis_host": ANALYSIS_HOST, "use_ssh": True},
+        kwargs={"analysis_host": ANALYSIS_HOST},
     )
     process.start()
     return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), HTTPStatus.CREATED
