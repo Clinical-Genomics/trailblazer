@@ -16,6 +16,8 @@ from trailblazer.server.ext import store
 from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
+ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
+
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
 
@@ -114,7 +116,8 @@ def aggregate_jobs():
 def update_analyses():
     """Update all ongoing analysis by querying SLURM."""
     process = multiprocessing.Process(
-        target=store.update_ongoing_analyses, kwargs={"use_ssh": True}
+        target=store.update_ongoing_analyses,
+        kwargs={"analysis_host": ANALYSIS_HOST},
     )
     process.start()
     return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), HTTPStatus.CREATED
@@ -122,10 +125,11 @@ def update_analyses():
 
 @blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
 def update_analysis(analysis_id):
-    """Update a specific analysis"""
+    """Update a specific analysis."""
     try:
         process = multiprocessing.Process(
-            target=store.update_run_status, kwargs={"analysis_id": analysis_id, "use_ssh": True}
+            target=store.update_run_status,
+            kwargs={"analysis_id": analysis_id, "analysis_host": ANALYSIS_HOST},
         )
         process.start()
         return jsonify("Success! Update request sent"), HTTPStatus.CREATED
@@ -135,19 +139,23 @@ def update_analysis(analysis_id):
 
 @blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])
 def cancel(analysis_id):
-    """Cancel an analysis and all slurm jobs associated with it"""
+    """Cancel an analysis and all slurm jobs associated with it."""
     auth_header = request.headers.get("Authorization")
     jwt_token = auth_header.split("Bearer ")[-1]
     user_data = jwt.decode(jwt_token, verify=False)
     try:
         process = multiprocessing.Process(
             target=store.cancel_analysis,
-            kwargs={"analysis_id": analysis_id, "email": user_data["email"], "ssh": True},
+            kwargs={
+                "analysis_id": analysis_id,
+                "analysis_host": ANALYSIS_HOST,
+                "email": user_data["email"],
+            },
         )
         process.start()
-        return jsonify("Success! Cancel request sent"), 201
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
+        return jsonify("Success! Cancel request sent"), HTTPStatus.CREATED
+    except Exception as error:
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/delete/<int:analysis_id>", methods=["PUT"])

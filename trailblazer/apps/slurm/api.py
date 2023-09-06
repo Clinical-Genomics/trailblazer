@@ -22,17 +22,15 @@ def _get_squeue_jobs_flag_input(slurm_job_id_file_content: Dict[str, List[str]])
     return ",".join(job_ids)
 
 
-def cancel_slurm_job(slurm_id: int, use_ssh: bool = False) -> None:
+def cancel_slurm_job(slurm_id: int, analysis_host: Optional[str] = None) -> None:
     """Cancel SLURM job by SLURM job id."""
     scancel_commands: List[str] = ["scancel", str(slurm_id)]
-    if use_ssh:
-        scancel_commands = ["ssh", "hiseq.clinical@hasta.scilifelab.se"] + scancel_commands
-        subprocess.Popen(scancel_commands)
-        return
+    if analysis_host:
+        scancel_commands = ["ssh", analysis_host] + scancel_commands
     subprocess.Popen(scancel_commands)
 
 
-def get_slurm_squeue_output(slurm_job_id_file: Path, use_ssh: bool = False) -> str:
+def get_slurm_squeue_output(slurm_job_id_file: Path, analysis_host: Optional[str] = None) -> str:
     """Return squeue output from ongoing analyses in SLURM."""
     slurm_job_id_file_content: Dict[str, List[str]] = ReadFile.get_content_from_file(
         file_format=FileFormat.YAML, file_path=slurm_job_id_file
@@ -48,8 +46,8 @@ def get_slurm_squeue_output(slurm_job_id_file: Path, use_ssh: bool = False) -> s
         "--format",
         "%A,%j,%T,%l,%M,%S",
     ]
-    if use_ssh:
-        squeue_commands = ["ssh", "hiseq.clinical@hasta.scilifelab.se"] + squeue_commands
+    if analysis_host:
+        squeue_commands = ["ssh", analysis_host] + squeue_commands
         return (
             subprocess.check_output(
                 squeue_commands,

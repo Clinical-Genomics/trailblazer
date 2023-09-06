@@ -7,6 +7,7 @@ ENV GUNICORN_TIMEOUT=400
 
 ENV SECRET_KEY="Authkey"
 ENV SQLALCHEMY_DATABASE_URI="sqlite:///:memory:"
+ENV ANALYSIS_HOST="a_host"
 
 WORKDIR /home/src/app
 COPY . /home/src/app

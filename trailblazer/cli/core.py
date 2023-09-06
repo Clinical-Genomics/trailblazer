@@ -10,19 +10,19 @@ import coloredlogs
 import trailblazer
 from trailblazer.cli.utils.ls_helper import _get_ls_analysis_message
 from trailblazer.cli.utils.user_helper import is_existing_user, is_user_archived
-from trailblazer.constants import FileFormat, TrailblazerStatus, TRAILBLAZER_TIME_STAMP
+from trailblazer.constants import TRAILBLAZER_TIME_STAMP, FileFormat, TrailblazerStatus
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
+from trailblazer.models import Config
 from trailblazer.store.api import Store
-from trailblazer.store.models import User, Analysis
+from trailblazer.store.models import Analysis, User
 
 LOG = logging.getLogger(__name__)
 LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
 
 
 @click.group()
-@click.option("-c", "--config", type=click.File())
-@click.option("-d", "--database", help="path/URI of the SQL database")
+@click.option("-c", "--config", required=True, type=click.File())
 @click.option(
     "-l", "--log-level", type=click.Choice(LEVELS), default="INFO", help="lowest level to log at"
 )
@@ -30,9 +30,8 @@ LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
 @click.version_option(trailblazer.__version__, prog_name=trailblazer.__title__)
 @click.pass_context
 def base(
-    context,
-    config,
-    database,
+    context: click.Context,
+    config: click.File,
     log_level: str,
     verbose: bool,
 ):
@@ -44,13 +43,11 @@ def base(
 
     coloredlogs.install(level=log_level, fmt=log_format)
 
-    context.obj = (
-        ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=Path(config.name))
-        if config
-        else {}
+    validated_config = Config(
+        **ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=Path(config.name))
     )
-    context.obj["database"] = database or context.obj.get("database", "sqlite:///:memory:")
-    context.obj["trailblazer"] = Store(context.obj["database"])
+    context.obj = dict(validated_config)
+    context.obj["trailblazer_db"] = Store(validated_config.database_url)
 
 
 @base.command()
@@ -59,16 +56,16 @@ def base(
 @click.pass_context
 def init(context, reset, force):
     """Setup the database."""
-    existing_tables = context.obj["trailblazer"].engine.table_names()
+    existing_tables = context.obj["trailblazer_db"].engine.table_names()
     if force or reset:
         if existing_tables and not force:
             message = f"Delete existing tables? [{', '.join(existing_tables)}]"
             click.confirm(click.style(message, fg="yellow"), abort=True)
-        context.obj["trailblazer"].drop_all()
+        context.obj["trailblazer_db"].drop_all()
     elif existing_tables:
         LOG.warning("Database already exists, use '--reset'")
         context.abort()
-    context.obj["trailblazer"].setup()
+    context.obj["trailblazer_db"].setup()
     LOG.info(f"Success! New tables: {', '.join(context.obj['trailblazer'].engine.table_names())}")
 
 
@@ -76,7 +73,8 @@ def init(context, reset, force):
 @click.pass_context
 def scan(context):
     """Scan ongoing analyses in SLURM"""
-    context.obj["trailblazer"].update_ongoing_analyses()
+    trailblazer_db: Store = context.obj["trailblazer_db"]
+    trailblazer_db.update_ongoing_analyses()
     LOG.info("All analyses updated!")
 
 
@@ -85,7 +83,8 @@ def scan(context):
 @click.pass_context
 def update_analysis(context, analysis_id: int):
     """Update status of a single analysis"""
-    context.obj["trailblazer"].update_run_status(analysis_id=analysis_id)
+    trailblazer_db: Store = context.obj["trailblazer_db"]
+    trailblazer_db.update_run_status(analysis_id=analysis_id)
 
 
 @base.command("add-user")
@@ -94,7 +93,7 @@ def update_analysis(context, analysis_id: int):
 @click.pass_context
 def add_user_to_db(context, email: str, name: str) -> None:
     """Add a new user to the database."""
-    trailblazer_db: Store = context.obj["trailblazer"]
+    trailblazer_db: Store = context.obj["trailblazer_db"]
     existing_user = trailblazer_db.get_user(email=email, exclude_archived=False)
     if is_existing_user(user=existing_user, email=email):
         return
@@ -107,7 +106,7 @@ def add_user_to_db(context, email: str, name: str) -> None:
 @click.pass_context
 def get_user_from_db(context, email: str) -> None:
     """Display information about an existing user."""
-    trailblazer_db: Store = context.obj["trailblazer"]
+    trailblazer_db: Store = context.obj["trailblazer_db"]
     existing_user = trailblazer_db.get_user(email=email, exclude_archived=False)
     if not is_existing_user(user=existing_user, email=email):
         return
@@ -121,7 +120,7 @@ def get_user_from_db(context, email: str) -> None:
 @click.pass_context
 def get_users_from_db(context, name: str, email: str, exclude_archived: bool) -> None:
     """Display information about existing users."""
-    trailblazer_db: Store = context.obj["trailblazer"]
+    trailblazer_db: Store = context.obj["trailblazer_db"]
     users: List[User] = trailblazer_db.get_users(
         email=email, exclude_archived=exclude_archived, name=name
     )
@@ -135,7 +134,7 @@ def get_users_from_db(context, name: str, email: str, exclude_archived: bool) ->
 @click.pass_context
 def archive_user(context, email: str) -> None:
     """Archive an existing user identified by email."""
-    trailblazer_db: Store = context.obj["trailblazer"]
+    trailblazer_db: Store = context.obj["trailblazer_db"]
     existing_user: User = trailblazer_db.get_user(email=email, exclude_archived=False)
 
     if not is_existing_user(user=existing_user, email=email):
@@ -152,7 +151,7 @@ def archive_user(context, email: str) -> None:
 @click.pass_context
 def unarchive_user(context, email: str) -> None:
     """Unarchive an existing user identified by email."""
-    trailblazer_db: Store = context.obj["trailblazer"]
+    trailblazer_db: Store = context.obj["trailblazer_db"]
     existing_user: User = trailblazer_db.get_user(email=email, exclude_archived=False)
 
     if not is_existing_user(user=existing_user, email=email):
@@ -169,8 +168,9 @@ def unarchive_user(context, email: str) -> None:
 @click.pass_context
 def cancel(context, analysis_id):
     """Cancel all jobs in a run."""
+    trailblazer_db: Store = context.obj["trailblazer_db"]
     try:
-        context.obj["trailblazer"].cancel_analysis(analysis_id=analysis_id, email=environ_email())
+        trailblazer_db.cancel_analysis(analysis_id=analysis_id, email=environ_email())
     except Exception as e:
         LOG.error(e)
 
@@ -181,7 +181,7 @@ def cancel(context, analysis_id):
 def set_analysis_completed(context, analysis_id):
     """Set status of an analysis to "COMPLETED" """
     try:
-        context.obj["trailblazer"].set_analysis_completed(analysis_id=analysis_id)
+        context.obj["trailblazer_db"].set_analysis_completed(analysis_id=analysis_id)
     except Exception as e:
         LOG.error(e)
 
@@ -202,7 +202,7 @@ def set_analysis_status(
 ):
     """Set the status of the latest analysis for a given CASE_ID."""
     try:
-        context.obj["trailblazer"].set_analysis_status(case_id=case_id, status=status)
+        context.obj["trailblazer_db"].set_analysis_status(case_id=case_id, status=status)
     except ValueError as e:
         LOG.error(e)
         raise click.Abort from e
@@ -216,12 +216,12 @@ def set_analysis_status(
 @click.argument("analysis_id", type=int)
 @click.pass_context
 def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
-    """Delete analysis completely from database, and optionally cancel all ongoing jobs"""
+    """Delete analysis completely from database, and optionally cancel all ongoing jobs."""
+    trailblazer_db: Store = context.obj["trailblazer_db"]
     try:
         if cancel_jobs:
-            context.obj["trailblazer"].cancel_analysis(analysis_id=analysis_id)
-
-        context.obj["trailblazer"].delete_analysis(analysis_id=analysis_id, force=force)
+            trailblazer_db.cancel_analysis(analysis_id=analysis_id)
+        trailblazer_db.delete_analysis(analysis_id=analysis_id, force=force)
     except Exception as e:
         LOG.error(e)
 
@@ -239,7 +239,7 @@ def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
 @click.pass_context
 def ls_cmd(context, before: str, status: TrailblazerStatus, comment: str, limit: int = 30):
     """Display recent logs for the latest analyses."""
-    trailblazer_db: Store = context.obj["trailblazer"]
+    trailblazer_db: Store = context.obj["trailblazer_db"]
     analyses: List[Analysis] = trailblazer_db.analyses(
         status=status,
         deleted=False,

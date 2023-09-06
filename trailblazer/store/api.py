@@ -127,18 +127,18 @@ class BaseHandler(CoreHandler):
         analysis.delete()
         self.commit()
 
-    def update_ongoing_analyses(self, use_ssh: bool = False) -> None:
+    def update_ongoing_analyses(self, analysis_host: Optional[str] = None) -> None:
         """Iterate over all analysis with ongoing status and query SLURM for current progress."""
         ongoing_analyses = self.analyses(temp=True)
         for analysis_obj in ongoing_analyses:
             try:
-                self.update_run_status(analysis_id=analysis_obj.id, use_ssh=use_ssh)
+                self.update_run_status(analysis_id=analysis_obj.id, analysis_host=analysis_host)
             except Exception as error:
                 LOG.error(
                     f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {type(error).__name__}"
                 )
 
-    def update_run_status(self, analysis_id: int, use_ssh: bool = False) -> None:
+    def update_run_status(self, analysis_id: int, analysis_host: Optional[str] = None) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
@@ -147,13 +147,19 @@ class BaseHandler(CoreHandler):
         if analysis.workflow_manager == WorkflowManager.TOWER.value:
             self.update_tower_run_status(analysis_id=analysis_id)
         elif analysis.workflow_manager == WorkflowManager.SLURM.value:
-            self.update_analysis_from_slurm_output(analysis_id=analysis_id, use_ssh=use_ssh)
+            self.update_analysis_from_slurm_output(
+                analysis_id=analysis_id, analysis_host=analysis_host
+            )
 
-    def update_analysis_from_slurm_output(self, analysis_id: int, use_ssh: bool = False) -> None:
+    def update_analysis_from_slurm_output(
+        self, analysis_id: int, analysis_host: Optional[str] = False
+    ) -> None:
         """Query SLURM for entries related to given analysis, and update the analysis in the database."""
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         try:
-            self._update_analysis_from_slurm_squeue_output(analysis=analysis, use_ssh=use_ssh)
+            self._update_analysis_from_slurm_squeue_output(
+                analysis=analysis, analysis_host=analysis_host
+            )
         except Exception as exception:
             LOG.error(
                 f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"
@@ -198,23 +204,23 @@ class BaseHandler(CoreHandler):
             analysis.status: str = TrailblazerStatus.ERROR
             self.commit()
 
-    def cancel_analysis(self, analysis_id: int, email: str = None, ssh: bool = False) -> None:
+    def cancel_analysis(
+        self, analysis_id: int, analysis_host: Optional[str] = None, email: Optional[str] = None
+    ) -> None:
         """Cancel all ongoing slurm jobs associated with the analysis, and set analysis status to 'cancelled'."""
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
             raise TrailblazerError(f"Analysis {analysis_id} does not exist")
-
         if analysis.status not in TrailblazerStatus.ongoing_statuses():
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
-
         for job in analysis.jobs:
             if job.status in SlurmJobStatus.ongoing_statuses():
                 LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
-                cancel_slurm_job(slurm_id=job.slurm_id, use_ssh=ssh)
+                cancel_slurm_job(analysis_host=analysis_host, slurm_id=job.slurm_id)
         LOG.info(
             f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
         )
-        self.update_run_status(analysis_id=analysis_id)
+        self.update_run_status(analysis_id=analysis_id, analysis_host=analysis_host)
         analysis.status = TrailblazerStatus.CANCELLED
         analysis.comment = (
             f"Analysis cancelled manually by user:"
