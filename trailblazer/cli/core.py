@@ -10,11 +10,11 @@ import coloredlogs
 import trailblazer
 from trailblazer.cli.utils.ls_helper import _get_ls_analysis_message
 from trailblazer.cli.utils.user_helper import is_existing_user, is_user_archived
-from trailblazer.constants import FileFormat, TrailblazerStatus, TRAILBLAZER_TIME_STAMP
+from trailblazer.constants import TRAILBLAZER_TIME_STAMP, FileFormat, TrailblazerStatus
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.api import Store
-from trailblazer.store.models import User, Analysis
+from trailblazer.store.models import Analysis, User
 
 LOG = logging.getLogger(__name__)
 LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
@@ -179,11 +179,12 @@ def cancel(context, analysis_id):
 @click.argument("analysis_id", type=int)
 @click.pass_context
 def set_analysis_completed(context, analysis_id):
-    """Set status of an analysis to "COMPLETED" """
+    """Set status of an analysis to 'COMPLETED'."""
+    trailblazer_db: Store = context.obj["trailblazer"]
     try:
-        context.obj["trailblazer"].set_analysis_completed(analysis_id=analysis_id)
-    except Exception as e:
-        LOG.error(e)
+        trailblazer_db.update_analysis_status_to_completed(analysis_id=analysis_id)
+    except Exception as error:
+        LOG.error(error)
 
 
 @base.command("set-status")
@@ -200,14 +201,15 @@ def set_analysis_status(
     case_id: str,
     status: str,
 ):
-    """Set the status of the latest analysis for a given CASE_ID."""
+    """Set the status of the latest analysis for a given case id."""
+    trailblazer_db: Store = context.obj["trailblazer"]
     try:
-        context.obj["trailblazer"].set_analysis_status(case_id=case_id, status=status)
-    except ValueError as e:
-        LOG.error(e)
-        raise click.Abort from e
-    except Exception as e:
-        LOG.error(e)
+        trailblazer_db.update_analysis_status(case_id=case_id, status=status)
+    except ValueError as error:
+        LOG.error(error)
+        raise click.Abort from error
+    except Exception as error:
+        LOG.error(error)
 
 
 @base.command()

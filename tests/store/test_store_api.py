@@ -64,19 +64,6 @@ def test_set_analysis_uploaded(analysis_store: MockStore, timestamp_now: datetim
     assert analysis.uploaded_at == timestamp_now
 
 
-def test_set_analysis_failed(analysis_store: MockStore, case_id: str):
-    """Test setting analysis to failed for an analysis."""
-
-    # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
-
-    # WHEN setting analysis to failed
-    analysis_store.set_analysis_status(case_id=analysis.family, status=TrailblazerStatus.FAILED)
-
-    # THEN the analysis status should be updated to failed.
-    assert analysis.status == TrailblazerStatus.FAILED
-
-
 def test_add_comment(analysis_store: MockStore, case_id: str):
     """Test adding comment to an analysis object."""
 

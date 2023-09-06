@@ -10,7 +10,7 @@ from trailblazer.apps.slurm.api import (
     reformat_squeue_result_job_step,
 )
 from trailblazer.apps.slurm.models import SqueueResult
-from trailblazer.constants import SlurmJobStatus
+from trailblazer.constants import SlurmJobStatus, TrailblazerStatus
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.models import Analysis, Job, User
 
@@ -85,3 +85,18 @@ class UpdateHandler(BaseHandler_2):
                 analysis.is_deleted = True
             self.commit()
         return analyses
+
+    def update_analysis_status(self, case_id: str, status: str):
+        """Setting analysis status."""
+        status: str = status.lower()
+        if status not in set(TrailblazerStatus.statuses()):
+            raise ValueError(f"Invalid status. Allowed values are: {TrailblazerStatus.statuses()}")
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
+        analysis.status = status
+        self.commit()
+        LOG.info(f"{analysis.family} - Status set to {status.upper()}")
+
+    def update_analysis_status_to_completed(self, analysis_id: int) -> None:
+        """Set an analysis status to 'completed'."""
+        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        self.update_analysis_status(case_id=analysis.family, status=TrailblazerStatus.COMPLETED)
