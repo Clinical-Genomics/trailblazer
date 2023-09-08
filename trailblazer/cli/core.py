@@ -167,12 +167,12 @@ def unarchive_user(context, email: str) -> None:
 @click.argument("analysis_id", type=int)
 @click.pass_context
 def cancel(context, analysis_id):
-    """Cancel all jobs in a run."""
+    """Cancel all jobs in an analysis."""
     trailblazer_db: Store = context.obj["trailblazer_db"]
     try:
-        trailblazer_db.cancel_analysis(analysis_id=analysis_id, email=environ_email())
-    except Exception as e:
-        LOG.error(e)
+        trailblazer_db.cancel_ongoing_analysis(analysis_id=analysis_id, email=environ_email())
+    except Exception as error:
+        LOG.error(error)
 
 
 @base.command("set-completed")
@@ -216,14 +216,14 @@ def set_analysis_status(
 @click.argument("analysis_id", type=int)
 @click.pass_context
 def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
-    """Delete analysis completely from database, and optionally cancel all ongoing jobs."""
+    """Delete analysis completely from database, and optionally cancel all ongoing analysis jobs."""
     trailblazer_db: Store = context.obj["trailblazer_db"]
     try:
         if cancel_jobs:
-            trailblazer_db.cancel_analysis(analysis_id=analysis_id)
+            trailblazer_db.cancel_ongoing_analysis(analysis_id=analysis_id)
         trailblazer_db.delete_analysis(analysis_id=analysis_id, force=force)
-    except Exception as e:
-        LOG.error(e)
+    except Exception as error:
+        LOG.error(error)
 
 
 @base.command("ls")

@@ -1,9 +1,12 @@
 from typing import List, Optional
 
+import pytest
+
 from tests.mocks.store_mock import MockStore
 from trailblazer.apps.slurm.api import get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.constants import TrailblazerStatus
+from trailblazer.exc import TrailblazerError
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, User
 
@@ -98,3 +101,71 @@ def test_update_case_analyses_as_deleted_with_non_existing_case(
 
     # THEN no analyses are returned
     assert not analyses
+
+
+def test_cancel_ongoing_analysis(
+    analysis_store: MockStore, caplog, mocker, ongoing_analysis_case_id: str, tower_jobs: List[dict]
+):
+    """Test all ongoing analysis jobs are cancelled."""
+
+    # GIVEN SLURM scancel output for an analysis
+    mocker.patch("trailblazer.store.crud.update.cancel_slurm_job", return_value=None)
+
+    caplog.set_level("INFO")
+
+    # GIVEN an ongoing analysis
+    analysis_store.update_ongoing_analyses()
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+        case_id=ongoing_analysis_case_id
+    )
+
+    # Analysis should have jobs that can be cancelled
+    analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
+    assert analysis.jobs
+
+    # WHEN running cancelling ongoing analysis
+    analysis_store.cancel_ongoing_analysis(analysis_id=analysis.id)
+
+    # THEN log should inform of successful cancellation
+    assert "all ongoing jobs cancelled successfully" in caplog.text
+    assert "Cancelling" in caplog.text
+
+
+def test_cancel_ongoing_analysis_when_no_analysis(
+    analysis_id_does_not_exist: int, analysis_store: MockStore, caplog, tower_jobs: List[dict]
+):
+    """Test exception is raised if analysis id does not exist."""
+    caplog.set_level("INFO")
+
+    # GIVEN an non-existing analysis
+
+    # WHEN running cancelling ongoing analysis
+    with pytest.raises(TrailblazerError):
+        analysis_store.cancel_ongoing_analysis(analysis_id=analysis_id_does_not_exist)
+
+        # THEN exception should be raised
+
+
+def test_cancel_ongoing_analysis_when_no_ongoing_analysis(
+    analysis_store: MockStore,
+    caplog,
+    failed_analysis_case_id: str,
+    tower_jobs: List[dict],
+):
+    """Test exception is raised if analysis status is not ongoing."""
+    caplog.set_level("INFO")
+
+    # GIVEN a failed analysis
+    analysis_store.update_ongoing_analyses()
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+        case_id=failed_analysis_case_id
+    )
+
+    # GIVEN a cancelled status
+    analysis.status = TrailblazerStatus.CANCELLED
+
+    # WHEN cancelling ongoing analysis
+    with pytest.raises(TrailblazerError):
+        analysis_store.cancel_ongoing_analysis(analysis_id=analysis.id)
+
+        # THEN exception should be raised
