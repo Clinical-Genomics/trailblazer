@@ -292,7 +292,7 @@ def put_set_analysis_uploaded():
 
 
 @blueprint.route("/set-analysis-status", methods=["PUT"])
-def put_set_analysis_status():
+def set_analysis_status():
     """Update analysis status of a case with supplied status."""
     put_request: Response.json = request.json
     try:
