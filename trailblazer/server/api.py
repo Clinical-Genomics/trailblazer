@@ -309,7 +309,7 @@ def set_analysis_status():
 
 @blueprint.route("/add-comment", methods=["PUT"])
 def add_comment():
-    """ "Updating comment on analysis."""
+    """Updating comment on analysis."""
     put_request: Response.json = request.json
     try:
         store.update_analysis_comment(
