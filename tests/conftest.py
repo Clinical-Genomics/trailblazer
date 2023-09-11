@@ -76,19 +76,19 @@ def squeue_stream_jobs() -> str:
 690989,gatk_genotypegvcfs5,PENDING,10:00:00,0:00,N/A"""
 
 
-@pytest.fixture()
+@pytest.fixture
 def trailblazer_tmp_dir(tmpdir_factory) -> Path:
     """Return a temporary directory for Trailblazer testing."""
     return tmpdir_factory.mktemp("trailblazer_tmp")
 
 
-@pytest.fixture()
+@pytest.fixture
 def trailblazer_context(analysis_store: MockStore) -> Dict[str, MockStore]:
     """Trailblazer context to be used in CLI."""
     return {"trailblazer_db": analysis_store}
 
 
-@pytest.fixture()
+@pytest.fixture
 def store() -> Generator[MockStore, None, None]:
     """Empty Trailblazer database."""
     _store = MockStore(uri="sqlite://")
@@ -143,7 +143,7 @@ def raw_analyses(analysis_data: Dict[str, List[Dict]]) -> List[dict]:
     return analyses
 
 
-@pytest.fixture()
+@pytest.fixture
 def analysis_store(
     analysis_data: Dict[str, list],
     archived_user_email: str,
@@ -176,7 +176,7 @@ def timestamp_yesterday(timestamp_now: datetime) -> datetime:
     return timestamp_now - timedelta(days=1)
 
 
-@pytest.fixture()
+@pytest.fixture
 def tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> List[dict]:
     """Return a list of Tower Jobs."""
     return [
@@ -207,7 +207,7 @@ def tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> List[dict]
     ]
 
 
-@pytest.fixture()
+@pytest.fixture
 def analysis_id() -> int:
     """Return a mock ID of the analysis in the Trailblazer database."""
     return 1
