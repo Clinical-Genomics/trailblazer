@@ -279,16 +279,16 @@ def post_add_pending_analysis():
 
 
 @blueprint.route("/set-analysis-uploaded", methods=["PUT"])
-def put_set_analysis_uploaded():
-    content: Response.json = request.json
-
+def set_analysis_uploaded():
+    """Set the analysis uploaded at attribute."""
+    put_request: Response.json = request.json
     try:
-        store.set_analysis_uploaded(
-            case_id=content.get("case_id"), uploaded_at=content.get("uploaded_at")
+        store.update_analysis_uploaded_at(
+            case_id=put_request.get("case_id"), uploaded_at=put_request.get("uploaded_at")
         )
-        return jsonify("Success! Uploaded at request sent"), 201
+        return jsonify("Success! Uploaded at request sent"), HTTPStatus.CREATED
     except Exception as error:
-        return jsonify(f"Exception: {error}"), 409
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/set-analysis-status", methods=["PUT"])

@@ -82,12 +82,6 @@ class BaseHandler(CoreHandler):
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def set_analysis_uploaded(self, case_id: str, uploaded_at: dt.datetime) -> None:
-        """Setting analysis uploaded at."""
-        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
-        analysis.uploaded_at = uploaded_at
-        self.commit()
-
     def add_comment(self, case_id: str, comment: str):
         analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.comment: str = (

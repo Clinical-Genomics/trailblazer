@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 
 from tests.mocks.store_mock import MockStore
@@ -126,3 +127,17 @@ def test_update_analysis_status_to_completed(analysis_store: MockStore, case_id:
 
     # THEN the analysis status should be updated to completed
     assert analysis.status == TrailblazerStatus.COMPLETED
+
+
+def test_update_analysis_uploaded_at(
+    analysis_store: MockStore, timestamp_now: datetime, case_id: str
+):
+    """Test setting analysis uploaded at for an analysis."""
+    # GIVEN a store with an analysis
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+
+    # WHEN setting an analysis uploaded at
+    analysis_store.update_analysis_uploaded_at(case_id=analysis.family, uploaded_at=timestamp_now)
+
+    # THEN uploaded at should be updated
+    assert analysis.uploaded_at == timestamp_now
