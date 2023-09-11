@@ -123,7 +123,7 @@ def test_cancel_ongoing_analysis(
     analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
     assert analysis.jobs
 
-    # WHEN running cancelling ongoing analysis
+    # WHEN running cancel ongoing analysis
     analysis_store.cancel_ongoing_analysis(analysis_id=analysis.id)
 
     # THEN log should inform of successful cancellation
@@ -139,7 +139,7 @@ def test_cancel_ongoing_analysis_when_no_analysis(
 
     # GIVEN an non-existing analysis
 
-    # WHEN running cancelling ongoing analysis
+    # WHEN running cancel ongoing analysis
     with pytest.raises(TrailblazerError):
         analysis_store.cancel_ongoing_analysis(analysis_id=analysis_id_does_not_exist)
 
@@ -164,7 +164,7 @@ def test_cancel_ongoing_analysis_when_no_ongoing_analysis(
     # GIVEN a cancelled status
     analysis.status = TrailblazerStatus.CANCELLED
 
-    # WHEN cancelling ongoing analysis
+    # WHEN running cancel ongoing analysis
     with pytest.raises(TrailblazerError):
         analysis_store.cancel_ongoing_analysis(analysis_id=analysis.id)
 
