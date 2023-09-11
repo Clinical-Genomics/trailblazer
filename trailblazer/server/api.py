@@ -292,14 +292,19 @@ def put_set_analysis_uploaded():
 
 
 @blueprint.route("/set-analysis-status", methods=["PUT"])
-def put_set_analysis_status():
-    content: Response.json = request.json
-
+def set_analysis_status():
+    """Update analysis status of a case with supplied status."""
+    put_request: Response.json = request.json
     try:
-        store.set_analysis_status(case_id=content.get("case_id"), status=content.get("status"))
-        return jsonify(f"Success! Analysis set to {content.get('status')} request sent"), 201
+        store.update_analysis_status(
+            case_id=put_request.get("case_id"), status=put_request.get("status")
+        )
+        return (
+            jsonify(f"Success! Analysis set to {put_request.get('status')} request sent"),
+            HTTPStatus.CREATED,
+        )
     except Exception as error:
-        return jsonify(f"Exception: {error}"), 409
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/add-comment", methods=["PUT"])

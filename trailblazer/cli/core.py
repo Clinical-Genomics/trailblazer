@@ -179,11 +179,12 @@ def cancel(context, analysis_id):
 @click.argument("analysis_id", type=int)
 @click.pass_context
 def set_analysis_completed(context, analysis_id):
-    """Set status of an analysis to "COMPLETED" """
+    """Set status of an analysis to 'COMPLETED'."""
+    trailblazer_db: Store = context.obj["trailblazer_db"]
     try:
-        context.obj["trailblazer_db"].set_analysis_completed(analysis_id=analysis_id)
-    except Exception as e:
-        LOG.error(e)
+        trailblazer_db.update_analysis_status_to_completed(analysis_id=analysis_id)
+    except Exception as error:
+        LOG.error(error)
 
 
 @base.command("set-status")
@@ -200,14 +201,15 @@ def set_analysis_status(
     case_id: str,
     status: str,
 ):
-    """Set the status of the latest analysis for a given CASE_ID."""
+    """Set the status of the latest analysis for a given case id."""
+    trailblazer_db: Store = context.obj["trailblazer_db"]
     try:
-        context.obj["trailblazer_db"].set_analysis_status(case_id=case_id, status=status)
-    except ValueError as e:
-        LOG.error(e)
-        raise click.Abort from e
-    except Exception as e:
-        LOG.error(e)
+        trailblazer_db.update_analysis_status(case_id=case_id, status=status)
+    except ValueError as error:
+        LOG.error(error)
+        raise click.Abort from error
+    except Exception as error:
+        LOG.error(error)
 
 
 @base.command()

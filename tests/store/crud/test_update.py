@@ -98,3 +98,31 @@ def test_update_case_analyses_as_deleted_with_non_existing_case(
 
     # THEN no analyses are returned
     assert not analyses
+
+
+def test_update_analysis_status_with_failed(analysis_store: MockStore, case_id: str):
+    """Test setting analysis to failed for an analysis."""
+
+    # GIVEN a store with an analysis
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    assert analysis.status != TrailblazerStatus.FAILED
+
+    # WHEN setting analysis to failed
+    analysis_store.update_analysis_status(case_id=analysis.family, status=TrailblazerStatus.FAILED)
+
+    # THEN the analysis status should be updated to failed
+    assert analysis.status == TrailblazerStatus.FAILED
+
+
+def test_update_analysis_status_to_completed(analysis_store: MockStore, case_id: str):
+    """Test setting analysis to completed for an analysis."""
+
+    # GIVEN a store with an analysis
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    assert analysis.status != TrailblazerStatus.COMPLETED
+
+    # WHEN setting analysis to completed
+    analysis_store.update_analysis_status_to_completed(analysis_id=analysis.id)
+
+    # THEN the analysis status should be updated to completed
+    assert analysis.status == TrailblazerStatus.COMPLETED
