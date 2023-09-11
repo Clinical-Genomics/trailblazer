@@ -12,7 +12,7 @@ from trailblazer.apps.slurm.api import (
 )
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.constants import SlurmJobStatus, TrailblazerStatus
-from trailblazer.exc import TrailblazerError
+from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.models import Analysis, Job, User
 
@@ -95,7 +95,7 @@ class UpdateHandler(BaseHandler_2):
         Raise: TrailblazerError when no analysis or no ongoing analysis for analysis id."""
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
-            raise TrailblazerError(f"Analysis {analysis_id} does not exist")
+            raise MissingAnalysis(f"Analysis {analysis_id} does not exist")
         if analysis.status not in TrailblazerStatus.ongoing_statuses():
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
         for job in analysis.jobs:

@@ -6,7 +6,7 @@ from tests.mocks.store_mock import MockStore
 from trailblazer.apps.slurm.api import get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.exc import TrailblazerError
+from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, User
 
@@ -140,7 +140,7 @@ def test_cancel_ongoing_analysis_when_no_analysis(
     # GIVEN an non-existing analysis
 
     # WHEN running cancel ongoing analysis
-    with pytest.raises(TrailblazerError):
+    with pytest.raises(MissingAnalysis):
         analysis_store.cancel_ongoing_analysis(analysis_id=analysis_id_does_not_exist)
 
         # THEN exception should be raised
