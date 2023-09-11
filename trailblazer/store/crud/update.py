@@ -100,3 +100,11 @@ class UpdateHandler(BaseHandler_2):
         """Set an analysis status to 'completed'."""
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         self.update_analysis_status(case_id=analysis.family, status=TrailblazerStatus.COMPLETED)
+
+    def add_analysis_comment(self, case_id: str, comment: str) -> None:
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
+        analysis.comment: str = (
+            " ".join([analysis.comment, comment]) if analysis.comment else comment
+        )
+        self.commit()
+        LOG.info(f"Adding comment {comment} to analysis {analysis.family}")

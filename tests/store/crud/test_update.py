@@ -126,3 +126,33 @@ def test_update_analysis_status_to_completed(analysis_store: MockStore, case_id:
 
     # THEN the analysis status should be updated to completed
     assert analysis.status == TrailblazerStatus.COMPLETED
+
+
+def test_add_analysis_comment(analysis_store: MockStore, case_id: str):
+    """Test adding comment to an analysis."""
+
+    # GIVEN a store with an analysis
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    comment: str = "test comment"
+
+    # WHEN adding a comment
+    analysis_store.add_analysis_comment(case_id=analysis.family, comment=comment)
+
+    # THEN a comment should have been added
+    assert analysis.comment == comment
+
+
+def test_add_analysis_comment_when_existing(analysis_store: MockStore, case_id: str):
+    """Test adding comment to an analysis when a comment already exists."""
+
+    # GIVEN a store with an analysis
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    first_comment: str = "One"
+    second_comment: str = "Second"
+
+    # WHEN adding a comment
+    analysis_store.add_analysis_comment(case_id=analysis.family, comment=first_comment)
+    analysis_store.add_analysis_comment(case_id=analysis.family, comment=second_comment)
+
+    # THEN comments should have been added
+    assert analysis.comment == f"{first_comment} {second_comment}"

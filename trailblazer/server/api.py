@@ -293,8 +293,8 @@ def put_set_analysis_uploaded():
 
 @blueprint.route("/set-analysis-status", methods=["PUT"])
 def set_analysis_status():
-    """Update analysis status of a case with supplied status."""
     put_request: Response.json = request.json
+    """Update analysis status of a case with supplied status."""
     try:
         store.update_analysis_status(
             case_id=put_request.get("case_id"), status=put_request.get("status")
@@ -308,11 +308,13 @@ def set_analysis_status():
 
 
 @blueprint.route("/add-comment", methods=["PUT"])
-def put_add_comment():
-    content: Response.json = request.json
-
+def add_comment():
+    """ "Updating comment on analysis."""
+    put_request: Response.json = request.json
     try:
-        store.add_comment(case_id=content.get("case_id"), comment=content.get("comment"))
-        return jsonify("Success! Adding comment request sent"), 201
+        store.add_analysis_comment(
+            case_id=put_request.get("case_id"), comment=put_request.get("comment")
+        )
+        return jsonify("Success! Adding comment request sent"), HTTPStatus.CREATED
     except Exception as error:
-        return jsonify(f"Exception: {error}"), 409
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT

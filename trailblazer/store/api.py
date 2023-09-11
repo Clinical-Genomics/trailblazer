@@ -88,14 +88,6 @@ class BaseHandler(CoreHandler):
         analysis.uploaded_at = uploaded_at
         self.commit()
 
-    def add_comment(self, case_id: str, comment: str):
-        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
-        analysis.comment: str = (
-            " ".join([analysis.comment, comment]) if analysis.comment else comment
-        )
-        self.commit()
-        LOG.info(f"Adding comment {comment} to analysis {analysis.family}")
-
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis output."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
