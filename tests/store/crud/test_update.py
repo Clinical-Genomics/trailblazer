@@ -128,7 +128,7 @@ def test_update_analysis_status_to_completed(analysis_store: MockStore, case_id:
     assert analysis.status == TrailblazerStatus.COMPLETED
 
 
-def test_add_analysis_comment(analysis_store: MockStore, case_id: str):
+def test_update_analysis_comment(analysis_store: MockStore, case_id: str):
     """Test adding comment to an analysis."""
 
     # GIVEN a store with an analysis
@@ -136,13 +136,13 @@ def test_add_analysis_comment(analysis_store: MockStore, case_id: str):
     comment: str = "test comment"
 
     # WHEN adding a comment
-    analysis_store.add_analysis_comment(case_id=analysis.family, comment=comment)
+    analysis_store.update_analysis_comment(case_id=analysis.family, comment=comment)
 
     # THEN a comment should have been added
     assert analysis.comment == comment
 
 
-def test_add_analysis_comment_when_existing(analysis_store: MockStore, case_id: str):
+def test_update_analysis_comment_when_existing(analysis_store: MockStore, case_id: str):
     """Test adding comment to an analysis when a comment already exists."""
 
     # GIVEN a store with an analysis
@@ -151,8 +151,8 @@ def test_add_analysis_comment_when_existing(analysis_store: MockStore, case_id: 
     second_comment: str = "Second"
 
     # WHEN adding a comment
-    analysis_store.add_analysis_comment(case_id=analysis.family, comment=first_comment)
-    analysis_store.add_analysis_comment(case_id=analysis.family, comment=second_comment)
+    analysis_store.update_analysis_comment(case_id=analysis.family, comment=first_comment)
+    analysis_store.update_analysis_comment(case_id=analysis.family, comment=second_comment)
 
     # THEN comments should have been added
     assert analysis.comment == f"{first_comment} {second_comment}"

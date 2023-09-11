@@ -312,7 +312,7 @@ def add_comment():
     """ "Updating comment on analysis."""
     put_request: Response.json = request.json
     try:
-        store.add_analysis_comment(
+        store.update_analysis_comment(
             case_id=put_request.get("case_id"), comment=put_request.get("comment")
         )
         return jsonify("Success! Adding comment request sent"), HTTPStatus.CREATED
