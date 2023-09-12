@@ -10,7 +10,7 @@ from alchy import Query
 
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import FileFormat, TrailblazerStatus, WorkflowManager
-from trailblazer.exc import TowerRequirementsError, TrailblazerError
+from trailblazer.exc import TowerRequirementsError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.core import CoreHandler
 from trailblazer.store.models import Analysis, Model
@@ -75,20 +75,6 @@ class BaseHandler(CoreHandler):
             analysis_query = analysis_query.filter(Analysis.comment.ilike(f"%{comment}%"))
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
-
-    def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
-        """Delete the analysis output."""
-        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
-        if not analysis:
-            raise TrailblazerError("Analysis not found")
-
-        if not force and analysis.status in TrailblazerStatus.ongoing_statuses():
-            raise TrailblazerError(
-                f"Analysis for {analysis.family} is currently running! Use --force flag to delete anyway."
-            )
-        LOG.info(f"Deleting analysis {analysis_id} for case {analysis.family}")
-        analysis.delete()
-        self.commit()
 
     def update_ongoing_analyses(self, analysis_host: Optional[str] = None) -> None:
         """Iterate over all analysis with ongoing status and query SLURM for current progress."""

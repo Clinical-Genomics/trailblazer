@@ -92,7 +92,10 @@ class UpdateHandler(BaseHandler_2):
         self, analysis_id: int, analysis_host: Optional[str] = None, email: Optional[str] = None
     ) -> None:
         """Cancel all ongoing slurm jobs associated with the analysis, and set analysis status to 'cancelled'.
-        Raise: TrailblazerError when no analysis or no ongoing analysis for analysis id."""
+        Raises:
+            MissingAnalysis when no analysis.
+            TrailblazerError for no ongoing analysis for analysis id.
+        """
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
             raise MissingAnalysis(f"Analysis {analysis_id} does not exist")
