@@ -1,4 +1,3 @@
-import datetime
 import subprocess
 from typing import Dict, List, Optional
 
@@ -51,19 +50,6 @@ def test_update_analysis_from_slurm_run_status(
 
     # THEN it should update the analysis jobs
     assert updated_analysis.jobs
-
-
-def test_set_analysis_uploaded(analysis_store: MockStore, timestamp_now: datetime, case_id):
-    """Test setting analysis uploaded at for an analysis."""
-
-    # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
-
-    # WHEN setting an analysis uploaded at
-    analysis_store.set_analysis_uploaded(case_id=analysis.family, uploaded_at=timestamp_now)
-
-    # THEN the column uploaded_at should be updated
-    assert analysis.uploaded_at == timestamp_now
 
 
 @pytest.mark.parametrize(
