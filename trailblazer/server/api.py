@@ -160,16 +160,16 @@ def cancel(analysis_id):
 
 @blueprint.route("/delete/<int:analysis_id>", methods=["PUT"])
 def delete(analysis_id):
-    """Cancel an analysis and all slurm jobs associated with it"""
+    """Delete an analysis and all slurm jobs associated with it."""
     try:
         process = multiprocessing.Process(
             target=store.delete_analysis,
             kwargs={"analysis_id": analysis_id, "force": True},
         )
         process.start()
-        return jsonify("Success! Delete request sent!"), 201
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
+        return jsonify("Success! Delete request sent!"), HTTPStatus.CREATED
+    except Exception as error:
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 # CG REST INTERFACE ###
@@ -230,15 +230,17 @@ def post_find_analysis():
 
 @blueprint.route("/delete-analysis", methods=["POST"])
 def post_delete_analysis():
-    """Delete analysis using analysis_id. If analysis is ongoing, error will be raised.
+    """Delete analysis using analysis_id. If analysis is ongoing, an error will be raised.
     To delete ongoing analysis, --force flag should also be passed.
     If an ongoing analysis is deleted in ths manner, all ongoing jobs will be cancelled"""
-    content = request.json
+    post_request: Response.json = request.json
     try:
-        store.delete_analysis(analysis_id=content.get("analysis_id"), force=content.get("force"))
-        return jsonify(None), 201
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
+        store.delete_analysis(
+            analysis_id=post_request.get("analysis_id"), force=post_request.get("force")
+        )
+        return jsonify(None), HTTPStatus.CREATED
+    except Exception as error:
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/mark-analyses-deleted", methods=["POST"])

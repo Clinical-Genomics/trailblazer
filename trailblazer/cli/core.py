@@ -213,7 +213,7 @@ def set_analysis_status(
 
 
 @base.command()
-@click.option("--force", is_flag=True, help="Force delete if analysis ongoing")
+@click.option("--force", is_flag=True, help="Force delete if analysis is ongoing")
 @click.option("--cancel-jobs", is_flag=True, help="Cancel all ongoing jobs before deleting")
 @click.argument("analysis_id", type=int)
 @click.pass_context
