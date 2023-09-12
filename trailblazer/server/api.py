@@ -145,7 +145,7 @@ def cancel(analysis_id):
     user_data = jwt.decode(jwt_token, verify=False)
     try:
         process = multiprocessing.Process(
-            target=store.cancel_analysis,
+            target=store.cancel_ongoing_analysis,
             kwargs={
                 "analysis_id": analysis_id,
                 "analysis_host": ANALYSIS_HOST,

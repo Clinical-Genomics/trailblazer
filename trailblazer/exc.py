@@ -6,6 +6,10 @@ class TrailblazerError(Exception):
         return f"TrailblazerError: {self.message}"
 
 
+class MissingAnalysis(TrailblazerError):
+    """Error for missing analysis"""
+
+
 class MissingFileError(TrailblazerError):
     pass
 
