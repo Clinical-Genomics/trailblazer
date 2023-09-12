@@ -213,12 +213,13 @@ class TowerAPI:
 
 
 def query_tower(config_file: str, case_id: str) -> TowerAPI:
-    """Parse a config file to extract a NF Tower workflow ID and return a TowerAPI.
-    Currently only one tower ID is supported."""
+    """Return Tower API. Currently only one tower ID is supported.
+    Raises:
+        TowerRequirementsError when failing meeting Tower mandatory requirement"""
     workflow_id: int = ReadFile.get_content_from_file(
         file_format=FileFormat.YAML, file_path=Path(config_file)
     ).get(case_id)[-1]
-    tower_api = TowerAPI(workflow_id=workflow_id)
+    tower_api = TowerAPI(workflow_id=str(workflow_id))
     if not tower_api.tower_client.meets_requirements:
         raise TowerRequirementsError
     return tower_api
