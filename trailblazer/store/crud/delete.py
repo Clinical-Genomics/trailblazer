@@ -1,7 +1,8 @@
 import logging
+from typing import Optional
 
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.exc import TrailblazerError
+from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.models import Analysis
 
@@ -18,14 +19,16 @@ class DeleteHandler(BaseHandler_2):
         self.commit()
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
-        """Delete the analysis output."""
-        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
+        """Delete the analysis from the database. Also delete ongoing analysis if 'force' is True.
+        Raise: MissingAnalysis when no analysis and TrailblazerError for ongoing analysis for analysis id.
+        """
+        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
-            raise TrailblazerError("Analysis not found")
+            raise MissingAnalysis("Analysis not found")
         if not force and analysis.status in TrailblazerStatus.ongoing_statuses():
             raise TrailblazerError(
-                f"Analysis for {analysis.family} is currently running! Use --force flag to delete anyway."
+                f"Analysis for {analysis.family} is currently ongoing! Use --force flag to delete ongoing analysis."
             )
-        LOG.info(f"Deleting analysis {analysis_id} for case {analysis.family}")
+        LOG.info(f"Deleting analysis: {analysis_id}, for case: {analysis.family}")
         analysis.delete()
         self.commit()

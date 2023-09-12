@@ -4,7 +4,7 @@ import pytest
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.exc import TrailblazerError
+from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.models import Analysis
 
 
@@ -65,7 +65,7 @@ def test_delete_analysis_with_non_existing_analysis(
     # GIVEN a non-existing analysis
 
     # WHEN deleting analysis
-    with pytest.raises(TrailblazerError):
+    with pytest.raises(MissingAnalysis):
         analysis_store.delete_analysis(analysis_id=analysis_id_does_not_exist)
 
     # THEN error should be raised
