@@ -2,6 +2,7 @@
 
 import logging
 import os
+from pathlib import Path
 from typing import List, Tuple
 
 import requests
@@ -14,7 +15,9 @@ from trailblazer.apps.tower.models import (
     TowerTaskResponse,
     TowerWorkflowResponse,
 )
-from trailblazer.constants import TOWER_STATUS, TrailblazerStatus
+from trailblazer.constants import TOWER_STATUS, FileFormat, TrailblazerStatus
+from trailblazer.exc import TowerRequirementsError
+from trailblazer.io.controller import ReadFile
 
 LOG = logging.getLogger(__name__)
 
@@ -207,3 +210,15 @@ class TowerAPI:
             started_at=task.start,
             elapsed=int(task.duration / 60),
         )
+
+
+def query_tower(config_file: str, case_id: str) -> TowerAPI:
+    """Parse a config file to extract a NF Tower workflow ID and return a TowerAPI.
+    Currently only one tower ID is supported."""
+    workflow_id: int = ReadFile.get_content_from_file(
+        file_format=FileFormat.YAML, file_path=Path(config_file)
+    ).get(case_id)[-1]
+    tower_api = TowerAPI(workflow_id=workflow_id)
+    if not tower_api.tower_client.meets_requirements:
+        raise TowerRequirementsError
+    return tower_api

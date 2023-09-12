@@ -4,7 +4,12 @@ from typing import Dict, Generator, List
 
 import pytest
 
-from tests.apps.tower.conftest import CaseId, TowerTaskResponseFile
+from tests.apps.tower.conftest import (
+    TOWER_ID,
+    CaseId,
+    TowerResponseFile,
+    TowerTaskResponseFile,
+)
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
 from trailblazer.apps.tower.models import TowerTask
@@ -289,4 +294,29 @@ def slurm_squeue_output(squeue_dir: Path) -> Dict[str, str]:
     ]
     return {
         case_id: Path(squeue_dir, f"{case_id}_{file_postfix}").as_posix() for case_id in case_ids
+    }
+
+
+@pytest.fixture(scope="session")
+def tower_case_config() -> Dict[str, dict]:
+    """Return a Tower case configs."""
+    return {
+        CaseId.RUNNING: {
+            "workflow_response_file": TowerResponseFile.RUNNING,
+            "tasks_response_file": TowerTaskResponseFile.RUNNING,
+            "tower_id": TOWER_ID,
+            "analysis_id": 1,
+        },
+        CaseId.PENDING: {
+            "workflow_response_file": TowerResponseFile.PENDING,
+            "tasks_response_file": TowerTaskResponseFile.PENDING,
+            "tower_id": TOWER_ID,
+            "analysis_id": 1,
+        },
+        CaseId.COMPLETED: {
+            "workflow_response_file": TowerResponseFile.COMPLETED,
+            "tasks_response_file": TowerTaskResponseFile.COMPLETED,
+            "tower_id": TOWER_ID,
+            "analysis_id": 1,
+        },
     }
