@@ -181,7 +181,7 @@ def test_cancel_not_running(
     assert "is not running" in caplog.text
 
 
-def test_cancel_ongoing_analysis(
+def test_cancel_with_ongoing_analysis(
     cli_runner: CliRunner,
     trailblazer_context: Dict[str, MockStore],
     caplog,
@@ -200,7 +200,7 @@ def test_cancel_ongoing_analysis(
     )
 
     # GIVEN SLURM scancel output for an analysis
-    mocker.patch("trailblazer.store.api.cancel_slurm_job", return_value=None)
+    mocker.patch("trailblazer.store.crud.update.cancel_slurm_job", return_value=None)
 
     caplog.set_level("INFO")
 

@@ -145,7 +145,7 @@ def cancel(analysis_id):
     user_data = jwt.decode(jwt_token, verify=False)
     try:
         process = multiprocessing.Process(
-            target=store.cancel_analysis,
+            target=store.cancel_ongoing_analysis,
             kwargs={
                 "analysis_id": analysis_id,
                 "analysis_host": ANALYSIS_HOST,
@@ -308,11 +308,13 @@ def set_analysis_status():
 
 
 @blueprint.route("/add-comment", methods=["PUT"])
-def put_add_comment():
-    content: Response.json = request.json
-
+def add_comment():
+    """Updating comment on analysis."""
+    put_request: Response.json = request.json
     try:
-        store.add_comment(case_id=content.get("case_id"), comment=content.get("comment"))
-        return jsonify("Success! Adding comment request sent"), 201
+        store.update_analysis_comment(
+            case_id=put_request.get("case_id"), comment=put_request.get("comment")
+        )
+        return jsonify("Success! Adding comment request sent"), HTTPStatus.CREATED
     except Exception as error:
-        return jsonify(f"Exception: {error}"), 409
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
