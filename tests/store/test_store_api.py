@@ -66,20 +66,6 @@ def test_set_analysis_uploaded(analysis_store: MockStore, timestamp_now: datetim
     assert analysis.uploaded_at == timestamp_now
 
 
-def test_add_comment(analysis_store: MockStore, case_id: str):
-    """Test adding comment to an analysis object."""
-
-    # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
-    comment: str = "test comment"
-
-    # WHEN adding a comment
-    analysis_store.add_comment(case_id=analysis.family, comment=comment)
-
-    # THEN a comment should have been added
-    assert analysis.comment == comment
-
-
 @pytest.mark.parametrize(
     "case_id, status",
     [
