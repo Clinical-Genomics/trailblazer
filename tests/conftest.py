@@ -18,6 +18,11 @@ from trailblazer.io.controller import ReadFile
 
 
 @pytest.fixture(scope="session")
+def analysis_id_does_not_exist() -> int:
+    return 123456789666
+
+
+@pytest.fixture(scope="session")
 def username() -> str:
     """Return a username."""
     return "Paul Anderson"

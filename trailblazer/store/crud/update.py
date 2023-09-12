@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from trailblazer.apps.slurm.api import (
+    cancel_slurm_job,
     get_current_analysis_status,
     get_slurm_squeue_output,
     get_squeue_result,
@@ -11,6 +12,7 @@ from trailblazer.apps.slurm.api import (
 )
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.constants import SlurmJobStatus, TrailblazerStatus
+from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.models import Analysis, Job, User
 
@@ -85,6 +87,31 @@ class UpdateHandler(BaseHandler_2):
                 analysis.is_deleted = True
             self.commit()
         return analyses
+
+    def cancel_ongoing_analysis(
+        self, analysis_id: int, analysis_host: Optional[str] = None, email: Optional[str] = None
+    ) -> None:
+        """Cancel all ongoing slurm jobs associated with the analysis, and set analysis status to 'cancelled'.
+        Raise: TrailblazerError when no analysis or no ongoing analysis for analysis id."""
+        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        if not analysis:
+            raise MissingAnalysis(f"Analysis {analysis_id} does not exist")
+        if analysis.status not in TrailblazerStatus.ongoing_statuses():
+            raise TrailblazerError(f"Analysis {analysis_id} is not running")
+        for job in analysis.jobs:
+            if job.status in SlurmJobStatus.ongoing_statuses():
+                LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
+                cancel_slurm_job(analysis_host=analysis_host, slurm_id=job.slurm_id)
+        LOG.info(
+            f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
+        )
+        self.update_run_status(analysis_id=analysis_id, analysis_host=analysis_host)
+        analysis.status = TrailblazerStatus.CANCELLED
+        analysis.comment = (
+            f"Analysis cancelled manually by user:"
+            f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
+        )
+        self.commit()
 
     def update_analysis_status(self, case_id: str, status: str):
         """Setting analysis status."""

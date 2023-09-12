@@ -8,14 +8,8 @@ import alchy
 import sqlalchemy as sqa
 from alchy import Query
 
-from trailblazer.apps.slurm.api import cancel_slurm_job
 from trailblazer.apps.tower.api import TowerAPI
-from trailblazer.constants import (
-    FileFormat,
-    SlurmJobStatus,
-    TrailblazerStatus,
-    WorkflowManager,
-)
+from trailblazer.constants import FileFormat, TrailblazerStatus, WorkflowManager
 from trailblazer.exc import TowerRequirementsError, TrailblazerError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.core import CoreHandler
@@ -186,30 +180,6 @@ class BaseHandler(CoreHandler):
             LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
             analysis.status: str = TrailblazerStatus.ERROR
             self.commit()
-
-    def cancel_analysis(
-        self, analysis_id: int, analysis_host: Optional[str] = None, email: Optional[str] = None
-    ) -> None:
-        """Cancel all ongoing slurm jobs associated with the analysis, and set analysis status to 'cancelled'."""
-        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
-        if not analysis:
-            raise TrailblazerError(f"Analysis {analysis_id} does not exist")
-        if analysis.status not in TrailblazerStatus.ongoing_statuses():
-            raise TrailblazerError(f"Analysis {analysis_id} is not running")
-        for job in analysis.jobs:
-            if job.status in SlurmJobStatus.ongoing_statuses():
-                LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
-                cancel_slurm_job(analysis_host=analysis_host, slurm_id=job.slurm_id)
-        LOG.info(
-            f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
-        )
-        self.update_run_status(analysis_id=analysis_id, analysis_host=analysis_host)
-        analysis.status = TrailblazerStatus.CANCELLED
-        analysis.comment = (
-            f"Analysis cancelled manually by user:"
-            f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
-        )
-        self.commit()
 
 
 class Store(alchy.Manager, BaseHandler):
