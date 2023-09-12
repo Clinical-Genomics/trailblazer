@@ -20,7 +20,9 @@ class DeleteHandler(BaseHandler_2):
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis from the database. Also delete ongoing analysis if 'force' is True.
-        Raise: MissingAnalysis when no analysis and TrailblazerError for ongoing analysis for analysis id.
+        Raises:
+            MissingAnalysis when no analysis.
+            TrailblazerError for ongoing analysis for analysis id.
         """
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
