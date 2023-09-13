@@ -140,10 +140,10 @@ def test_update_tower_run_status(
     """Assess that an analysis status is successfully updated when using NF Tower."""
 
     # GIVEN Tower API response for an analysis
-    case = tower_case_config.get(case_id)
-    tower_api = MockTowerAPI(workflow_id=case.get("tower_id"))
-    tower_api.mock_query(response_file=case.get("workflow_response_file"))
-    tower_api.mock_tasks_query(response_file=case.get("tasks_response_file"))
+    raw_case: dict = tower_case_config.get(case_id)
+    tower_api = MockTowerAPI(workflow_id=raw_case.get("tower_id"))
+    tower_api.mock_query(response_file=raw_case.get("workflow_response_file"))
+    tower_api.mock_tasks_query(response_file=raw_case.get("tasks_response_file"))
     mocker.patch("trailblazer.store.api.get_tower_api", return_value=tower_api)
 
     # GIVEN an analysis with pending status
