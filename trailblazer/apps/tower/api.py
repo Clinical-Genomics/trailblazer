@@ -3,7 +3,7 @@
 import logging
 import os
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import requests
 from requests import ConnectionError, HTTPError
@@ -80,15 +80,18 @@ class TowerApiClient:
     @property
     def meets_requirements(self) -> bool:
         """Return True if required variables are not empty."""
-        if self.tower_api_endpoint is None or self.tower_api_endpoint == "":
-            LOG.info("Error: no endpoint specified for Tower Open API request.")
-            return False
-        if self.tower_access_token is None or self.tower_access_token == "":
-            LOG.info("Error: no access token specified for Tower Open API request.")
-            return False
-        if self.workspace_id is None or self.workspace_id == "":
-            LOG.info("Error: no workspace specified for Tower Open API request.")
-            return False
+        requirement_map: List[Tuple[str, str]] = [
+            (self.tower_api_endpoint, "Error: no endpoint specified for Tower Open API request."),
+            (
+                self.tower_access_token,
+                "Error: no access token specified for Tower Open API request.",
+            ),
+            (self.workspace_id, "Error: no workspace specified for Tower Open API request."),
+        ]
+        for requirement, msg in requirement_map:
+            if not requirement:
+                LOG.info(msg)
+                return False
         return True
 
     @property
@@ -212,14 +215,19 @@ class TowerAPI:
         )
 
 
-def query_tower(config_file: str, case_id: str) -> TowerAPI:
-    """Return Tower API. Currently only one tower ID is supported.
-    Raises:
-        TowerRequirementsError when failing meeting Tower mandatory requirement"""
+def _is_tower_api_client_requirements_meet(tower_api: TowerAPI) -> bool:
+    """Raises:
+    TowerRequirementsError when failing meeting Tower mandatory requirement"""
+    if not tower_api.tower_client.meets_requirements:
+        raise TowerRequirementsError("Could not initialize Tower API due to missing requirements")
+    return True
+
+
+def get_tower_api(config_file: str, case_id: str) -> Optional[TowerAPI]:
+    """Return Tower API. Currently only one tower ID is supported."""
     workflow_id: int = ReadFile.get_content_from_file(
         file_format=FileFormat.YAML, file_path=Path(config_file)
     ).get(case_id)[-1]
     tower_api = TowerAPI(workflow_id=str(workflow_id))
-    if not tower_api.tower_client.meets_requirements:
-        raise TowerRequirementsError
-    return tower_api
+    if _is_tower_api_client_requirements_meet(tower_api=tower_api):
+        return tower_api

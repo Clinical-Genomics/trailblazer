@@ -7,7 +7,7 @@ import alchy
 import sqlalchemy as sqa
 from alchy import Query
 
-from trailblazer.apps.tower.api import TowerAPI, query_tower
+from trailblazer.apps.tower.api import TowerAPI, get_tower_api
 from trailblazer.constants import TrailblazerStatus, WorkflowManager
 from trailblazer.store.core import CoreHandler
 from trailblazer.store.models import Analysis, Model
@@ -116,7 +116,9 @@ class BaseHandler(CoreHandler):
     def update_tower_run_status(self, analysis_id: int) -> None:
         """Query tower for entries related to given analysis, and update the Trailblazer database."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
-        tower_api: TowerAPI = query_tower(config_file=analysis.config_path, case_id=analysis.family)
+        tower_api: TowerAPI = get_tower_api(
+            config_file=analysis.config_path, case_id=analysis.family
+        )
 
         try:
             LOG.info(

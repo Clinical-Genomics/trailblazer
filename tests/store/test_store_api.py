@@ -144,7 +144,7 @@ def test_update_tower_run_status(
     tower_api = MockTowerAPI(workflow_id=case.get("tower_id"))
     tower_api.mock_query(response_file=case.get("workflow_response_file"))
     tower_api.mock_tasks_query(response_file=case.get("tasks_response_file"))
-    mocker.patch("trailblazer.store.api.query_tower", return_value=tower_api)
+    mocker.patch("trailblazer.store.api.get_tower_api", return_value=tower_api)
 
     # GIVEN an analysis with pending status
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
