@@ -4,58 +4,74 @@ from typing import Dict, Generator, List
 
 import pytest
 
-from tests.apps.tower.conftest import CaseName, TowerTaskResponseFile
+from tests.apps.tower.conftest import CaseId, TowerTaskResponseFile
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
 from trailblazer.apps.tower.models import TowerTask
-from trailblazer.constants import TOWER_TIMESTAMP_FORMAT, FileFormat, TrailblazerStatus
+from trailblazer.constants import (
+    TOWER_TIMESTAMP_FORMAT,
+    FileExtension,
+    FileFormat,
+    TrailblazerStatus,
+)
 from trailblazer.io.controller import ReadFile
 
 
-@pytest.fixture(scope="session", name="username")
-def fixture_username() -> str:
+@pytest.fixture(scope="session")
+def analysis_id_does_not_exist() -> int:
+    return 123456789666
+
+
+@pytest.fixture(scope="session")
+def username() -> str:
     """Return a username."""
     return "Paul Anderson"
 
 
-@pytest.fixture(scope="session", name="archived_username")
-def fixture_archived_username() -> str:
+@pytest.fixture(scope="session")
+def archived_username() -> str:
     """Return an archived username."""
     return "Archived User"
 
 
-@pytest.fixture(scope="session", name="archived_user_email")
-def fixture_archived_user_email() -> str:
+@pytest.fixture(scope="session")
+def archived_user_email() -> str:
     """Return an archived user email."""
     return "archived.user@magnolia.com"
 
 
-@pytest.fixture(scope="session", name="user_email")
-def fixture_user_email() -> str:
+@pytest.fixture(scope="session")
+def user_email() -> str:
     """Return an user email."""
     return "paul.anderson@magnolia.com"
 
 
-@pytest.fixture(scope="session", name="fixtures_dir")
-def fixture_fixtures_dir() -> Path:
+@pytest.fixture(scope="session")
+def fixtures_dir() -> Path:
     """Return the path to the fixtures' dir."""
     return Path("tests", "fixtures")
 
 
-@pytest.fixture(scope="session", name="analysis_data_path")
-def fixture_analysis_data_path(fixtures_dir: Path) -> Path:
+@pytest.fixture(scope="session")
+def squeue_dir(fixtures_dir: Path) -> Path:
+    """Return the path to the squeue fixture directory."""
+    return Path(fixtures_dir, "squeue")
+
+
+@pytest.fixture(scope="session")
+def analysis_data_path(fixtures_dir: Path) -> Path:
     """Return the path to an analysis data file."""
     return Path(fixtures_dir, "analysis-data.yaml")
 
 
-@pytest.fixture(name="analysis_data", scope="function")
-def fixture_analysis_data(analysis_data_path: Path) -> Dict[str, list]:
+@pytest.fixture(scope="function")
+def analysis_data(analysis_data_path: Path) -> Dict[str, list]:
     """Return content of the analysis data file."""
     return ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=analysis_data_path)
 
 
-@pytest.fixture(scope="session", name="squeue_stream_jobs")
-def fixture_squeue_stream_jobs() -> str:
+@pytest.fixture(scope="session")
+def squeue_stream_jobs() -> str:
     """Return a squeue output stream."""
     return """JOBID,NAME,STATE,TIME_LIMIT,TIME,START_TIME
 690994,gatk_genotypegvcfs2,COMPLETED,10:00:00,1:01:52,2020-10-22T11:43:33
@@ -65,20 +81,20 @@ def fixture_squeue_stream_jobs() -> str:
 690989,gatk_genotypegvcfs5,PENDING,10:00:00,0:00,N/A"""
 
 
-@pytest.fixture(name="trailblazer_tmp_dir")
-def fixture_trailblazer_tmp_dir(tmpdir_factory) -> Path:
+@pytest.fixture
+def trailblazer_tmp_dir(tmpdir_factory) -> Path:
     """Return a temporary directory for Trailblazer testing."""
     return tmpdir_factory.mktemp("trailblazer_tmp")
 
 
-@pytest.fixture(name="trailblazer_context")
-def fixture_trailblazer_context(analysis_store: MockStore) -> Dict[str, MockStore]:
+@pytest.fixture
+def trailblazer_context(analysis_store: MockStore) -> Dict[str, MockStore]:
     """Trailblazer context to be used in CLI."""
-    return {"trailblazer": analysis_store}
+    return {"trailblazer_db": analysis_store}
 
 
-@pytest.fixture(name="store")
-def fixture_store() -> Generator[MockStore, None, None]:
+@pytest.fixture
+def store() -> Generator[MockStore, None, None]:
     """Empty Trailblazer database."""
     _store = MockStore(uri="sqlite://")
     _store.setup()
@@ -86,15 +102,15 @@ def fixture_store() -> Generator[MockStore, None, None]:
     _store.drop_all()
 
 
-@pytest.fixture(scope="function", name="info_store")
-def fixture_info_store(store: MockStore) -> Generator[MockStore, None, None]:
+@pytest.fixture(scope="function")
+def info_store(store: MockStore) -> Generator[MockStore, None, None]:
     """A Trailblazer database wih a populated info table."""
     StoreHelpers.add_info(store=store)
     yield store
 
 
-@pytest.fixture(scope="function", name="job_store")
-def fixture_job_store(
+@pytest.fixture(scope="function")
+def job_store(
     store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A Trailblazer database wih a populated job table."""
@@ -106,8 +122,8 @@ def fixture_job_store(
     yield store
 
 
-@pytest.fixture(scope="function", name="user_store")
-def fixture_user_store(
+@pytest.fixture(scope="function")
+def user_store(
     archived_user_email: str,
     archived_username: str,
     user_email: str,
@@ -122,18 +138,18 @@ def fixture_user_store(
     yield store
 
 
-@pytest.fixture(name="raw_analyses", scope="function")
-def fixture_raw_analyses(analysis_data: Dict[str, List[Dict]]) -> List[dict]:
+@pytest.fixture(scope="function")
+def raw_analyses(analysis_data: Dict[str, List[Dict]]) -> List[dict]:
     """Return raw analyses data."""
     analyses: List[dict] = []
     for analysis in analysis_data["analyses"]:
-        analysis["case_name"] = analysis["family"]
+        analysis["case_id"] = analysis["family"]
         analyses.append(analysis)
     return analyses
 
 
-@pytest.fixture(name="analysis_store")
-def fixture_analysis_store(
+@pytest.fixture
+def analysis_store(
     analysis_data: Dict[str, list],
     archived_user_email: str,
     archived_username: str,
@@ -153,20 +169,20 @@ def fixture_analysis_store(
     yield store
 
 
-@pytest.fixture(name="timestamp_now", scope="session")
-def fixture_timestamp_now() -> datetime:
+@pytest.fixture(scope="session")
+def timestamp_now() -> datetime:
     """Return a time stamp of today's date in date time format."""
     return datetime.now()
 
 
-@pytest.fixture(name="timestamp_yesterday", scope="session")
-def fixture_timestamp_yesterday(timestamp_now: datetime) -> datetime:
+@pytest.fixture(scope="session")
+def timestamp_yesterday(timestamp_now: datetime) -> datetime:
     """Return a time stamp of yesterday's date in date time format."""
     return timestamp_now - timedelta(days=1)
 
 
-@pytest.fixture(name="tower_jobs")
-def fixture_tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> List[dict]:
+@pytest.fixture
+def tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> List[dict]:
     """Return a list of Tower Jobs."""
     return [
         dict(
@@ -196,58 +212,81 @@ def fixture_tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> Li
     ]
 
 
-@pytest.fixture(name="analysis_id")
-def fixture_analysis_id() -> int:
+@pytest.fixture
+def analysis_id() -> int:
     """Return a mock ID of the analysis in the Trailblazer database."""
     return 1
 
 
-@pytest.fixture(name="started_at", scope="session")
-def fixture_started_at() -> datetime:
+@pytest.fixture(scope="session")
+def started_at() -> datetime:
     """Returns a started at date."""
     return datetime.strptime("2023-04-04T08:11:27Z", TOWER_TIMESTAMP_FORMAT)
 
 
-@pytest.fixture(name="slurm_id", scope="session")
-def fixture_slurm_id() -> str:
+@pytest.fixture(scope="session")
+def slurm_id() -> str:
     """Returns a slurm id."""
     return "4611827"
 
 
-@pytest.fixture(name="tower_task_name", scope="session")
-def fixture_tower_task_name() -> str:
+@pytest.fixture(scope="session")
+def tower_task_name() -> str:
     """Returns a NF Tower task name."""
     return "NFCORE_RNAFUSION:RNAFUSION:INPUT_CHECK:SAMPLESHEET_CHECK"
 
 
 @pytest.fixture(scope="session")
-def case_name() -> str:
-    """Return a case name."""
-    return CaseName.RUNNING
+def case_id() -> str:
+    """Return a case id."""
+    return CaseId.RUNNING
 
 
 @pytest.fixture(scope="session")
-def case_name_not_in_db() -> str:
-    """Return a case name not present in database."""
-    return "case_name_not_in_db"
+def case_id_not_in_db() -> str:
+    """Return a case id not present in database."""
+    return "case_id_not_in_db"
 
 
 @pytest.fixture(scope="session")
-def failed_analysis_case_name() -> str:
-    """Return a case name for a failed analysis."""
+def failed_analysis_case_id() -> str:
+    """Return a case id for a failed analysis."""
     return "crackpanda"
 
 
 @pytest.fixture(scope="session")
-def ongoing_analysis_case_name() -> str:
-    """Return a case name for an ongoing analysis."""
+def ongoing_analysis_case_id() -> str:
+    """Return a case id for an ongoing analysis."""
     return "blazinginsect"
 
 
-@pytest.fixture(name="tower_task", scope="session")
-def fixture_tower_task() -> TowerTask:
+@pytest.fixture(scope="session")
+def tower_task() -> TowerTask:
     """Return a Tower task."""
     tower_task_running_content: dict = ReadFile.get_content_from_file(
         file_format=FileFormat.JSON, file_path=TowerTaskResponseFile.RUNNING
     )
     return TowerTask(**tower_task_running_content["tasks"][0]["task"])
+
+
+@pytest.fixture(scope="session")
+def slurm_squeue_output(squeue_dir: Path) -> Dict[str, str]:
+    """Return SLURM squeue output for analysis started via SLURM."""
+    file_postfix: str = f"squeue{FileExtension.CSV}"
+    case_ids: List[str] = [
+        "blazinginsect",
+        "crackpanda",
+        "cuddlyhen",
+        "daringpidgeon",
+        "escapedgoat",
+        "fancymole",
+        "happycow",
+        "lateraligator",
+        "liberatedunicorn",
+        "nicemice",
+        "rarekitten",
+        "trueferret",
+    ]
+    return {
+        case_id: Path(squeue_dir, f"{case_id}_{file_postfix}").as_posix() for case_id in case_ids
+    }

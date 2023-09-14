@@ -1,18 +1,22 @@
-from typing import List
+from datetime import datetime
+from typing import List, Optional
+
+import pytest
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.apps.slurm.api import get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.constants import TrailblazerStatus
+from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, User
 
 
-def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_name: str):
+def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
     """Test jobs are successfully updated."""
 
     # GIVEN an analysis with no jobs
-    analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_name=case_name)
+    analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert not analysis.jobs
 
     # WHEN jobs are updated
@@ -58,8 +62,183 @@ def test_update_analysis_jobs_from_slurm_jobs(analysis_store: MockStore, squeue_
         analysis=analysis, squeue_result=squeue_result
     )
     updated_analysis: Analysis = analysis_store.get_analysis(
-        case_name=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.PENDING
+        case_id=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.PENDING
     )
 
     # THEN it should update the analysis jobs
     assert updated_analysis.jobs
+
+
+def test_update_case_analyses_as_deleted(analysis_store: MockStore, ongoing_analysis_case_id: str):
+    """Test marking case analyses as deleted."""
+    # GIVEN case id for a case with analyses that are not deleted
+    analyses: Optional[List[Analysis]] = analysis_store.get_analyses_for_case(
+        case_id=ongoing_analysis_case_id
+    )
+    for analysis in analyses:
+        assert not analysis.is_deleted
+
+    # WHEN marking analyses as deleted
+    analysis_store.update_case_analyses_as_deleted(case_id=ongoing_analysis_case_id)
+    analyses: Optional[List[Analysis]] = analysis_store.get_analyses_for_case(
+        case_id=ongoing_analysis_case_id
+    )
+
+    # THEN analyses are marked as deleted
+    for analysis in analyses:
+        assert analysis.is_deleted
+
+
+def test_update_case_analyses_as_deleted_with_non_existing_case(
+    analysis_store: MockStore, case_id_not_in_db: str
+):
+    """Test marking case analyses as deleted."""
+    # GIVEN case id for that do not exist
+
+    # WHEN marking analyses as deleted
+    analyses: Optional[List[Analysis]] = analysis_store.update_case_analyses_as_deleted(
+        case_id=case_id_not_in_db
+    )
+
+    # THEN no analyses are returned
+    assert not analyses
+
+
+def test_cancel_ongoing_analysis(
+    analysis_store: MockStore, caplog, mocker, ongoing_analysis_case_id: str, tower_jobs: List[dict]
+):
+    """Test all ongoing analysis jobs are cancelled."""
+
+    # GIVEN SLURM scancel output for an analysis
+    mocker.patch("trailblazer.store.crud.update.cancel_slurm_job", return_value=None)
+
+    caplog.set_level("INFO")
+
+    # GIVEN an ongoing analysis
+    analysis_store.update_ongoing_analyses()
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+        case_id=ongoing_analysis_case_id
+    )
+
+    # Analysis should have jobs that can be cancelled
+    analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
+    assert analysis.jobs
+
+    # WHEN running cancel ongoing analysis
+    analysis_store.cancel_ongoing_analysis(analysis_id=analysis.id)
+
+    # THEN log should inform of successful cancellation
+    assert "all ongoing jobs cancelled successfully" in caplog.text
+    assert "Cancelling" in caplog.text
+
+
+def test_cancel_ongoing_analysis_when_no_analysis(
+    analysis_id_does_not_exist: int, analysis_store: MockStore, caplog, tower_jobs: List[dict]
+):
+    """Test exception is raised if analysis id does not exist."""
+    caplog.set_level("INFO")
+
+    # GIVEN an non-existing analysis
+
+    # WHEN running cancel ongoing analysis
+    with pytest.raises(MissingAnalysis):
+        analysis_store.cancel_ongoing_analysis(analysis_id=analysis_id_does_not_exist)
+
+        # THEN exception should be raised
+
+
+def test_cancel_ongoing_analysis_when_no_ongoing_analysis(
+    analysis_store: MockStore,
+    caplog,
+    failed_analysis_case_id: str,
+    tower_jobs: List[dict],
+):
+    """Test exception is raised if analysis status is not ongoing."""
+    caplog.set_level("INFO")
+
+    # GIVEN a failed analysis
+    analysis_store.update_ongoing_analyses()
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+        case_id=failed_analysis_case_id
+    )
+
+    # GIVEN a cancelled status
+    analysis.status = TrailblazerStatus.CANCELLED
+
+    # WHEN running cancel ongoing analysis
+    with pytest.raises(TrailblazerError):
+        analysis_store.cancel_ongoing_analysis(analysis_id=analysis.id)
+
+        # THEN exception should be raised
+
+
+def test_update_analysis_status_with_failed(analysis_store: MockStore, case_id: str):
+    """Test setting analysis to failed for an analysis."""
+
+    # GIVEN a store with an analysis
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    assert analysis.status != TrailblazerStatus.FAILED
+
+    # WHEN setting analysis to failed
+    analysis_store.update_analysis_status(case_id=analysis.family, status=TrailblazerStatus.FAILED)
+
+    # THEN the analysis status should be updated to failed
+    assert analysis.status == TrailblazerStatus.FAILED
+
+
+def test_update_analysis_status_to_completed(analysis_store: MockStore, case_id: str):
+    """Test setting analysis to completed for an analysis."""
+
+    # GIVEN a store with an analysis
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    assert analysis.status != TrailblazerStatus.COMPLETED
+
+    # WHEN setting analysis to completed
+    analysis_store.update_analysis_status_to_completed(analysis_id=analysis.id)
+
+    # THEN the analysis status should be updated to completed
+    assert analysis.status == TrailblazerStatus.COMPLETED
+
+
+def test_update_analysis_uploaded_at(
+    analysis_store: MockStore, timestamp_now: datetime, case_id: str
+):
+    """Test setting analysis uploaded at for an analysis."""
+    # GIVEN a store with an analysis
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+
+    # WHEN setting an analysis uploaded at
+    analysis_store.update_analysis_uploaded_at(case_id=analysis.family, uploaded_at=timestamp_now)
+
+    # THEN uploaded at should be updated
+    assert analysis.uploaded_at == timestamp_now
+
+
+def test_update_analysis_comment(analysis_store: MockStore, case_id: str):
+    """Test adding comment to an analysis."""
+
+    # GIVEN a store with an analysis
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    comment: str = "test comment"
+
+    # WHEN adding a comment
+    analysis_store.update_analysis_comment(case_id=analysis.family, comment=comment)
+
+    # THEN a comment should have been added
+    assert analysis.comment == comment
+
+
+def test_update_analysis_comment_when_existing(analysis_store: MockStore, case_id: str):
+    """Test adding comment to an analysis when a comment already exists."""
+
+    # GIVEN a store with an analysis
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    first_comment: str = "One"
+    second_comment: str = "Second"
+
+    # WHEN adding a comment
+    analysis_store.update_analysis_comment(case_id=analysis.family, comment=first_comment)
+    analysis_store.update_analysis_comment(case_id=analysis.family, comment=second_comment)
+
+    # THEN comments should have been added
+    assert analysis.comment == f"{first_comment} {second_comment}"

@@ -1,9 +1,22 @@
-from typing import List
+import logging
+from datetime import datetime
+from pathlib import Path
+from typing import List, Optional
 
-from trailblazer.apps.slurm.api import reformat_squeue_result_job_step
+from trailblazer.apps.slurm.api import (
+    cancel_slurm_job,
+    get_current_analysis_status,
+    get_slurm_squeue_output,
+    get_squeue_result,
+    reformat_squeue_result_job_step,
+)
 from trailblazer.apps.slurm.models import SqueueResult
+from trailblazer.constants import SlurmJobStatus, TrailblazerStatus
+from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.models import Analysis, Job, User
+
+LOG = logging.getLogger(__name__)
 
 
 class UpdateHandler(BaseHandler_2):
@@ -43,3 +56,91 @@ class UpdateHandler(BaseHandler_2):
             for job in squeue_result.jobs
         ]
         self.commit()
+
+    def _update_analysis_from_slurm_squeue_output(
+        self, analysis: Analysis, analysis_host: Optional[str] = False
+    ) -> None:
+        """Update analysis status based on current SLURM jobs status."""
+        squeue_result: SqueueResult = get_squeue_result(
+            squeue_response=get_slurm_squeue_output(
+                analysis_host=analysis_host, slurm_job_id_file=Path(analysis.config_path)
+            )
+        )
+        self.update_analysis_jobs_from_slurm_jobs(analysis=analysis, squeue_result=squeue_result)
+        LOG.debug(f"Status in SLURM: {analysis.family} - {analysis.id}")
+        LOG.debug(squeue_result.jobs)
+        analysis.progress = squeue_result.jobs_status_distribution.get(
+            SlurmJobStatus.COMPLETED, 0.0
+        )
+        analysis.status = get_current_analysis_status(
+            jobs_status_distribution=squeue_result.jobs_status_distribution
+        )
+        LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
+        analysis.logged_at = datetime.now()
+        self.commit()
+
+    def update_case_analyses_as_deleted(self, case_id: str) -> Optional[List[Analysis]]:
+        """Mark analyses connected to a case as deleted."""
+        analyses: Optional[List[Analysis]] = self.get_analyses_for_case(case_id=case_id)
+        if analyses:
+            for analysis in analyses:
+                analysis.is_deleted = True
+            self.commit()
+        return analyses
+
+    def cancel_ongoing_analysis(
+        self, analysis_id: int, analysis_host: Optional[str] = None, email: Optional[str] = None
+    ) -> None:
+        """Cancel all ongoing slurm jobs associated with the analysis, and set analysis status to 'cancelled'.
+        Raises:
+            MissingAnalysis when no analysis.
+            TrailblazerError for no ongoing analysis for analysis id.
+        """
+        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        if not analysis:
+            raise MissingAnalysis(f"Analysis {analysis_id} does not exist")
+        if analysis.status not in TrailblazerStatus.ongoing_statuses():
+            raise TrailblazerError(f"Analysis {analysis_id} is not running")
+        for job in analysis.jobs:
+            if job.status in SlurmJobStatus.ongoing_statuses():
+                LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
+                cancel_slurm_job(analysis_host=analysis_host, slurm_id=job.slurm_id)
+        LOG.info(
+            f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
+        )
+        self.update_run_status(analysis_id=analysis_id, analysis_host=analysis_host)
+        analysis.status = TrailblazerStatus.CANCELLED
+        analysis.comment = (
+            f"Analysis cancelled manually by user:"
+            f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
+        )
+        self.commit()
+
+    def update_analysis_status(self, case_id: str, status: str):
+        """Setting analysis status."""
+        status: str = status.lower()
+        if status not in set(TrailblazerStatus.statuses()):
+            raise ValueError(f"Invalid status. Allowed values are: {TrailblazerStatus.statuses()}")
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
+        analysis.status = status
+        self.commit()
+        LOG.info(f"{analysis.family} - Status set to {status.upper()}")
+
+    def update_analysis_status_to_completed(self, analysis_id: int) -> None:
+        """Set an analysis status to 'completed'."""
+        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        self.update_analysis_status(case_id=analysis.family, status=TrailblazerStatus.COMPLETED)
+
+    def update_analysis_uploaded_at(self, case_id: str, uploaded_at: datetime) -> None:
+        """Set analysis uploaded at for an analysis."""
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
+        analysis.uploaded_at = uploaded_at
+        self.commit()
+
+    def update_analysis_comment(self, case_id: str, comment: str) -> None:
+        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
+        analysis.comment: str = (
+            " ".join([analysis.comment, comment]) if analysis.comment else comment
+        )
+        self.commit()
+        LOG.info(f"Adding comment {comment} to analysis {analysis.family}")

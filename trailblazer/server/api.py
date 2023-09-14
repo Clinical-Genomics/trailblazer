@@ -16,6 +16,8 @@ from trailblazer.server.ext import store
 from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
+ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
+
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
 
@@ -112,54 +114,62 @@ def aggregate_jobs():
 
 @blueprint.route("/update-all")
 def update_analyses():
-    """Update all ongoing analysis by querying SLURM"""
-    process = multiprocessing.Process(target=store.update_ongoing_analyses, kwargs={"ssh": True})
+    """Update all ongoing analysis by querying SLURM."""
+    process = multiprocessing.Process(
+        target=store.update_ongoing_analyses,
+        kwargs={"analysis_host": ANALYSIS_HOST},
+    )
     process.start()
-    return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), 201
+    return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), HTTPStatus.CREATED
 
 
 @blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
 def update_analysis(analysis_id):
-    """Update a specific analysis"""
+    """Update a specific analysis."""
     try:
         process = multiprocessing.Process(
-            target=store.update_run_status, kwargs={"analysis_id": analysis_id, "ssh": True}
+            target=store.update_run_status,
+            kwargs={"analysis_id": analysis_id, "analysis_host": ANALYSIS_HOST},
         )
         process.start()
-        return jsonify("Success! Update request sent"), 201
+        return jsonify("Success! Update request sent"), HTTPStatus.CREATED
     except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
+        return jsonify(f"Exception: {e}"), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])
 def cancel(analysis_id):
-    """Cancel an analysis and all slurm jobs associated with it"""
+    """Cancel an analysis and all slurm jobs associated with it."""
     auth_header = request.headers.get("Authorization")
     jwt_token = auth_header.split("Bearer ")[-1]
     user_data = jwt.decode(jwt_token, verify=False)
     try:
         process = multiprocessing.Process(
-            target=store.cancel_analysis,
-            kwargs={"analysis_id": analysis_id, "email": user_data["email"], "ssh": True},
+            target=store.cancel_ongoing_analysis,
+            kwargs={
+                "analysis_id": analysis_id,
+                "analysis_host": ANALYSIS_HOST,
+                "email": user_data["email"],
+            },
         )
         process.start()
-        return jsonify("Success! Cancel request sent"), 201
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
+        return jsonify("Success! Cancel request sent"), HTTPStatus.CREATED
+    except Exception as error:
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/delete/<int:analysis_id>", methods=["PUT"])
 def delete(analysis_id):
-    """Cancel an analysis and all slurm jobs associated with it"""
+    """Delete an analysis and all slurm jobs associated with it."""
     try:
         process = multiprocessing.Process(
             target=store.delete_analysis,
             kwargs={"analysis_id": analysis_id, "force": True},
         )
         process.start()
-        return jsonify("Success! Delete request sent!"), 201
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
+        return jsonify("Success! Delete request sent!"), HTTPStatus.CREATED
+    except Exception as error:
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 # CG REST INTERFACE ###
@@ -192,10 +202,10 @@ def post_query_analyses():
 
 @blueprint.route("/get-latest-analysis", methods=["POST"])
 def post_get_latest_analysis():
-    """Return latest analysis entry for specified case name."""
+    """Return latest analysis entry for specified case id."""
     post_request: Response.json = request.json
     latest_case_analysis: Optional[Analysis] = store.get_latest_analysis_for_case(
-        case_name=post_request.get("case_id")
+        case_id=post_request.get("case_id")
     )
     if latest_case_analysis:
         raw_analysis: Dict[str, str] = stringify_timestamps(latest_case_analysis.to_dict())
@@ -208,7 +218,7 @@ def post_find_analysis():
     """Find analysis using case id, date, and status."""
     post_request: Response.json = request.json
     analysis: Analysis = store.get_analysis(
-        case_name=post_request.get("case_id"),
+        case_id=post_request.get("case_id"),
         started_at=datetime.strptime(post_request.get("started_at"), TRAILBLAZER_TIME_STAMP).date(),
         status=post_request.get("status"),
     )
@@ -220,26 +230,32 @@ def post_find_analysis():
 
 @blueprint.route("/delete-analysis", methods=["POST"])
 def post_delete_analysis():
-    """Delete analysis using analysis_id. If analysis is ongoing, error will be raised.
+    """Delete analysis using analysis_id. If analysis is ongoing, an error will be raised.
     To delete ongoing analysis, --force flag should also be passed.
     If an ongoing analysis is deleted in ths manner, all ongoing jobs will be cancelled"""
-    content = request.json
+    post_request: Response.json = request.json
     try:
-        store.delete_analysis(analysis_id=content.get("analysis_id"), force=content.get("force"))
-        return jsonify(None), 201
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), 409
+        store.delete_analysis(
+            analysis_id=post_request.get("analysis_id"), force=post_request.get("force")
+        )
+        return jsonify(None), HTTPStatus.CREATED
+    except Exception as error:
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/mark-analyses-deleted", methods=["POST"])
 def post_mark_analyses_deleted():
-    """Mark all analysis belonging to a case deleted"""
-    content = request.json
-    old_analyses = store.mark_analyses_deleted(case_id=content.get("case_id"))
-    data = [stringify_timestamps(analysis_obj.to_dict()) for analysis_obj in old_analyses]
-    if data:
-        return jsonify(*data), 201
-    return jsonify(None), 201
+    """Mark all analysis belonging to a case as deleted."""
+    post_request: Response.json = request.json
+    case_analyses: Optional[List[Analysis]] = store.update_case_analyses_as_deleted(
+        case_id=post_request.get("case_id")
+    )
+    raw_analysis = [
+        stringify_timestamps(case_analysis.to_dict()) for case_analysis in case_analyses
+    ]
+    if raw_analysis:
+        return jsonify(*raw_analysis), HTTPStatus.CREATED
+    return jsonify(None), HTTPStatus.CREATED
 
 
 @blueprint.route("/add-pending-analysis", methods=["POST"])
@@ -265,35 +281,42 @@ def post_add_pending_analysis():
 
 
 @blueprint.route("/set-analysis-uploaded", methods=["PUT"])
-def put_set_analysis_uploaded():
-    content: Response.json = request.json
-
+def set_analysis_uploaded():
+    """Set the analysis uploaded at attribute."""
+    put_request: Response.json = request.json
     try:
-        store.set_analysis_uploaded(
-            case_id=content.get("case_id"), uploaded_at=content.get("uploaded_at")
+        store.update_analysis_uploaded_at(
+            case_id=put_request.get("case_id"), uploaded_at=put_request.get("uploaded_at")
         )
-        return jsonify("Success! Uploaded at request sent"), 201
+        return jsonify("Success! Uploaded at request sent"), HTTPStatus.CREATED
     except Exception as error:
-        return jsonify(f"Exception: {error}"), 409
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/set-analysis-status", methods=["PUT"])
-def put_set_analysis_status():
-    content: Response.json = request.json
-
+def set_analysis_status():
+    """Update analysis status of a case with supplied status."""
+    put_request: Response.json = request.json
     try:
-        store.set_analysis_status(case_id=content.get("case_id"), status=content.get("status"))
-        return jsonify(f"Success! Analysis set to {content.get('status')} request sent"), 201
+        store.update_analysis_status(
+            case_id=put_request.get("case_id"), status=put_request.get("status")
+        )
+        return (
+            jsonify(f"Success! Analysis set to {put_request.get('status')} request sent"),
+            HTTPStatus.CREATED,
+        )
     except Exception as error:
-        return jsonify(f"Exception: {error}"), 409
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/add-comment", methods=["PUT"])
-def put_add_comment():
-    content: Response.json = request.json
-
+def add_comment():
+    """Updating comment on analysis."""
+    put_request: Response.json = request.json
     try:
-        store.add_comment(case_id=content.get("case_id"), comment=content.get("comment"))
-        return jsonify("Success! Adding comment request sent"), 201
+        store.update_analysis_comment(
+            case_id=put_request.get("case_id"), comment=put_request.get("comment")
+        )
+        return jsonify("Success! Adding comment request sent"), HTTPStatus.CREATED
     except Exception as error:
-        return jsonify(f"Exception: {error}"), 409
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
