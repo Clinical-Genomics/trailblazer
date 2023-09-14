@@ -95,7 +95,7 @@ def test_get_date_number_of_days_ago(timestamp_now: datetime):
     ["2023-04-04T08:11:24Z", "2023-06-20T08:01:57.661819Z", "2023-09-14T11:14:55.664772403Z"],
 )
 def test_tower_datetime_converter(timestamp: str):
-    """Test returning a datetime object from a timestamp, which is invalid."""
+    """Test parsing a Tower timestamp."""
 
     # GIVEN timestamps
 
