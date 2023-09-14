@@ -1,12 +1,13 @@
+import subprocess
 from datetime import datetime
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import pytest
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.apps.slurm.api import get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.constants import CharacterFormat, TrailblazerStatus
 from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, User
@@ -242,3 +243,35 @@ def test_update_analysis_comment_when_existing(analysis_store: MockStore, case_i
 
     # THEN comments should have been added
     assert analysis.comment == f"{first_comment} {second_comment}"
+
+
+def test_update_analysis_from_slurm_run_status(
+    analysis_store: MockStore,
+    squeue_stream_jobs: str,
+    mocker,
+    ongoing_analysis_case_id: str,
+    slurm_squeue_output: Dict[str, str],
+):
+    """Test updating analysis jobs when given squeue results."""
+    # GIVEN an analysis and a squeue stream
+    analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+    assert not analysis.jobs
+
+    # GIVEN SLURM squeue output for an analysis
+    mocker.patch(
+        "trailblazer.store.crud.update.get_slurm_squeue_output",
+        return_value=subprocess.check_output(
+            ["cat", slurm_squeue_output.get(ongoing_analysis_case_id)]
+        ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
+    )
+
+    # WHEN updating the analysis
+    analysis_store.update_analysis_from_slurm_output(
+        analysis_id=analysis.id, analysis_host="a_host"
+    )
+    updated_analysis: Analysis = analysis_store.get_analysis(
+        case_id=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.RUNNING
+    )
+
+    # THEN it should update the analysis jobs
+    assert updated_analysis.jobs
