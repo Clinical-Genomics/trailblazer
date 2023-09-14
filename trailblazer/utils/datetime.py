@@ -38,6 +38,9 @@ def get_datetime_from_timestamp(timestamp: str, datetime_formats: List[str]) -> 
 def tower_datetime_converter(timestamp: str) -> datetime:
     """Converts a NF Tower timestamp into a datetime object."""
     allowed_formats = [TOWER_TIMESTAMP_FORMAT, TOWER_TIMESTAMP_FORMAT_EXTENDED]
+    # old python versions do not handle high precision numbers. Errors can be avoided by capping to 26 characters
+    if len(timestamp) > 25:
+        timestamp = f"{timestamp[:25]}Z"
     return get_datetime_from_timestamp(timestamp, allowed_formats)
 
 
