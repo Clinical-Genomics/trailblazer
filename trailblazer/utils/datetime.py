@@ -11,7 +11,7 @@ from trailblazer.constants import (
 )
 
 LOG = logging.getLogger(__name__)
-MAX_NUMBER_OF_DIGITS = 23
+MAX_NUMBER_OF_DIGITS = 26
 
 
 def convert_days_to_minutes(days_nr: int) -> int:
