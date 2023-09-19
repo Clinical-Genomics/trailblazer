@@ -91,16 +91,16 @@ def test_get_date_number_of_days_ago(timestamp_now: datetime):
 
 
 @pytest.mark.parametrize(
-    "timestamp",
+    "datetime_stamp",
     ["2023-04-04T08:11:24Z", "2023-06-20T08:01:57.661819Z", "2023-09-14T11:14:55.664772403Z"],
 )
-def test_tower_datetime_converter(timestamp: str):
+def test_tower_datetime_converter(datetime_stamp: str):
     """Test parsing a Tower timestamp."""
 
     # GIVEN timestamps
 
     # WHEN calling the function
-    date: datetime = tower_datetime_converter(timestamp=timestamp)
+    date: datetime = tower_datetime_converter(timestamp=datetime_stamp)
 
     # THEN the return should be a date
     assert isinstance(date, datetime)
