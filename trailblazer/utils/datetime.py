@@ -11,6 +11,7 @@ from trailblazer.constants import (
 )
 
 LOG = logging.getLogger(__name__)
+MAX_NUMBER_OF_DIGITS = 26
 
 
 def convert_days_to_minutes(days_nr: int) -> int:
@@ -35,10 +36,13 @@ def get_datetime_from_timestamp(timestamp: str, datetime_formats: List[str]) -> 
     LOG.error(error_message)
 
 
-def tower_datetime_converter(timestamp: str) -> datetime:
+def tower_datetime_converter(datetime_stamp: str) -> datetime:
     """Converts a NF Tower timestamp into a datetime object."""
     allowed_formats = [TOWER_TIMESTAMP_FORMAT, TOWER_TIMESTAMP_FORMAT_EXTENDED]
-    return get_datetime_from_timestamp(timestamp, allowed_formats)
+    # old python versions do not handle high precision numbers. Errors can be avoided by capping to 26 characters
+    if len(datetime_stamp) > MAX_NUMBER_OF_DIGITS:
+        datetime_stamp: str = f"{datetime_stamp[:MAX_NUMBER_OF_DIGITS]}Z"
+    return get_datetime_from_timestamp(timestamp=datetime_stamp, datetime_formats=allowed_formats)
 
 
 def get_date_number_of_days_ago(number_of_days_ago: int) -> datetime:
