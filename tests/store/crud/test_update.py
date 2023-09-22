@@ -6,6 +6,7 @@ import pytest
 from tests.mocks.store_mock import MockStore
 from trailblazer.apps.slurm.api import get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
+from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
@@ -104,7 +105,7 @@ def test_update_case_analyses_as_deleted_with_non_existing_case(
     assert not analyses
 
 
-def test_cancel_ongoing_analysis(
+def test_cancel_ongoing_slurm_analysis(
     analysis_store: MockStore, caplog, mocker, ongoing_analysis_case_id: str, tower_jobs: List[dict]
 ):
     """Test all ongoing analysis jobs are cancelled."""
@@ -115,7 +116,6 @@ def test_cancel_ongoing_analysis(
     caplog.set_level("INFO")
 
     # GIVEN an ongoing analysis
-    analysis_store.update_ongoing_analyses()
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
@@ -128,8 +128,37 @@ def test_cancel_ongoing_analysis(
     analysis_store.cancel_ongoing_analysis(analysis_id=analysis.id)
 
     # THEN log should inform of successful cancellation
-    assert "all ongoing jobs cancelled successfully" in caplog.text
-    assert "Cancelling" in caplog.text
+    assert "Cancelling job" in caplog.text
+    assert "cancelled successfully!" in caplog.text
+
+    # THEN comment should be added
+    assert "Analysis cancelled manually by" in analysis.comment
+
+    # THEN analysis status should be updated
+    assert TrailblazerStatus.CANCELLED in analysis.status
+
+
+def test_cancel_ongoing_tower_analysis(analysis_store: MockStore, caplog, mocker, case_id: str):
+    # GIVEN TOWER cancel output
+    mocker.patch.object(TowerAPI, "cancel", return_value=None)
+
+    caplog.set_level("INFO")
+
+    # GIVEN an ongoing analysis
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+
+    # WHEN running cancel ongoing analysis
+    analysis_store.cancel_ongoing_analysis(analysis_id=analysis.id)
+
+    # THEN log should inform of successful cancellation
+    assert f"Cancelling Tower workflow for {case_id}"
+    assert "cancelled successfully!" in caplog.text
+
+    # THEN comment should be added
+    assert "Analysis cancelled manually by" in analysis.comment
+
+    # THEN analysis status should be updated
+    assert TrailblazerStatus.CANCELLED in analysis.status
 
 
 def test_cancel_ongoing_analysis_when_no_analysis(
