@@ -30,6 +30,7 @@ class TowerApiClient:
         self.tower_api_endpoint: str = os.environ.get("TOWER_API_ENDPOINT", None)
         self.workflow_endpoint: str = f"workflow/{self.workflow_id}"
         self.tasks_endpoint: str = f"{self.workflow_endpoint}/tasks"
+        self.cancel_endpoint: str = f"{self.workflow_endpoint}/cancel"
 
     @property
     def headers(self) -> dict:
@@ -101,6 +102,13 @@ class TowerApiClient:
         if self.meets_requirements:
             url = self.build_url(endpoint=self.workflow_endpoint)
             return TowerWorkflowResponse(**self.send_request(url=url))
+
+    @property
+    def cancel(self) -> None:
+        """Send a POST request to cancel a workflow."""
+        if self.meets_requirements:
+            url: str = self.build_url(endpoint=self.cancel_endpoint)
+            self.post_request(url=url)
 
 
 class TowerAPI:
@@ -207,3 +215,8 @@ class TowerAPI:
             started_at=task.start,
             elapsed=int(task.duration / 60),
         )
+
+    @property
+    def cancel(self) -> None:
+        """Cancel a workflow."""
+        self.tower_client.cancel
