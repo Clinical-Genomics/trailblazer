@@ -151,7 +151,7 @@ def test_cancel_ongoing_tower_analysis(analysis_store: MockStore, caplog, mocker
     analysis_store.cancel_ongoing_analysis(analysis_id=analysis.id)
 
     # THEN log should inform of successful cancellation
-    assert f"Cancelling Tower workflow for {case_id}"
+    assert f"Cancelling Tower workflow for {case_id}" in caplog.text
     assert "cancelled successfully!" in caplog.text
 
     # THEN comment should be added

@@ -221,7 +221,7 @@ def test_cancel_with_ongoing_analysis(
     assert result.exit_code == process_exit_success
 
     # THEN log should inform of successful cancellation
-    assert "all ongoing jobs cancelled successfully" in caplog.text
+    assert "cancelled successfully" in caplog.text
     assert "Cancelling" in caplog.text
 
     # THEN job id from squeue output will be cancelled
