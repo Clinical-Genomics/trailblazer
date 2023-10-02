@@ -135,7 +135,7 @@ def test_cancel_ongoing_slurm_analysis(
     assert "Analysis cancelled manually by" in analysis.comment
 
     # THEN analysis status should be updated
-    assert TrailblazerStatus.CANCELLED in analysis.status
+    assert TrailblazerStatus.CANCELLED == analysis.status
 
 
 def test_cancel_ongoing_tower_analysis(analysis_store: MockStore, caplog, mocker, case_id: str):
@@ -158,7 +158,7 @@ def test_cancel_ongoing_tower_analysis(analysis_store: MockStore, caplog, mocker
     assert "Analysis cancelled manually by" in analysis.comment
 
     # THEN analysis status should be updated
-    assert TrailblazerStatus.CANCELLED in analysis.status
+    assert TrailblazerStatus.CANCELLED == analysis.status
 
 
 def test_cancel_ongoing_analysis_when_no_analysis(

@@ -119,14 +119,14 @@ class UpdateHandler(BaseHandler_2):
     def cancel_slurm_analysis(
         self, analysis: Analysis, analysis_host: Optional[str] = None
     ) -> None:
-        """Cancel slurm analysis by cancelling all associated slurm jobs."""
+        """Cancel SLURM analysis by cancelling all associated SLURM jobs."""
         for job in analysis.jobs:
             if job.status in SlurmJobStatus.ongoing_statuses():
                 LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
                 cancel_slurm_job(analysis_host=analysis_host, slurm_id=job.slurm_id)
 
     def cancel_tower_analysis(self, analysis: Analysis) -> None:
-        """Cancel a NF-Tower analysis."""
+        """Cancel a NF-Tower analysis. Associated jobs are cancelled by Tower."""
         LOG.info(f"Cancelling Tower workflow for {analysis.family}")
         self.query_tower(config_file=analysis.config_path, case_id=analysis.family).cancel
 
