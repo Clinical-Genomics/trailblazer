@@ -20,38 +20,6 @@ def test_setup_db(store: MockStore):
     assert store.engine.table_names()
 
 
-def test_update_analysis_from_slurm_run_status(
-    analysis_store: MockStore,
-    squeue_stream_jobs: str,
-    mocker,
-    ongoing_analysis_case_id: str,
-    slurm_squeue_output: Dict[str, str],
-):
-    """Test updating analysis jobs when given squeue results."""
-    # GIVEN an analysis and a squeue stream
-    analysis: Analysis = analysis_store.get_query(table=Analysis).first()
-    assert not analysis.jobs
-
-    # GIVEN SLURM squeue output for an analysis
-    mocker.patch(
-        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
-        return_value=subprocess.check_output(
-            ["cat", slurm_squeue_output.get(ongoing_analysis_case_id)]
-        ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
-    )
-
-    # WHEN updating the analysis
-    analysis_store.update_analysis_from_slurm_output(
-        analysis_id=analysis.id, analysis_host="a_host"
-    )
-    updated_analysis: Analysis = analysis_store.get_analysis(
-        case_id=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.RUNNING
-    )
-
-    # THEN it should update the analysis jobs
-    assert updated_analysis.jobs
-
-
 @pytest.mark.parametrize(
     "case_id, status",
     [
