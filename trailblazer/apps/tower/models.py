@@ -78,7 +78,7 @@ class TowerTask(BaseModel):
     @classmethod
     def set_datetime(cls, raw_time) -> Optional[Union[str, datetime]]:
         if type(raw_time) is str:
-            return tower_datetime_converter(timestamp=raw_time)
+            return tower_datetime_converter(datetime_stamp=raw_time)
         elif type(raw_time) is datetime:
             return raw_time
         else:
@@ -115,7 +115,7 @@ class TowerProcess(BaseModel):
     @classmethod
     def set_datetime(cls, raw_time) -> Optional[Union[str, datetime]]:
         if type(raw_time) is str:
-            return tower_datetime_converter(timestamp=raw_time)
+            return tower_datetime_converter(datetime_stamp=raw_time)
         elif type(raw_time) is datetime:
             return raw_time
         else:

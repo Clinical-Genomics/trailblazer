@@ -79,6 +79,22 @@ class UpdateHandler(BaseHandler_2):
         analysis.logged_at = datetime.now()
         self.commit()
 
+    def update_analysis_from_slurm_output(
+        self, analysis_id: int, analysis_host: Optional[str] = False
+    ) -> None:
+        """Query SLURM for entries related to given analysis, and update the analysis in the database."""
+        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        try:
+            self._update_analysis_from_slurm_squeue_output(
+                analysis=analysis, analysis_host=analysis_host
+            )
+        except Exception as exception:
+            LOG.error(
+                f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"
+            )
+            analysis.status = TrailblazerStatus.ERROR
+            self.commit()
+
     def update_case_analyses_as_deleted(self, case_id: str) -> Optional[List[Analysis]]:
         """Mark analyses connected to a case as deleted."""
         analyses: Optional[List[Analysis]] = self.get_analyses_for_case(case_id=case_id)
