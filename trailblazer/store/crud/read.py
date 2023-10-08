@@ -74,6 +74,14 @@ class ReadHandler(BaseHandler_2):
             case_id=case_id,
         ).all()
 
+    def get_analyses_with_statuses(self, statuses: List[str]) -> Optional[List[Analysis]]:
+        """Get analyses by statyses."""
+        return apply_analysis_filter(
+            analyses=self.get_query(table=Analysis),
+            filter_functions=[AnalysisFilter.FILTER_BY_STATUSES],
+            statuses=statuses,
+        ).first()
+
     def get_analysis_with_id(self, analysis_id: int) -> Optional[Analysis]:
         """Get a single analysis by id."""
         return apply_analysis_filter(

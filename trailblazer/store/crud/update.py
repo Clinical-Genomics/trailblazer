@@ -32,6 +32,18 @@ class UpdateHandler(BaseHandler_2):
         user.is_archived = archive
         self.commit()
 
+    def update_ongoing_analyses(self, analysis_host: Optional[str] = None) -> None:
+        """Iterate over all analysis with ongoing status and query SLURM for current progress."""
+        ongoing_analyses = self.analyses(temp=True)
+        # ongoing_analyses: Optional[List[Analysis]] = self.
+        for analysis_obj in ongoing_analyses:
+            try:
+                self.update_run_status(analysis_id=analysis_obj.id, analysis_host=analysis_host)
+            except Exception as error:
+                LOG.error(
+                    f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {type(error).__name__}"
+                )
+
     def update_analysis_jobs_from_slurm_jobs(
         self, analysis: Analysis, squeue_result: SqueueResult
     ) -> None:

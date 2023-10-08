@@ -90,6 +90,19 @@ def test_get_analyses_for_case(analysis_store: MockStore, case_id: str):
     assert analyses
 
 
+def test_get_analyses_with_statuses(analysis_store: MockStore):
+    """Test getting analyses with status when it exists in the database."""
+    # GIVEN a store with an analysis
+
+    # WHEN accessing it by status
+    analyses: Optional[List[Analysis]] = analysis_store.get_analyses_with_statuses(
+        statuses=list(TrailblazerStatus.ongoing_statuses())
+    )
+
+    # THEN it should return the analyses
+    assert analyses
+
+
 def test_get_nr_jobs_with_status_per_category(job_store: MockStore, timestamp_yesterday: datetime):
     """Test getting the number of failed jobs per category since a supplied date from the database."""
     # GIVEN a database with jobs
