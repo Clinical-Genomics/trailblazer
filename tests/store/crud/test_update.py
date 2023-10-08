@@ -50,6 +50,57 @@ def test_update_user_is_archived(user_store: MockStore, user_email: str):
     assert archived_user
 
 
+def test_update_ongoing_analyses(analysis_store: MockStore, ongoing_analysis_case_id: str):
+    """Test all ongoing analysis jobs are updated."""
+    # GIVEN an analysis store and analysis status
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+        case_id=ongoing_analysis_case_id
+    )
+    assert analysis.status == TrailblazerStatus.PENDING
+
+    # WHEN updating ongoing analyses
+    analysis_store.update_ongoing_analyses()
+
+    # THEN status should have been updated
+    assert analysis.status == TrailblazerStatus.ERROR
+
+
+def test_update_ongoing_analyses_with_not_ongoing_analysis(
+    analysis_store: MockStore, ongoing_analysis_case_id: str
+):
+    """Test all ongoing analysis jobs are updated on not ongoing analysis-"""
+    # GIVEN an analysis store and analysis status
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+        case_id=ongoing_analysis_case_id
+    )
+    analysis.status = TrailblazerStatus.COMPLETED
+
+    # WHEN updating ongoing analyses
+    analysis_store.update_ongoing_analyses()
+
+    # THEN status should have been updated
+    assert analysis.status == TrailblazerStatus.COMPLETED
+
+
+def test_update_ongoing_analyseswhen_bad_call(
+    analysis_store: MockStore, caplog, ongoing_analysis_case_id: str
+):
+    """Test all ongoing analysis jobs are updated when execption id raised."""
+    caplog.set_level("INFO")
+    # GIVEN an analysis store and analysis status
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+        case_id=ongoing_analysis_case_id
+    )
+    del analysis.id
+
+    # WHEN updating ongoing analyses
+    with pytest.raises(KeyError):
+        analysis_store.update_ongoing_analyses()
+
+        # THEN error should be raised
+        assert f"Failed to update {analysis.family} - {analysis.id}" in caplog.text
+
+
 def test_update_analysis_jobs_from_slurm_jobs(analysis_store: MockStore, squeue_stream_jobs: str):
     """Test updating analysis jobs when given squeue results."""
     # GIVEN an analysis and a squeue stream
