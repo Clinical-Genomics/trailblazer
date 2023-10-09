@@ -118,7 +118,7 @@ class TowerApiClient:
             url = self.build_url(endpoint=self.workflow_endpoint)
             return TowerWorkflowResponse(**self.send_request(url=url))
 
-    def cancel(self) -> dict:
+    def send_cancel_request(self) -> dict:
         """Send a POST request to cancel a workflow."""
         if self.meets_requirements:
             url: str = self.build_url(endpoint=self.cancel_endpoint)
@@ -234,4 +234,4 @@ class TowerAPI:
 
     def cancel(self) -> None:
         """Cancel a workflow."""
-        self.tower_client.cancel()
+        self.tower_client.send_cancel_request()
