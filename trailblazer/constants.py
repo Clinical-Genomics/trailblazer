@@ -112,7 +112,7 @@ class TrailblazerStatusColor(str, Enum):
     RUNNING: str = "blue"
 
 
-TOWER_STATUS: Dict[str, str] = {
+TOWER_WORKFLOW_STATUS: Dict[str, str] = {
     "ABORTED": TrailblazerStatus.FAILED,
     "CACHED": TrailblazerStatus.COMPLETED,
     "CANCELLED": TrailblazerStatus.CANCELLED,

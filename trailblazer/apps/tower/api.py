@@ -14,7 +14,7 @@ from trailblazer.apps.tower.models import (
     TowerTaskResponse,
     TowerWorkflowResponse,
 )
-from trailblazer.constants import TOWER_STATUS, TrailblazerStatus
+from trailblazer.constants import TOWER_WORKFLOW_STATUS, TrailblazerStatus
 from trailblazer.exc import TrailblazerError
 
 LOG = logging.getLogger(__name__)
@@ -162,7 +162,9 @@ class TowerAPI:
     @property
     def status(self) -> str:
         """Returns the status of an analysis (also called workflow in NF Tower)."""
-        status: str = TOWER_STATUS.get(self.response.workflow.status, TrailblazerStatus.ERROR.value)
+        status: str = TOWER_WORKFLOW_STATUS.get(
+            self.response.workflow.status, TrailblazerStatus.ERROR.value
+        )
 
         # If the whole workflow (analysis) is completed set it as QC instead of COMPLETE
         if status == TrailblazerStatus.COMPLETED:
