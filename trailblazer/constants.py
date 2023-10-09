@@ -115,7 +115,7 @@ class TrailblazerStatusColor(str, Enum):
 TOWER_STATUS: Dict[str, str] = {
     "ABORTED": TrailblazerStatus.FAILED,
     "CACHED": TrailblazerStatus.COMPLETED,
-    "CANCELLED": TrailblazerStatus.FAILED,
+    "CANCELLED": TrailblazerStatus.CANCELLED,
     "COMPLETED": TrailblazerStatus.COMPLETED,
     "FAILED": TrailblazerStatus.FAILED,
     "NEW": TrailblazerStatus.PENDING,
@@ -127,10 +127,24 @@ TOWER_STATUS: Dict[str, str] = {
 
 
 TOWER_PROCESS_STATUS: Dict[str, str] = {
-    "submitted": TrailblazerStatus.PENDING,
-    "pending": TrailblazerStatus.PENDING,
-    "running": TrailblazerStatus.RUNNING,
-    "cached": TrailblazerStatus.COMPLETED,
-    "succeeded": TrailblazerStatus.COMPLETED,
-    "failed": TrailblazerStatus.FAILED,
+    "submitted": SlurmJobStatus.PENDING,
+    "pending": SlurmJobStatus.PENDING,
+    "running": SlurmJobStatus.RUNNING,
+    "cached": SlurmJobStatus.COMPLETED,
+    "succeeded": SlurmJobStatus.COMPLETED,
+    "failed": SlurmJobStatus.FAILED,
+}
+
+
+TOWER_TASK_STATUS: Dict[str, str] = {
+    "ABORTED": SlurmJobStatus.FAILED,
+    "CACHED": SlurmJobStatus.COMPLETED,
+    "CANCELLED": SlurmJobStatus.CANCELLED,
+    "COMPLETED": SlurmJobStatus.COMPLETED,
+    "FAILED": SlurmJobStatus.FAILED,
+    "NEW": SlurmJobStatus.PENDING,
+    "RUNNING": SlurmJobStatus.RUNNING,
+    "SUBMITTED": SlurmJobStatus.PENDING,
+    "SUCCEEDED": SlurmJobStatus.COMPLETED,
+    "UNKNOWN": SlurmJobStatus.FAILED,
 }
