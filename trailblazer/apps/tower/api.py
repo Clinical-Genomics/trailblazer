@@ -76,7 +76,7 @@ class TowerApiClient:
 
         return response.json()
 
-    def post_request(self, url: str, data: dict = {}) -> dict:
+    def post_request(self, url: str, data: dict = {}) -> None:
         """Send data via POST request and return response."""
         try:
             response = requests.post(
@@ -88,7 +88,6 @@ class TowerApiClient:
         except (MissingSchema, HTTPError, ConnectionError) as error:
             LOG.error(f"Request failed for url {url}: Error: {error}\n")
             raise TrailblazerError
-        return response.json()
 
     @property
     def meets_requirements(self) -> bool:
@@ -118,7 +117,7 @@ class TowerApiClient:
             url = self.build_url(endpoint=self.workflow_endpoint)
             return TowerWorkflowResponse(**self.send_request(url=url))
 
-    def send_cancel_request(self) -> dict:
+    def send_cancel_request(self) -> None:
         """Send a POST request to cancel a workflow."""
         if self.meets_requirements:
             url: str = self.build_url(endpoint=self.cancel_endpoint)
