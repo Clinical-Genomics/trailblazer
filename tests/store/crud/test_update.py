@@ -51,7 +51,7 @@ def test_update_user_is_archived(user_store: MockStore, user_email: str):
 
 
 def test_update_ongoing_analyses(analysis_store: MockStore, ongoing_analysis_case_id: str):
-    """Test all ongoing analysis jobs are updated."""
+    """Test all ongoing analysis statuses are updated."""
     # GIVEN an analysis store and analysis status
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
@@ -68,7 +68,7 @@ def test_update_ongoing_analyses(analysis_store: MockStore, ongoing_analysis_cas
 def test_update_ongoing_analyses_with_not_ongoing_analysis(
     analysis_store: MockStore, ongoing_analysis_case_id: str
 ):
-    """Test all ongoing analysis jobs are updated on not ongoing analysis-"""
+    """Test all ongoing analysis statuses are updated on not ongoing analysis-"""
     # GIVEN an analysis store and analysis status
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
@@ -78,14 +78,14 @@ def test_update_ongoing_analyses_with_not_ongoing_analysis(
     # WHEN updating ongoing analyses
     analysis_store.update_ongoing_analyses()
 
-    # THEN status should have been updated
+    # THEN status should be the same
     assert analysis.status == TrailblazerStatus.COMPLETED
 
 
 def test_update_ongoing_analyseswhen_bad_call(
     analysis_store: MockStore, caplog, ongoing_analysis_case_id: str
 ):
-    """Test all ongoing analysis jobs are updated when execption id raised."""
+    """Test all ongoing analysis statuses are updated when exception is raised."""
     caplog.set_level("INFO")
     # GIVEN an analysis store and analysis status
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
