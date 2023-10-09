@@ -118,7 +118,10 @@ class UpdateHandler(BaseHandler_2):
         if analysis.status not in TrailblazerStatus.ongoing_statuses():
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
         if analysis.workflow_manager == WorkflowManager.TOWER.value:
-            self.cancel_tower_analysis(analysis=analysis)
+            try:
+                self.cancel_tower_analysis(analysis=analysis)
+            except TrailblazerError:
+                return
         else:
             self.cancel_slurm_analysis(analysis=analysis, analysis_host=analysis_host)
         LOG.info(f"Case {analysis.family} - Analysis {analysis.id}: cancelled successfully!")
