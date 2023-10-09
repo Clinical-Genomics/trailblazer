@@ -127,12 +127,12 @@ TOWER_WORKFLOW_STATUS: Dict[str, str] = {
 
 
 TOWER_PROCESS_STATUS: Dict[str, str] = {
-    "submitted": SlurmJobStatus.PENDING,
-    "pending": SlurmJobStatus.PENDING,
-    "running": SlurmJobStatus.RUNNING,
-    "cached": SlurmJobStatus.COMPLETED,
-    "succeeded": SlurmJobStatus.COMPLETED,
-    "failed": SlurmJobStatus.FAILED,
+    "submitted": TrailblazerStatus.PENDING,
+    "pending": TrailblazerStatus.PENDING,
+    "running": TrailblazerStatus.RUNNING,
+    "cached": TrailblazerStatus.COMPLETED,
+    "succeeded": TrailblazerStatus.COMPLETED,
+    "failed": TrailblazerStatus.FAILED,
 }
 
 

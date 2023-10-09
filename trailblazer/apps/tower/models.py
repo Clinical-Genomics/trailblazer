@@ -3,7 +3,13 @@ from typing import Dict, List, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
-from trailblazer.constants import TOWER_PROCESS_STATUS, TOWER_WORKFLOW_STATUS, TrailblazerStatus
+from trailblazer.constants import (
+    TOWER_PROCESS_STATUS,
+    TOWER_TASK_STATUS,
+    TOWER_WORKFLOW_STATUS,
+    SlurmJobStatus,
+    TrailblazerStatus,
+)
 from trailblazer.utils.datetime import tower_datetime_converter
 
 SCALE_TO_MILLISEC: int = 1000
@@ -72,7 +78,7 @@ class TowerTask(BaseModel):
     @field_validator("status")
     @classmethod
     def set_status(cls, raw_status) -> str:
-        return TOWER_WORKFLOW_STATUS.get(raw_status)
+        return TOWER_TASK_STATUS.get(raw_status)
 
     @field_validator("start", "dateCreated", "lastUpdated")
     @classmethod
@@ -87,7 +93,7 @@ class TowerTask(BaseModel):
     @property
     def is_complete(cls) -> bool:
         """Returns if the process succeded."""
-        return cls.status == TrailblazerStatus.COMPLETED
+        return cls.status == SlurmJobStatus.COMPLETED
 
 
 class TowerProcess(BaseModel):
