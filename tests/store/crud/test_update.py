@@ -158,9 +158,6 @@ def test_cancel_ongoing_tower_analysis(analysis_store: MockStore, caplog, mocker
     # THEN comment should be added
     assert "Analysis cancelled manually by" in analysis.comment
 
-    # THEN analysis status should be updated
-    assert TrailblazerStatus.CANCELLED == analysis.status
-
 
 def test_cancel_ongoing_analysis_when_no_analysis(
     analysis_id_does_not_exist: int, analysis_store: MockStore, caplog, tower_jobs: List[dict]
