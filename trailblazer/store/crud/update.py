@@ -123,12 +123,12 @@ class UpdateHandler(BaseHandler_2):
             self.cancel_slurm_analysis(analysis=analysis, analysis_host=analysis_host)
             self.update_run_status(analysis_id=analysis_id, analysis_host=analysis_host)
             analysis.status = TrailblazerStatus.CANCELLED
-            LOG.info(f"Case {analysis.family} - Analysis {analysis.id}: cancelled successfully!")
-            analysis.comment = (
-                f"Analysis cancelled manually by user:"
-                f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
-            )
-            self.commit()
+        LOG.info(f"Case {analysis.family} - Analysis {analysis.id}: cancelled successfully!")
+        analysis.comment = (
+            f"Analysis cancelled manually by user:"
+            f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
+        )
+        self.commit()
 
     def cancel_slurm_analysis(
         self, analysis: Analysis, analysis_host: Optional[str] = None
