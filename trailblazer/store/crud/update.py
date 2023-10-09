@@ -121,9 +121,9 @@ class UpdateHandler(BaseHandler_2):
             self.cancel_tower_analysis(analysis=analysis)
         else:
             self.cancel_slurm_analysis(analysis=analysis, analysis_host=analysis_host)
+            self.update_run_status(analysis_id=analysis_id, analysis_host=analysis_host)
+            analysis.status = TrailblazerStatus.CANCELLED
         LOG.info(f"Case {analysis.family} - Analysis {analysis.id}: cancelled successfully!")
-        self.update_run_status(analysis_id=analysis_id, analysis_host=analysis_host)
-        analysis.status = TrailblazerStatus.CANCELLED
         analysis.comment = (
             f"Analysis cancelled manually by user:"
             f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
@@ -142,7 +142,7 @@ class UpdateHandler(BaseHandler_2):
     def cancel_tower_analysis(self, analysis: Analysis) -> None:
         """Cancel a NF-Tower analysis. Associated jobs are cancelled by Tower."""
         LOG.info(f"Cancelling Tower workflow for {analysis.family}")
-        self.query_tower(config_file=analysis.config_path, case_id=analysis.family).cancel
+        self.query_tower(config_file=analysis.config_path, case_id=analysis.family).cancel()
 
     def update_analysis_status(self, case_id: str, status: str):
         """Setting analysis status."""
