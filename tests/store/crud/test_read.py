@@ -102,6 +102,9 @@ def test_get_analyses_with_statuses(analysis_store: MockStore):
     # THEN an analysis should be returned
     assert analyses
 
+    # THEN the status should be one of the ongoing ones
+    assert analyses[0].status == TrailblazerStatus.PENDING
+
 
 def test_get_nr_jobs_with_status_per_category(job_store: MockStore, timestamp_yesterday: datetime):
     """Test getting the number of failed jobs per category since a supplied date from the database."""
