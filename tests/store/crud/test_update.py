@@ -152,7 +152,7 @@ def test_cancel_ongoing_tower_analysis(
 
     # GIVEN Tower requirements are meet
     mocker.patch(
-        "trailblazer.apps.tower.api._validate_tower_api_client_requirements_meet", return_value=True
+        "trailblazer.apps.tower.api._validate_tower_api_client_requirements", return_value=True
     )
 
     caplog.set_level("INFO")
