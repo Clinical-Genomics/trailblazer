@@ -1,17 +1,14 @@
 """Store backend in Trailblazer."""
 import datetime as dt
 import logging
-from pathlib import Path
 from typing import Optional
 
 import alchy
 import sqlalchemy as sqa
 from alchy import Query
 
-from trailblazer.apps.tower.api import TowerAPI
-from trailblazer.constants import FileFormat, TrailblazerStatus, WorkflowManager
-from trailblazer.exc import TowerRequirementsError
-from trailblazer.io.controller import ReadFile
+from trailblazer.apps.tower.api import TowerAPI, get_tower_api
+from trailblazer.constants import TrailblazerStatus, WorkflowManager
 from trailblazer.store.core import CoreHandler
 from trailblazer.store.models import Analysis, Model
 
@@ -89,23 +86,11 @@ class BaseHandler(CoreHandler):
                 analysis_id=analysis_id, analysis_host=analysis_host
             )
 
-    @staticmethod
-    def query_tower(config_file: str, case_id: str) -> TowerAPI:
-        """Parse a config file to extract a NF Tower workflow ID and return a TowerAPI.
-        Currently only one tower ID is supported."""
-        workflow_id: int = ReadFile.get_content_from_file(
-            file_format=FileFormat.YAML, file_path=Path(config_file)
-        ).get(case_id)[-1]
-        tower_api = TowerAPI(workflow_id=workflow_id)
-        if not tower_api.tower_client.meets_requirements:
-            raise TowerRequirementsError
-        return tower_api
-
     def update_tower_run_status(self, analysis_id: int) -> None:
         """Query tower for entries related to given analysis, and update the Trailblazer database."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
-        tower_api: TowerAPI = self.query_tower(
-            config_file=analysis.config_path, case_id=analysis.family
+        tower_api: TowerAPI = get_tower_api(
+            config_file_path=analysis.config_path, case_id=analysis.family
         )
 
         try:

@@ -5,6 +5,7 @@ import pytest
 
 from tests.apps.tower.conftest import CaseId
 from tests.mocks.store_mock import MockStore
+from tests.mocks.tower_mock import MockTowerAPI
 from trailblazer.constants import CharacterFormat, TrailblazerStatus
 from trailblazer.store.models import Analysis
 
@@ -97,9 +98,21 @@ def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], ca
     ],
 )
 def test_update_tower_run_status(
-    analysis_store: MockStore, case_id: str, status: str, progress: int
+    analysis_store: MockStore,
+    case_id: str,
+    status: str,
+    progress: int,
+    mocker,
+    tower_case_config: Dict[str, dict],
 ):
     """Assess that an analysis status is successfully updated when using NF Tower."""
+
+    # GIVEN Tower API response for an analysis
+    raw_case: dict = tower_case_config.get(case_id)
+    tower_api = MockTowerAPI(workflow_id=raw_case.get("tower_id"))
+    tower_api.mock_query(response_file=raw_case.get("workflow_response_file"))
+    tower_api.mock_tasks_query(response_file=raw_case.get("tasks_response_file"))
+    mocker.patch("trailblazer.store.api.get_tower_api", return_value=tower_api)
 
     # GIVEN an analysis with pending status
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)

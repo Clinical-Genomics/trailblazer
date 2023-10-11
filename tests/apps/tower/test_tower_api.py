@@ -5,8 +5,11 @@ import pytest
 
 from tests.apps.tower.conftest import TowerResponseFile, TowerTaskResponseFile
 from tests.mocks.tower_mock import MockTowerAPI
+from trailblazer.apps.tower.api import TowerAPI, get_tower_api
 from trailblazer.apps.tower.models import TowerTask
 from trailblazer.constants import TrailblazerStatus
+from trailblazer.exc import TowerRequirementsError
+from trailblazer.io.controller import ReadFile
 
 
 @pytest.mark.parametrize(
@@ -20,7 +23,7 @@ from trailblazer.constants import TrailblazerStatus
 def test_tower_api_status(tower_id: str, response_file: Path, expected_status: str) -> None:
     """Assess that TowerAPI returns the correct status given a response."""
 
-    # GIVEN an tower_api with a mock query response
+    # GIVEN a Tower API with a mock query response
     tower_api = MockTowerAPI(workflow_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
@@ -39,7 +42,7 @@ def test_tower_api_status(tower_id: str, response_file: Path, expected_status: s
 def test_tower_api_is_pending(tower_id: str, response_file: Path, expected_bool: bool) -> None:
     """Assess that TowerAPI returns the state for is_pending given a response."""
 
-    # GIVEN an tower_api with a mock query response
+    # GIVEN a Tower API with a mock query response
     tower_api = MockTowerAPI(workflow_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
@@ -60,7 +63,7 @@ def test_tower_api_total_jobs(
 ) -> None:
     """Assess that TowerAPI correctly returns the total number of potential jobs given a response."""
 
-    # GIVEN an tower_api with a mock query response
+    # GIVEN a Tower API with a mock query response
     tower_api = MockTowerAPI(workflow_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
@@ -81,7 +84,7 @@ def test_tower_api_succeeded_jobs(
 ) -> None:
     """Assess that TowerAPI correctly returns the number of succeeded jobs given a response."""
 
-    # GIVEN an tower_api with a mock query response
+    # GIVEN a Tower API with a mock query response
     tower_api = MockTowerAPI(workflow_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
@@ -97,7 +100,7 @@ def test_tower_api_tasks(
 ) -> None:
     """Assess that TowerAPI returns a list of tasks given a response."""
 
-    # GIVEN an tower_api with a mock query response
+    # GIVEN a Tower API with a mock query response
     tower_api = MockTowerAPI(workflow_id=tower_id)
     tower_api.mock_tasks_query(response_file=TowerTaskResponseFile.RUNNING)
 
@@ -123,7 +126,7 @@ def test_tower_api_tasks(
 def test_tower_api_progress(tower_id: str, response_file: Path, expected_progress: float) -> None:
     """Assess that TowerAPI returns the progress percentage given a response."""
 
-    # GIVEN an tower_api with a mock query response
+    # GIVEN a Tower API with a mock query response
     tower_api = MockTowerAPI(workflow_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
@@ -138,7 +141,7 @@ def test_tower_api_tasks_empty(
 ) -> None:
     """Assess that TowerAPI returns an empty list of tasks given a response for a pending case."""
 
-    # GIVEN an tower_api with a mock query response for a pending case
+    # GIVEN a Tower API with a mock query response for a pending case
     tower_api = MockTowerAPI(workflow_id=tower_id)
     tower_api.mock_tasks_query(response_file=tower_task_response_pending)
 
@@ -171,3 +174,34 @@ def test_tower_task_properties(
     assert tower_task.start == started_at
     assert tower_task.duration == tower_task_duration
     assert tower_task.is_complete is True
+
+
+def test_get_tower_api(case_id: str, mocker, tower_id: str):
+    """Test returning a Tower API."""
+    # GIVEN a workflow id
+    mocker.patch.object(ReadFile, "get_content_from_file")
+    ReadFile.get_content_from_file.return_value = {case_id: [tower_id]}
+
+    # GIVEN Tower requirements are meet
+    mocker.patch(
+        "trailblazer.apps.tower.api._validate_tower_api_client_requirements", return_value=True
+    )
+
+    # WHEN getting Tower API
+    tower_api: TowerAPI = get_tower_api(config_file_path="a_config", case_id=case_id)
+
+    # THEN return a Tower API
+    assert isinstance(tower_api, TowerAPI)
+
+
+def test_get_tower_api_with_missing_requirements(case_id: str, mocker, tower_id: str):
+    """Test returning a Tower API."""
+    # GIVEN a workflow id
+    mocker.patch.object(ReadFile, "get_content_from_file")
+    ReadFile.get_content_from_file.return_value = {case_id: [tower_id]}
+
+    # WHEN getting Tower API
+    with pytest.raises(TowerRequirementsError):
+        get_tower_api(config_file_path="a_config", case_id=case_id)
+
+        # THEN an error should be raised
