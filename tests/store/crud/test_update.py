@@ -10,6 +10,7 @@ from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import CharacterFormat, TrailblazerStatus
 from trailblazer.exc import MissingAnalysis, TrailblazerError
+from trailblazer.io.controller import ReadFile
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, User
 
@@ -139,9 +140,20 @@ def test_cancel_ongoing_slurm_analysis(
     assert TrailblazerStatus.CANCELLED == analysis.status
 
 
-def test_cancel_ongoing_tower_analysis(analysis_store: MockStore, caplog, mocker, case_id: str):
+def test_cancel_ongoing_tower_analysis(
+    analysis_store: MockStore, caplog, mocker, case_id: str, tower_id: str
+):
     # GIVEN TOWER cancel output
     mocker.patch.object(TowerAPI, "cancel", return_value=None)
+
+    # GIVEN a workflow id
+    mocker.patch.object(ReadFile, "get_content_from_file")
+    ReadFile.get_content_from_file.return_value = {case_id: [tower_id]}
+
+    # GIVEN Tower requirements are meet
+    mocker.patch(
+        "trailblazer.apps.tower.api._validate_tower_api_client_requirements", return_value=True
+    )
 
     caplog.set_level("INFO")
 
