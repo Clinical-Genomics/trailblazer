@@ -101,7 +101,7 @@ class BaseHandler(CoreHandler):
         """Query tower for entries related to given analysis, and update the Trailblazer database."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
         tower_api: TowerAPI = get_tower_api(
-            config_file=analysis.config_path, case_id=analysis.family
+            config_file_path=analysis.config_path, case_id=analysis.family
         )
 
         try:

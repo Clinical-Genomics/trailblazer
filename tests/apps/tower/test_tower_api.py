@@ -188,7 +188,7 @@ def test_get_tower_api(case_id: str, mocker, tower_id: str):
     )
 
     # WHEN getting Tower API
-    tower_api: TowerAPI = get_tower_api(config_file="a_config", case_id=case_id)
+    tower_api: TowerAPI = get_tower_api(config_file_path="a_config", case_id=case_id)
 
     # THEN return a Tower API
     assert isinstance(tower_api, TowerAPI)
@@ -202,6 +202,6 @@ def test_get_tower_api_with_missing_requirements(case_id: str, mocker, tower_id:
 
     # WHEN getting Tower API
     with pytest.raises(TowerRequirementsError):
-        get_tower_api(config_file="a_config", case_id=case_id)
+        get_tower_api(config_file_path="a_config", case_id=case_id)
 
         # THEN an error should be raised

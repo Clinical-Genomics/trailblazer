@@ -102,9 +102,9 @@ class TowerApiClient:
             ),
             (self.workspace_id, "Error: no workspace specified for Tower Open API request."),
         ]
-        for requirement, msg in requirement_map:
+        for requirement, error_msg in requirement_map:
             if not requirement:
-                LOG.info(msg)
+                LOG.info(error_msg)
                 return False
         return True
 
@@ -249,10 +249,10 @@ def _validate_tower_api_client_requirements(tower_api: TowerAPI) -> bool:
     return True
 
 
-def get_tower_api(config_file: str, case_id: str) -> Optional[TowerAPI]:
+def get_tower_api(config_file_path: str, case_id: str) -> Optional[TowerAPI]:
     """Return Tower API. Currently only one tower ID is supported."""
     workflow_id: int = ReadFile.get_content_from_file(
-        file_format=FileFormat.YAML, file_path=Path(config_file)
+        file_format=FileFormat.YAML, file_path=Path(config_file_path)
     ).get(case_id)[-1]
     tower_api = TowerAPI(workflow_id=str(workflow_id))
     if _validate_tower_api_client_requirements(tower_api=tower_api):

@@ -144,7 +144,7 @@ class UpdateHandler(BaseHandler_2):
         """Cancel a NF-Tower analysis. Associated jobs are cancelled by Tower."""
         LOG.info(f"Cancelling Tower workflow for {analysis.family}")
         tower_api: TowerAPI = get_tower_api(
-            config_file=analysis.config_path, case_id=analysis.family
+            config_file_path=analysis.config_path, case_id=analysis.family
         )
         tower_api.cancel()
 
