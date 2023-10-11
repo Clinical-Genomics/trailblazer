@@ -75,12 +75,13 @@ def test_update_ongoing_analyses_with_not_ongoing_analysis(
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
+    # GIVEN a completed analysis
     analysis.status = TrailblazerStatus.COMPLETED
 
     # WHEN updating ongoing analyses
     analysis_store.update_ongoing_analyses()
 
-    # THEN status should be the same
+    # THEN status should be COMPLETED
     assert analysis.status == TrailblazerStatus.COMPLETED
 
 
@@ -93,6 +94,7 @@ def test_update_ongoing_analyseswhen_bad_call(
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
+# GIVEN an analysis that is deleted
     del analysis.id
 
     # WHEN updating ongoing analyses

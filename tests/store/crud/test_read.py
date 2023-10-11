@@ -94,12 +94,12 @@ def test_get_analyses_with_statuses(analysis_store: MockStore):
     """Test getting analyses with status when it exists in the database."""
     # GIVEN a store with an analysis
 
-    # WHEN accessing it by statuses
+    # WHEN accessing an analysis by statuses
     analyses: Optional[List[Analysis]] = analysis_store.get_analyses_with_statuses(
         statuses=list(TrailblazerStatus.ongoing_statuses())
     )
 
-    # THEN it should return analyses
+    # THEN an analysis should be returned
     assert analyses
 
 
