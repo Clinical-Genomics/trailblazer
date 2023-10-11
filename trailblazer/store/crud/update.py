@@ -11,7 +11,7 @@ from trailblazer.apps.slurm.api import (
     reformat_squeue_result_job_step,
 )
 from trailblazer.apps.slurm.models import SqueueResult
-from trailblazer.constants import SlurmJobStatus, TrailblazerStatus
+from trailblazer.constants import SlurmJobStatus, TrailblazerStatus, WorkflowManager
 from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.models import Analysis, Job, User
@@ -79,6 +79,22 @@ class UpdateHandler(BaseHandler_2):
         analysis.logged_at = datetime.now()
         self.commit()
 
+    def update_analysis_from_slurm_output(
+        self, analysis_id: int, analysis_host: Optional[str] = False
+    ) -> None:
+        """Query SLURM for entries related to given analysis, and update the analysis in the database."""
+        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        try:
+            self._update_analysis_from_slurm_squeue_output(
+                analysis=analysis, analysis_host=analysis_host
+            )
+        except Exception as exception:
+            LOG.error(
+                f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"
+            )
+            analysis.status = TrailblazerStatus.ERROR
+            self.commit()
+
     def update_case_analyses_as_deleted(self, case_id: str) -> Optional[List[Analysis]]:
         """Mark analyses connected to a case as deleted."""
         analyses: Optional[List[Analysis]] = self.get_analyses_for_case(case_id=case_id)
@@ -101,13 +117,11 @@ class UpdateHandler(BaseHandler_2):
             raise MissingAnalysis(f"Analysis {analysis_id} does not exist")
         if analysis.status not in TrailblazerStatus.ongoing_statuses():
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
-        for job in analysis.jobs:
-            if job.status in SlurmJobStatus.ongoing_statuses():
-                LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
-                cancel_slurm_job(analysis_host=analysis_host, slurm_id=job.slurm_id)
-        LOG.info(
-            f"Case {analysis.family} - Analysis {analysis_id}: all ongoing jobs cancelled successfully!"
-        )
+        if analysis.workflow_manager == WorkflowManager.TOWER.value:
+            self.cancel_tower_analysis(analysis=analysis)
+        else:
+            self.cancel_slurm_analysis(analysis=analysis, analysis_host=analysis_host)
+        LOG.info(f"Case {analysis.family} - Analysis {analysis.id}: cancelled successfully!")
         self.update_run_status(analysis_id=analysis_id, analysis_host=analysis_host)
         analysis.status = TrailblazerStatus.CANCELLED
         analysis.comment = (
@@ -115,6 +129,20 @@ class UpdateHandler(BaseHandler_2):
             f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
         )
         self.commit()
+
+    def cancel_slurm_analysis(
+        self, analysis: Analysis, analysis_host: Optional[str] = None
+    ) -> None:
+        """Cancel SLURM analysis by cancelling all associated SLURM jobs."""
+        for job in analysis.jobs:
+            if job.status in SlurmJobStatus.ongoing_statuses():
+                LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
+                cancel_slurm_job(analysis_host=analysis_host, slurm_id=job.slurm_id)
+
+    def cancel_tower_analysis(self, analysis: Analysis) -> None:
+        """Cancel a NF-Tower analysis. Associated jobs are cancelled by Tower."""
+        LOG.info(f"Cancelling Tower workflow for {analysis.family}")
+        self.query_tower(config_file=analysis.config_path, case_id=analysis.family).cancel()
 
     def update_analysis_status(self, case_id: str, status: str):
         """Setting analysis status."""

@@ -16,8 +16,8 @@ from trailblazer.apps.tower.models import (
     TowerWorkflowResponse,
 )
 from trailblazer.constants import TOWER_STATUS, FileFormat, TrailblazerStatus
-from trailblazer.exc import TowerRequirementsError
-from trailblazer.io.controller import ReadFile
+from trailblazer.exc import TowerRequirementsError, TrailblazerError
+from trailblaz
 
 LOG = logging.getLogger(__name__)
 
@@ -33,6 +33,7 @@ class TowerApiClient:
         self.tower_api_endpoint: str = os.environ.get("TOWER_API_ENDPOINT", None)
         self.workflow_endpoint: str = f"workflow/{self.workflow_id}"
         self.tasks_endpoint: str = f"{self.workflow_endpoint}/tasks"
+        self.cancel_endpoint: str = f"{self.workflow_endpoint}/cancel"
 
     @property
     def headers(self) -> dict:
@@ -77,6 +78,19 @@ class TowerApiClient:
 
         return response.json()
 
+    def post_request(self, url: str, data: dict = {}) -> None:
+        """Send data via POST request and return response."""
+        try:
+            response = requests.post(
+                url, headers=self.headers, params=self.request_params, json=data
+            )
+            if response.status_code in {404, 400}:
+                LOG.info(f"POST request failed for url {url}\n with message {str(response)}")
+                response.raise_for_status()
+        except (MissingSchema, HTTPError, ConnectionError) as error:
+            LOG.error(f"Request failed for url {url}: Error: {error}\n")
+            raise TrailblazerError
+
     @property
     def meets_requirements(self) -> bool:
         """Return True if required variables are not empty."""
@@ -107,6 +121,12 @@ class TowerApiClient:
         if self.meets_requirements:
             url = self.build_url(endpoint=self.workflow_endpoint)
             return TowerWorkflowResponse(**self.send_request(url=url))
+
+    def send_cancel_request(self) -> None:
+        """Send a POST request to cancel a workflow."""
+        if self.meets_requirements:
+            url: str = self.build_url(endpoint=self.cancel_endpoint)
+            self.post_request(url=url)
 
 
 class TowerAPI:
@@ -146,7 +166,9 @@ class TowerAPI:
     @property
     def status(self) -> str:
         """Returns the status of an analysis (also called workflow in NF Tower)."""
-        status: str = TOWER_STATUS.get(self.response.workflow.status, TrailblazerStatus.ERROR.value)
+        status: str = TOWER_WORKFLOW_STATUS.get(
+            self.response.workflow.status, TrailblazerStatus.ERROR.value
+        )
 
         # If the whole workflow (analysis) is completed set it as QC instead of COMPLETE
         if status == TrailblazerStatus.COMPLETED:
@@ -231,3 +253,8 @@ def get_tower_api(config_file: str, case_id: str) -> Optional[TowerAPI]:
     tower_api = TowerAPI(workflow_id=str(workflow_id))
     if _is_tower_api_client_requirements_meet(tower_api=tower_api):
         return tower_api
+
+    def cancel(self) -> None:
+        """Cancel a workflow."""
+        self.tower_client.send_cancel_request()
+

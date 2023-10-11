@@ -1,12 +1,13 @@
-import pytest
-
 from datetime import datetime
 
+import pytest
+
 from trailblazer.utils.datetime import (
-    get_date_number_of_days_ago,
     convert_days_to_minutes,
     convert_timestamp_to_minutes,
+    get_date_number_of_days_ago,
     get_datetime_from_timestamp,
+    tower_datetime_converter,
 )
 
 NUMBER_OF_MINUTES_IN_TWO_DAYS: int = 2880
@@ -87,3 +88,19 @@ def test_get_date_number_of_days_ago(timestamp_now: datetime):
 
     # Then the date returned should be less than then today
     assert date < timestamp_now
+
+
+@pytest.mark.parametrize(
+    "datetime_stamp",
+    ["2023-04-04T08:11:24Z", "2023-06-20T08:01:57.661819Z", "2023-09-14T11:14:55.664772403Z"],
+)
+def test_tower_datetime_converter(datetime_stamp: str):
+    """Test parsing a Tower datetime stamp."""
+
+    # GIVEN datetime stamps
+
+    # WHEN calling the function
+    date: datetime = tower_datetime_converter(datetime_stamp=datetime_stamp)
+
+    # THEN the return should be a date
+    assert isinstance(date, datetime)

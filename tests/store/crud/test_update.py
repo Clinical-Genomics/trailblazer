@@ -1,12 +1,14 @@
+import subprocess
 from datetime import datetime
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import pytest
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.apps.slurm.api import get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.apps.tower.api import TowerAPI
+from trailblazer.constants import CharacterFormat, TrailblazerStatus
 from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, User
@@ -104,7 +106,7 @@ def test_update_case_analyses_as_deleted_with_non_existing_case(
     assert not analyses
 
 
-def test_cancel_ongoing_analysis(
+def test_cancel_ongoing_slurm_analysis(
     analysis_store: MockStore, caplog, mocker, ongoing_analysis_case_id: str, tower_jobs: List[dict]
 ):
     """Test all ongoing analysis jobs are cancelled."""
@@ -115,7 +117,6 @@ def test_cancel_ongoing_analysis(
     caplog.set_level("INFO")
 
     # GIVEN an ongoing analysis
-    analysis_store.update_ongoing_analyses()
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
@@ -128,8 +129,34 @@ def test_cancel_ongoing_analysis(
     analysis_store.cancel_ongoing_analysis(analysis_id=analysis.id)
 
     # THEN log should inform of successful cancellation
-    assert "all ongoing jobs cancelled successfully" in caplog.text
-    assert "Cancelling" in caplog.text
+    assert "Cancelling job" in caplog.text
+    assert "cancelled successfully!" in caplog.text
+
+    # THEN comment should be added
+    assert "Analysis cancelled manually by" in analysis.comment
+
+    # THEN analysis status should be updated
+    assert TrailblazerStatus.CANCELLED == analysis.status
+
+
+def test_cancel_ongoing_tower_analysis(analysis_store: MockStore, caplog, mocker, case_id: str):
+    # GIVEN TOWER cancel output
+    mocker.patch.object(TowerAPI, "cancel", return_value=None)
+
+    caplog.set_level("INFO")
+
+    # GIVEN an ongoing analysis
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+
+    # WHEN running cancel ongoing analysis
+    analysis_store.cancel_ongoing_analysis(analysis_id=analysis.id)
+
+    # THEN log should inform of successful cancellation
+    assert f"Cancelling Tower workflow for {case_id}" in caplog.text
+    assert "cancelled successfully!" in caplog.text
+
+    # THEN comment should be added
+    assert "Analysis cancelled manually by" in analysis.comment
 
 
 def test_cancel_ongoing_analysis_when_no_analysis(
@@ -242,3 +269,35 @@ def test_update_analysis_comment_when_existing(analysis_store: MockStore, case_i
 
     # THEN comments should have been added
     assert analysis.comment == f"{first_comment} {second_comment}"
+
+
+def test_update_analysis_from_slurm_run_status(
+    analysis_store: MockStore,
+    squeue_stream_jobs: str,
+    mocker,
+    ongoing_analysis_case_id: str,
+    slurm_squeue_output: Dict[str, str],
+):
+    """Test updating analysis jobs when given squeue results."""
+    # GIVEN an analysis and a squeue stream
+    analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+    assert not analysis.jobs
+
+    # GIVEN SLURM squeue output for an analysis
+    mocker.patch(
+        "trailblazer.store.crud.update.get_slurm_squeue_output",
+        return_value=subprocess.check_output(
+            ["cat", slurm_squeue_output.get(ongoing_analysis_case_id)]
+        ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
+    )
+
+    # WHEN updating the analysis
+    analysis_store.update_analysis_from_slurm_output(
+        analysis_id=analysis.id, analysis_host="a_host"
+    )
+    updated_analysis: Analysis = analysis_store.get_analysis(
+        case_id=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.RUNNING
+    )
+
+    # THEN it should update the analysis jobs
+    assert updated_analysis.jobs

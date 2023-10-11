@@ -97,22 +97,6 @@ class BaseHandler(CoreHandler):
                 analysis_id=analysis_id, analysis_host=analysis_host
             )
 
-    def update_analysis_from_slurm_output(
-        self, analysis_id: int, analysis_host: Optional[str] = False
-    ) -> None:
-        """Query SLURM for entries related to given analysis, and update the analysis in the database."""
-        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
-        try:
-            self._update_analysis_from_slurm_squeue_output(
-                analysis=analysis, analysis_host=analysis_host
-            )
-        except Exception as exception:
-            LOG.error(
-                f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"
-            )
-            analysis.status = TrailblazerStatus.ERROR
-            self.commit()
-
     def update_tower_run_status(self, analysis_id: int) -> None:
         """Query tower for entries related to given analysis, and update the Trailblazer database."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)

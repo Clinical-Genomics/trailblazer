@@ -3,7 +3,13 @@ from typing import Dict, List, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
-from trailblazer.constants import TOWER_PROCESS_STATUS, TOWER_STATUS, TrailblazerStatus
+from trailblazer.constants import (
+    TOWER_PROCESS_STATUS,
+    TOWER_TASK_STATUS,
+    TOWER_WORKFLOW_STATUS,
+    SlurmJobStatus,
+    TrailblazerStatus,
+)
 from trailblazer.utils.datetime import tower_datetime_converter
 
 SCALE_TO_MILLISEC: int = 1000
@@ -72,13 +78,13 @@ class TowerTask(BaseModel):
     @field_validator("status")
     @classmethod
     def set_status(cls, raw_status) -> str:
-        return TOWER_STATUS.get(raw_status)
+        return TOWER_TASK_STATUS.get(raw_status)
 
     @field_validator("start", "dateCreated", "lastUpdated")
     @classmethod
     def set_datetime(cls, raw_time) -> Optional[Union[str, datetime]]:
         if type(raw_time) is str:
-            return tower_datetime_converter(timestamp=raw_time)
+            return tower_datetime_converter(datetime_stamp=raw_time)
         elif type(raw_time) is datetime:
             return raw_time
         else:
@@ -87,7 +93,7 @@ class TowerTask(BaseModel):
     @property
     def is_complete(cls) -> bool:
         """Returns if the process succeded."""
-        return cls.status == TrailblazerStatus.COMPLETED
+        return cls.status == SlurmJobStatus.COMPLETED
 
 
 class TowerProcess(BaseModel):
@@ -115,7 +121,7 @@ class TowerProcess(BaseModel):
     @classmethod
     def set_datetime(cls, raw_time) -> Optional[Union[str, datetime]]:
         if type(raw_time) is str:
-            return tower_datetime_converter(timestamp=raw_time)
+            return tower_datetime_converter(datetime_stamp=raw_time)
         elif type(raw_time) is datetime:
             return raw_time
         else:
