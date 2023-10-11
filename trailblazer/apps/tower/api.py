@@ -241,7 +241,7 @@ class TowerAPI:
         self.tower_client.send_cancel_request()
 
 
-def _is_tower_api_client_requirements_meet(tower_api: TowerAPI) -> bool:
+def _validate_tower_api_client_requirements_meet(tower_api: TowerAPI) -> bool:
     """Raises:
     TowerRequirementsError when failing meeting Tower mandatory requirement"""
     if not tower_api.tower_client.meets_requirements:
@@ -255,5 +255,5 @@ def get_tower_api(config_file: str, case_id: str) -> Optional[TowerAPI]:
         file_format=FileFormat.YAML, file_path=Path(config_file)
     ).get(case_id)[-1]
     tower_api = TowerAPI(workflow_id=str(workflow_id))
-    if _is_tower_api_client_requirements_meet(tower_api=tower_api):
+    if _validate_tower_api_client_requirements_meet(tower_api=tower_api):
         return tower_api

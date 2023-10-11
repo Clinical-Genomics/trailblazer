@@ -184,7 +184,7 @@ def test_get_tower_api(case_id: str, mocker, tower_id: str):
 
     # GIVEN Tower requirements are meet
     mocker.patch(
-        "trailblazer.apps.tower.api._is_tower_api_client_requirements_meet", return_value=True
+        "trailblazer.apps.tower.api._validate_tower_api_client_requirements_meet", return_value=True
     )
 
     # WHEN getting Tower API
