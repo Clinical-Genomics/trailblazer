@@ -33,12 +33,6 @@ class CaseId:
 
 
 @pytest.fixture(scope="session")
-def tower_id() -> str:
-    """Return a NF Tower id."""
-    return TOWER_ID
-
-
-@pytest.fixture(scope="session")
 def tower_config_file() -> str:
     """Return the path of a config yaml file with a NF Tower id."""
     return Path("tests", "fixtures", "case", "cuddlyhen_tower_id.yaml").as_posix()

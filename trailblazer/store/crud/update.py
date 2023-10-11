@@ -11,6 +11,7 @@ from trailblazer.apps.slurm.api import (
     reformat_squeue_result_job_step,
 )
 from trailblazer.apps.slurm.models import SqueueResult
+from trailblazer.apps.tower.api import TowerAPI, get_tower_api
 from trailblazer.constants import SlurmJobStatus, TrailblazerStatus, WorkflowManager
 from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.base import BaseHandler_2
@@ -142,7 +143,10 @@ class UpdateHandler(BaseHandler_2):
     def cancel_tower_analysis(self, analysis: Analysis) -> None:
         """Cancel a NF-Tower analysis. Associated jobs are cancelled by Tower."""
         LOG.info(f"Cancelling Tower workflow for {analysis.family}")
-        self.query_tower(config_file=analysis.config_path, case_id=analysis.family).cancel()
+        tower_api: TowerAPI = get_tower_api(
+            config_file=analysis.config_path, case_id=analysis.family
+        )
+        tower_api.cancel()
 
     def update_analysis_status(self, case_id: str, status: str):
         """Setting analysis status."""
