@@ -28,6 +28,11 @@ def filter_analyses_by_status(analyses: Query, status: TrailblazerStatus, **kwar
     return analyses.filter(Analysis.status == status)
 
 
+def filter_analyses_by_statuses(analyses: Query, statuses: List[str], **kwargs) -> Query:
+    """Filter analyses by statuses."""
+    return analyses.filter(Analysis.status.in_(statuses))
+
+
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
@@ -35,6 +40,7 @@ class AnalysisFilter(Enum):
     FILTER_BY_CASE_ID: Callable = filter_analyses_by_case_id
     FILTER_BY_STARTED_AT: Callable = filter_analyses_by_started_at
     FILTER_BY_STATUS: Callable = filter_analyses_by_status
+    FILTER_BY_STATUSES: Callable = filter_analyses_by_statuses
 
 
 def apply_analysis_filter(
@@ -44,6 +50,7 @@ def apply_analysis_filter(
     case_id: Optional[str] = None,
     started_at: Optional[datetime] = None,
     status: Optional[str] = None,
+    statuses: Optional[List[str]] = [],
 ) -> Query:
     """Apply filtering functions and return filtered results."""
     for function in filter_functions:
@@ -53,5 +60,6 @@ def apply_analysis_filter(
             case_id=case_id,
             started_at=started_at,
             status=status,
+            statuses=statuses,
         )
     return analyses

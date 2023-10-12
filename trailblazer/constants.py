@@ -98,7 +98,7 @@ class TrailblazerStatus(str, Enum):
         return tuple(status.value for status in cls)
 
     @classmethod
-    def ongoing_statuses(cls) -> Tuple:
+    def ongoing_statuses(cls) -> Tuple[str, str, str, str]:
         return cls.PENDING.value, cls.RUNNING.value, cls.COMPLETING.value, cls.ERROR.value
 
 

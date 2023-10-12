@@ -6,6 +6,7 @@ from trailblazer.store.filters.analyses_filters import (
     filter_analyses_by_id,
     filter_analyses_by_started_at,
     filter_analyses_by_status,
+    filter_analyses_by_statuses,
 )
 from trailblazer.store.models import Analysis
 
@@ -69,6 +70,23 @@ def test_filter_analyses_by_status(analysis_store: MockStore):
     # WHEN retrieving an analysis by status
     analysis: Query = filter_analyses_by_status(
         analyses=analysis_store.get_query(table=Analysis), status=existing_analysis.status
+    )
+
+    # THEN that the analysis is a query
+    assert isinstance(analysis, Query)
+
+    # THEN the analysis should match the original
+    assert existing_analysis == analysis.first()
+
+
+def test_filter_analyses_by_statuses(analysis_store: MockStore):
+    """Test return analyses by statuses when existing."""
+    # GIVEN a store containing analyses
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # WHEN retrieving an analysis by status
+    analysis: Query = filter_analyses_by_statuses(
+        analyses=analysis_store.get_query(table=Analysis), statuses=[existing_analysis.status]
     )
 
     # THEN that the analysis is a query

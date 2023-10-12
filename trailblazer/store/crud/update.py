@@ -33,6 +33,19 @@ class UpdateHandler(BaseHandler_2):
         user.is_archived = archive
         self.commit()
 
+    def update_ongoing_analyses(self, analysis_host: Optional[str] = None) -> None:
+        """Iterate over all analysis with ongoing status and query SLURM for current progress."""
+        ongoing_analyses: Optional[List[Analysis]] = self.get_analyses_with_statuses(
+            statuses=list(TrailblazerStatus.ongoing_statuses())
+        )
+        for analysis in ongoing_analyses:
+            try:
+                self.update_run_status(analysis_id=analysis.id, analysis_host=analysis_host)
+            except Exception as error:
+                LOG.error(
+                    f"Failed to update {analysis.family} - {analysis.id}: {type(error).__name__}"
+                )
+
     def update_analysis_jobs_from_slurm_jobs(
         self, analysis: Analysis, squeue_result: SqueueResult
     ) -> None:

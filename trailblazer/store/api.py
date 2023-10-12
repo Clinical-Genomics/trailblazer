@@ -73,17 +73,6 @@ class BaseHandler(CoreHandler):
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
 
-    def update_ongoing_analyses(self, analysis_host: Optional[str] = None) -> None:
-        """Iterate over all analysis with ongoing status and query SLURM for current progress."""
-        ongoing_analyses = self.analyses(temp=True)
-        for analysis_obj in ongoing_analyses:
-            try:
-                self.update_run_status(analysis_id=analysis_obj.id, analysis_host=analysis_host)
-            except Exception as error:
-                LOG.error(
-                    f"Failed to update {analysis_obj.family} - {analysis_obj.id}: {type(error).__name__}"
-                )
-
     def update_run_status(self, analysis_id: int, analysis_host: Optional[str] = None) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
