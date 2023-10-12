@@ -95,22 +95,23 @@ class BaseHandler(CoreHandler):
         )
 
         try:
-            LOG.info(
-                f"Status in Tower: {analysis.family} - {analysis_id} - {tower_api.workflow_id}"
-            )
-            analysis.status = tower_api.status
-            analysis.progress = tower_api.progress
-            analysis.logged_at = datetime.now()
-            self.delete_analysis_jobs(analysis=analysis)
-            self.update_analysis_jobs(
-                analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id)
-            )
-            self.commit()
-            LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
+            self._update_analysis_from_tower_output(analysis, analysis_id, tower_api)
         except Exception as error:
             LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
             analysis.status = TrailblazerStatus.ERROR
             self.commit()
+
+    def _update_analysis_from_tower_output(self, analysis, analysis_id, tower_api):
+        LOG.info(f"Status in Tower: {analysis.family} - {analysis_id} - {tower_api.workflow_id}")
+        analysis.status = tower_api.status
+        analysis.progress = tower_api.progress
+        analysis.logged_at = datetime.now()
+        self.delete_analysis_jobs(analysis=analysis)
+        self.update_analysis_jobs(
+            analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id)
+        )
+        self.commit()
+        LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
 
 
 class Store(alchy.Manager, BaseHandler):
