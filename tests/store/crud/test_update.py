@@ -427,7 +427,7 @@ def test_update_tower_run_status(
     assert analysis.progress == progress
 
     # WHEN the database is updated a second time
-    analysis_store.update_run_status(analysis_id=analysis.id)
+    analysis_store.update_tower_run_status(analysis_id=analysis.id)
 
     # THEN the status is unchanged, and no database errors were raised
     assert analysis.status == status
