@@ -1,14 +1,12 @@
 """Store backend in Trailblazer."""
 import datetime as dt
 import logging
-from datetime import datetime
 from typing import Optional
 
 import alchy
 import sqlalchemy as sqa
 from alchy import Query
 
-from trailblazer.apps.tower.api import TowerAPI, get_tower_api
 from trailblazer.constants import TrailblazerStatus, WorkflowManager
 from trailblazer.store.core import CoreHandler
 from trailblazer.store.models import Analysis, Model
@@ -86,32 +84,6 @@ class BaseHandler(CoreHandler):
             self.update_analysis_from_slurm_output(
                 analysis_id=analysis_id, analysis_host=analysis_host
             )
-
-    def update_tower_run_status(self, analysis_id: int) -> None:
-        """Query tower for entries related to given analysis, and update the Trailblazer database."""
-        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
-        tower_api: Optional[TowerAPI] = get_tower_api(
-            config_file_path=analysis.config_path, case_id=analysis.family
-        )
-
-        try:
-            self._update_analysis_from_tower_output(analysis, analysis_id, tower_api)
-        except Exception as error:
-            LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
-            analysis.status = TrailblazerStatus.ERROR
-            self.commit()
-
-    def _update_analysis_from_tower_output(self, analysis, analysis_id, tower_api):
-        LOG.info(f"Status in Tower: {analysis.family} - {analysis_id} - {tower_api.workflow_id}")
-        analysis.status = tower_api.status
-        analysis.progress = tower_api.progress
-        analysis.logged_at = datetime.now()
-        self.delete_analysis_jobs(analysis=analysis)
-        self.update_analysis_jobs(
-            analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id)
-        )
-        self.commit()
-        LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
 
 
 class Store(alchy.Manager, BaseHandler):
