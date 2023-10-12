@@ -97,9 +97,9 @@ class BaseHandler(CoreHandler):
             LOG.info(
                 f"Status in Tower: {analysis.family} - {analysis_id} - {tower_api.workflow_id}"
             )
-            analysis.status: str = tower_api.status
-            analysis.progress: int = tower_api.progress
-            analysis.logged_at: dt.datetime = dt.datetime.now()
+            analysis.status = tower_api.status
+            analysis.progress = tower_api.progress
+            analysis.logged_at = dt.datetime.now()
             self.delete_analysis_jobs(analysis=analysis)
             self.update_analysis_jobs(
                 analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id)
