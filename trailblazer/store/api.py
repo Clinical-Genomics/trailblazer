@@ -1,6 +1,7 @@
 """Store backend in Trailblazer."""
 import datetime as dt
 import logging
+from datetime import datetime
 from typing import Optional
 
 import alchy
@@ -99,7 +100,7 @@ class BaseHandler(CoreHandler):
             )
             analysis.status = tower_api.status
             analysis.progress = tower_api.progress
-            analysis.logged_at = dt.datetime.now()
+            analysis.logged_at = datetime.now()
             self.delete_analysis_jobs(analysis=analysis)
             self.update_analysis_jobs(
                 analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id)
@@ -108,7 +109,7 @@ class BaseHandler(CoreHandler):
             LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
         except Exception as error:
             LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
-            analysis.status: str = TrailblazerStatus.ERROR
+            analysis.status = TrailblazerStatus.ERROR
             self.commit()
 
 
