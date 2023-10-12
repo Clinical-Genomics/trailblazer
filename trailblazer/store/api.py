@@ -89,8 +89,8 @@ class BaseHandler(CoreHandler):
 
     def update_tower_run_status(self, analysis_id: int) -> None:
         """Query tower for entries related to given analysis, and update the Trailblazer database."""
-        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
-        tower_api: TowerAPI = get_tower_api(
+        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        tower_api: Optional[TowerAPI] = get_tower_api(
             config_file_path=analysis.config_path, case_id=analysis.family
         )
 
