@@ -14,6 +14,8 @@ from trailblazer.io.controller import ReadFile
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, User
 
+FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH: str = "trailblazer.store.crud.update.get_slurm_squeue_output"
+
 
 def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
     """Test jobs are successfully updated."""
@@ -50,6 +52,54 @@ def test_update_user_is_archived(user_store: MockStore, user_email: str):
 
     # THEN user should be recorded as archived in the database
     assert archived_user
+
+
+@pytest.mark.parametrize(
+    "case_id, status",
+    [
+        ("blazinginsect", TrailblazerStatus.RUNNING),
+        ("crackpanda", TrailblazerStatus.FAILED),
+        ("daringpidgeon", TrailblazerStatus.ERROR),
+        ("escapedgoat", TrailblazerStatus.PENDING),
+        ("fancymole", TrailblazerStatus.COMPLETED),
+        ("happycow", TrailblazerStatus.PENDING),
+        ("lateraligator", TrailblazerStatus.FAILED),
+        ("liberatedunicorn", TrailblazerStatus.ERROR),
+        ("nicemice", TrailblazerStatus.COMPLETED),
+        ("rarekitten", TrailblazerStatus.CANCELLED),
+        ("trueferret", TrailblazerStatus.RUNNING),
+    ],
+)
+def test_update_run_status(
+    analysis_store: MockStore,
+    case_id: str,
+    status: str,
+    mocker,
+    slurm_squeue_output: Dict[str, str],
+):
+    """Test updating an analysis status."""
+    # GIVEN SLURM squeue output for an analysis
+    mocker.patch(
+        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
+        return_value=subprocess.check_output(["cat", slurm_squeue_output.get(case_id)]).decode(
+            CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8
+        ),
+    )
+
+    # GIVEN an analysis
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+
+    # WHEN the database is updated once
+    analysis_store.update_run_status(analysis_id=analysis.id)
+
+    # THEN analysis status is updated
+    assert analysis.status == status
+
+    # WHEN the database is updated a second time
+    analysis_store.update_run_status(analysis_id=analysis.id)
+
+    # THEN the status is unchanged, and no database errors were raised
+    assert analysis.status == status
 
 
 def test_update_ongoing_analyses(analysis_store: MockStore, ongoing_analysis_case_id: str):

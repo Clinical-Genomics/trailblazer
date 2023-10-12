@@ -1,4 +1,3 @@
-import subprocess
 from typing import Dict, List, Optional
 
 import pytest
@@ -6,10 +5,8 @@ import pytest
 from tests.apps.tower.conftest import CaseId
 from tests.mocks.store_mock import MockStore
 from tests.mocks.tower_mock import MockTowerAPI
-from trailblazer.constants import CharacterFormat, TrailblazerStatus
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Analysis
-
-FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH: str = "trailblazer.store.crud.update.get_slurm_squeue_output"
 
 
 def test_setup_db(store: MockStore):
@@ -19,54 +16,6 @@ def test_setup_db(store: MockStore):
 
     # THEN it should contain tables
     assert store.engine.table_names()
-
-
-@pytest.mark.parametrize(
-    "case_id, status",
-    [
-        ("blazinginsect", TrailblazerStatus.RUNNING),
-        ("crackpanda", TrailblazerStatus.FAILED),
-        ("daringpidgeon", TrailblazerStatus.ERROR),
-        ("escapedgoat", TrailblazerStatus.PENDING),
-        ("fancymole", TrailblazerStatus.COMPLETED),
-        ("happycow", TrailblazerStatus.PENDING),
-        ("lateraligator", TrailblazerStatus.FAILED),
-        ("liberatedunicorn", TrailblazerStatus.ERROR),
-        ("nicemice", TrailblazerStatus.COMPLETED),
-        ("rarekitten", TrailblazerStatus.CANCELLED),
-        ("trueferret", TrailblazerStatus.RUNNING),
-    ],
-)
-def test_update_run_status(
-    analysis_store: MockStore,
-    case_id: str,
-    status: str,
-    mocker,
-    slurm_squeue_output: Dict[str, str],
-):
-    """Test updating an analysis status."""
-    # GIVEN SLURM squeue output for an analysis
-    mocker.patch(
-        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
-        return_value=subprocess.check_output(["cat", slurm_squeue_output.get(case_id)]).decode(
-            CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8
-        ),
-    )
-
-    # GIVEN an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
-
-    # WHEN database is updated once
-    analysis_store.update_run_status(analysis_id=analysis.id)
-
-    # THEN analysis status is updated
-    assert analysis.status == status
-
-    # WHEN database is updated a second time
-    analysis_store.update_run_status(analysis_id=analysis.id)
-
-    # THEN the status is unchanged, and no database errors were raised
-    assert analysis.status == status
 
 
 def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
