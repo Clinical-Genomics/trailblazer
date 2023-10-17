@@ -33,6 +33,19 @@ class UpdateHandler(BaseHandler_2):
         user.is_archived = archive
         self.commit()
 
+    def update_run_status(self, analysis_id: int, analysis_host: Optional[str] = None) -> None:
+        """Query entries related to given analysis, and update the Trailblazer database."""
+        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        if not analysis:
+            LOG.warning(f"Analysis {analysis_id} not found!")
+            return
+        if analysis.workflow_manager == WorkflowManager.TOWER.value:
+            self.update_tower_run_status(analysis_id=analysis_id)
+        elif analysis.workflow_manager == WorkflowManager.SLURM.value:
+            self.update_analysis_from_slurm_output(
+                analysis_id=analysis_id, analysis_host=analysis_host
+            )
+
     def update_ongoing_analyses(self, analysis_host: Optional[str] = None) -> None:
         """Iterate over all analysis with ongoing status and query SLURM for current progress."""
         ongoing_analyses: Optional[List[Analysis]] = self.get_analyses_with_statuses(
