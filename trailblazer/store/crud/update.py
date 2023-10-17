@@ -101,13 +101,17 @@ class UpdateHandler(BaseHandler_2):
         )
 
         try:
-            self._update_analysis_from_tower_output(analysis, analysis_id, tower_api)
+            self._update_analysis_from_tower_output(
+                analysis=analysis, analysis_id=analysis_id, tower_api=tower_api
+            )
         except Exception as error:
             LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
             analysis.status = TrailblazerStatus.ERROR
             self.commit()
 
-    def _update_analysis_from_tower_output(self, analysis, analysis_id, tower_api):
+    def _update_analysis_from_tower_output(
+        self, analysis: Analysis, analysis_id: int, tower_api: TowerAPI
+    ):
         LOG.info(f"Status in Tower: {analysis.family} - {analysis_id} - {tower_api.workflow_id}")
         analysis.status = tower_api.status
         analysis.progress = tower_api.progress
