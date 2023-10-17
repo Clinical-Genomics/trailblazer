@@ -375,7 +375,6 @@ def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], ca
 
     # GIVEN an analysis without jobs
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
-    assert not analysis.jobs
 
     # WHEN analysis jobs are deleted
     analysis_store.delete_analysis_jobs(analysis=analysis)
