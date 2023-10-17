@@ -373,14 +373,14 @@ def test_update_analysis_from_slurm_run_status(
 def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
     """Assess that jobs are successfully updated when using NF Tower."""
 
-    # GIVEN an analysis without failed jobs
+    # GIVEN an analysis without jobs
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert not analysis.jobs
 
     # WHEN analysis jobs are deleted
     analysis_store.delete_analysis_jobs(analysis=analysis)
 
-    # THEN the analysis object should have no failed jobs
+    # THEN the analysis object should have no jobs
     assert not analysis.jobs
 
     # WHEN jobs are updated

@@ -117,7 +117,7 @@ class UpdateHandler(BaseHandler_2):
             analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id)
         )
         self.commit()
-        LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
+        LOG.debug(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
 
     def update_analysis_from_slurm_output(
         self, analysis_id: int, analysis_host: Optional[str] = False
