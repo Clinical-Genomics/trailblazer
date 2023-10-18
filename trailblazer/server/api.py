@@ -133,8 +133,8 @@ def update_analysis(analysis_id):
         )
         process.start()
         return jsonify("Success! Update request sent"), HTTPStatus.CREATED
-    except Exception as e:
-        return jsonify(f"Exception: {e}"), HTTPStatus.CONFLICT
+    except Exception as error:
+        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])
