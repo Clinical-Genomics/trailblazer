@@ -1,13 +1,12 @@
 """Store backend in Trailblazer."""
 import datetime as dt
 import logging
-from typing import Optional
 
 import alchy
 import sqlalchemy as sqa
 from alchy import Query
 
-from trailblazer.constants import TrailblazerStatus, WorkflowManager
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.core import CoreHandler
 from trailblazer.store.models import Analysis, Model
 
@@ -71,19 +70,6 @@ class BaseHandler(CoreHandler):
             analysis_query = analysis_query.filter(Analysis.comment.ilike(f"%{comment}%"))
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
-
-    def update_run_status(self, analysis_id: int, analysis_host: Optional[str] = None) -> None:
-        """Query entries related to given analysis, and update the Trailblazer database."""
-        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
-        if not analysis:
-            LOG.warning(f"Analysis {analysis_id} not found!")
-            return
-        if analysis.workflow_manager == WorkflowManager.TOWER.value:
-            self.update_tower_run_status(analysis_id=analysis_id)
-        elif analysis.workflow_manager == WorkflowManager.SLURM.value:
-            self.update_analysis_from_slurm_output(
-                analysis_id=analysis_id, analysis_host=analysis_host
-            )
 
 
 class Store(alchy.Manager, BaseHandler):
