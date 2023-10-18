@@ -4,11 +4,13 @@ from typing import Dict, List, Optional
 
 import pytest
 
+from tests.apps.tower.conftest import CaseId
 from tests.mocks.store_mock import MockStore
+from tests.mocks.tower_mock import MockTowerAPI
 from trailblazer.apps.slurm.api import get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.tower.api import TowerAPI
-from trailblazer.constants import CharacterFormat, TrailblazerStatus
+from trailblazer.constants import CharacterFormat, TrailblazerStatus, WorkflowManager
 from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
@@ -416,3 +418,67 @@ def test_update_analysis_from_slurm_run_status(
 
     # THEN it should update the analysis jobs
     assert updated_analysis.jobs
+
+
+def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
+    """Assess that jobs are successfully updated when using NF Tower."""
+
+    # GIVEN an analysis without jobs
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+
+    # WHEN analysis jobs are deleted
+    analysis_store.delete_analysis_jobs(analysis=analysis)
+
+    # THEN the analysis object should have no jobs
+    assert not analysis.jobs
+
+    # WHEN jobs are updated
+    analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
+
+    # THEN jobs should be updated
+    assert len(analysis.jobs) == 2
+
+
+@pytest.mark.parametrize(
+    "case_id, status, progress",
+    [
+        (CaseId.RUNNING, TrailblazerStatus.RUNNING, 0.15),
+        (CaseId.PENDING, TrailblazerStatus.PENDING, 0),
+        (CaseId.COMPLETED, TrailblazerStatus.QC, 1),
+    ],
+)
+def test_update_run_status_using_tower(
+    analysis_store: MockStore,
+    case_id: str,
+    status: str,
+    progress: int,
+    mocker,
+    tower_case_config: Dict[str, dict],
+):
+    """Assess that an analysis status is successfully updated when using NF Tower."""
+
+    # GIVEN Tower API response for an analysis
+    raw_case: dict = tower_case_config.get(case_id)
+    tower_api = MockTowerAPI(workflow_id=raw_case.get("tower_id"))
+    tower_api.mock_query(response_file=raw_case.get("workflow_response_file"))
+    tower_api.mock_tasks_query(response_file=raw_case.get("tasks_response_file"))
+    mocker.patch("trailblazer.store.crud.update.get_tower_api", return_value=tower_api)
+
+    # GIVEN an analysis with pending status
+    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    assert analysis.status == TrailblazerStatus.PENDING
+    assert analysis.workflow_manager == WorkflowManager.TOWER.value
+
+    # WHEN the database is updated once
+    analysis_store.update_run_status(analysis_id=analysis.id)
+
+    # THEN analysis status is updated
+    assert analysis.status == status
+    assert analysis.progress == progress
+
+    # WHEN the database is updated a second time
+    analysis_store.update_run_status(analysis_id=analysis.id)
+
+    # THEN the status is unchanged, and no database errors were raised
+    assert analysis.status == status
+    assert analysis.progress == progress

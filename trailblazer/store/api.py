@@ -6,7 +6,6 @@ import alchy
 import sqlalchemy as sqa
 from alchy import Query
 
-from trailblazer.apps.tower.api import TowerAPI, get_tower_api
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.core import CoreHandler
 from trailblazer.store.models import Analysis, Model
@@ -71,31 +70,6 @@ class BaseHandler(CoreHandler):
             analysis_query = analysis_query.filter(Analysis.comment.ilike(f"%{comment}%"))
 
         return analysis_query.order_by(self.Analysis.started_at.desc())
-
-    def update_tower_run_status(self, analysis_id: int) -> None:
-        """Query tower for entries related to given analysis, and update the Trailblazer database."""
-        analysis: Analysis = self.get_analysis_with_id(analysis_id=analysis_id)
-        tower_api: TowerAPI = get_tower_api(
-            config_file_path=analysis.config_path, case_id=analysis.family
-        )
-
-        try:
-            LOG.info(
-                f"Status in Tower: {analysis.family} - {analysis_id} - {tower_api.workflow_id}"
-            )
-            analysis.status: str = tower_api.status
-            analysis.progress: int = tower_api.progress
-            analysis.logged_at: dt.datetime = dt.datetime.now()
-            self.delete_analysis_jobs(analysis=analysis)
-            self.update_analysis_jobs(
-                analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id)
-            )
-            self.commit()
-            LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
-        except Exception as error:
-            LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
-            analysis.status: str = TrailblazerStatus.ERROR
-            self.commit()
 
 
 class Store(alchy.Manager, BaseHandler):

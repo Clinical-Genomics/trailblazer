@@ -106,6 +106,36 @@ class UpdateHandler(BaseHandler_2):
         analysis.logged_at = datetime.now()
         self.commit()
 
+    def update_tower_run_status(self, analysis_id: int) -> None:
+        """Query tower for entries related to given analysis, and update the Trailblazer database."""
+        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        tower_api: Optional[TowerAPI] = get_tower_api(
+            config_file_path=analysis.config_path, case_id=analysis.family
+        )
+
+        try:
+            self._update_analysis_from_tower_output(
+                analysis=analysis, analysis_id=analysis_id, tower_api=tower_api
+            )
+        except Exception as error:
+            LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
+            analysis.status = TrailblazerStatus.ERROR
+            self.commit()
+
+    def _update_analysis_from_tower_output(
+        self, analysis: Analysis, analysis_id: int, tower_api: TowerAPI
+    ):
+        LOG.info(f"Status in Tower: {analysis.family} - {analysis_id} - {tower_api.workflow_id}")
+        analysis.status = tower_api.status
+        analysis.progress = tower_api.progress
+        analysis.logged_at = datetime.now()
+        self.delete_analysis_jobs(analysis=analysis)
+        self.update_analysis_jobs(
+            analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id)
+        )
+        self.commit()
+        LOG.debug(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
+
     def update_analysis_from_slurm_output(
         self, analysis_id: int, analysis_host: Optional[str] = False
     ) -> None:
