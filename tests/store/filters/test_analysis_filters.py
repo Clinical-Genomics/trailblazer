@@ -3,6 +3,7 @@ from sqlalchemy.orm import Query
 from tests.mocks.store_mock import MockStore
 from trailblazer.store.filters.analyses_filters import (
     filter_analyses_by_case_id,
+    filter_analyses_by_comment,
     filter_analyses_by_id,
     filter_analyses_by_started_at,
     filter_analyses_by_status,
@@ -43,6 +44,41 @@ def test_filter_analyses_by_case_id(analysis_store: MockStore):
 
     # THEN the analysis should match the original
     assert existing_analysis == analysis.first()
+
+
+def test_filter_analyses_by_comment(analysis_store: MockStore):
+    """Test return analysis by comment when containing string."""
+    # GIVEN a store containing analyses
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # GIVEN a comment
+    existing_analysis.comment = "a comment"
+
+    # WHEN retrieving an analysis by comment
+    analysis: Query = filter_analyses_by_comment(
+        analyses=analysis_store.get_query(table=Analysis), comment=existing_analysis.comment
+    )
+
+    # THEN that the analysis is a query
+    assert isinstance(analysis, Query)
+
+    # THEN the analysis should match the original
+    assert existing_analysis == analysis.first()
+
+
+def test_filter_analyses_by_comment_when_not_matching(analysis_store: MockStore):
+    """Test return analysis by comment when not containing string."""
+    # GIVEN a store containing analyses
+
+    # GIVEN a comment that does not exist in the database
+
+    # WHEN retrieving an analysis by comment
+    analysis: Query = filter_analyses_by_comment(
+        analyses=analysis_store.get_query(table=Analysis), comment="Does not exist."
+    )
+
+    # THEN no analysis is returned
+    assert not analysis.first()
 
 
 def test_filter_analyses_by_started_at(analysis_store: MockStore):
