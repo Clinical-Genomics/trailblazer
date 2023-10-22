@@ -3,6 +3,7 @@ from typing import Callable, Dict, List, Optional, Union
 
 from sqlalchemy import desc
 
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.base import BaseHandler_2
 from trailblazer.store.filters.analyses_filters import (
     AnalysisFilter,
@@ -35,6 +36,27 @@ class ReadHandler(BaseHandler_2):
         )
         categories = categories.group_by(Job.name).all()
         return [{"name": category.name, "count": category.count} for category in categories]
+
+    def get_analyses_by_status_started_at_and_comment(
+        self, comment: str = None, status: str = None, before: datetime = None
+    ) -> Optional[List[Analysis]]:
+        """Return analysis meeting supplied arguments."""
+        filter_map: Dict[Callable, Optional[Union[str, datetime, TrailblazerStatus]]] = {
+            AnalysisFilter.FILTER_BY_COMMENT: comment,
+            AnalysisFilter.FILTER_BY_STARTED_AT: before,
+            AnalysisFilter.FILTER_BY_STATUS: status,
+        }
+        filter_functions: List[Callable] = [
+            function for function, supplied_arg in filter_map.items() if supplied_arg
+        ]
+        analyses = apply_analysis_filter(
+            filter_functions=filter_functions,
+            analyses=self.get_query(table=Analysis),
+            comment=comment,
+            started_at=before,
+            status=status,
+        )
+        return analyses.group_by(Analysis.started_at.desc()).all()
 
     def get_analysis(self, case_id: str, started_at: datetime, status: str) -> Optional[Analysis]:
         """Return the latest analysis for supplied parameters."""

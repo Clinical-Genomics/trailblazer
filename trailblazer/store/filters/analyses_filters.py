@@ -8,14 +8,19 @@ from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Analysis
 
 
-def filter_analyses_by_id(analyses: Query, analysis_id: int, **kwargs) -> Query:
+def filter_analyses_by_comment(analyses: Query, comment: str, **kwargs) -> Query:
     """Filter analyses by database entry id."""
-    return analyses.filter(Analysis.id == analysis_id)
+    return analyses.filter(Analysis.comment.ilike(f"%{comment}%"))
 
 
 def filter_analyses_by_case_id(analyses: Query, case_id: str, **kwargs) -> Query:
     """Filter analyses by case id."""
     return analyses.filter(Analysis.family == case_id)
+
+
+def filter_analyses_by_id(analyses: Query, analysis_id: int, **kwargs) -> Query:
+    """Filter analyses by database entry id."""
+    return analyses.filter(Analysis.id == analysis_id)
 
 
 def filter_analyses_by_started_at(analyses: Query, started_at: datetime, **kwargs) -> Query:
@@ -36,8 +41,9 @@ def filter_analyses_by_statuses(analyses: Query, statuses: List[str], **kwargs) 
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
-    FILTER_BY_ID: Callable = filter_analyses_by_id
     FILTER_BY_CASE_ID: Callable = filter_analyses_by_case_id
+    FILTER_BY_COMMENT: Callable = filter_analyses_by_comment
+    FILTER_BY_ID: Callable = filter_analyses_by_id
     FILTER_BY_STARTED_AT: Callable = filter_analyses_by_started_at
     FILTER_BY_STATUS: Callable = filter_analyses_by_status
     FILTER_BY_STATUSES: Callable = filter_analyses_by_statuses
@@ -48,16 +54,20 @@ def apply_analysis_filter(
     filter_functions: List[Callable],
     analysis_id: Optional[int] = None,
     case_id: Optional[str] = None,
+    comment: Optional[str] = None,
     started_at: Optional[datetime] = None,
     status: Optional[str] = None,
-    statuses: Optional[List[str]] = [],
+    statuses: Optional[List[str]] = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
+    if statuses is None:
+        statuses = []
     for function in filter_functions:
         analyses: Query = function(
             analyses=analyses,
             analysis_id=analysis_id,
             case_id=case_id,
+            comment=comment,
             started_at=started_at,
             status=status,
             statuses=statuses,
