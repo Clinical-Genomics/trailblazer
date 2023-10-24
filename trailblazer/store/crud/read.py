@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Callable, Dict, List, Optional, Union
 
 from sqlalchemy import desc
+from sqlalchemy.orm import Query
 
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.base import BaseHandler_2
@@ -49,14 +50,14 @@ class ReadHandler(BaseHandler_2):
         filter_functions: List[Callable] = [
             function for function, supplied_arg in filter_map.items() if supplied_arg
         ]
-        analyses = apply_analysis_filter(
+        analyses: Query = apply_analysis_filter(
             filter_functions=filter_functions,
             analyses=self.get_query(table=Analysis),
             comment=comment,
             started_at=before,
             status=status,
         )
-        return analyses.group_by(Analysis.started_at.desc()).all()
+        return analyses.order_by(desc(Analysis.started_at)).all()
 
     def get_analysis(self, case_id: str, started_at: datetime, status: str) -> Optional[Analysis]:
         """Return the latest analysis for supplied parameters."""

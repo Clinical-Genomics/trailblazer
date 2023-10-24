@@ -7,6 +7,76 @@ from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Analysis, User
 
 
+def test_get_analyses_by_status_started_at_and_comment(analysis_store: MockStore):
+    """Test getting an analysis when it fulfills all criteria."""
+    # GIVEN a store with an analysis
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # GIVEN a comment
+    analysis_store.update_analysis_comment(
+        case_id=existing_analysis.family, comment="a new comment"
+    )
+
+    # WHEN getting analysis that fulfills criteria
+    analyses: List[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
+        status=existing_analysis.status,
+        before=existing_analysis.started_at,
+        comment=existing_analysis.comment,
+    )
+
+    # THEN it should return the same analysis
+    assert analyses[0] == existing_analysis
+
+
+def test_get_analyses_by_status_started_at_and_comment_with_comment(analysis_store: MockStore):
+    """Test getting an analysis when only supplying comment."""
+    # GIVEN a store with an analysis
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # GIVEN a comment
+    analysis_store.update_analysis_comment(
+        case_id=existing_analysis.family, comment="a new comment"
+    )
+
+    # WHEN getting analysis that fulfills criteria
+    analyses: List[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
+        comment=existing_analysis.comment,
+    )
+
+    # THEN it should return the same analysis
+    assert analyses[0] == existing_analysis
+
+
+def test_get_analyses_by_status_started_at_and_comment_with_status(analysis_store: MockStore):
+    """Test getting an analysis when only supplying status."""
+    # GIVEN a store with an analysis
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # WHEN getting analysis that fulfills criteria
+    analyses: List[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
+        status=existing_analysis.status,
+    )
+
+    # THEN it should return analyses with supplied status
+    for analysis in analyses:
+        assert analysis.status == TrailblazerStatus.PENDING
+
+
+def test_get_analyses_by_status_started_at_and_comment_with_before(analysis_store: MockStore):
+    """Test getting an analysis when only supplying before."""
+    # GIVEN a store with an analysis
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # WHEN getting analysis that fulfills criteria
+    analyses: List[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
+        before=existing_analysis.started_at,
+    )
+
+    # THEN it should return analyses started before the supplied date
+    for analysis in analyses:
+        assert analysis.started_at <= existing_analysis.started_at
+
+
 def test_get_analysis(analysis_store: MockStore):
     """Test getting an analysis when it exists in the database."""
     # GIVEN a store with an analysis
