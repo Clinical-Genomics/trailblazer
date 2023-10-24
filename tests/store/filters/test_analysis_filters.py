@@ -1,7 +1,10 @@
+import datetime
+
 from sqlalchemy.orm import Query
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.store.filters.analyses_filters import (
+    filter_analyses_by_before_started_at,
     filter_analyses_by_case_id,
     filter_analyses_by_comment,
     filter_analyses_by_id,
@@ -96,6 +99,40 @@ def test_filter_analyses_by_started_at(analysis_store: MockStore):
 
     # THEN the analysis should match the original
     assert existing_analysis == analysis.first()
+
+
+def test_filter_analyses_by_before_started_at(analysis_store: MockStore, timestamp_now: datetime):
+    """Test return analysis with a started at before supplied date when existing."""
+    # GIVEN a store containing analyses
+
+    # WHEN retrieving an analysis before supplied date
+    analysis: Query = filter_analyses_by_before_started_at(
+        analyses=analysis_store.get_query(table=Analysis), started_at=timestamp_now
+    )
+
+    # THEN that the analysis is a query
+    assert isinstance(analysis, Query)
+
+    # THEN the analysis should return an analysis before than supplied date
+    assert analysis.first().started_at < timestamp_now
+
+
+def test_filter_analyses_by_before_started_at_when_after_supplied_date(
+    analysis_store: MockStore, timestamp_old: datetime
+):
+    """Test return analysis with a started at after supplied date when existing."""
+    # GIVEN a store containing analyses
+
+    # WHEN retrieving an analysis by when it was started
+    analysis: Query = filter_analyses_by_before_started_at(
+        analyses=analysis_store.get_query(table=Analysis), started_at=timestamp_old
+    )
+
+    # THEN that the analysis is a query
+    assert isinstance(analysis, Query)
+
+    # THEN no analysis is returned
+    assert not analysis.first()
 
 
 def test_filter_analyses_by_status(analysis_store: MockStore):

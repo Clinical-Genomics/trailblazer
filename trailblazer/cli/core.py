@@ -2,7 +2,7 @@ import logging
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import click
 import coloredlogs
@@ -242,12 +242,14 @@ def delete(context, analysis_id: int, force: bool, cancel_jobs: bool):
 def ls_cmd(context, before: str, status: TrailblazerStatus, comment: str, limit: int = 30):
     """Display recent logs for the latest analyses."""
     trailblazer_db: Store = context.obj["trailblazer_db"]
-    analyses: List[Analysis] = trailblazer_db.analyses(
+    analyses: Optional[
+        List[Analysis]
+    ] = trailblazer_db.get_analyses_by_status_started_at_and_comment(
         status=status,
-        deleted=False,
         before=datetime.strptime(before, TRAILBLAZER_TIME_STAMP).date() if before else None,
         comment=comment,
-    ).limit(limit)
+        limit=limit,
+    )
     for analysis in analyses:
         (message, color) = _get_ls_analysis_message(analysis=analysis)
         click.echo(click.style(message, fg=color))

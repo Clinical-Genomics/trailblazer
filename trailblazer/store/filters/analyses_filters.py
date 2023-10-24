@@ -28,6 +28,11 @@ def filter_analyses_by_started_at(analyses: Query, started_at: datetime, **kwarg
     return analyses.filter(Analysis.started_at == started_at)
 
 
+def filter_analyses_by_before_started_at(analyses: Query, started_at: datetime, **kwargs) -> Query:
+    """Filter analyses by when it started before the supplied date."""
+    return analyses.filter(Analysis.started_at < started_at)
+
+
 def filter_analyses_by_status(analyses: Query, status: TrailblazerStatus, **kwargs) -> Query:
     """Filter analyses by status."""
     return analyses.filter(Analysis.status == status)
@@ -41,6 +46,7 @@ def filter_analyses_by_statuses(analyses: Query, statuses: List[str], **kwargs) 
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
+    FILTER_BY_BEFORE_STARTED_AT: Callable = filter_analyses_by_before_started_at
     FILTER_BY_CASE_ID: Callable = filter_analyses_by_case_id
     FILTER_BY_COMMENT: Callable = filter_analyses_by_comment
     FILTER_BY_ID: Callable = filter_analyses_by_id

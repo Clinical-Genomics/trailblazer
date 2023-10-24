@@ -7,7 +7,9 @@ from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Analysis, User
 
 
-def test_get_analyses_by_status_started_at_and_comment(analysis_store: MockStore):
+def test_get_analyses_by_status_started_at_and_comment(
+    analysis_store: MockStore, timestamp_now: datetime
+):
     """Test getting an analysis when it fulfills all criteria."""
     # GIVEN a store with an analysis
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
@@ -20,7 +22,7 @@ def test_get_analyses_by_status_started_at_and_comment(analysis_store: MockStore
     # WHEN getting analysis that fulfills criteria
     analyses: List[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
         status=existing_analysis.status,
-        before=existing_analysis.started_at,
+        before=timestamp_now,
         comment=existing_analysis.comment,
     )
 
@@ -62,19 +64,20 @@ def test_get_analyses_by_status_started_at_and_comment_with_status(analysis_stor
         assert analysis.status == TrailblazerStatus.PENDING
 
 
-def test_get_analyses_by_status_started_at_and_comment_with_before(analysis_store: MockStore):
+def test_get_analyses_by_status_started_at_and_comment_with_before(
+    analysis_store: MockStore, timestamp_now: datetime
+):
     """Test getting an analysis when only supplying before."""
     # GIVEN a store with an analysis
-    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
     # WHEN getting analysis that fulfills criteria
     analyses: List[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
-        before=existing_analysis.started_at,
+        before=timestamp_now,
     )
 
     # THEN it should return analyses started before the supplied date
     for analysis in analyses:
-        assert analysis.started_at <= existing_analysis.started_at
+        assert analysis.started_at < timestamp_now
 
 
 def test_get_analysis(analysis_store: MockStore):
