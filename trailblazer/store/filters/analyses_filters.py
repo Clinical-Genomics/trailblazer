@@ -29,7 +29,7 @@ def filter_analyses_by_started_at(analyses: Query, started_at: datetime, **kwarg
 
 
 def filter_analyses_by_before_started_at(analyses: Query, started_at: datetime, **kwargs) -> Query:
-    """Filter analyses by when it started before the supplied date."""
+    """Filter analyses by if it started before the supplied date."""
     return analyses.filter(Analysis.started_at < started_at)
 
 
