@@ -49,7 +49,7 @@ class AnalysisFilter(Enum):
     FILTER_BY_BEFORE_STARTED_AT: Callable = filter_analyses_by_before_started_at
     FILTER_BY_CASE_ID: Callable = filter_analyses_by_case_id
     FILTER_BY_COMMENT: Callable = filter_analyses_by_comment
-    FILTER_BY_ID: Callable = filter_analyses_by_entry_id
+    FILTER_BY_ENTRY_ID: Callable = filter_analyses_by_entry_id
     FILTER_BY_STARTED_AT: Callable = filter_analyses_by_started_at
     FILTER_BY_STATUS: Callable = filter_analyses_by_status
     FILTER_BY_STATUSES: Callable = filter_analyses_by_statuses

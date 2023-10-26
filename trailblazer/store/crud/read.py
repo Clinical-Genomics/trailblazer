@@ -114,7 +114,7 @@ class ReadHandler(BaseHandler_2):
         """Get a single analysis by id."""
         return apply_analysis_filter(
             analyses=self.get_query(table=Analysis),
-            filter_functions=[AnalysisFilter.FILTER_BY_ID],
+            filter_functions=[AnalysisFilter.FILTER_BY_ENTRY_ID],
             analysis_id=analysis_id,
         ).first()
 
