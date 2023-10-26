@@ -39,9 +39,14 @@ class ReadHandler(BaseHandler_2):
         return [{"name": category.name, "count": category.count} for category in categories]
 
     def get_analyses_by_status_started_at_and_comment(
-        self, before: datetime = None, comment: str = None, status: str = None, limit: int = None
+        self,
+        before: Optional[datetime] = None,
+        comment: Optional[str] = None,
+        status: Optional[str] = None,
     ) -> Optional[List[Analysis]]:
-        """Return analysis meeting supplied arguments."""
+        """Return analyses meeting supplied arguments."""
+        if not before and not comment and not status:
+            return
         filter_map: Dict[Callable, Optional[Union[str, datetime, TrailblazerStatus]]] = {
             AnalysisFilter.FILTER_BY_COMMENT: comment,
             AnalysisFilter.FILTER_BY_BEFORE_STARTED_AT: before,
@@ -57,7 +62,7 @@ class ReadHandler(BaseHandler_2):
             started_at=before,
             status=status,
         )
-        return analyses.order_by(desc(Analysis.started_at)).limit(limit)
+        return analyses.order_by(desc(Analysis.started_at))
 
     def get_analysis(self, case_id: str, started_at: datetime, status: str) -> Optional[Analysis]:
         """Return the latest analysis for supplied parameters."""

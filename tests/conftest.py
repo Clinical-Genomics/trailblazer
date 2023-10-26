@@ -196,8 +196,8 @@ def timestamp_yesterday(timestamp_now: datetime) -> datetime:
 def timestamp_old() -> datetime:
     """Return an old time stamp in a date time format."""
     timestamp: str = "1066-10-14 00:00:00"
-    format: str = "%Y-%m-%d %H:%M:%S"
-    return datetime.strptime(timestamp, format)
+    timestamp_format: str = "%Y-%m-%d %H:%M:%S"
+    return datetime.strptime(timestamp, timestamp_format)
 
 
 @pytest.fixture

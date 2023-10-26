@@ -9,7 +9,7 @@ from trailblazer.store.models import Analysis
 
 
 def filter_analyses_by_comment(analyses: Query, comment: str, **kwargs) -> Query:
-    """Filter analyses by database entry id."""
+    """Filter analyses that contain the string given in 'comment'."""
     return analyses.filter(Analysis.comment.ilike(f"%{comment}%"))
 
 
@@ -18,7 +18,7 @@ def filter_analyses_by_case_id(analyses: Query, case_id: str, **kwargs) -> Query
     return analyses.filter(Analysis.family == case_id)
 
 
-def filter_analyses_by_id(analyses: Query, analysis_id: int, **kwargs) -> Query:
+def filter_analyses_by_entry_id(analyses: Query, analysis_id: int, **kwargs) -> Query:
     """Filter analyses by database entry id."""
     return analyses.filter(Analysis.id == analysis_id)
 
@@ -29,7 +29,7 @@ def filter_analyses_by_started_at(analyses: Query, started_at: datetime, **kwarg
 
 
 def filter_analyses_by_before_started_at(analyses: Query, started_at: datetime, **kwargs) -> Query:
-    """Filter analyses by if it started before the supplied date."""
+    """Filter analyses by ifK it started before the supplied date."""
     return analyses.filter(Analysis.started_at < started_at)
 
 
@@ -49,7 +49,7 @@ class AnalysisFilter(Enum):
     FILTER_BY_BEFORE_STARTED_AT: Callable = filter_analyses_by_before_started_at
     FILTER_BY_CASE_ID: Callable = filter_analyses_by_case_id
     FILTER_BY_COMMENT: Callable = filter_analyses_by_comment
-    FILTER_BY_ID: Callable = filter_analyses_by_id
+    FILTER_BY_ID: Callable = filter_analyses_by_entry_id
     FILTER_BY_STARTED_AT: Callable = filter_analyses_by_started_at
     FILTER_BY_STATUS: Callable = filter_analyses_by_status
     FILTER_BY_STATUSES: Callable = filter_analyses_by_statuses

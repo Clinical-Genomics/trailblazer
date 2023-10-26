@@ -7,7 +7,7 @@ from trailblazer.store.filters.analyses_filters import (
     filter_analyses_by_before_started_at,
     filter_analyses_by_case_id,
     filter_analyses_by_comment,
-    filter_analyses_by_id,
+    filter_analyses_by_entry_id,
     filter_analyses_by_started_at,
     filter_analyses_by_status,
     filter_analyses_by_statuses,
@@ -21,7 +21,7 @@ def test_filter_analyses_by_id(analysis_store: MockStore):
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
     # WHEN retrieving an analysis by id
-    analysis: Query = filter_analyses_by_id(
+    analysis: Query = filter_analyses_by_entry_id(
         analyses=analysis_store.get_query(table=Analysis), analysis_id=existing_analysis.id
     )
 
