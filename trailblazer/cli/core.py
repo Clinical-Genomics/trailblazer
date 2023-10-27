@@ -249,6 +249,9 @@ def ls_cmd(context, before: str, status: TrailblazerStatus, comment: str, limit:
         before=datetime.strptime(before, TRAILBLAZER_TIME_STAMP).date() if before else None,
         comment=comment,
     )
-    for analysis in analyses[0:limit]:
-        (message, color) = _get_ls_analysis_message(analysis=analysis)
-        click.echo(click.style(message, fg=color))
+    if analyses:
+        for analysis in analyses[:limit]:
+            (message, color) = _get_ls_analysis_message(analysis=analysis)
+            click.echo(click.style(message, fg=color))
+    else:
+        LOG.warning("No analyses matching search criteria")
