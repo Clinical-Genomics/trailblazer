@@ -530,14 +530,14 @@ def test_scan(
     ],
 )
 def test_ls(
-    cli_runner: CliRunner,
-    process_exit_success: int,
-    trailblazer_context: Dict[str, MockStore],
     case_id: str,
+    cli_runner: CliRunner,
     mocker,
-    status: str,
+    process_exit_success: int,
     slurm_squeue_output: Dict[str, str],
+    status: str,
     timestamp_now: datetime,
+    trailblazer_context: Dict[str, MockStore],
 ):
     """Test the Trailblazer ls CLI command using different cases and statuses."""
     # GIVEN SLURM squeue output for an analysis
@@ -547,7 +547,7 @@ def test_ls(
             CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8
         ),
     )
-    # GIVEN populated Trailblazer database with pending analyses
+    # GIVEN a populated Trailblazer database with pending analyses
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
 
     # Update analyses to their expected status

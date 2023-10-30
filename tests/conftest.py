@@ -192,6 +192,14 @@ def timestamp_yesterday(timestamp_now: datetime) -> datetime:
     return timestamp_now - timedelta(days=1)
 
 
+@pytest.fixture(scope="session")
+def timestamp_old() -> datetime:
+    """Return an old time stamp in a date time format."""
+    timestamp: str = "1066-10-14 00:00:00"
+    timestamp_format: str = "%Y-%m-%d %H:%M:%S"
+    return datetime.strptime(timestamp, timestamp_format)
+
+
 @pytest.fixture
 def tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> List[dict]:
     """Return a list of Tower Jobs."""
