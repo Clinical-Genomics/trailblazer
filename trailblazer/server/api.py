@@ -177,29 +177,6 @@ def delete(analysis_id):
 # NOT for use with GUI (for now)
 
 
-@blueprint.route("/query-analyses", methods=["POST"])
-def post_query_analyses():
-    """Return list of analyses matching the query terms."""
-    post_request: Response.json = request.json
-    query_analyses: List[Analysis] = store.analyses(
-        before=datetime.strptime(post_request.get("before"), TRAILBLAZER_TIME_STAMP).date()
-        if post_request.get("before")
-        else None,
-        case_id=post_request.get("case_id"),
-        data_analysis=post_request.get("data_analysis"),
-        deleted=post_request.get("deleted"),
-        family=post_request.get("family"),
-        is_visible=post_request.get("visible"),
-        query=post_request.get("query"),
-        status=post_request.get("status"),
-        temp=post_request.get("temp"),
-    )
-    raw_analyses: List[Dict[str, str]] = [
-        stringify_timestamps(analysis_obj.to_dict()) for analysis_obj in query_analyses
-    ]
-    return jsonify(*raw_analyses), HTTPStatus.OK
-
-
 @blueprint.route("/get-latest-analysis", methods=["POST"])
 def post_get_latest_analysis():
     """Return latest analysis entry for specified case id."""
