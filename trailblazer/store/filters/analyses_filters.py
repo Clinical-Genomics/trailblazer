@@ -23,6 +23,11 @@ def filter_analyses_by_entry_id(analyses: Query, analysis_id: int, **kwargs) -> 
     return analyses.filter(Analysis.id == analysis_id)
 
 
+def filter_analyses_by_is_visible(analyses: Query, **kwargs) -> Query:
+    """Filter analyses by case when is visible is true."""
+    return analyses.filter(Analysis.is_visible.is_(True))
+
+
 def filter_analyses_by_started_at(analyses: Query, started_at: datetime, **kwargs) -> Query:
     """Filter analyses by when it started."""
     return analyses.filter(Analysis.started_at == started_at)
@@ -50,6 +55,7 @@ class AnalysisFilter(Enum):
     FILTER_BY_CASE_ID: Callable = filter_analyses_by_case_id
     FILTER_BY_COMMENT: Callable = filter_analyses_by_comment
     FILTER_BY_ENTRY_ID: Callable = filter_analyses_by_entry_id
+    FILTER_BY_IS_VISIBLE: Callable = filter_analyses_by_is_visible
     FILTER_BY_STARTED_AT: Callable = filter_analyses_by_started_at
     FILTER_BY_STATUS: Callable = filter_analyses_by_status
     FILTER_BY_STATUSES: Callable = filter_analyses_by_statuses

@@ -8,6 +8,7 @@ from trailblazer.store.filters.analyses_filters import (
     filter_analyses_by_case_id,
     filter_analyses_by_comment,
     filter_analyses_by_entry_id,
+    filter_analyses_by_is_visible,
     filter_analyses_by_started_at,
     filter_analyses_by_status,
     filter_analyses_by_statuses,
@@ -82,6 +83,47 @@ def test_filter_analyses_by_comment_when_not_matching(analysis_store: MockStore)
 
     # THEN no analysis is returned
     assert not analysis.first()
+
+
+def test_filter_analyses_by_is_visible(analysis_store: MockStore):
+    """Test return analysis when is visible is true."""
+    # GIVEN a store containing analyses
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # GIVEN a visible analysis
+    existing_analysis.is_visible = True
+
+    # WHEN retrieving an analysis by is visible
+    analyses: Query = filter_analyses_by_is_visible(
+        analyses=analysis_store.get_query(table=Analysis)
+    )
+
+    # THEN that the analysis is a query
+    assert isinstance(analyses, Query)
+
+    # THEN the analysis should match the original
+    assert existing_analysis == analyses.first()
+
+
+def test_filter_analyses_by_is_visible_when_false(analysis_store: MockStore):
+    """Test return analysis when is visible is false."""
+    # GIVEN a store containing analyses
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # GIVEN a not visible analysis
+    existing_analysis.is_visible = False
+
+    # WHEN retrieving an analysis by is visible
+    analyses: Query = filter_analyses_by_is_visible(
+        analyses=analysis_store.get_query(table=Analysis)
+    )
+
+    # THEN that the analysis is a query
+    assert isinstance(analyses, Query)
+
+    # THEN the existing analysis should not be returned
+    for analysis in analyses:
+        assert existing_analysis != analysis
 
 
 def test_filter_analyses_by_started_at(analysis_store: MockStore):
