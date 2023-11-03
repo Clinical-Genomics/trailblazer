@@ -2,6 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Callable, List, Optional
 
+import sqlalchemy
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import TrailblazerStatus
@@ -26,6 +27,18 @@ def filter_analyses_by_entry_id(analyses: Query, analysis_id: int, **kwargs) -> 
 def filter_analyses_by_is_visible(analyses: Query, **kwargs) -> Query:
     """Filter analyses by case when is visible is true."""
     return analyses.filter(Analysis.is_visible.is_(True))
+
+
+def filter_analyses_by_search_term(analyses: Query, search_term: str, **kwargs) -> Query:
+    """Filter analyses by search term using multiple fields."""
+    return analyses.filter(
+        sqlalchemy.or_(
+            Analysis.family.ilike(f"%{search_term}%"),
+            Analysis.status.ilike(f"%{search_term}%"),
+            Analysis.data_analysis.ilike(f"%{search_term}%"),
+            Analysis.comment.ilike(f"%{search_term}%"),
+        )
+    )
 
 
 def filter_analyses_by_started_at(analyses: Query, started_at: datetime, **kwargs) -> Query:
@@ -55,6 +68,7 @@ class AnalysisFilter(Enum):
     FILTER_BY_CASE_ID: Callable = filter_analyses_by_case_id
     FILTER_BY_COMMENT: Callable = filter_analyses_by_comment
     FILTER_BY_ENTRY_ID: Callable = filter_analyses_by_entry_id
+    FILTER_BY_SEARCH_TERM: Callable = filter_analyses_by_search_term
     FILTER_BY_IS_VISIBLE: Callable = filter_analyses_by_is_visible
     FILTER_BY_STARTED_AT: Callable = filter_analyses_by_started_at
     FILTER_BY_STATUS: Callable = filter_analyses_by_status
@@ -66,6 +80,7 @@ def apply_analysis_filter(
     filter_functions: List[Callable],
     analysis_id: Optional[int] = None,
     case_id: Optional[str] = None,
+    search_term: Optional[str] = None,
     comment: Optional[str] = None,
     started_at: Optional[datetime] = None,
     status: Optional[str] = None,
@@ -80,6 +95,7 @@ def apply_analysis_filter(
             analysis_id=analysis_id,
             case_id=case_id,
             comment=comment,
+            search_term=search_term,
             started_at=started_at,
             status=status,
             statuses=statuses,

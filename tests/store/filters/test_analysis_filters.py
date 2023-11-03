@@ -9,6 +9,7 @@ from trailblazer.store.filters.analyses_filters import (
     filter_analyses_by_comment,
     filter_analyses_by_entry_id,
     filter_analyses_by_is_visible,
+    filter_analyses_by_search_term,
     filter_analyses_by_started_at,
     filter_analyses_by_status,
     filter_analyses_by_statuses,
@@ -93,12 +94,12 @@ def test_filter_analyses_by_is_visible(analysis_store: MockStore):
     # GIVEN a visible analysis
     existing_analysis.is_visible = True
 
-    # WHEN retrieving an analysis by is visible
+    # WHEN retrieving analyses by is visible
     analyses: Query = filter_analyses_by_is_visible(
         analyses=analysis_store.get_query(table=Analysis)
     )
 
-    # THEN that the analysis is a query
+    # THEN the analyses is a query
     assert isinstance(analyses, Query)
 
     # THEN the analysis should match the original
@@ -113,17 +114,106 @@ def test_filter_analyses_by_is_visible_when_false(analysis_store: MockStore):
     # GIVEN a not visible analysis
     existing_analysis.is_visible = False
 
-    # WHEN retrieving an analysis by is visible
+    # WHEN retrieving analyses by is visible
     analyses: Query = filter_analyses_by_is_visible(
         analyses=analysis_store.get_query(table=Analysis)
     )
 
-    # THEN that the analysis is a query
+    # THEN the analyses is a query
     assert isinstance(analyses, Query)
 
     # THEN the existing analysis should not be returned
     for analysis in analyses:
         assert existing_analysis != analysis
+
+
+def test_filter_analyses_by_search_term_in_comment(analysis_store: MockStore):
+    """Test return analysis when search term matches comment."""
+    # GIVEN a store containing analyses
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # GIVEN a a comment
+    existing_analysis.comment = "a comment"
+
+    # WHEN retrieving analyses by search term
+    analyses: Query = filter_analyses_by_search_term(
+        analyses=analysis_store.get_query(table=Analysis), search_term="a comment"
+    )
+
+    # THEN the analysis is a query
+    assert isinstance(analyses, Query)
+
+    # THEN the analysis should match the original
+    assert existing_analysis == analyses.first()
+
+
+def test_filter_analyses_by_search_term_in_data_analysis(analysis_store: MockStore):
+    """Test return analysis when search term matches data analysis."""
+    # GIVEN a store containing analyses
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # WHEN retrieving analyses by search term
+    analyses: Query = filter_analyses_by_search_term(
+        analyses=analysis_store.get_query(table=Analysis),
+        search_term=existing_analysis.data_analysis,
+    )
+
+    # THEN the analysis is a query
+    assert isinstance(analyses, Query)
+
+    # THEN the analysis should match the original
+    assert existing_analysis == analyses.first()
+
+
+def test_filter_analyses_by_search_term_in_case(analysis_store: MockStore):
+    """Test return analysis when search term matches case."""
+    # GIVEN a store containing analyses
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # WHEN retrieving analyses by search term
+    analyses: Query = filter_analyses_by_search_term(
+        analyses=analysis_store.get_query(table=Analysis), search_term=existing_analysis.family
+    )
+
+    # THEN the analysis is a query
+    assert isinstance(analyses, Query)
+
+    # THEN the analysis should match the original
+    assert existing_analysis == analyses.first()
+
+
+def test_filter_analyses_by_search_term_in_status(analysis_store: MockStore):
+    """Test return analysis when search term matches status."""
+    # GIVEN a store containing analyses
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # WHEN retrieving analyses by search term
+    analyses: Query = filter_analyses_by_search_term(
+        analyses=analysis_store.get_query(table=Analysis), search_term=existing_analysis.status
+    )
+
+    # THEN the analyses is a query
+    assert isinstance(analyses, Query)
+
+    # THEN the analysis should match the original
+    assert existing_analysis == analyses.first()
+
+
+def test_filter_analyses_by_search_term_when_not_matching(analysis_store: MockStore):
+    """Test return analysis when search term does not match."""
+    # GIVEN a store containing analyses
+    analysis_store.get_query(table=Analysis).first()
+
+    # WHEN retrieving analyses by search term
+    analyses: Query = filter_analyses_by_search_term(
+        analyses=analysis_store.get_query(table=Analysis),
+        search_term="does not exist",
+    )
+    # THEN the analyses is a query
+    assert isinstance(analyses, Query)
+
+    # THEN the no analysis is returned
+    assert not analyses.first()
 
 
 def test_filter_analyses_by_started_at(analysis_store: MockStore):

@@ -62,7 +62,7 @@ class ReadHandler(BaseHandler_2):
             started_at=before,
             status=status,
         )
-        return analyses.order_by(desc(Analysis.started_at))
+        return analyses.order_by(desc(Analysis.started_at)).all()
 
     def get_analysis(self, case_id: str, started_at: datetime, status: str) -> Optional[Analysis]:
         """Return the latest analysis for supplied parameters."""
