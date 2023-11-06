@@ -84,7 +84,7 @@ class CharacterFormat(str, Enum):
 class TrailblazerStatus(str, Enum):
     """Trailblazer allowed status."""
 
-    CANCELLED: str = "canceled"
+    CANCELLED: str = "cancelled"
     COMPLETED: str = "completed"
     COMPLETING: str = "completing"
     ERROR: str = "error"
