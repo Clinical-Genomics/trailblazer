@@ -24,7 +24,7 @@ class BaseHandler(CoreHandler):
         search_term: Optional[str] = None,
         is_visible: bool = False,
     ) -> Query:
-        """Return analyses by searchb term qnd is visible."""
+        """Return analyses by search term qnd is visible."""
         if not search_term and not is_visible:
             return
         filter_map: Dict[Callable, Optional[Union[str, bool]]] = {
