@@ -1,11 +1,14 @@
 from dataclasses import dataclass
-from typing import Type, Dict, Callable, Optional, Union, List
+from typing import Callable, Dict, List, Optional, Type, Union
 
 from sqlalchemy import func
 from sqlalchemy.orm import Query
 
-from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
-from trailblazer.store.models import Job, Model, Analysis
+from trailblazer.store.filters.analyses_filters import (
+    AnalysisFilter,
+    apply_analysis_filter,
+)
+from trailblazer.store.models import Analysis, Job, Model
 
 
 @dataclass
@@ -47,4 +50,3 @@ class BaseHandler_2:
             search_term=search_term,
         )
         return analyses.order_by(Analysis.started_at.desc())
-
