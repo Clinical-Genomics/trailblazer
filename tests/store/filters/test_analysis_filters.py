@@ -111,7 +111,7 @@ def test_filter_analyses_by_is_visible_when_false(analysis_store: MockStore):
     # GIVEN a store containing analyses
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
-    # GIVEN a not visible analysis
+    # GIVEN a hidden analysis
     existing_analysis.is_visible = False
 
     # WHEN retrieving analyses by is visible
