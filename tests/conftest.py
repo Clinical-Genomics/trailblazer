@@ -20,11 +20,18 @@ from trailblazer.constants import (
     TrailblazerStatus,
 )
 from trailblazer.io.controller import ReadFile
+from trailblazer.store.models import Analysis
 
 
 @pytest.fixture(scope="session")
 def analysis_id_does_not_exist() -> int:
     return 123456789666
+
+
+@pytest.fixture(scope="session")
+def analysis_comment() -> str:
+    """Return a comment."""
+    return "a comment"
 
 
 @pytest.fixture(scope="session")
@@ -175,7 +182,7 @@ def analysis_store(
         store.add_user(name=user_data["name"], email=user_data["email"])
     for raw_analysis in raw_analyses:
         raw_analysis["user"] = store.get_user(email=raw_analysis["user"])
-        store.add(store.Analysis(**raw_analysis))
+        store.add(Analysis(**raw_analysis))
     store.commit()
     yield store
 
