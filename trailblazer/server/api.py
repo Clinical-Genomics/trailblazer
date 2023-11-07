@@ -6,6 +6,7 @@ from typing import Dict, List, Mapping, Optional, Union
 
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
+from sqlalchemy.orm import Query
 
 from trailblazer.constants import (
     ONE_MONTH_IN_DAYS,
@@ -54,18 +55,17 @@ def analyses():
     """Display analyses."""
     per_page = int(request.args.get("per_page", 100))
     page = int(request.args.get("page", 1))
-    query = store.analyses(
-        status=request.args.get("status"),
-        query=request.args.get("query"),
-        is_visible=request.args.get("is_visible") == "true" or None,
+    analyses: Query = store.get_analyses_query_by_search_term_and_is_visible(
+        search_term=request.args.get("query"),
+        is_visible=bool(request.args.get("is_visible")),
     )
 
-    query_page = query.paginate(page, per_page=per_page)
+    query_page = analyses.paginate(page, per_page=per_page)
     data = []
-    for analysis_obj in query_page.items:
-        analysis_data = analysis_obj.to_dict()
-        analysis_data["user"] = analysis_obj.user.to_dict() if analysis_obj.user else None
-        analysis_data["jobs"] = [job.to_dict() for job in analysis_obj.jobs]
+    for analysis in query_page.items:
+        analysis_data = analysis.to_dict()
+        analysis_data["user"] = analysis.user.to_dict() if analysis.user else None
+        analysis_data["jobs"] = [job.to_dict() for job in analysis.jobs]
         data.append(analysis_data)
     return jsonify(analyses=data)
 
