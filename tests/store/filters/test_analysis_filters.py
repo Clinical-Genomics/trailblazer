@@ -51,13 +51,13 @@ def test_filter_analyses_by_case_id(analysis_store: MockStore):
     assert existing_analysis == analysis.first()
 
 
-def test_filter_analyses_by_comment(analysis_store: MockStore):
+def test_filter_analyses_by_comment(analysis_store: MockStore, analysis_comment: str):
     """Test return analysis by comment when containing string."""
     # GIVEN a store containing analyses
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
     # GIVEN a comment
-    existing_analysis.comment = "a comment"
+    existing_analysis.comment = analysis_comment
 
     # WHEN retrieving an analysis by comment
     analysis: Query = filter_analyses_by_comment(
@@ -127,17 +127,19 @@ def test_filter_analyses_by_is_visible_when_false(analysis_store: MockStore):
         assert existing_analysis != analysis
 
 
-def test_filter_analyses_by_search_term_in_comment(analysis_store: MockStore):
+def test_filter_analyses_by_search_term_in_comment(
+    analysis_store: MockStore, analysis_comment: str
+):
     """Test return analysis when search term matches comment."""
     # GIVEN a store containing analyses
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
     # GIVEN a a comment
-    existing_analysis.comment = "a comment"
+    existing_analysis.comment = analysis_comment
 
     # WHEN retrieving analyses by search term
     analyses: Query = filter_analyses_by_search_term(
-        analyses=analysis_store.get_query(table=Analysis), search_term="a comment"
+        analyses=analysis_store.get_query(table=Analysis), search_term=analysis_comment
     )
 
     # THEN the analysis is a query

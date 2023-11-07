@@ -29,6 +29,12 @@ def analysis_id_does_not_exist() -> int:
 
 
 @pytest.fixture(scope="session")
+def analysis_comment() -> str:
+    """Return a comment."""
+    return "a comment"
+
+
+@pytest.fixture(scope="session")
 def tower_id() -> str:
     """Return a NF Tower id."""
     return TOWER_ID
