@@ -5,7 +5,7 @@ from sqlalchemy import desc
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.store.base import BaseHandler_2
+from trailblazer.store.base import BaseHandler
 from trailblazer.store.filters.analyses_filters import (
     AnalysisFilter,
     apply_analysis_filter,
@@ -15,7 +15,7 @@ from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, Job, User
 
 
-class ReadHandler(BaseHandler_2):
+class ReadHandler(BaseHandler):
     """Class for reading items in the database."""
 
     def get_nr_jobs_with_status_per_category(

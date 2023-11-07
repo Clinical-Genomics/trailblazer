@@ -1,6 +1,6 @@
 from flask_alchy import Alchy
 
-from trailblazer.store.api import BaseHandler
+from trailblazer.store.base import BaseHandler
 from trailblazer.store.models import Model
 
 
