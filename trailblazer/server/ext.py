@@ -1,10 +1,10 @@
 from flask_alchy import Alchy
 
-from trailblazer.store.api import BaseHandler
+from trailblazer.store.core import CoreHandler
 from trailblazer.store.models import Model
 
 
-class TrailblazerAlchy(Alchy, BaseHandler):
+class TrailblazerAlchy(Alchy, CoreHandler):
     pass
 
 

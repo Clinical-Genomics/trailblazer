@@ -12,11 +12,14 @@ from trailblazer.store.models import Analysis, Job, Model
 
 
 @dataclass
-class BaseHandler_2:
+class BaseHandler:
     """All models in one base class."""
 
     def __init__(self):
         pass
+
+    def setup(self):
+        self.create_all()
 
     def get_query(self, table: Type[Model]) -> Query:
         """Return a query for the given table."""

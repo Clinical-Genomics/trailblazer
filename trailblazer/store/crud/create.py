@@ -1,11 +1,11 @@
 from datetime import datetime
 
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.store.base import BaseHandler_2
+from trailblazer.store.base import BaseHandler
 from trailblazer.store.models import Analysis, User
 
 
-class CreateHandler(BaseHandler_2):
+class CreateHandler(BaseHandler):
     """Class for creating items in the database."""
 
     def add_pending_analysis(
