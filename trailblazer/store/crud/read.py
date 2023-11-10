@@ -2,10 +2,11 @@ from datetime import datetime
 from typing import Callable, Dict, List, Optional, Union
 
 from sqlalchemy import desc
-from sqlalchemy.orm import Query
+from sqlalchemy.orm import Query, Session
 
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.base import BaseHandler
+from trailblazer.store.database import get_session
 from trailblazer.store.filters.analyses_filters import (
     AnalysisFilter,
     apply_analysis_filter,

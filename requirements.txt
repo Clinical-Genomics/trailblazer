@@ -1,4 +1,3 @@
-Alchy
 Click<7
 SQLAlchemy<1.4
 alembic
@@ -9,7 +8,6 @@ ruamel.yaml
 tabulate
 
 # server
-Flask-Alchy
 Flask-CORS
 Flask-Reverse-Proxy
 Flask>=1.1.1

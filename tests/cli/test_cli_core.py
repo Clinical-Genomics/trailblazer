@@ -41,7 +41,6 @@ def test_base(cli_runner):
 def test_set_analysis_completed(
     cli_runner: CliRunner,
     trailblazer_context: Dict[str, MockStore],
-    caplog,
     failed_analysis_case_id: str,
     process_exit_success: int,
 ):
@@ -71,7 +70,6 @@ def test_set_analysis_completed(
 def test_set_analysis_status(
     cli_runner: CliRunner,
     trailblazer_context: Dict[str, MockStore],
-    caplog,
     failed_analysis_case_id: str,
     process_exit_success: int,
 ):

@@ -1,13 +1,12 @@
 import os
-from typing import Optional
 
 from flask import Flask
 from flask_cors import CORS
 from flask_reverse_proxy import FlaskReverseProxied
-from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import Session
 
 from trailblazer.server import api, ext
-from trailblazer.store.database import get_scoped_session_registry, get_session, initialize_database
+from trailblazer.store.database import get_session, initialize_database
 
 app = Flask(__name__)
 
@@ -27,7 +26,6 @@ FlaskReverseProxied(app)
 ext.store.init_app(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
-# Initialize database
 initialize_database(app.config["SQLALCHEMY_DATABASE_URI"])
 
 
@@ -37,11 +35,18 @@ def index():
 
 
 @app.teardown_appcontext
-def teardown_session():
+def teardown_session(exception=None):
     """
     Remove the database session to ensure database resources are released when a
     request has been processed.
     """
-    registry: Optional[scoped_session] = get_scoped_session_registry()
-    if registry:
-        registry.remove()
+    session: Session = get_session()
+    try:
+        if exception is not None:
+            session.rollback()
+        else:
+            session.commit()
+    except Exception as e:
+        session.rollback()
+    finally:
+        session.remove()

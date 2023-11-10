@@ -1,6 +1,5 @@
 import datetime
 
-import alchy
 from sqlalchemy import Column, ForeignKey, UniqueConstraint, orm, types
 
 from trailblazer.constants import (
@@ -10,8 +9,7 @@ from trailblazer.constants import (
     TrailblazerStatus,
     WorkflowManager,
 )
-
-Model = alchy.make_declarative_base(Base=alchy.ModelBase)
+from trailblazer.store.database import Model
 
 
 class Info(Model):

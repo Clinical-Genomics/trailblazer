@@ -14,6 +14,7 @@ from trailblazer.constants import (
     TrailblazerStatus,
 )
 from trailblazer.server.ext import store
+from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
@@ -73,13 +74,12 @@ def analyses():
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])
 def analysis(analysis_id):
     """Display a single analysis."""
-    analysis_obj = store.get_analysis_with_id(analysis_id=analysis_id)
+    analysis_obj = store.get_analysis_with_id(analysis_id)
     if analysis_obj is None:
         return abort(404)
 
     if request.method == "PUT":
         analysis_obj.update(request.json)
-        store.commit()
 
     data = analysis_obj.to_dict()
     data["jobs"] = [job.to_dict() for job in analysis_obj.jobs]
