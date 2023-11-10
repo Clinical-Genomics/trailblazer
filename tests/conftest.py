@@ -129,7 +129,6 @@ def store() -> Generator[MockStore, None, None]:
     drop_all_tables()
 
 
-
 @pytest.fixture(scope="function")
 def info_store(store: MockStore) -> Generator[MockStore, None, None]:
     """A Trailblazer database wih a populated info table."""
@@ -187,7 +186,7 @@ def analysis_store(
         store.add_user(name=user_data["name"], email=user_data["email"])
     for raw_analysis in raw_analyses:
         raw_analysis["user"] = store.get_user(email=raw_analysis["user"])
-        raw_analysis['family'] = raw_analysis.pop('case_id')
+        raw_analysis["family"] = raw_analysis.pop("case_id")
         session.add(Analysis(**raw_analysis))
     yield store
 

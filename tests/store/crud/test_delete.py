@@ -1,15 +1,19 @@
 from typing import List, Optional
 
 import pytest
+from sqlalchemy.orm import Session
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.exc import MissingAnalysis, TrailblazerError
+from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis
 
 
 def test_delete_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
     """Test jobs are successfully deleted."""
+    # GIVEN a session
+    session: Session = get_session()
 
     # GIVEN an analysis without failed jobs
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
@@ -17,11 +21,13 @@ def test_delete_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict],
 
     # WHEN jobs are updated
     analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
+    session.commit()
 
     assert analysis.jobs
 
     # WHEN jobs are deleted
     analysis_store.delete_analysis_jobs(analysis=analysis)
+    session.commit()
 
     # THEN analysis object should have no jobs
     assert not analysis.jobs
@@ -29,6 +35,8 @@ def test_delete_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict],
 
 def test_delete_analysis(analysis_store: MockStore, case_id: str):
     """Test analysis is successfully deleted."""
+    # GIVEN a session
+    session: Session = get_session()
 
     # GIVEN a not ongoing analysis
     analysis_store.update_analysis_status(case_id=case_id, status=TrailblazerStatus.CANCELLED)
@@ -36,6 +44,7 @@ def test_delete_analysis(analysis_store: MockStore, case_id: str):
 
     # WHEN deleting analysis
     analysis_store.delete_analysis(analysis_id=analysis.id)
+    session.commit()
 
     # THEN analysis object should be deleted
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
@@ -44,6 +53,8 @@ def test_delete_analysis(analysis_store: MockStore, case_id: str):
 
 def test_delete_analysis_with_force(analysis_store: MockStore, case_id: str):
     """Test analysis is successfully deleted when deleting an ongoing analysis."""
+    # GIVEN a session
+    session: Session = get_session()
 
     # GIVEN an ongoing analysis
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
@@ -51,6 +62,7 @@ def test_delete_analysis_with_force(analysis_store: MockStore, case_id: str):
 
     # WHEN deleting analysis
     analysis_store.delete_analysis(analysis_id=analysis.id, force=True)
+    session.commit()
 
     # THEN analysis object should be deleted
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
