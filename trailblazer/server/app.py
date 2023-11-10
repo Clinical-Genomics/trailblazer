@@ -42,7 +42,6 @@ def teardown_session():
     Remove the database session to ensure database resources are released when a
     request has been processed.
     """
-    scoped_session: Optional[scoped_session] = get_scoped_session_registry()
-
-    if scoped_session:
-        scoped_session.remove()
+    registry: Optional[scoped_session] = get_scoped_session_registry()
+    if registry:
+        registry.remove()

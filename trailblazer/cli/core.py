@@ -6,6 +6,7 @@ from typing import List, Optional
 
 import click
 import coloredlogs
+from sqlalchemy.orm import scoped_session
 
 import trailblazer
 from trailblazer.cli.utils.ls_helper import _get_ls_analysis_message
@@ -15,10 +16,21 @@ from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.models import Config
 from trailblazer.store.core import Store
+from trailblazer.store.database import get_scoped_session_registry, initialize_database
 from trailblazer.store.models import Analysis, User
 
 LOG = logging.getLogger(__name__)
 LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
+
+
+def teardown_session():
+    """
+    Remove the database session to ensure database resources are released when a
+    CLI command has been processed.
+    """
+    registry: Optional[scoped_session] = get_scoped_session_registry()
+    if registry:
+        registry.remove()
 
 
 @click.group()
@@ -48,6 +60,8 @@ def base(
     )
     context.obj = dict(validated_config)
     context.obj["trailblazer_db"] = Store(validated_config.database_url)
+    initialize_database(validated_config.database_url)
+    context.call_on_close(teardown_session)
 
 
 @base.command()
