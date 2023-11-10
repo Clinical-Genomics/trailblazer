@@ -21,6 +21,14 @@ class Info(Model):
     created_at = Column(types.DateTime, default=datetime.datetime.now)
     updated_at = Column(types.DateTime)
 
+    def to_dict(self) -> dict:
+        """Return a dictionary representation of the object."""
+        return {
+            "id": self.id,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+        }
+
 
 class User(Model):
     __tablename__ = "user"
@@ -42,6 +50,16 @@ class User(Model):
 
     def __str__(self) -> str:
         return self.name
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "avatar": self.avatar,
+            "created_at": self.created_at,
+            "is_archived": self.is_archived,
+        }
 
 
 class Analysis(Model):
@@ -83,6 +101,31 @@ class Analysis(Model):
         """Check if analysis status is ongoing."""
         return self.status in TrailblazerStatus.ongoing_statuses()
 
+    def to_dict(self) -> dict:
+        """Return a dictionary representation of the object."""
+        return {
+            "id": self.id,
+            "family": self.family,
+            "version": self.version,
+            "logged_at": self.logged_at,
+            "started_at": self.started_at,
+            "completed_at": self.completed_at,
+            "status": self.status,
+            "priority": self.priority,
+            "out_dir": self.out_dir,
+            "config_path": self.config_path,
+            "comment": self.comment,
+            "is_deleted": self.is_deleted,
+            "is_visible": self.is_visible,
+            "type": self.type,
+            "user_id": self.user_id,
+            "progress": self.progress,
+            "data_analysis": self.data_analysis,
+            "ticket_id": self.ticket_id,
+            "uploaded_at": self.uploaded_at,
+            "workflow_manager": self.workflow_manager,
+        }
+
 
 class Job(Model):
     """Represent a step in the pipeline."""
@@ -97,3 +140,16 @@ class Job(Model):
     started_at = Column(types.DateTime)
     elapsed = Column(types.Integer)
     status = Column(types.Enum(*SlurmJobStatus.statuses()))
+
+    def to_dict(self) -> dict:
+        """Return a dictionary representation of the object."""
+        return {
+            "id": self.id,
+            "analysis_id": self.analysis_id,
+            "slurm_id": self.slurm_id,
+            "name": self.name,
+            "context": self.context,
+            "started_at": self.started_at,
+            "elapsed": self.elapsed,
+            "status": self.status,
+        }
