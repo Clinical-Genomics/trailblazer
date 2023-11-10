@@ -3,13 +3,13 @@ from typing import Optional
 
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.exc import MissingAnalysis, TrailblazerError
-from trailblazer.store.base import BaseHandler_2
+from trailblazer.store.base import BaseHandler
 from trailblazer.store.models import Analysis
 
 LOG = logging.getLogger(__name__)
 
 
-class DeleteHandler(BaseHandler_2):
+class DeleteHandler(BaseHandler):
     """Class for deleting items in the database."""
 
     def delete_analysis_jobs(self, analysis: Analysis) -> None:

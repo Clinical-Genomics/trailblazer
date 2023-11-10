@@ -14,7 +14,7 @@ from trailblazer.constants import TRAILBLAZER_TIME_STAMP, FileFormat, Trailblaze
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.models import Config
-from trailblazer.store.api import Store
+from trailblazer.store.core import Store
 from trailblazer.store.models import Analysis, User
 
 LOG = logging.getLogger(__name__)

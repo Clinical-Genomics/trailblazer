@@ -14,13 +14,13 @@ from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.tower.api import TowerAPI, get_tower_api
 from trailblazer.constants import SlurmJobStatus, TrailblazerStatus, WorkflowManager
 from trailblazer.exc import MissingAnalysis, TrailblazerError
-from trailblazer.store.base import BaseHandler_2
+from trailblazer.store.base import BaseHandler
 from trailblazer.store.models import Analysis, Job, User
 
 LOG = logging.getLogger(__name__)
 
 
-class UpdateHandler(BaseHandler_2):
+class UpdateHandler(BaseHandler):
     """Class for updating items in the database."""
 
     def update_analysis_jobs(self, analysis: Analysis, jobs: List[dict]) -> None:

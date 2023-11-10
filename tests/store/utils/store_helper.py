@@ -1,8 +1,8 @@
 """Utility functions to simply add test data in a Trailblazer store."""
-from datetime import datetime, date
+from datetime import date, datetime
 
-from trailblazer.store.api import Store
-from trailblazer.store.models import Info, User, Job
+from trailblazer.store.core import Store
+from trailblazer.store.models import Info, Job, User
 
 
 class StoreHelpers:
