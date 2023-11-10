@@ -19,3 +19,8 @@ def get_session() -> Session:
     if not SESSION:
         raise Exception("Database not initialised")
     return SESSION
+
+
+def get_scoped_session_registry() -> Optional[scoped_session]:
+    """Get the scoped session registry for status db."""
+    return SESSION
