@@ -1,9 +1,12 @@
 import logging
 from typing import Optional
 
+from sqlalchemy.orm import Session
+
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.base import BaseHandler
+from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis
 
 LOG = logging.getLogger(__name__)
@@ -14,8 +17,9 @@ class DeleteHandler(BaseHandler):
 
     def delete_analysis_jobs(self, analysis: Analysis) -> None:
         """Delete all jobs linked to the given analysis."""
+        session: Session = get_session()
         for job in analysis.jobs:
-            job.delete()
+            session.delete(job)
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis from the database. Also delete ongoing analysis if 'force' is True.
@@ -23,6 +27,7 @@ class DeleteHandler(BaseHandler):
             MissingAnalysis when no analysis.
             TrailblazerError for ongoing analysis for analysis id.
         """
+        session: Session = get_session()
         analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
             raise MissingAnalysis("Analysis not found")
@@ -31,4 +36,4 @@ class DeleteHandler(BaseHandler):
                 f"Analysis for {analysis.family} is currently ongoing! Use --force flag to delete ongoing analysis."
             )
         LOG.info(f"Deleting analysis: {analysis_id}, for case: {analysis.family}")
-        analysis.delete()
+        session.delete(analysis)

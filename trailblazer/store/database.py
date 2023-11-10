@@ -33,15 +33,7 @@ def drop_all_tables() -> None:
     Model.metadata.drop_all(bind=SESSION.get_bind())
 
 
-def get_engine() -> Engine:
-    """Get the SQLAlchemy engine with a connection to status db."""
-    if not ENGINE:
-        raise Exception("Database not initialised")
-    return ENGINE
-
-
 def get_tables() -> List[str]:
     """Get a list of all tables in status db."""
-    engine: Engine = get_engine()
-    inspector = inspect(engine)
+    inspector = inspect(ENGINE)
     return inspector.get_table_names()
