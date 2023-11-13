@@ -33,7 +33,7 @@ class SessionContextManager:
         session: Session = get_session()
         try:
             if exc_type is not None:
-                LOG.error(f"Rolling back due to exception when processing request: {exc_value}")
+                LOG.error(f"Rolling back due to exception when processing command: {exc_value}")
                 session.rollback()
             else:
                 session.commit()
