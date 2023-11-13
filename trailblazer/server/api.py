@@ -14,7 +14,6 @@ from trailblazer.constants import (
     TrailblazerStatus,
 )
 from trailblazer.server.ext import store
-from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 

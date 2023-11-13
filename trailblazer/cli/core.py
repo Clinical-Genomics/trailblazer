@@ -23,19 +23,25 @@ LOG = logging.getLogger(__name__)
 LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
 
 
-def teardown_session():
+class SessionContextManager:
     """
     Remove the database session to ensure database resources are released when a
     CLI command has been processed.
     """
-    session: Session = get_session()
-    try:
-        session.commit()
-    except Exception as e:
-        LOG.error(f"Failed to commit transaction after processing command, rolling back: {e}.")
-        session.rollback()
-    finally:
-        session.remove()
+
+    def __exit__(self, exc_type, exc_value, tb):
+        session: Session = get_session()
+        try:
+            if exc_type is not None:
+                LOG.error(f"Rolling back due to exception when processing request: {exc_value}")
+                session.rollback()
+            else:
+                session.commit()
+        except Exception as e:
+            LOG.error(f"Failed to commit transaction after processing command, rolling back: {e}")
+            session.rollback()
+        finally:
+            session.remove()
 
 
 @click.group()
@@ -66,7 +72,7 @@ def base(
     context.obj = dict(validated_config)
     context.obj["trailblazer_db"] = Store(validated_config.database_url)
     initialize_database(validated_config.database_url)
-    context.call_on_close(teardown_session)
+    context.with_resource(SessionContextManager())
 
 
 @base.command()
