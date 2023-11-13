@@ -21,7 +21,7 @@ from trailblazer.constants import (
     TrailblazerStatus,
 )
 from trailblazer.io.controller import ReadFile
-from trailblazer.store.core import Store
+from trailblazer.store.store import Store
 from trailblazer.store.database import (
     get_session,
     create_all_tables,

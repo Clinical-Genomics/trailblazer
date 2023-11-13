@@ -24,16 +24,16 @@ def get_session() -> Session:
 
 
 def create_all_tables() -> None:
-    """Create all tables in status db."""
+    """Create all tables in the database"""
     Model.metadata.create_all(bind=SESSION.get_bind())
 
 
 def drop_all_tables() -> None:
-    """Drop all tables in status db."""
+    """Drop all tables in the database."""
     Model.metadata.drop_all(bind=SESSION.get_bind())
 
 
 def get_tables() -> List[str]:
-    """Get a list of all tables in status db."""
+    """Get a list of all tables in the database."""
     inspector = inspect(ENGINE)
     return inspector.get_table_names()

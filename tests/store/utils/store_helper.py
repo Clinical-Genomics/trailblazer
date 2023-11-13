@@ -2,7 +2,7 @@
 from datetime import date, datetime
 from sqlalchemy.orm import Session
 
-from trailblazer.store.core import Store
+from trailblazer.store.store import Store
 from trailblazer.store.database import get_session
 from trailblazer.store.models import Info, Job, User
 

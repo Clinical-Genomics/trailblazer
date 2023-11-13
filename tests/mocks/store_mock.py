@@ -1,4 +1,4 @@
-from trailblazer.store.core import Store
+from trailblazer.store.store import Store
 
 
 class MockStore(Store):
