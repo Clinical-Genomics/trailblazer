@@ -15,7 +15,7 @@ from trailblazer.constants import TRAILBLAZER_TIME_STAMP, FileFormat, Trailblaze
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.models import Config
-from trailblazer.store.core import Store
+from trailblazer.store.store import Store
 from trailblazer.store.database import get_session, initialize_database
 from trailblazer.store.models import Analysis, User
 
@@ -31,9 +31,9 @@ def teardown_session():
     session: Session = get_session()
     try:
         session.commit()
-    except Exception as commit_exception:
+    except Exception as e:
+        LOG.error(f"Failed to commit transaction after processing command, rolling back: {e}.")
         session.rollback()
-        print(f"Session commit failed: {commit_exception}", file=sys.stderr)
     finally:
         session.remove()
 

@@ -1,3 +1,4 @@
+import logging
 import os
 
 from flask import Flask
@@ -9,6 +10,8 @@ from trailblazer.server import api, ext
 from trailblazer.store.database import get_session, initialize_database
 
 app = Flask(__name__)
+
+LOG = logging.getLogger(__name__)
 
 SECRET_KEY = "unsafe!!!"
 TEMPLATES_AUTO_RELOAD = True
@@ -43,10 +46,12 @@ def teardown_session(exception=None):
     session: Session = get_session()
     try:
         if exception is not None:
+            LOG.error(f"Rolling back due to exception when processing request: {exception}.")
             session.rollback()
         else:
             session.commit()
     except Exception as e:
+        LOG.error(f"Failed to commit transaction after processing request, rolling back: {e}.")
         session.rollback()
     finally:
         session.remove()
