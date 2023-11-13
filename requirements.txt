@@ -10,9 +10,9 @@ tabulate
 # server
 Flask-CORS
 Flask-Reverse-Proxy
-Flask>=1.1.1
+Flask
 google-auth
-gunicorn
+gunicorn    
 markupsafe==2.0.1
 
 # misc

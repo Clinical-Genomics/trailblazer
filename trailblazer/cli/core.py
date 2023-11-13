@@ -28,6 +28,8 @@ class SessionContextManager:
     Remove the database session to ensure database resources are released when a
     CLI command has been processed.
     """
+    def __enter__(self):
+        pass
 
     def __exit__(self, exc_type, exc_value, tb):
         session: Session = get_session()
