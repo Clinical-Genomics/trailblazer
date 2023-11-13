@@ -70,8 +70,8 @@ def base(
         **ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=Path(config.name))
     )
     context.obj = dict(validated_config)
-    context.obj["trailblazer_db"] = Store(validated_config.database_url)
     initialize_database(validated_config.database_url)
+    context.obj["trailblazer_db"] = Store()
     context.with_resource(SessionContextManager())
 
 
