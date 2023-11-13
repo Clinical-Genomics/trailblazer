@@ -7,7 +7,7 @@ from flask_reverse_proxy import FlaskReverseProxied
 from sqlalchemy.orm import Session
 
 from trailblazer.server import api, ext
-from trailblazer.store.database import get_session, initialize_database
+from trailblazer.store.database import get_session
 
 app = Flask(__name__)
 
@@ -26,10 +26,8 @@ app.register_blueprint(api.blueprint)
 
 # configure extensions
 FlaskReverseProxied(app)
-ext.store.init_app(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
-
-initialize_database(app.config["SQLALCHEMY_DATABASE_URI"])
+ext.store.init_app(app)
 
 
 @app.route("/")
