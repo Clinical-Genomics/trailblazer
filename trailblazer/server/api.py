@@ -78,7 +78,7 @@ def analysis(analysis_id):
         return abort(404)
 
     if request.method == "PUT":
-        store.update_analysis(request.json)
+        store.update_analysis(analysis_id=analysis_id, data=request.json)
 
     data = analysis.to_dict()
     data["jobs"] = [job.to_dict() for job in analysis.jobs]
