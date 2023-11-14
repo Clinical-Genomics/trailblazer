@@ -6,7 +6,6 @@ from pydantic import BaseModel, ConfigDict, field_validator
 from trailblazer.constants import (
     TOWER_PROCESS_STATUS,
     TOWER_TASK_STATUS,
-    TOWER_WORKFLOW_STATUS,
     SlurmJobStatus,
     TrailblazerStatus,
 )
@@ -135,7 +134,7 @@ class TowerProcess(BaseModel):
     @property
     def status(cls) -> str:
         for status_flag in TOWER_PROCESS_STATUS.keys():
-            if cls.dict().get(status_flag, 0):
+            if cls.model_dump().get(status_flag, 0):
                 return TOWER_PROCESS_STATUS.get(status_flag)
         return TrailblazerStatus.ERROR
 
