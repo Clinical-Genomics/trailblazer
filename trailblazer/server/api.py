@@ -72,13 +72,13 @@ def analyses():
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])
 def analysis(analysis_id):
-    """Display a single analysis."""
+    """Retrieve or update an analysis."""
     analysis: Analysis = store.get_analysis_with_id(analysis_id)
     if analysis is None:
         return abort(404)
 
     if request.method == "PUT":
-        analysis.update(request.json)
+        store.update_analysis(request.json)
 
     data = analysis.to_dict()
     data["jobs"] = [job.to_dict() for job in analysis.jobs]
