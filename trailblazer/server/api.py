@@ -62,7 +62,7 @@ def analyses():
 
     query_page: Query = store.paginate_query(query=analyses, page=page, per_page=per_page)
     data = []
-    for analysis in query_page.items:
+    for analysis in query_page.all():
         analysis_data = analysis.to_dict()
         analysis_data["user"] = analysis.user.to_dict() if analysis.user else None
         analysis_data["jobs"] = [job.to_dict() for job in analysis.jobs]

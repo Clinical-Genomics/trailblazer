@@ -15,4 +15,4 @@ class Store(
     """Aggregating class for the store API handlers."""
 
     def paginate_query(query: Query, page: int, per_page: int) -> Query:
-        return query.limit(per_page).offset((page - 1) * per_page).all()
+        return query.limit(per_page).offset((page - 1) * per_page)
