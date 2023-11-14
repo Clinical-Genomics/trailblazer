@@ -41,7 +41,7 @@ class User(Model):
     is_archived = Column(types.Boolean, default=False)
     name = Column(types.String(128))
 
-    runs = orm.relationship("Analysis", backref="user", cascade_backrefs=False)
+    runs = orm.relationship("Analysis", backref="user")
 
     @property
     def first_name(self) -> str:
@@ -94,7 +94,7 @@ class Analysis(Model):
         types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM.value
     )
 
-    jobs = orm.relationship("Job", cascade="all,delete", backref="analysis", cascade_backrefs=False)
+    jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
 
     @property
     def has_ongoing_status(self) -> bool:
