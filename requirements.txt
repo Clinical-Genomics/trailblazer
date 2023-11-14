@@ -13,7 +13,7 @@ Flask-Reverse-Proxy
 Flask
 google-auth
 gunicorn    
-markupsafe==2.0.1
+markupsafe
 
 # misc
 cryptography
