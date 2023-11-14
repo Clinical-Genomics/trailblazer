@@ -29,8 +29,11 @@ class SessionContextManager:
     CLI command has been processed.
     """
 
+    def __init__(self, db_uri: str):
+        self.db_uri = db_uri
+
     def __enter__(self):
-        pass
+        initialize_database(self.db_uri)
 
     def __exit__(self, exc_type, exc_value, tb):
         session: Session = get_session()
@@ -73,9 +76,8 @@ def base(
         **ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=Path(config.name))
     )
     context.obj = dict(validated_config)
-    initialize_database(validated_config.database_url)
+    context.with_resource(SessionContextManager(validated_config.database_url))
     context.obj["trailblazer_db"] = Store()
-    context.with_resource(SessionContextManager())
 
 
 @base.command()
