@@ -60,7 +60,7 @@ def analyses():
         is_visible=bool(request.args.get("is_visible")),
     )
 
-    query_page = analyses.paginate(page, per_page=per_page)
+    query_page: Query = store.paginate_query(query=analyses, page=page, per_page=per_page)
     data = []
     for analysis in query_page.items:
         analysis_data = analysis.to_dict()
