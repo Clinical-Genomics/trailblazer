@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
 from sqlalchemy import inspect
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 SESSION: Optional[Session] = None
 ENGINE: Optional[Engine] = None

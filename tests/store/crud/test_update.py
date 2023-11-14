@@ -390,7 +390,6 @@ def test_update_analysis_comment_when_existing(analysis_store: MockStore, case_i
 
 def test_update_analysis_from_slurm_run_status(
     analysis_store: MockStore,
-    squeue_stream_jobs: str,
     mocker,
     ongoing_analysis_case_id: str,
     slurm_squeue_output: Dict[str, str],
