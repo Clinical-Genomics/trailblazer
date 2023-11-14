@@ -14,8 +14,8 @@ Model = declarative_base()
 
 def initialize_database(db_uri: str) -> None:
     global SESSION, ENGINE
-    ENGINE = create_engine(db_uri, pool_pre_ping=True)
-    session_factory = sessionmaker(ENGINE)
+    ENGINE = create_engine(db_uri, pool_pre_ping=True, future=True)
+    session_factory = sessionmaker(ENGINE, future=True)
     SESSION = scoped_session(session_factory)
 
 
