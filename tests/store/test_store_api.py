@@ -1,4 +1,5 @@
 from tests.mocks.store_mock import MockStore
+from trailblazer.store.database import get_tables
 
 
 def test_setup_db(store: MockStore):
@@ -7,4 +8,4 @@ def test_setup_db(store: MockStore):
     # GIVEN a store which is already setup
 
     # THEN it should contain tables
-    assert store.engine.table_names()
+    assert get_tables()

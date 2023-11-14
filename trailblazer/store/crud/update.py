@@ -26,12 +26,10 @@ class UpdateHandler(BaseHandler):
     def update_analysis_jobs(self, analysis: Analysis, jobs: List[dict]) -> None:
         """Update jobs in the analysis."""
         analysis.jobs = [Job(**job) for job in jobs]
-        self.commit()
 
     def update_user_is_archived(self, user: User, archive: bool = True) -> None:
         """Update is archived for a user in the database."""
         user.is_archived = archive
-        self.commit()
 
     def update_run_status(self, analysis_id: int, analysis_host: Optional[str] = None) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
@@ -82,7 +80,6 @@ class UpdateHandler(BaseHandler):
             )
             for job in squeue_result.jobs
         ]
-        self.commit()
 
     def _update_analysis_from_slurm_squeue_output(
         self, analysis: Analysis, analysis_host: Optional[str] = False
@@ -104,7 +101,6 @@ class UpdateHandler(BaseHandler):
         )
         LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
         analysis.logged_at = datetime.now()
-        self.commit()
 
     def update_tower_run_status(self, analysis_id: int) -> None:
         """Query tower for entries related to given analysis, and update the Trailblazer database."""
@@ -120,7 +116,6 @@ class UpdateHandler(BaseHandler):
         except Exception as error:
             LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
             analysis.status = TrailblazerStatus.ERROR
-            self.commit()
 
     def _update_analysis_from_tower_output(
         self, analysis: Analysis, analysis_id: int, tower_api: TowerAPI
@@ -133,7 +128,6 @@ class UpdateHandler(BaseHandler):
         self.update_analysis_jobs(
             analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id)
         )
-        self.commit()
         LOG.debug(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
 
     def update_analysis_from_slurm_output(
@@ -150,7 +144,6 @@ class UpdateHandler(BaseHandler):
                 f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"
             )
             analysis.status = TrailblazerStatus.ERROR
-            self.commit()
 
     def update_case_analyses_as_deleted(self, case_id: str) -> Optional[List[Analysis]]:
         """Mark analyses connected to a case as deleted."""
@@ -158,7 +151,7 @@ class UpdateHandler(BaseHandler):
         if analyses:
             for analysis in analyses:
                 analysis.is_deleted = True
-            self.commit()
+
         return analyses
 
     def cancel_ongoing_analysis(
@@ -185,7 +178,6 @@ class UpdateHandler(BaseHandler):
             f"Analysis cancelled manually by user:"
             f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
         )
-        self.commit()
 
     def cancel_slurm_analysis(
         self, analysis: Analysis, analysis_host: Optional[str] = None
@@ -211,7 +203,6 @@ class UpdateHandler(BaseHandler):
             raise ValueError(f"Invalid status. Allowed values are: {TrailblazerStatus.statuses()}")
         analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.status = status
-        self.commit()
         LOG.info(f"{analysis.family} - Status set to {status.upper()}")
 
     def update_analysis_status_to_completed(self, analysis_id: int) -> None:
@@ -223,12 +214,10 @@ class UpdateHandler(BaseHandler):
         """Set analysis uploaded at for an analysis."""
         analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.uploaded_at = uploaded_at
-        self.commit()
 
     def update_analysis_comment(self, case_id: str, comment: str) -> None:
         analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.comment: str = (
             " ".join([analysis.comment, comment]) if analysis.comment else comment
         )
-        self.commit()
         LOG.info(f"Adding comment {comment} to analysis {analysis.family}")

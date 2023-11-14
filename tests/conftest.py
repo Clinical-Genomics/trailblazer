@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Dict, Generator, List
 
 import pytest
+from sqlalchemy.orm import Session
 
 from tests.apps.tower.conftest import (
     TOWER_ID,
@@ -20,6 +21,13 @@ from trailblazer.constants import (
     TrailblazerStatus,
 )
 from trailblazer.io.controller import ReadFile
+from trailblazer.store.store import Store
+from trailblazer.store.database import (
+    get_session,
+    create_all_tables,
+    drop_all_tables,
+    initialize_database,
+)
 from trailblazer.store.models import Analysis
 
 
@@ -114,10 +122,11 @@ def trailblazer_context(analysis_store: MockStore) -> Dict[str, MockStore]:
 @pytest.fixture
 def store() -> Generator[MockStore, None, None]:
     """Empty Trailblazer database."""
-    _store = MockStore(uri="sqlite://")
-    _store.setup()
+    initialize_database("sqlite:///:memory:")
+    _store = Store()
+    create_all_tables()
     yield _store
-    _store.drop_all()
+    drop_all_tables()
 
 
 @pytest.fixture(scope="function")
@@ -134,9 +143,7 @@ def job_store(
     """A Trailblazer database wih a populated job table."""
     statuses: List[str] = [TrailblazerStatus.COMPLETED, TrailblazerStatus.FAILED]
     for index, status in enumerate(statuses):
-        StoreHelpers.add_job(
-            analysis_id=index, name=str(index), slurm_id=index, status=status, store=store
-        )
+        StoreHelpers.add_job(analysis_id=index, name=str(index), slurm_id=index, status=status)
     yield store
 
 
@@ -149,10 +156,8 @@ def user_store(
     store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A Trailblazer database wih a populated user table."""
-    StoreHelpers.add_user(email=user_email, name=username, store=store)
-    StoreHelpers.add_user(
-        email=archived_user_email, name=archived_username, is_archived=True, store=store
-    )
+    StoreHelpers.add_user(email=user_email, name=username)
+    StoreHelpers.add_user(email=archived_user_email, name=archived_username, is_archived=True)
     yield store
 
 
@@ -175,15 +180,14 @@ def analysis_store(
     store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A sample Trailblazer database populated with pending analyses."""
-    StoreHelpers.add_user(
-        email=archived_user_email, name=archived_username, is_archived=True, store=store
-    )
+    session: Session = get_session()
+    StoreHelpers.add_user(email=archived_user_email, name=archived_username, is_archived=True)
     for user_data in analysis_data["users"]:
         store.add_user(name=user_data["name"], email=user_data["email"])
     for raw_analysis in raw_analyses:
         raw_analysis["user"] = store.get_user(email=raw_analysis["user"])
-        store.add(Analysis(**raw_analysis))
-    store.commit()
+        raw_analysis["family"] = raw_analysis.pop("case_id")
+        session.add(Analysis(**raw_analysis))
     yield store
 
 

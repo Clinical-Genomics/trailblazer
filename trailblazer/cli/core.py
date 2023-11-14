@@ -6,6 +6,7 @@ from typing import List, Optional
 
 import click
 import coloredlogs
+from sqlalchemy.orm import Session
 
 import trailblazer
 from trailblazer.cli.utils.ls_helper import _get_ls_analysis_message
@@ -14,11 +15,39 @@ from trailblazer.constants import TRAILBLAZER_TIME_STAMP, FileFormat, Trailblaze
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.models import Config
-from trailblazer.store.core import Store
+from trailblazer.store.store import Store
+from trailblazer.store.database import get_session, initialize_database
 from trailblazer.store.models import Analysis, User
 
 LOG = logging.getLogger(__name__)
 LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
+
+
+class SessionContextManager:
+    """
+    Remove the database session to ensure database resources are released when a
+    CLI command has been processed.
+    """
+
+    def __init__(self, db_uri: str):
+        self.db_uri = db_uri
+
+    def __enter__(self):
+        initialize_database(self.db_uri)
+
+    def __exit__(self, exc_type, exc_value, tb):
+        session: Session = get_session()
+        try:
+            if exc_type is not None:
+                LOG.error(f"Rolling back due to exception when processing command: {exc_value}")
+                session.rollback()
+            else:
+                session.commit()
+        except Exception as e:
+            LOG.error(f"Failed to commit transaction after processing command, rolling back: {e}")
+            session.rollback()
+        finally:
+            session.remove()
 
 
 @click.group()
@@ -47,7 +76,8 @@ def base(
         **ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=Path(config.name))
     )
     context.obj = dict(validated_config)
-    context.obj["trailblazer_db"] = Store(validated_config.database_url)
+    context.with_resource(SessionContextManager(validated_config.database_url))
+    context.obj["trailblazer_db"] = Store()
 
 
 @base.command()

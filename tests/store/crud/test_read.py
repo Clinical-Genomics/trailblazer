@@ -257,9 +257,7 @@ def test_get_users(user_store: MockStore, user_email: str, username: str):
 def test_get_users_including_archived(user_store: MockStore, user_email: str, username: str):
     """Test getting a user with username and email which are archived."""
     # GIVEN a database with a user and an archived user
-    StoreHelpers.add_user(
-        name=username, email="old.user@magnolia.com", store=user_store, is_archived=True
-    )
+    StoreHelpers.add_user(name=username, email="old.user@magnolia.com", is_archived=True)
 
     # WHEN getting users
     users: List[User] = user_store.get_users(name=username, exclude_archived=False)

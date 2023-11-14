@@ -1,7 +1,10 @@
 from datetime import datetime
 
+from sqlalchemy.orm import Session
+
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.base import BaseHandler
+from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis, User
 
 
@@ -21,7 +24,8 @@ class CreateHandler(BaseHandler):
         workflow_manager: str = None,
     ) -> Analysis:
         """Add pending analysis with user if supplied with email."""
-        new_analysis: Analysis = Analysis(
+        session: Session = get_session()
+        new_analysis = Analysis(
             config_path=config_path,
             data_analysis=data_analysis,
             family=case_id,
@@ -34,11 +38,12 @@ class CreateHandler(BaseHandler):
             workflow_manager=workflow_manager,
         )
         new_analysis.user = self.get_user(email=email) if email else None
-        self.add_commit(new_analysis)
+        session.add(new_analysis)
         return new_analysis
 
     def add_user(self, name: str, email: str) -> User:
         """Add a new user to the database."""
-        new_user: User = User(email=email, name=name)
-        self.add_commit(new_user)
+        session: Session = get_session()
+        new_user = User(email=email, name=name)
+        session.add(new_user)
         return new_user

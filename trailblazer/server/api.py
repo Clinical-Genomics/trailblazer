@@ -60,9 +60,9 @@ def analyses():
         is_visible=bool(request.args.get("is_visible")),
     )
 
-    query_page = analyses.paginate(page, per_page=per_page)
+    query_page: Query = store.paginate_query(query=analyses, page=page, per_page=per_page)
     data = []
-    for analysis in query_page.items:
+    for analysis in query_page.all():
         analysis_data = analysis.to_dict()
         analysis_data["user"] = analysis.user.to_dict() if analysis.user else None
         analysis_data["jobs"] = [job.to_dict() for job in analysis.jobs]
@@ -73,17 +73,16 @@ def analyses():
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])
 def analysis(analysis_id):
     """Display a single analysis."""
-    analysis_obj = store.get_analysis_with_id(analysis_id=analysis_id)
-    if analysis_obj is None:
+    analysis: Analysis = store.get_analysis_with_id(analysis_id)
+    if analysis is None:
         return abort(404)
 
     if request.method == "PUT":
-        analysis_obj.update(request.json)
-        store.commit()
+        analysis.update(request.json)
 
-    data = analysis_obj.to_dict()
-    data["jobs"] = [job.to_dict() for job in analysis_obj.jobs]
-    data["user"] = analysis_obj.user.to_dict() if analysis_obj.user else None
+    data = analysis.to_dict()
+    data["jobs"] = [job.to_dict() for job in analysis.jobs]
+    data["user"] = analysis.user.to_dict() if analysis.user else None
     return jsonify(**data)
 
 

@@ -1,11 +1,17 @@
-from flask_alchy import Alchy
-
-from trailblazer.store.core import CoreHandler
-from trailblazer.store.models import Model
-
-
-class TrailblazerAlchy(Alchy, CoreHandler):
-    pass
+from flask import Flask
+from trailblazer.store.database import initialize_database
+from trailblazer.store.store import Store
 
 
-store = TrailblazerAlchy(Model=Model)
+class FlaskStore(Store):
+    def __init__(self, app=None):
+        if app:
+            self.init_app(app)
+
+    def init_app(self, app: Flask):
+        uri = app.config["SQLALCHEMY_DATABASE_URI"]
+        initialize_database(uri)
+        super(FlaskStore, self).__init__()
+
+
+store = FlaskStore()
