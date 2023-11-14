@@ -232,9 +232,9 @@ class UpdateHandler(BaseHandler):
             analysis.comment = comment
 
         if "is_visible" in data:
-            is_visibile = bool(data["is_visible"])
-            LOG.info(f"Setting visibility to {is_visibile} for analysis {analysis.family}")
-            analysis.is_visible = is_visibile
+            is_visible = bool(data["is_visible"])
+            LOG.info(f"Setting visibility to {is_visible} for analysis {analysis.family}")
+            analysis.is_visible = is_visible
 
         if "status" in data:
             self.update_analysis_status(case_id=analysis.family, status=data["status"])
