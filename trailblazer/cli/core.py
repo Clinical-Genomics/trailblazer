@@ -28,6 +28,7 @@ class SessionContextManager:
     Remove the database session to ensure database resources are released when a
     CLI command has been processed.
     """
+
     def __enter__(self):
         pass
 
