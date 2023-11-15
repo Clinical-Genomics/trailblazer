@@ -238,7 +238,7 @@ class UpdateHandler(BaseHandler):
 
         if is_visible:
             LOG.info(f"Setting visibility to {is_visible} for analysis {analysis.family}")
-            analysis.is_visible = is_visible
+            analysis.is_visible = bool(is_visible)
 
         if status:
             self.update_analysis_status(case_id=analysis.family, status=status)
