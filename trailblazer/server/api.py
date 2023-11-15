@@ -78,9 +78,9 @@ def analysis(analysis_id):
         return abort(404)
 
     if request.method == "PUT":
-        status: Optional[str] = request.json.get("status", type=str)
-        comment: Optional[str] = request.json.get("comment", type=str)
-        is_visible: Optional[bool] = request.json.get("is_visible", type=bool)
+        status: Optional[str] = str(request.json.get("status"))
+        comment: Optional[str] = str(request.json.get("comment"))
+        is_visible: Optional[bool] = bool(request.json.get("is_visible"))
         store.update_analysis(
             analysis_id=analysis_id, comment=comment, status=status, is_visible=is_visible
         )
