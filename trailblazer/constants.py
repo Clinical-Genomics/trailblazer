@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, StrEnum
 from typing import Dict, List, Tuple
 
 ONE_MONTH_IN_DAYS: int = 31
@@ -12,13 +12,13 @@ TOWER_TIMESTAMP_FORMAT_EXTENDED: str = "%Y-%m-%dT%H:%M:%S.%fZ"
 TYPES: Tuple = ("other", "rna", "tgs", "wes", "wgs", "wts")
 
 
-class FileFormat(str, Enum):
+class FileFormat(StrEnum):
     CSV: str = "csv"
     JSON: str = "json"
     YAML: str = "yaml"
 
 
-class FileExtension(str, Enum):
+class FileExtension(StrEnum):
     CSV: str = ".csv"
     JSON: str = ".json"
     YAML: str = ".yaml"
@@ -35,7 +35,7 @@ class WorkflowManager(Enum):
         return [task.value for task in cls]
 
 
-class Pipeline(str, Enum):
+class Pipeline(StrEnum):
     """Analysis pipeline names."""
 
     BALSAMIC: str = "BALSAMIC"
@@ -44,7 +44,7 @@ class Pipeline(str, Enum):
     SARS_COV_2: str = "SARS-COV-2"
 
 
-class SlurmSqueueHeader(str, Enum):
+class SlurmSqueueHeader(StrEnum):
     """SLURM squeue output headers."""
 
     JOBID: str = "JOBID"
@@ -55,7 +55,7 @@ class SlurmSqueueHeader(str, Enum):
     TIME_LIMIT: str = "TIME_LIMIT"
 
 
-class SlurmJobStatus(str, Enum):
+class SlurmJobStatus(StrEnum):
     """SLURM allowed status."""
 
     CANCELLED: str = "cancelled"
@@ -75,13 +75,13 @@ class SlurmJobStatus(str, Enum):
         return cls.PENDING.value, cls.RUNNING.value, cls.COMPLETING.value
 
 
-class CharacterFormat(str, Enum):
+class CharacterFormat(StrEnum):
     """Define character encoding/decoding to use."""
 
     UNICODE_TRANSFORMATION_FORMAT_8: str = "utf-8"
 
 
-class TrailblazerStatus(str, Enum):
+class TrailblazerStatus(StrEnum):
     """Trailblazer allowed status."""
 
     CANCELLED: str = "cancelled"
@@ -102,7 +102,7 @@ class TrailblazerStatus(str, Enum):
         return cls.PENDING.value, cls.RUNNING.value, cls.COMPLETING.value, cls.ERROR.value
 
 
-class TrailblazerStatusColor(str, Enum):
+class TrailblazerStatusColor(StrEnum):
     """Trailblazer status colors."""
 
     COMPLETED: str = "green"
