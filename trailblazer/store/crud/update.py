@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
+from sqlalchemy.orm import Session
 
 from trailblazer.apps.slurm.api import (
     cancel_slurm_job,
@@ -15,6 +16,7 @@ from trailblazer.apps.tower.api import TowerAPI, get_tower_api
 from trailblazer.constants import SlurmJobStatus, TrailblazerStatus, WorkflowManager
 from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.base import BaseHandler
+from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis, Job, User
 
 LOG = logging.getLogger(__name__)
@@ -26,10 +28,14 @@ class UpdateHandler(BaseHandler):
     def update_analysis_jobs(self, analysis: Analysis, jobs: List[dict]) -> None:
         """Update jobs in the analysis."""
         analysis.jobs = [Job(**job) for job in jobs]
+        session: Session = get_session()
+        session.commit()
 
     def update_user_is_archived(self, user: User, archive: bool = True) -> None:
         """Update is archived for a user in the database."""
         user.is_archived = archive
+        session: Session = get_session()
+        session.commit()
 
     def update_run_status(self, analysis_id: int, analysis_host: Optional[str] = None) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
@@ -80,6 +86,8 @@ class UpdateHandler(BaseHandler):
             )
             for job in squeue_result.jobs
         ]
+        session: Session = get_session()
+        session.commit()
 
     def _update_analysis_from_slurm_squeue_output(
         self, analysis: Analysis, analysis_host: Optional[str] = False
@@ -101,6 +109,8 @@ class UpdateHandler(BaseHandler):
         )
         LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
         analysis.logged_at = datetime.now()
+        session: Session = get_session()
+        session.commit()
 
     def update_tower_run_status(self, analysis_id: int) -> None:
         """Query tower for entries related to given analysis, and update the Trailblazer database."""
@@ -116,6 +126,8 @@ class UpdateHandler(BaseHandler):
         except Exception as error:
             LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
             analysis.status = TrailblazerStatus.ERROR
+            session: Session = get_session()
+            session.commit()
 
     def _update_analysis_from_tower_output(
         self, analysis: Analysis, analysis_id: int, tower_api: TowerAPI
@@ -128,6 +140,8 @@ class UpdateHandler(BaseHandler):
         self.update_analysis_jobs(
             analysis=analysis, jobs=tower_api.get_jobs(analysis_id=analysis.id)
         )
+        session: Session = get_session()
+        session.commit()
         LOG.debug(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
 
     def update_analysis_from_slurm_output(
@@ -144,6 +158,8 @@ class UpdateHandler(BaseHandler):
                 f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"
             )
             analysis.status = TrailblazerStatus.ERROR
+            session: Session = get_session()
+            session.commit()
 
     def update_case_analyses_as_deleted(self, case_id: str) -> Optional[List[Analysis]]:
         """Mark analyses connected to a case as deleted."""
@@ -151,7 +167,8 @@ class UpdateHandler(BaseHandler):
         if analyses:
             for analysis in analyses:
                 analysis.is_deleted = True
-
+            session: Session = get_session()
+            session.commit()
         return analyses
 
     def cancel_ongoing_analysis(
@@ -178,6 +195,8 @@ class UpdateHandler(BaseHandler):
             f"Analysis cancelled manually by user:"
             f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
         )
+        session: Session = get_session()
+        session.commit()
 
     def cancel_slurm_analysis(
         self, analysis: Analysis, analysis_host: Optional[str] = None
@@ -203,6 +222,8 @@ class UpdateHandler(BaseHandler):
             raise ValueError(f"Invalid status. Allowed values are: {TrailblazerStatus.statuses()}")
         analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.status = status
+        session: Session = get_session()
+        session.commit()
         LOG.info(f"{analysis.family} - Status set to {status.upper()}")
 
     def update_analysis_status_to_completed(self, analysis_id: int) -> None:
@@ -214,10 +235,40 @@ class UpdateHandler(BaseHandler):
         """Set analysis uploaded at for an analysis."""
         analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.uploaded_at = uploaded_at
+        session: Session = get_session()
+        session.commit()
 
     def update_analysis_comment(self, case_id: str, comment: str) -> None:
         analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.comment: str = (
             " ".join([analysis.comment, comment]) if analysis.comment else comment
         )
+        session: Session = get_session()
+        session.commit()
         LOG.info(f"Adding comment {comment} to analysis {analysis.family}")
+
+    def update_analysis(
+        self,
+        analysis_id: int,
+        status: Optional[str] = None,
+        comment: Optional[str] = None,
+        is_visible: Optional[bool] = None,
+    ) -> Analysis:
+        """Update an analysis."""
+        analysis: Analysis = self.get_analysis_with_id(analysis_id)
+
+        if comment:
+            LOG.info(f"Adding comment {comment} to analysis {analysis.family}")
+            analysis.comment = comment
+
+        if is_visible:
+            LOG.info(f"Setting visibility to {is_visible} for analysis {analysis.family}")
+            analysis.is_visible = bool(is_visible)
+
+        if status:
+            self.update_analysis_status(case_id=analysis.family, status=status)
+
+        session: Session = get_session()
+        session.commit()
+
+        return analysis

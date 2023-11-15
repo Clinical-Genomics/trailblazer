@@ -4,7 +4,7 @@ import os
 from flask import Flask
 from flask_cors import CORS
 from flask_reverse_proxy import FlaskReverseProxied
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import scoped_session
 
 from trailblazer.server import api, ext
 from trailblazer.store.database import get_session
@@ -36,20 +36,10 @@ def index():
 
 
 @app.teardown_appcontext
-def teardown_session(exception=None):
+def teardown_session(_):
     """
     Remove the database session to ensure database resources are released when a
     request has been processed.
     """
-    session: Session = get_session()
-    try:
-        if exception is not None:
-            LOG.error(f"Rolling back due to exception when processing request: {exception}.")
-            session.rollback()
-        else:
-            session.commit()
-    except Exception as e:
-        LOG.error(f"Failed to commit transaction after processing request, rolling back: {e}.")
-        session.rollback()
-    finally:
-        session.remove()
+    session: scoped_session = get_session()
+    session.remove()

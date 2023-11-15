@@ -481,3 +481,39 @@ def test_update_run_status_using_tower(
     # THEN the status is unchanged, and no database errors were raised
     assert analysis.status == status
     assert analysis.progress == progress
+
+
+def test_update_analysis_with_comment(analysis_store: MockStore, case_id: str):
+    # GIVEN an analysis without a comment
+    analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_id)
+    analysis.comment = ""
+
+    # WHEN updating the analysis with a comment
+    analysis_store.update_analysis(analysis_id=analysis.id, comment="test")
+
+    # THEN the comment should be set
+    assert analysis.comment == "test"
+
+
+def test_update_analysis_status(analysis_store: MockStore, case_id: str):
+    # GIVEN an analysis with a non failed status
+    analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_id)
+    assert analysis.status != "failed"
+
+    # WHEN giving the analysis a status
+    analysis_store.update_analysis(analysis_id=analysis.id, status="failed")
+
+    # THEN the status should be set
+    assert analysis.status == "failed"
+
+
+def test_update_analysis_visibility(analysis_store: MockStore, case_id: str):
+    # GIVEN an analysis which is not visible
+    analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_id)
+    analysis.is_visible = False
+
+    # WHEN making the analysis visible
+    analysis_store.update_analysis(analysis_id=analysis.id, is_visible=True)
+
+    # THEN the analysis should be visible
+    assert analysis.is_visible
