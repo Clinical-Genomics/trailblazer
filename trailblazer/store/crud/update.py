@@ -267,4 +267,8 @@ class UpdateHandler(BaseHandler):
 
         if status:
             self.update_analysis_status(case_id=analysis.family, status=status)
+
+        session: Session = get_session()
+        session.commit()
+
         return analysis
