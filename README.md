@@ -10,7 +10,7 @@ Trailblazer is a tool that aims to provide:
 
 ## Installation
 
-Trailblazer is written in Python 3.8 and is available on the [Python Package Index][pypi] (PyPI).
+Trailblazer is written in Python 3.11 and is available on the [Python Package Index][pypi] (PyPI).
 
 ```bash
 pip install trailblazer

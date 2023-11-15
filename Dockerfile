@@ -1,4 +1,4 @@
-FROM python:3.8-slim-bullseye
+FROM python:3.11-slim-bullseye
 
 ENV GUNICORN_WORKERS=1
 ENV GUNICORN_TREADS=1
