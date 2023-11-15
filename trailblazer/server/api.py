@@ -61,24 +61,29 @@ def analyses():
     )
 
     query_page: Query = store.paginate_query(query=analyses, page=page, per_page=per_page)
-    data = []
+    response_data = []
     for analysis in query_page.all():
         analysis_data = analysis.to_dict()
         analysis_data["user"] = analysis.user.to_dict() if analysis.user else None
         analysis_data["jobs"] = [job.to_dict() for job in analysis.jobs]
-        data.append(analysis_data)
-    return jsonify(analyses=data)
+        response_data.append(analysis_data)
+    return jsonify(analyses=response_data)
 
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])
 def analysis(analysis_id):
-    """Display a single analysis."""
+    """Retrieve or update an analysis."""
     analysis: Analysis = store.get_analysis_with_id(analysis_id)
     if analysis is None:
         return abort(404)
 
     if request.method == "PUT":
-        analysis.update(request.json)
+        status: Optional[str] = request.json.get("status")
+        comment: Optional[str] = request.json.get("comment")
+        is_visible: Optional[bool] = request.json.get("is_visible")
+        store.update_analysis(
+            analysis_id=analysis_id, comment=comment, status=status, is_visible=is_visible
+        )
 
     data = analysis.to_dict()
     data["jobs"] = [job.to_dict() for job in analysis.jobs]

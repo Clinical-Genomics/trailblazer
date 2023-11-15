@@ -221,3 +221,25 @@ class UpdateHandler(BaseHandler):
             " ".join([analysis.comment, comment]) if analysis.comment else comment
         )
         LOG.info(f"Adding comment {comment} to analysis {analysis.family}")
+
+    def update_analysis(
+        self,
+        analysis_id: int,
+        status: Optional[str] = None,
+        comment: Optional[str] = None,
+        is_visible: Optional[bool] = None,
+    ) -> Analysis:
+        """Update an analysis."""
+        analysis: Analysis = self.get_analysis_with_id(analysis_id)
+
+        if comment:
+            LOG.info(f"Adding comment {comment} to analysis {analysis.family}")
+            analysis.comment = comment
+
+        if is_visible:
+            LOG.info(f"Setting visibility to {is_visible} for analysis {analysis.family}")
+            analysis.is_visible = bool(is_visible)
+
+        if status:
+            self.update_analysis_status(case_id=analysis.family, status=status)
+        return analysis
