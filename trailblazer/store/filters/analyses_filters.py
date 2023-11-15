@@ -61,12 +61,18 @@ def filter_analyses_by_statuses(analyses: Query, statuses: List[str], **kwargs) 
     return analyses.filter(Analysis.status.in_(statuses))
 
 
+def filter_analyses_by_data_analysis(analyses: Query, data_analysis: str, **kwargs) -> Query:
+    """Filter analyses by data analysis."""
+    return analyses.filter(Analysis.data_analysis == data_analysis)
+
+
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
     FILTER_BY_BEFORE_STARTED_AT: Callable = filter_analyses_by_before_started_at
     FILTER_BY_CASE_ID: Callable = filter_analyses_by_case_id
     FILTER_BY_COMMENT: Callable = filter_analyses_by_comment
+    FILTER_BY_DATA_ANALYS: Callable = filter_analyses_by_data_analysis
     FILTER_BY_ENTRY_ID: Callable = filter_analyses_by_entry_id
     FILTER_BY_SEARCH_TERM: Callable = filter_analyses_by_search_term
     FILTER_BY_IS_VISIBLE: Callable = filter_analyses_by_is_visible
@@ -82,6 +88,7 @@ def apply_analysis_filter(
     case_id: Optional[str] = None,
     search_term: Optional[str] = None,
     comment: Optional[str] = None,
+    data_analysis: Optional[str] = None,
     started_at: Optional[datetime] = None,
     status: Optional[str] = None,
     statuses: Optional[List[str]] = None,
@@ -94,6 +101,7 @@ def apply_analysis_filter(
             analyses=analyses,
             analysis_id=analysis_id,
             case_id=case_id,
+            data_analysis=data_analysis,
             comment=comment,
             search_term=search_term,
             started_at=started_at,

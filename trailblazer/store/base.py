@@ -50,3 +50,20 @@ class BaseHandler:
             search_term=search_term,
         )
         return analyses.order_by(Analysis.started_at.desc())
+
+    def get_analyses_query_by_data_analysis(
+        self, data_analysis: Optional[str] = None, is_visible: bool = False
+    ) -> Query:
+        filters: List[Callable] = [
+            AnalysisFilter.FILTER_BY_DATA_ANALYS,
+        ]
+
+        if is_visible:
+            filters.append(AnalysisFilter.FILTER_BY_IS_VISIBLE)
+
+        analyses: Query = apply_analysis_filter(
+            filter_functions=filters,
+            analyses=self.get_query(Analysis),
+            data_analysis=data_analysis,
+        )
+        return analyses.order_by(Analysis.started_at.desc())

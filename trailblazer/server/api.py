@@ -55,8 +55,8 @@ def analyses():
     """Display analyses."""
     per_page = int(request.args.get("per_page", 100))
     page = int(request.args.get("page", 1))
-    analyses: Query = store.get_analyses_query_by_search_term_and_is_visible(
-        search_term=request.args.get("query"),
+    analyses: Query = store.get_analyses_query_by_data_analysis(
+        data_analysis=request.args.get("query"),
         is_visible=bool(request.args.get("is_visible")),
     )
 
