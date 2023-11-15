@@ -39,6 +39,7 @@ class CreateHandler(BaseHandler):
         )
         new_analysis.user = self.get_user(email=email) if email else None
         session.add(new_analysis)
+        session.commit()
         return new_analysis
 
     def add_user(self, name: str, email: str) -> User:
@@ -46,4 +47,5 @@ class CreateHandler(BaseHandler):
         session: Session = get_session()
         new_user = User(email=email, name=name)
         session.add(new_user)
+        session.commit()
         return new_user
