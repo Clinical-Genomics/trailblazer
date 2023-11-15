@@ -1,5 +1,5 @@
 Click
-SQLAlchemy<1.4
+SQLAlchemy
 alembic
 coloredlogs
 marshmallow
