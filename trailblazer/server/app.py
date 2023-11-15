@@ -36,7 +36,7 @@ def index():
 
 
 @app.teardown_appcontext
-def teardown_session():
+def teardown_session(_):
     """
     Remove the database session to ensure database resources are released when a
     request has been processed.
