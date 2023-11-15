@@ -21,13 +21,11 @@ def test_delete_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict],
 
     # WHEN jobs are updated
     analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
-    session.commit()
 
     assert analysis.jobs
 
     # WHEN jobs are deleted
     analysis_store.delete_analysis_jobs(analysis=analysis)
-    session.commit()
 
     # THEN analysis object should have no jobs
     assert not analysis.jobs
@@ -44,7 +42,6 @@ def test_delete_analysis(analysis_store: MockStore, case_id: str):
 
     # WHEN deleting analysis
     analysis_store.delete_analysis(analysis_id=analysis.id)
-    session.commit()
 
     # THEN analysis object should be deleted
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
@@ -62,7 +59,6 @@ def test_delete_analysis_with_force(analysis_store: MockStore, case_id: str):
 
     # WHEN deleting analysis
     analysis_store.delete_analysis(analysis_id=analysis.id, force=True)
-    session.commit()
 
     # THEN analysis object should be deleted
     analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)

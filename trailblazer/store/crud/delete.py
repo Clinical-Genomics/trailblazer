@@ -20,6 +20,7 @@ class DeleteHandler(BaseHandler):
         session: Session = get_session()
         for job in analysis.jobs:
             session.delete(job)
+        session.commit()
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
         """Delete the analysis from the database. Also delete ongoing analysis if 'force' is True.
@@ -37,3 +38,4 @@ class DeleteHandler(BaseHandler):
             )
         LOG.info(f"Deleting analysis: {analysis_id}, for case: {analysis.family}")
         session.delete(analysis)
+        session.commit()
