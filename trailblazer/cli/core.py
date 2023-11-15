@@ -32,7 +32,7 @@ class DatabaseResource:
     def __init__(self, db_uri: str):
         self.db_uri = db_uri
 
-    def __enter__(self):
+    def __enter__(self, _, __, ___):
         initialize_database(self.db_uri)
 
     def __exit__(self):
