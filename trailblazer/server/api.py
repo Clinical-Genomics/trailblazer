@@ -65,7 +65,6 @@ def analyses():
     for analysis in query_page.all():
         analysis_data = analysis.to_dict()
         analysis_data["user"] = analysis.user.to_dict() if analysis.user else None
-        analysis_data["jobs"] = [job.to_dict() for job in analysis.jobs]
         response_data.append(analysis_data)
     return jsonify(analyses=response_data)
 
