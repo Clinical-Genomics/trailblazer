@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List, Optional, Union
+from typing import Dict, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
@@ -29,7 +29,7 @@ class TowerTask(BaseModel):
     tag: Optional[str] = None
     submit: Optional[str] = None
     complete: Optional[str] = None
-    module: List[str]
+    module: list[str]
     container: Optional[str] = None
     attempt: Optional[int] = None
     script: Optional[str] = None
@@ -82,9 +82,9 @@ class TowerTask(BaseModel):
     @field_validator("start", "dateCreated", "lastUpdated")
     @classmethod
     def set_datetime(cls, raw_time) -> Optional[Union[str, datetime]]:
-        if type(raw_time) is str:
+        if isinstance(raw_time, str):
             return tower_datetime_converter(datetime_stamp=raw_time)
-        elif type(raw_time) is datetime:
+        elif isinstance(raw_time, datetime):
             return raw_time
         else:
             return None
@@ -119,9 +119,9 @@ class TowerProcess(BaseModel):
     @field_validator("dateCreated", "lastUpdated")
     @classmethod
     def set_datetime(cls, raw_time) -> Optional[Union[str, datetime]]:
-        if type(raw_time) is str:
+        if isinstance(raw_time, str):
             return tower_datetime_converter(datetime_stamp=raw_time)
-        elif type(raw_time) is datetime:
+        elif isinstance(raw_time, datetime):
             return raw_time
         else:
             return None
@@ -149,13 +149,13 @@ class TowerProgress(BaseModel):
     """NF Tower progress model."""
 
     workflowProgress: Dict
-    processesProgress: List
+    processesProgress: list
 
 
 class TowerTaskResponse(BaseModel):
     """NF Tower task response model."""
 
-    tasks: List[Optional[Dict[str, TowerTask]]]
+    tasks: list[Optional[Dict[str, TowerTask]]]
     total: int
 
 

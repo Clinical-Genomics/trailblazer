@@ -1,10 +1,8 @@
-from typing import List, Optional
+from typing import Optional
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect
 from sqlalchemy.engine.base import Engine
-from sqlalchemy.orm import Session, scoped_session, sessionmaker
-from sqlalchemy import inspect
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import Session, declarative_base, scoped_session, sessionmaker
 
 SESSION: Optional[Session] = None
 ENGINE: Optional[Engine] = None
@@ -33,7 +31,7 @@ def drop_all_tables() -> None:
     Model.metadata.drop_all(bind=SESSION.get_bind())
 
 
-def get_tables() -> List[str]:
+def get_tables() -> list[str]:
     """Get a list of all tables in the database."""
     inspector = inspect(ENGINE)
     return inspector.get_table_names()

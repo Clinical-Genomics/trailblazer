@@ -1,6 +1,6 @@
 """Model SLURM output."""
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -35,9 +35,9 @@ class SqueueJob(BaseModel):
         """Convert squeue timestamp string into minutes."""
         if not raw_time_elapsed or not isinstance(raw_time_elapsed, str):
             return 0
-        timestamps: List[str] = []
+        timestamps: list[str] = []
         if "-" in raw_time_elapsed:
-            timestamps: List[str] = raw_time_elapsed.split("-")
+            timestamps: list[str] = raw_time_elapsed.split("-")
         day_nr: int = int(timestamps[0]) if timestamps else 0
         raw_timestamp: str = timestamps[1] if timestamps else raw_time_elapsed
         time_elapsed: datetime = get_datetime_from_timestamp(
@@ -58,7 +58,7 @@ class SqueueJob(BaseModel):
 class SqueueResult(BaseModel):
     """Model used to parse SLURM squeue output."""
 
-    jobs: List[SqueueJob]
+    jobs: list[SqueueJob]
     jobs_status_distribution: Optional[Dict[str, float]] = None
 
     @model_validator(mode="after")
@@ -67,7 +67,7 @@ class SqueueResult(BaseModel):
         Example {PENDING:0.33, RUNNING:0.33, FAILED: 0.33}."""
         if not self.jobs:
             raise MissingSqueueOutput("No squeue output")
-        job_statuses: List[str] = [job.status for job in self.jobs]
+        job_statuses: list[str] = [job.status for job in self.jobs]
         self.jobs_status_distribution = {
             job_status: round(job_statuses.count(job_status) / len(self.jobs), 2)
             for job_status in set(job_statuses)

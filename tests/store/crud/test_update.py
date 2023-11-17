@@ -1,6 +1,6 @@
 import subprocess
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 import pytest
 
@@ -19,7 +19,7 @@ from trailblazer.store.models import Analysis, User
 FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH: str = "trailblazer.store.crud.update.get_slurm_squeue_output"
 
 
-def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
+def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: list[dict], case_id: str):
     """Test jobs are successfully updated."""
 
     # GIVEN an analysis with no jobs
@@ -180,7 +180,7 @@ def test_update_analysis_jobs_from_slurm_jobs(analysis_store: MockStore, squeue_
 def test_update_case_analyses_as_deleted(analysis_store: MockStore, ongoing_analysis_case_id: str):
     """Test marking case analyses as deleted."""
     # GIVEN case id for a case with analyses that are not deleted
-    analyses: Optional[List[Analysis]] = analysis_store.get_analyses_for_case(
+    analyses: Optional[list[Analysis]] = analysis_store.get_analyses_for_case(
         case_id=ongoing_analysis_case_id
     )
     for analysis in analyses:
@@ -188,7 +188,7 @@ def test_update_case_analyses_as_deleted(analysis_store: MockStore, ongoing_anal
 
     # WHEN marking analyses as deleted
     analysis_store.update_case_analyses_as_deleted(case_id=ongoing_analysis_case_id)
-    analyses: Optional[List[Analysis]] = analysis_store.get_analyses_for_case(
+    analyses: Optional[list[Analysis]] = analysis_store.get_analyses_for_case(
         case_id=ongoing_analysis_case_id
     )
 
@@ -204,7 +204,7 @@ def test_update_case_analyses_as_deleted_with_non_existing_case(
     # GIVEN case id for that do not exist
 
     # WHEN marking analyses as deleted
-    analyses: Optional[List[Analysis]] = analysis_store.update_case_analyses_as_deleted(
+    analyses: Optional[list[Analysis]] = analysis_store.update_case_analyses_as_deleted(
         case_id=case_id_not_in_db
     )
 
@@ -213,7 +213,7 @@ def test_update_case_analyses_as_deleted_with_non_existing_case(
 
 
 def test_cancel_ongoing_slurm_analysis(
-    analysis_store: MockStore, caplog, mocker, ongoing_analysis_case_id: str, tower_jobs: List[dict]
+    analysis_store: MockStore, caplog, mocker, ongoing_analysis_case_id: str, tower_jobs: list[dict]
 ):
     """Test all ongoing analysis jobs are cancelled."""
 
@@ -277,7 +277,7 @@ def test_cancel_ongoing_tower_analysis(
 
 
 def test_cancel_ongoing_analysis_when_no_analysis(
-    analysis_id_does_not_exist: int, analysis_store: MockStore, caplog, tower_jobs: List[dict]
+    analysis_id_does_not_exist: int, analysis_store: MockStore, caplog, tower_jobs: list[dict]
 ):
     """Test exception is raised if analysis id does not exist."""
     caplog.set_level("INFO")
@@ -295,7 +295,7 @@ def test_cancel_ongoing_analysis_when_no_ongoing_analysis(
     analysis_store: MockStore,
     caplog,
     failed_analysis_case_id: str,
-    tower_jobs: List[dict],
+    tower_jobs: list[dict],
 ):
     """Test exception is raised if analysis status is not ongoing."""
     caplog.set_level("INFO")
@@ -419,7 +419,7 @@ def test_update_analysis_from_slurm_run_status(
     assert updated_analysis.jobs
 
 
-def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
+def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: list[dict], case_id: str):
     """Assess that jobs are successfully updated when using NF Tower."""
 
     # GIVEN an analysis without jobs

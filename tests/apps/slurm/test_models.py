@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Dict
+from typing import Dict
 
 from trailblazer.apps.slurm.models import SqueueJob, SqueueResult
 from trailblazer.constants import FileFormat, SlurmJobStatus
@@ -14,7 +14,7 @@ def test_instantiate_squeue_result(squeue_stream_pending_job: str):
     """Tests squeue output against a pydantic model."""
     # GIVEN a csv squeue stream
 
-    csv_content: List[dict] = ReadStream.get_content_from_stream(
+    csv_content: list[dict] = ReadStream.get_content_from_stream(
         file_format=FileFormat.CSV,
         stream=squeue_stream_pending_job,
         read_to_dict=True,
@@ -31,7 +31,7 @@ def test_instantiate_squeue_job(squeue_stream_pending_job: str):
     """Tests squeue row output against a pydantic model."""
     # GIVEN a csv squeue stream
 
-    csv_content: List[dict] = ReadStream.get_content_from_stream(
+    csv_content: list[dict] = ReadStream.get_content_from_stream(
         file_format=FileFormat.CSV,
         stream=squeue_stream_pending_job,
         read_to_dict=True,
@@ -48,7 +48,7 @@ def test_squeue_job_convert_time_elapse_to_minutes(squeue_stream_jobs: str):
     """Tests SqueueJob convert time elapsed to minutes validator."""
     # GIVEN a csv squeue stream
 
-    csv_content: List[dict] = ReadStream.get_content_from_stream(
+    csv_content: list[dict] = ReadStream.get_content_from_stream(
         file_format=FileFormat.CSV,
         stream=squeue_stream_jobs,
         read_to_dict=True,
@@ -72,7 +72,7 @@ def test_convert_status_to_lower_case(squeue_stream_pending_job: str):
     """Tests converting status to lower case."""
     # GIVEN a csv squeue stream
 
-    csv_content: List[dict] = ReadStream.get_content_from_stream(
+    csv_content: list[dict] = ReadStream.get_content_from_stream(
         file_format=FileFormat.CSV,
         stream=squeue_stream_pending_job,
         read_to_dict=True,
@@ -89,7 +89,7 @@ def test_convert_started_to_datetime(squeue_stream_pending_job: str):
     """Tests converting started to datetime."""
     # GIVEN a csv squeue stream
 
-    csv_content: List[dict] = ReadStream.get_content_from_stream(
+    csv_content: list[dict] = ReadStream.get_content_from_stream(
         file_format=FileFormat.CSV,
         stream=squeue_stream_pending_job,
         read_to_dict=True,
@@ -106,7 +106,7 @@ def test_convert_started_to_datetime_no_datetime_format(squeue_stream_pending_jo
     """Tests converting started to datetime when started is not in datetime format."""
     # GIVEN a csv squeue stream
 
-    csv_content: List[dict] = ReadStream.get_content_from_stream(
+    csv_content: list[dict] = ReadStream.get_content_from_stream(
         file_format=FileFormat.CSV,
         stream=squeue_stream_pending_job_not_started,
         read_to_dict=True,
@@ -122,7 +122,7 @@ def test_convert_started_to_datetime_no_datetime_format(squeue_stream_pending_jo
 def test_set_jobs_status_distribution(squeue_stream_pending_job: str):
     """Tests set job status distribution from jobs status."""
     # GIVEN a csv squeue stream
-    csv_content: List[dict] = ReadStream.get_content_from_stream(
+    csv_content: list[dict] = ReadStream.get_content_from_stream(
         file_format=FileFormat.CSV,
         stream=squeue_stream_pending_job,
         read_to_dict=True,

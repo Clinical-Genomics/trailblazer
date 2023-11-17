@@ -1,12 +1,11 @@
 from datetime import datetime
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, Dict, Optional, Union
 
 from sqlalchemy import desc
-from sqlalchemy.orm import Query, Session
+from sqlalchemy.orm import Query
 
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.base import BaseHandler
-from trailblazer.store.database import get_session
 from trailblazer.store.filters.analyses_filters import (
     AnalysisFilter,
     apply_analysis_filter,
@@ -21,13 +20,13 @@ class ReadHandler(BaseHandler):
 
     def get_nr_jobs_with_status_per_category(
         self, status: str, since_when: datetime = None
-    ) -> List[Dict[str, Union[str, int]]]:
+    ) -> list[Dict[str, Union[str, int]]]:
         """Return the number of jobs with status per category (name)."""
         filter_map: Dict[Callable, Optional[Union[str, bool]]] = {
             JobFilter.FILTER_BY_STATUS: status,
             JobFilter.FILTER_BY_SINCE_WHEN: since_when,
         }
-        filter_functions: List[Callable] = [
+        filter_functions: list[Callable] = [
             function for function, supplied_arg in filter_map.items() if supplied_arg
         ]
         categories = apply_job_filter(
@@ -44,7 +43,7 @@ class ReadHandler(BaseHandler):
         before: Optional[datetime] = None,
         comment: Optional[str] = None,
         status: Optional[str] = None,
-    ) -> Optional[List[Analysis]]:
+    ) -> Optional[list[Analysis]]:
         """Return analyses meeting supplied arguments."""
         if not before and not comment and not status:
             return
@@ -53,7 +52,7 @@ class ReadHandler(BaseHandler):
             AnalysisFilter.FILTER_BY_BEFORE_STARTED_AT: before,
             AnalysisFilter.FILTER_BY_STATUS: status,
         }
-        filter_functions: List[Callable] = [
+        filter_functions: list[Callable] = [
             function for function, supplied_arg in filter_map.items() if supplied_arg
         ]
         analyses: Query = apply_analysis_filter(
@@ -93,7 +92,7 @@ class ReadHandler(BaseHandler):
             .first()
         )
 
-    def get_analyses_for_case(self, case_id: str) -> Optional[List[Analysis]]:
+    def get_analyses_for_case(self, case_id: str) -> Optional[list[Analysis]]:
         """Return all analyses for a case."""
         return apply_analysis_filter(
             analyses=self.get_query(table=Analysis),
@@ -103,7 +102,7 @@ class ReadHandler(BaseHandler):
             case_id=case_id,
         ).all()
 
-    def get_analyses_with_statuses(self, statuses: List[str]) -> Optional[List[Analysis]]:
+    def get_analyses_with_statuses(self, statuses: list[str]) -> Optional[list[Analysis]]:
         """Get analyses by statuses."""
         return apply_analysis_filter(
             analyses=self.get_query(table=Analysis),
@@ -129,7 +128,7 @@ class ReadHandler(BaseHandler):
             UserFilter.FILTER_BY_CONTAINS_EMAIL: email,
             UserFilter.FILTER_BY_IS_NOT_ARCHIVED: exclude_archived,
         }
-        filter_functions: List[Callable] = [
+        filter_functions: list[Callable] = [
             function for function, supplied_arg in filter_map.items() if supplied_arg
         ]
         return apply_user_filter(
@@ -143,14 +142,14 @@ class ReadHandler(BaseHandler):
         name: str = None,
         email: str = None,
         exclude_archived: bool = True,
-    ) -> List[User]:
+    ) -> list[User]:
         """Return users from the database."""
         filter_map: Dict[Callable, Optional[Union[str, bool]]] = {
             UserFilter.FILTER_BY_CONTAINS_EMAIL: email,
             UserFilter.FILTER_BY_CONTAINS_NAME: name,
             UserFilter.FILTER_BY_IS_NOT_ARCHIVED: exclude_archived,
         }
-        filter_functions: List[Callable] = [
+        filter_functions: list[Callable] = [
             function for function, supplied_arg in filter_map.items() if supplied_arg
         ]
         return apply_user_filter(

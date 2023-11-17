@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 import pytest
 
@@ -30,7 +30,7 @@ def test_get_squeue_result(squeue_stream_jobs):
         ({"a_case_with_quoted_ints": ["1", "2"]}, "1,2"),
     ],
 )
-def test_get_squeue_jobs_flag_input(job_id: Dict[str, List[str]], expected_job_id: str):
+def test_get_squeue_jobs_flag_input(job_id: Dict[str, list[str]], expected_job_id: str):
     """Test return of squeue jobs flag formatted string."""
     # GIVEN a job ids
 

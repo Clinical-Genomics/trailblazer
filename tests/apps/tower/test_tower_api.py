@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import List
 
 import pytest
 
@@ -95,7 +94,7 @@ def test_tower_api_succeeded_jobs(
 def test_tower_api_tasks(
     tower_id: str,
     analysis_id: int,
-    tower_jobs: List[dict],
+    tower_jobs: list[dict],
     caplog,
 ) -> None:
     """Assess that TowerAPI returns a list of tasks given a response."""

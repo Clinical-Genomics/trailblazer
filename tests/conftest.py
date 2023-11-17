@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, Generator, List
+from typing import Dict, Generator
 
 import pytest
 from sqlalchemy.orm import Session
@@ -21,14 +21,14 @@ from trailblazer.constants import (
     TrailblazerStatus,
 )
 from trailblazer.io.controller import ReadFile
-from trailblazer.store.store import Store
 from trailblazer.store.database import (
-    get_session,
     create_all_tables,
     drop_all_tables,
+    get_session,
     initialize_database,
 )
 from trailblazer.store.models import Analysis
+from trailblazer.store.store import Store
 
 
 @pytest.fixture(scope="session")
@@ -141,7 +141,7 @@ def job_store(
     store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A Trailblazer database wih a populated job table."""
-    statuses: List[str] = [TrailblazerStatus.COMPLETED, TrailblazerStatus.FAILED]
+    statuses: list[str] = [TrailblazerStatus.COMPLETED, TrailblazerStatus.FAILED]
     for index, status in enumerate(statuses):
         StoreHelpers.add_job(analysis_id=index, name=str(index), slurm_id=index, status=status)
     yield store
@@ -162,9 +162,9 @@ def user_store(
 
 
 @pytest.fixture(scope="function")
-def raw_analyses(analysis_data: Dict[str, List[Dict]]) -> List[dict]:
+def raw_analyses(analysis_data: Dict[str, list[Dict]]) -> list[dict]:
     """Return raw analyses data."""
-    analyses: List[dict] = []
+    analyses: list[dict] = []
     for analysis in analysis_data["analyses"]:
         analysis["case_id"] = analysis["family"]
         analyses.append(analysis)
@@ -176,7 +176,7 @@ def analysis_store(
     analysis_data: Dict[str, list],
     archived_user_email: str,
     archived_username: str,
-    raw_analyses: List[dict],
+    raw_analyses: list[dict],
     store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A sample Trailblazer database populated with pending analyses."""
@@ -212,7 +212,7 @@ def timestamp_old() -> datetime:
 
 
 @pytest.fixture
-def tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> List[dict]:
+def tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> list[dict]:
     """Return a list of Tower Jobs."""
     return [
         dict(
@@ -303,7 +303,7 @@ def tower_task() -> TowerTask:
 def slurm_squeue_output(squeue_dir: Path) -> Dict[str, str]:
     """Return SLURM squeue output for analysis started via SLURM."""
     file_postfix: str = f"squeue{FileExtension.CSV}"
-    case_ids: List[str] = [
+    case_ids: list[str] = [
         "blazinginsect",
         "crackpanda",
         "cuddlyhen",

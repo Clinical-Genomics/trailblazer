@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, Dict, List, Optional, Type, Union
+from typing import Callable, Dict, Optional, Type, Union
 
 from sqlalchemy import func
 from sqlalchemy.orm import Query, Session
@@ -41,7 +41,7 @@ class BaseHandler:
             AnalysisFilter.FILTER_BY_IS_VISIBLE: is_visible,
             AnalysisFilter.FILTER_BY_SEARCH_TERM: search_term,
         }
-        filter_functions: List[Callable] = [
+        filter_functions: list[Callable] = [
             function for function, supplied_arg in filter_map.items() if supplied_arg
         ]
         analyses: Query = apply_analysis_filter(

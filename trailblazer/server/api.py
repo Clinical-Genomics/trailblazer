@@ -2,7 +2,7 @@ import datetime
 import multiprocessing
 import os
 from http import HTTPStatus
-from typing import Dict, List, Mapping, Optional, Union
+from typing import Dict, Mapping, Optional, Union
 
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
@@ -109,7 +109,7 @@ def aggregate_jobs():
     time_window: datetime = get_date_number_of_days_ago(
         number_of_days_ago=int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
     )
-    failed_jobs: List[Dict[str, Union[str, int]]] = store.get_nr_jobs_with_status_per_category(
+    failed_jobs: list[Dict[str, Union[str, int]]] = store.get_nr_jobs_with_status_per_category(
         status=TrailblazerStatus.FAILED, since_when=time_window
     )
     return jsonify(jobs=failed_jobs)
@@ -227,7 +227,7 @@ def post_delete_analysis():
 def post_mark_analyses_deleted():
     """Mark all analysis belonging to a case as deleted."""
     post_request: Response.json = request.json
-    case_analyses: Optional[List[Analysis]] = store.update_case_analyses_as_deleted(
+    case_analyses: Optional[list[Analysis]] = store.update_case_analyses_as_deleted(
         case_id=post_request.get("case_id")
     )
     raw_analysis = [

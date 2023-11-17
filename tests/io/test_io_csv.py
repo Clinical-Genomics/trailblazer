@@ -8,7 +8,7 @@ def test_get_content_from_stream(csv_stream: str):
     # GIVEN a string in CSV format
 
     # WHEN reading the CSV content in string
-    raw_csv_content: List[List[str]] = read_csv_stream(stream=csv_stream)
+    raw_csv_content: list[list[str]] = read_csv_stream(stream=csv_stream)
 
     # THEN assert a list is returned
     assert isinstance(raw_csv_content, List)
@@ -26,7 +26,7 @@ def test_get_content_from_stream_to_dict(csv_stream: str):
     # GIVEN a string in CSV format
 
     # WHEN reading the CSV content in string
-    raw_csv_content: List[List[str]] = read_csv_stream(read_to_dict=True, stream=csv_stream)
+    raw_csv_content: list[list[str]] = read_csv_stream(read_to_dict=True, stream=csv_stream)
 
     # Then assert a list is returned and that the first element is a dict
     assert isinstance(raw_csv_content, list)

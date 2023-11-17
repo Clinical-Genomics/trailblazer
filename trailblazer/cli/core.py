@@ -2,7 +2,7 @@ import logging
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import click
 import coloredlogs
@@ -15,9 +15,9 @@ from trailblazer.constants import TRAILBLAZER_TIME_STAMP, FileFormat, Trailblaze
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.models import Config
-from trailblazer.store.store import Store
 from trailblazer.store.database import get_session, initialize_database
 from trailblazer.store.models import Analysis, User
+from trailblazer.store.store import Store
 
 LOG = logging.getLogger(__name__)
 LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR"]
@@ -141,7 +141,7 @@ def get_user_from_db(context, email: str) -> None:
 def get_users_from_db(context, name: str, email: str, exclude_archived: bool) -> None:
     """Display information about existing users."""
     trailblazer_db: Store = context.obj["trailblazer_db"]
-    users: List[User] = trailblazer_db.get_users(
+    users: list[User] = trailblazer_db.get_users(
         email=email, exclude_archived=exclude_archived, name=name
     )
     LOG.info("Listing users in database:")
@@ -263,7 +263,7 @@ def ls_cmd(context, before: str, status: TrailblazerStatus, comment: str, limit:
     """Display recent logs for the latest analyses."""
     trailblazer_db: Store = context.obj["trailblazer_db"]
     analyses: Optional[
-        List[Analysis]
+        list[Analysis]
     ] = trailblazer_db.get_analyses_by_status_started_at_and_comment(
         status=status,
         before=datetime.strptime(before, TRAILBLAZER_TIME_STAMP).date() if before else None,
