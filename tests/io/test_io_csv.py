@@ -1,5 +1,3 @@
-from typing import List
-
 from trailblazer.io.csv import read_csv_stream
 
 
@@ -11,7 +9,7 @@ def test_get_content_from_stream(csv_stream: str):
     raw_csv_content: list[list[str]] = read_csv_stream(stream=csv_stream)
 
     # THEN assert a list is returned
-    assert isinstance(raw_csv_content, List)
+    assert isinstance(raw_csv_content, list)
 
     # THEN the content should match the expected content
     expected_content = [

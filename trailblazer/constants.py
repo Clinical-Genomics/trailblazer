@@ -1,5 +1,5 @@
 from enum import Enum, StrEnum
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 ONE_MONTH_IN_DAYS: int = 31
 HOURS_IN_DAY: int = 24
@@ -31,7 +31,7 @@ class WorkflowManager(Enum):
     TOWER: str = "nf_tower"
 
     @classmethod
-    def list(cls) -> List:
+    def list(cls) -> list:
         return [task.value for task in cls]
 
 
