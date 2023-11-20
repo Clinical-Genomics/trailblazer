@@ -91,7 +91,7 @@ def analysis_data_path(fixtures_dir: Path) -> Path:
 
 
 @pytest.fixture(scope="function")
-def analysis_data(analysis_data_path: Path) -> Dict[str, list]:
+def analysis_data(analysis_data_path: Path) -> dict[str, list]:
     """Return content of the analysis data file."""
     return ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=analysis_data_path)
 
@@ -114,7 +114,7 @@ def trailblazer_tmp_dir(tmpdir_factory) -> Path:
 
 
 @pytest.fixture
-def trailblazer_context(analysis_store: MockStore) -> Dict[str, MockStore]:
+def trailblazer_context(analysis_store: MockStore) -> dict[str, MockStore]:
     """Trailblazer context to be used in CLI."""
     return {"trailblazer_db": analysis_store}
 
@@ -162,7 +162,7 @@ def user_store(
 
 
 @pytest.fixture(scope="function")
-def raw_analyses(analysis_data: Dict[str, list[Dict]]) -> list[dict]:
+def raw_analyses(analysis_data: dict[str, list[Dict]]) -> list[dict]:
     """Return raw analyses data."""
     analyses: list[dict] = []
     for analysis in analysis_data["analyses"]:
@@ -173,7 +173,7 @@ def raw_analyses(analysis_data: Dict[str, list[Dict]]) -> list[dict]:
 
 @pytest.fixture
 def analysis_store(
-    analysis_data: Dict[str, list],
+    analysis_data: dict[str, list],
     archived_user_email: str,
     archived_username: str,
     raw_analyses: list[dict],
@@ -300,7 +300,7 @@ def tower_task() -> TowerTask:
 
 
 @pytest.fixture(scope="session")
-def slurm_squeue_output(squeue_dir: Path) -> Dict[str, str]:
+def slurm_squeue_output(squeue_dir: Path) -> dict[str, str]:
     """Return SLURM squeue output for analysis started via SLURM."""
     file_postfix: str = f"squeue{FileExtension.CSV}"
     case_ids: list[str] = [
@@ -323,7 +323,7 @@ def slurm_squeue_output(squeue_dir: Path) -> Dict[str, str]:
 
 
 @pytest.fixture(scope="session")
-def tower_case_config() -> Dict[str, dict]:
+def tower_case_config() -> dict[str, dict]:
     """Return a Tower case configs."""
     return {
         CaseId.RUNNING: {

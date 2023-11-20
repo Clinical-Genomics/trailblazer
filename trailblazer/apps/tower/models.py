@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
@@ -148,14 +148,14 @@ class TowerWorkflow(BaseModel):
 class TowerProgress(BaseModel):
     """NF Tower progress model."""
 
-    workflowProgress: Dict
+    workflowProgress: dict
     processesProgress: list
 
 
 class TowerTaskResponse(BaseModel):
     """NF Tower task response model."""
 
-    tasks: list[Optional[Dict[str, TowerTask]]]
+    tasks: list[Optional[dict[str, TowerTask]]]
     total: int
 
 

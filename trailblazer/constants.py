@@ -1,5 +1,5 @@
 from enum import Enum, StrEnum
-from typing import Dict, Tuple
+from typing import Tuple
 
 ONE_MONTH_IN_DAYS: int = 31
 HOURS_IN_DAY: int = 24
@@ -112,7 +112,7 @@ class TrailblazerStatusColor(StrEnum):
     RUNNING: str = "blue"
 
 
-TOWER_WORKFLOW_STATUS: Dict[str, str] = {
+TOWER_WORKFLOW_STATUS: dict[str, str] = {
     "ABORTED": TrailblazerStatus.FAILED,
     "CACHED": TrailblazerStatus.COMPLETED,
     "CANCELLED": TrailblazerStatus.CANCELLED,
@@ -126,7 +126,7 @@ TOWER_WORKFLOW_STATUS: Dict[str, str] = {
 }
 
 
-TOWER_PROCESS_STATUS: Dict[str, str] = {
+TOWER_PROCESS_STATUS: dict[str, str] = {
     "submitted": TrailblazerStatus.PENDING,
     "pending": TrailblazerStatus.PENDING,
     "running": TrailblazerStatus.RUNNING,
@@ -136,7 +136,7 @@ TOWER_PROCESS_STATUS: Dict[str, str] = {
 }
 
 
-TOWER_TASK_STATUS: Dict[str, str] = {
+TOWER_TASK_STATUS: dict[str, str] = {
     "ABORTED": SlurmJobStatus.FAILED,
     "CACHED": SlurmJobStatus.COMPLETED,
     "CANCELLED": SlurmJobStatus.CANCELLED,

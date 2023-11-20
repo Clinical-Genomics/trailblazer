@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Dict, Callable
+from typing import Any, Callable
 
 from trailblazer.constants import FileFormat
 from trailblazer.io.csv import read_csv_stream
@@ -24,7 +24,7 @@ class ReadFile:
 class ReadStream:
     """Reading stream using different methods."""
 
-    read_stream: Dict[str, Callable] = {
+    read_stream: dict[str, Callable] = {
         FileFormat.CSV: read_csv_stream,
     }
 

@@ -1,6 +1,6 @@
 import subprocess
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Optional
 
 import pytest
 
@@ -77,7 +77,7 @@ def test_update_run_status(
     case_id: str,
     status: str,
     mocker,
-    slurm_squeue_output: Dict[str, str],
+    slurm_squeue_output: dict[str, str],
 ):
     """Test updating an analysis status."""
     # GIVEN SLURM squeue output for an analysis
@@ -392,7 +392,7 @@ def test_update_analysis_from_slurm_run_status(
     analysis_store: MockStore,
     mocker,
     ongoing_analysis_case_id: str,
-    slurm_squeue_output: Dict[str, str],
+    slurm_squeue_output: dict[str, str],
 ):
     """Test updating analysis jobs when given squeue results."""
     # GIVEN an analysis and a squeue stream
@@ -452,7 +452,7 @@ def test_update_run_status_using_tower(
     status: str,
     progress: int,
     mocker,
-    tower_case_config: Dict[str, dict],
+    tower_case_config: dict[str, dict],
 ):
     """Assess that an analysis status is successfully updated when using NF Tower."""
 

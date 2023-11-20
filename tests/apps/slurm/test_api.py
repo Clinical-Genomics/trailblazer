@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Optional
 
 import pytest
 
@@ -30,7 +30,7 @@ def test_get_squeue_result(squeue_stream_jobs):
         ({"a_case_with_quoted_ints": ["1", "2"]}, "1,2"),
     ],
 )
-def test_get_squeue_jobs_flag_input(job_id: Dict[str, list[str]], expected_job_id: str):
+def test_get_squeue_jobs_flag_input(job_id: dict[str, list[str]], expected_job_id: str):
     """Test return of squeue jobs flag formatted string."""
     # GIVEN a job ids
 
@@ -128,7 +128,7 @@ def test_reformat_squeue_result_job_step_malformed_job_step(
     ],
 )
 def test_get_current_analysis_status(
-    analysis_status: str, job_status_distribution: Dict[str, float], expected_analysis_status: str
+    analysis_status: str, job_status_distribution: dict[str, float], expected_analysis_status: str
 ):
     """Test return current analysis status from jobs status distribution."""
     # GIVEN a data analysis and a job status distribution

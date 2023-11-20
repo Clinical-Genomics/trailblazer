@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Dict
 
 from trailblazer.apps.slurm.models import SqueueJob, SqueueResult
 from trailblazer.constants import FileFormat, SlurmJobStatus
@@ -53,7 +52,7 @@ def test_squeue_job_convert_time_elapse_to_minutes(squeue_stream_jobs: str):
         stream=squeue_stream_jobs,
         read_to_dict=True,
     )
-    expected_time_elapsed: Dict[int, int] = {
+    expected_time_elapsed: dict[int, int] = {
         0: MEDIUM_RUNNING_JOOB,
         1: LONG_RUNNING_JOB,
         2: SHORT_RUNNING_JOB,

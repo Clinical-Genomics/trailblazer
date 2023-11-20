@@ -1,6 +1,6 @@
 import subprocess
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Optional
 
 import pytest
 from click.testing import CliRunner
@@ -40,7 +40,7 @@ def test_base(cli_runner):
 
 def test_set_analysis_completed(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     failed_analysis_case_id: str,
     process_exit_success: int,
 ):
@@ -69,7 +69,7 @@ def test_set_analysis_completed(
 
 def test_set_analysis_status(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     failed_analysis_case_id: str,
     process_exit_success: int,
 ):
@@ -99,7 +99,7 @@ def test_set_analysis_status(
 
 def test_set_analysis_status_error(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     caplog,
     failed_analysis_case_id: str,
 ):
@@ -121,7 +121,7 @@ def test_set_analysis_status_error(
 
 def test_cancel_non_existent_analysis_id(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     caplog,
     process_exit_success: int,
 ):
@@ -144,12 +144,12 @@ def test_cancel_non_existent_analysis_id(
 
 def test_cancel_not_running(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     caplog,
     failed_analysis_case_id: str,
     mocker,
     process_exit_success: int,
-    slurm_squeue_output: Dict[str, str],
+    slurm_squeue_output: dict[str, str],
 ):
     """Test cancelling an analysis, which is not running."""
     caplog.set_level("ERROR")
@@ -181,11 +181,11 @@ def test_cancel_not_running(
 
 def test_cancel_with_ongoing_analysis(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     caplog,
     mocker,
     ongoing_analysis_case_id: str,
-    slurm_squeue_output: Dict[str, str],
+    slurm_squeue_output: dict[str, str],
     process_exit_success: int,
 ):
     """Test all ongoing analysis jobs are cancelled."""
@@ -231,7 +231,7 @@ def test_cancel_with_ongoing_analysis(
 
 
 def test_delete_nonexisting(
-    cli_runner: CliRunner, trailblazer_context: Dict[str, MockStore], caplog
+    cli_runner: CliRunner, trailblazer_context: dict[str, MockStore], caplog
 ):
     with caplog.at_level("ERROR"):
         # GIVEN Trailblazer database with analyses and jobs
@@ -247,7 +247,7 @@ def test_delete_nonexisting(
 
 def test_delete_ongoing_fail(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     caplog,
     ongoing_analysis_case_id: str,
     process_exit_success: int,
@@ -279,7 +279,7 @@ def test_delete_ongoing_fail(
 
 def test_delete_ongoing_force(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     caplog,
     ongoing_analysis_case_id,
     process_exit_success: int,
@@ -307,7 +307,7 @@ def test_delete_ongoing_force(
 
 
 def test_get_user_not_in_database(
-    cli_runner: CliRunner, trailblazer_context: Dict[str, MockStore], caplog
+    cli_runner: CliRunner, trailblazer_context: dict[str, MockStore], caplog
 ):
     """Test getting user when user is not in the database."""
     # GIVEN populated Trailblazer database
@@ -323,7 +323,7 @@ def test_get_user_not_in_database(
 
 def test_get_user_in_database(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     caplog,
     user_email: str,
     username: str,
@@ -339,7 +339,7 @@ def test_get_user_in_database(
     assert username in caplog.text
 
 
-def test_add_user(cli_runner: CliRunner, trailblazer_context: Dict[str, MockStore], caplog):
+def test_add_user(cli_runner: CliRunner, trailblazer_context: dict[str, MockStore], caplog):
     """Test adding a user to the database."""
     # GIVEN populated Trailblazer database
 
@@ -356,7 +356,7 @@ def test_add_user(cli_runner: CliRunner, trailblazer_context: Dict[str, MockStor
 
 def test_add_user_when_already_exists(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     caplog,
     user_email: str,
     username: str,
@@ -375,7 +375,7 @@ def test_add_user_when_already_exists(
 
 def test_users(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     caplog,
     user_email: str,
     username: str,
@@ -393,7 +393,7 @@ def test_users(
 
 
 def test_archive_user(
-    cli_runner: CliRunner, trailblazer_context: Dict[str, MockStore], caplog, user_email: str
+    cli_runner: CliRunner, trailblazer_context: dict[str, MockStore], caplog, user_email: str
 ):
     """Test archiving a user in the database."""
     # GIVEN populated Trailblazer database
@@ -409,7 +409,7 @@ def test_archive_user(
 
 def test_archive_user_when_already_archived(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     caplog,
     archived_user_email: str,
 ):
@@ -427,7 +427,7 @@ def test_archive_user_when_already_archived(
 
 def test_archive_user_when_non_existing_user(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     caplog,
     archived_user_email: str,
 ):
@@ -445,7 +445,7 @@ def test_archive_user_when_non_existing_user(
 
 
 def test_unarchive_user_when_not_archived(
-    cli_runner: CliRunner, trailblazer_context: Dict[str, MockStore], caplog, user_email: str
+    cli_runner: CliRunner, trailblazer_context: dict[str, MockStore], caplog, user_email: str
 ):
     """Test unarchiving a user in the database which is not archived."""
     # GIVEN populated Trailblazer database
@@ -461,7 +461,7 @@ def test_unarchive_user_when_not_archived(
 
 def test_unarchive_user(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     caplog,
     archived_user_email: str,
 ):
@@ -479,11 +479,11 @@ def test_unarchive_user(
 
 def test_scan(
     cli_runner: CliRunner,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
     caplog,
     mocker,
     ongoing_analysis_case_id: str,
-    slurm_squeue_output: Dict[str, str],
+    slurm_squeue_output: dict[str, str],
 ):
     """Test scanning for analyses and updating analysis status."""
     caplog.set_level("INFO")
@@ -532,10 +532,10 @@ def test_ls(
     cli_runner: CliRunner,
     mocker,
     process_exit_success: int,
-    slurm_squeue_output: Dict[str, str],
+    slurm_squeue_output: dict[str, str],
     status: str,
     timestamp_now: datetime,
-    trailblazer_context: Dict[str, MockStore],
+    trailblazer_context: dict[str, MockStore],
 ):
     """Test the Trailblazer ls CLI command using different cases and statuses."""
     # GIVEN SLURM squeue output for an analysis

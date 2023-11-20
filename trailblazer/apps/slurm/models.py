@@ -1,6 +1,6 @@
 """Model SLURM output."""
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -59,7 +59,7 @@ class SqueueResult(BaseModel):
     """Model used to parse SLURM squeue output."""
 
     jobs: list[SqueueJob]
-    jobs_status_distribution: Optional[Dict[str, float]] = None
+    jobs_status_distribution: Optional[dict[str, float]] = None
 
     @model_validator(mode="after")
     def set_jobs_status_distribution(self):

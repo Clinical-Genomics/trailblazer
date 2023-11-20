@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
@@ -184,7 +184,7 @@ def test_get_nr_jobs_with_status_per_category(job_store: MockStore, timestamp_ye
     # GIVEN a database with jobs
 
     # WHEN querying for failed users
-    failed_jobs: list[Dict[str, Union[str, int]]] = job_store.get_nr_jobs_with_status_per_category(
+    failed_jobs: list[dict[str, Union[str, int]]] = job_store.get_nr_jobs_with_status_per_category(
         since_when=timestamp_yesterday, status=TrailblazerStatus.FAILED
     )
 
