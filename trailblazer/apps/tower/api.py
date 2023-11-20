@@ -94,7 +94,7 @@ class TowerApiClient:
     @property
     def meets_requirements(self) -> bool:
         """Return True if required variables are not empty."""
-        requirement_map: list[Tuple[str, str]] = [
+        requirement_map: list[tuple[str, str]] = [
             (self.tower_api_endpoint, "Error: no endpoint specified for Tower Open API request."),
             (
                 self.tower_access_token,

@@ -1,10 +1,8 @@
-from typing import Tuple
-
 from trailblazer.constants import TrailblazerStatus, TrailblazerStatusColor
 from trailblazer.store.models import Analysis
 
 
-def _get_ls_analysis_message(analysis: Analysis) -> Tuple[str, str]:
+def _get_ls_analysis_message(analysis: Analysis) -> tuple[str, str]:
     """Return the log message for the analysis."""
     message: str = (
         f"{analysis.id} | {analysis.family} {analysis.started_at.date()} "
