@@ -1,15 +1,15 @@
 from enum import Enum, StrEnum
-from typing import Dict, List, Tuple
+from typing import Tuple
 
 ONE_MONTH_IN_DAYS: int = 31
 HOURS_IN_DAY: int = 24
 MINUTES_PER_HOUR: int = 60
 SECONDS_PER_MINUTE: int = 60
-PRIORITY_OPTIONS: Tuple = ("low", "normal", "high", "express", "maintenance")
+PRIORITY_OPTIONS: tuple = ("low", "normal", "high", "express", "maintenance")
 TRAILBLAZER_TIME_STAMP: str = "%Y-%m-%d"
 TOWER_TIMESTAMP_FORMAT: str = "%Y-%m-%dT%H:%M:%SZ"
 TOWER_TIMESTAMP_FORMAT_EXTENDED: str = "%Y-%m-%dT%H:%M:%S.%fZ"
-TYPES: Tuple = ("other", "rna", "tgs", "wes", "wgs", "wts")
+TYPES: tuple = ("other", "rna", "tgs", "wes", "wgs", "wts")
 
 
 class FileFormat(StrEnum):
@@ -31,7 +31,7 @@ class WorkflowManager(Enum):
     TOWER: str = "nf_tower"
 
     @classmethod
-    def list(cls) -> List:
+    def list(cls) -> list:
         return [task.value for task in cls]
 
 
@@ -98,7 +98,7 @@ class TrailblazerStatus(StrEnum):
         return tuple(status.value for status in cls)
 
     @classmethod
-    def ongoing_statuses(cls) -> Tuple[str, str, str, str]:
+    def ongoing_statuses(cls) -> tuple[str, str, str, str]:
         return cls.PENDING.value, cls.RUNNING.value, cls.COMPLETING.value, cls.ERROR.value
 
 
@@ -112,7 +112,7 @@ class TrailblazerStatusColor(StrEnum):
     RUNNING: str = "blue"
 
 
-TOWER_WORKFLOW_STATUS: Dict[str, str] = {
+TOWER_WORKFLOW_STATUS: dict[str, str] = {
     "ABORTED": TrailblazerStatus.FAILED,
     "CACHED": TrailblazerStatus.COMPLETED,
     "CANCELLED": TrailblazerStatus.CANCELLED,
@@ -126,7 +126,7 @@ TOWER_WORKFLOW_STATUS: Dict[str, str] = {
 }
 
 
-TOWER_PROCESS_STATUS: Dict[str, str] = {
+TOWER_PROCESS_STATUS: dict[str, str] = {
     "submitted": TrailblazerStatus.PENDING,
     "pending": TrailblazerStatus.PENDING,
     "running": TrailblazerStatus.RUNNING,
@@ -136,7 +136,7 @@ TOWER_PROCESS_STATUS: Dict[str, str] = {
 }
 
 
-TOWER_TASK_STATUS: Dict[str, str] = {
+TOWER_TASK_STATUS: dict[str, str] = {
     "ABORTED": SlurmJobStatus.FAILED,
     "CACHED": SlurmJobStatus.COMPLETED,
     "CANCELLED": SlurmJobStatus.CANCELLED,

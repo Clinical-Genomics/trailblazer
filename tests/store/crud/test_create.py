@@ -1,11 +1,9 @@
-from typing import List
-
 from tests.mocks.store_mock import MockStore
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, User
 
 
-def test_add_pending_analysis(raw_analyses: List[dict], store: MockStore, user_email: str):
+def test_add_pending_analysis(raw_analyses: list[dict], store: MockStore, user_email: str):
     """Test adding a new analysis to the database."""
     # GIVEN an empty database
     assert not store.get_query(table=Analysis).first()

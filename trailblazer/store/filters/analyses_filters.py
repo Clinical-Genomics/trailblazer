@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Callable, List, Optional
+from typing import Callable, Optional
 
 import sqlalchemy
 from sqlalchemy.orm import Query
@@ -56,7 +56,7 @@ def filter_analyses_by_status(analyses: Query, status: TrailblazerStatus, **kwar
     return analyses.filter(Analysis.status == status)
 
 
-def filter_analyses_by_statuses(analyses: Query, statuses: List[str], **kwargs) -> Query:
+def filter_analyses_by_statuses(analyses: Query, statuses: list[str], **kwargs) -> Query:
     """Filter analyses by statuses."""
     return analyses.filter(Analysis.status.in_(statuses))
 
@@ -77,14 +77,14 @@ class AnalysisFilter(Enum):
 
 def apply_analysis_filter(
     analyses: Query,
-    filter_functions: List[Callable],
+    filter_functions: list[Callable],
     analysis_id: Optional[int] = None,
     case_id: Optional[str] = None,
     search_term: Optional[str] = None,
     comment: Optional[str] = None,
     started_at: Optional[datetime] = None,
     status: Optional[str] = None,
-    statuses: Optional[List[str]] = None,
+    statuses: Optional[list[str]] = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
     if statuses is None:

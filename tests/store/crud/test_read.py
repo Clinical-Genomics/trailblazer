@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List, Optional, Union
+from typing import Optional, Union
 
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
@@ -20,7 +20,7 @@ def test_get_analyses_by_status_started_at_and_comment(
     )
 
     # WHEN getting analysis that fulfills criteria
-    analyses: List[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
+    analyses: list[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
         status=existing_analysis.status,
         before=timestamp_now,
         comment=existing_analysis.comment,
@@ -41,7 +41,7 @@ def test_get_analyses_by_status_started_at_and_comment_with_comment(analysis_sto
     )
 
     # WHEN getting analysis that fulfills criteria
-    analyses: List[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
+    analyses: list[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
         comment=existing_analysis.comment,
     )
 
@@ -55,7 +55,7 @@ def test_get_analyses_by_status_started_at_and_comment_with_status(analysis_stor
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
     # WHEN getting analysis that fulfills criteria
-    analyses: List[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
+    analyses: list[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
         status=existing_analysis.status,
     )
 
@@ -71,7 +71,7 @@ def test_get_analyses_by_status_started_at_and_comment_with_before(
     # GIVEN a store with an analysis
 
     # WHEN getting analysis that fulfills criteria
-    analyses: List[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
+    analyses: list[Analysis] = analysis_store.get_analyses_by_status_started_at_and_comment(
         before=timestamp_now,
     )
 
@@ -157,7 +157,7 @@ def test_get_analyses_for_case(analysis_store: MockStore, case_id: str):
     # GIVEN a store with an analysis
 
     # WHEN accessing it by case id
-    analyses: Optional[List[Analysis]] = analysis_store.get_analyses_for_case(case_id=case_id)
+    analyses: Optional[list[Analysis]] = analysis_store.get_analyses_for_case(case_id=case_id)
 
     # THEN it should return the analyses
     assert analyses
@@ -168,7 +168,7 @@ def test_get_analyses_with_statuses(analysis_store: MockStore):
     # GIVEN a store with an analysis
 
     # WHEN accessing an analysis by statuses
-    analyses: Optional[List[Analysis]] = analysis_store.get_analyses_with_statuses(
+    analyses: Optional[list[Analysis]] = analysis_store.get_analyses_with_statuses(
         statuses=list(TrailblazerStatus.ongoing_statuses())
     )
 
@@ -184,7 +184,7 @@ def test_get_nr_jobs_with_status_per_category(job_store: MockStore, timestamp_ye
     # GIVEN a database with jobs
 
     # WHEN querying for failed users
-    failed_jobs: List[Dict[str, Union[str, int]]] = job_store.get_nr_jobs_with_status_per_category(
+    failed_jobs: list[dict[str, Union[str, int]]] = job_store.get_nr_jobs_with_status_per_category(
         since_when=timestamp_yesterday, status=TrailblazerStatus.FAILED
     )
 
@@ -248,7 +248,7 @@ def test_get_users(user_store: MockStore, user_email: str, username: str):
     # GIVEN a database with a user
 
     # WHEN getting users
-    users: List[User] = user_store.get_users(name=username, email=user_email)
+    users: list[User] = user_store.get_users(name=username, email=user_email)
 
     # THEN the user should be returned
     assert users[0].email == user_email
@@ -260,7 +260,7 @@ def test_get_users_including_archived(user_store: MockStore, user_email: str, us
     StoreHelpers.add_user(name=username, email="old.user@magnolia.com", is_archived=True)
 
     # WHEN getting users
-    users: List[User] = user_store.get_users(name=username, exclude_archived=False)
+    users: list[User] = user_store.get_users(name=username, exclude_archived=False)
 
     # THEN the two users should be returned
     assert len(users) == 2
@@ -271,7 +271,7 @@ def test_get_users_no_username(user_store: MockStore, user_email: str):
     # GIVEN a database with a user
 
     # WHEN getting users
-    users: List[User] = user_store.get_users(email=user_email)
+    users: list[User] = user_store.get_users(email=user_email)
 
     # THEN the user should be returned
     assert users[0].email == user_email

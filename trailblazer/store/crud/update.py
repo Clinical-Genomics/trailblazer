@@ -1,7 +1,8 @@
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
+
 from sqlalchemy.orm import Session
 
 from trailblazer.apps.slurm.api import (
@@ -25,7 +26,7 @@ LOG = logging.getLogger(__name__)
 class UpdateHandler(BaseHandler):
     """Class for updating items in the database."""
 
-    def update_analysis_jobs(self, analysis: Analysis, jobs: List[dict]) -> None:
+    def update_analysis_jobs(self, analysis: Analysis, jobs: list[dict]) -> None:
         """Update jobs in the analysis."""
         analysis.jobs = [Job(**job) for job in jobs]
         session: Session = get_session()
@@ -52,7 +53,7 @@ class UpdateHandler(BaseHandler):
 
     def update_ongoing_analyses(self, analysis_host: Optional[str] = None) -> None:
         """Iterate over all analysis with ongoing status and query SLURM for current progress."""
-        ongoing_analyses: Optional[List[Analysis]] = self.get_analyses_with_statuses(
+        ongoing_analyses: Optional[list[Analysis]] = self.get_analyses_with_statuses(
             statuses=list(TrailblazerStatus.ongoing_statuses())
         )
         for analysis in ongoing_analyses:
@@ -161,9 +162,9 @@ class UpdateHandler(BaseHandler):
             session: Session = get_session()
             session.commit()
 
-    def update_case_analyses_as_deleted(self, case_id: str) -> Optional[List[Analysis]]:
+    def update_case_analyses_as_deleted(self, case_id: str) -> Optional[list[Analysis]]:
         """Mark analyses connected to a case as deleted."""
-        analyses: Optional[List[Analysis]] = self.get_analyses_for_case(case_id=case_id)
+        analyses: Optional[list[Analysis]] = self.get_analyses_for_case(case_id=case_id)
         if analyses:
             for analysis in analyses:
                 analysis.is_deleted = True

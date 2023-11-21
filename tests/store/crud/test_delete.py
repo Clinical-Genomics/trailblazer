@@ -1,16 +1,14 @@
-from typing import List, Optional
+from typing import Optional
 
 import pytest
-from sqlalchemy.orm import Session
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.exc import MissingAnalysis, TrailblazerError
-from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis
 
 
-def test_delete_analysis_jobs(analysis_store: MockStore, tower_jobs: List[dict], case_id: str):
+def test_delete_analysis_jobs(analysis_store: MockStore, tower_jobs: list[dict], case_id: str):
     """Test jobs are successfully deleted."""
 
     # GIVEN an analysis without failed jobs

@@ -2,7 +2,7 @@ import datetime
 import multiprocessing
 import os
 from http import HTTPStatus
-from typing import Dict, List, Mapping, Optional, Union
+from typing import Mapping, Optional, Union
 
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
@@ -22,7 +22,7 @@ ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
 
-def stringify_timestamps(data: dict) -> Dict[str, str]:
+def stringify_timestamps(data: dict) -> dict[str, str]:
     """Convert datetime into string before dumping in order to avoid information loss"""
     for key, val in data.items():
         if isinstance(val, datetime.datetime):
@@ -109,7 +109,7 @@ def aggregate_jobs():
     time_window: datetime = get_date_number_of_days_ago(
         number_of_days_ago=int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
     )
-    failed_jobs: List[Dict[str, Union[str, int]]] = store.get_nr_jobs_with_status_per_category(
+    failed_jobs: list[dict[str, Union[str, int]]] = store.get_nr_jobs_with_status_per_category(
         status=TrailblazerStatus.FAILED, since_when=time_window
     )
     return jsonify(jobs=failed_jobs)
@@ -188,7 +188,7 @@ def post_get_latest_analysis():
         case_id=post_request.get("case_id")
     )
     if latest_case_analysis:
-        raw_analysis: Dict[str, str] = stringify_timestamps(latest_case_analysis.to_dict())
+        raw_analysis: dict[str, str] = stringify_timestamps(latest_case_analysis.to_dict())
         return jsonify(**raw_analysis), HTTPStatus.OK
     return jsonify(None), HTTPStatus.OK
 
@@ -203,7 +203,7 @@ def post_find_analysis():
         status=post_request.get("status"),
     )
     if analysis:
-        raw_analysis: Dict[str, str] = stringify_timestamps(analysis.to_dict())
+        raw_analysis: dict[str, str] = stringify_timestamps(analysis.to_dict())
         return jsonify(**raw_analysis), HTTPStatus.OK
     return jsonify(None), HTTPStatus.OK
 
@@ -227,7 +227,7 @@ def post_delete_analysis():
 def post_mark_analyses_deleted():
     """Mark all analysis belonging to a case as deleted."""
     post_request: Response.json = request.json
-    case_analyses: Optional[List[Analysis]] = store.update_case_analyses_as_deleted(
+    case_analyses: Optional[list[Analysis]] = store.update_case_analyses_as_deleted(
         case_id=post_request.get("case_id")
     )
     raw_analysis = [

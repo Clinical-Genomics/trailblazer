@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Callable, List, Optional
+from typing import Callable, Optional
 
 from sqlalchemy.orm import Query
 
@@ -26,7 +26,7 @@ class JobFilter(Enum):
 
 def apply_job_filter(
     jobs: Query,
-    filter_functions: List[Callable],
+    filter_functions: list[Callable],
     since_when: Optional[datetime] = None,
     status: Optional[str] = None,
 ) -> Query:

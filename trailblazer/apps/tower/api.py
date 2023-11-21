@@ -3,7 +3,7 @@
 import logging
 import os
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 import requests
 from requests import ConnectionError, HTTPError
@@ -45,7 +45,7 @@ class TowerApiClient:
         }
 
     @property
-    def request_params(self) -> List[Tuple]:
+    def request_params(self) -> list[Tuple]:
         """Return required parameters for an NF Tower API call.
         Workspace ID is mandatory."""
         return [
@@ -94,7 +94,7 @@ class TowerApiClient:
     @property
     def meets_requirements(self) -> bool:
         """Return True if required variables are not empty."""
-        requirement_map: List[Tuple[str, str]] = [
+        requirement_map: list[tuple[str, str]] = [
             (self.tower_api_endpoint, "Error: no endpoint specified for Tower Open API request."),
             (
                 self.tower_access_token,
@@ -186,7 +186,7 @@ class TowerAPI:
         return self.status == TrailblazerStatus.QC
 
     @property
-    def processes(self) -> List[TowerProcess]:
+    def processes(self) -> list[TowerProcess]:
         """Returns processes. Processes are steps in a pipeline that might or might not be executed by a given analysis.
         A process can also have more than one corresponding job (task).
         For example, a process could be a 'fastqc' step that could be run multiple times depending on
@@ -194,7 +194,7 @@ class TowerAPI:
         return [TowerProcess(**process) for process in self.response.progress.processesProgress]
 
     @property
-    def tasks(self) -> List[TowerTask]:
+    def tasks(self) -> list[TowerTask]:
         """Returns tasks. Tasks correspond to jobs that have been submitted at a given point regardless of their
         status."""
         return [task["task"] for task in self.tasks_response.tasks]
@@ -221,7 +221,7 @@ class TowerAPI:
         else:
             return round(float(self.succeeded_jobs) / self.total_jobs, 2)
 
-    def get_jobs(self, analysis_id: int) -> List[dict]:
+    def get_jobs(self, analysis_id: int) -> list[dict]:
         """Returns a list of jobs associated to a workflow."""
         return [self._get_job(task=task, analysis_id=analysis_id) for task in self.tasks]
 

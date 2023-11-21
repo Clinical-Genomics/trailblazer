@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime, timedelta
-from typing import List
 
 from trailblazer.constants import (
     HOURS_IN_DAY,
@@ -25,7 +24,7 @@ def convert_timestamp_to_minutes(timestamp: datetime) -> int:
     return int((timestamp - zero_seconds).total_seconds() / SECONDS_PER_MINUTE)
 
 
-def get_datetime_from_timestamp(timestamp: str, datetime_formats: List[str]) -> datetime:
+def get_datetime_from_timestamp(timestamp: str, datetime_formats: list[str]) -> datetime:
     """Converts a timestamp into a datatime object."""
     for datetime_format in datetime_formats:
         try:

@@ -1,16 +1,14 @@
-from typing import Dict, Tuple
-
 from trailblazer.constants import TrailblazerStatus, TrailblazerStatusColor
 from trailblazer.store.models import Analysis
 
 
-def _get_ls_analysis_message(analysis: Analysis) -> Tuple[str, str]:
+def _get_ls_analysis_message(analysis: Analysis) -> tuple[str, str]:
     """Return the log message for the analysis."""
     message: str = (
         f"{analysis.id} | {analysis.family} {analysis.started_at.date()} "
         f"[{analysis.type.upper()}/{analysis.status.upper()}]"
     )
-    message_map: Dict[str, tuple] = {
+    message_map: dict[str, tuple] = {
         TrailblazerStatus.PENDING: (
             f"{analysis.id} | {analysis.family} [{analysis.status.upper()}]",
             TrailblazerStatusColor.PENDING,
