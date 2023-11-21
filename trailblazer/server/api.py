@@ -2,7 +2,7 @@ import datetime
 import multiprocessing
 import os
 from http import HTTPStatus
-from typing import Mapping, Union
+from typing import Mapping
 
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
@@ -109,7 +109,7 @@ def aggregate_jobs():
     time_window: datetime = get_date_number_of_days_ago(
         number_of_days_ago=int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
     )
-    failed_jobs: list[dict[str, Union[str, int]]] = store.get_nr_jobs_with_status_per_category(
+    failed_jobs: list[dict[str, str | int]] = store.get_nr_jobs_with_status_per_category(
         status=TrailblazerStatus.FAILED, since_when=time_window
     )
     return jsonify(jobs=failed_jobs)

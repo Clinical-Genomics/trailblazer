@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, Type, Union
+from typing import Callable, Type
 
 from sqlalchemy import func
 from sqlalchemy.orm import Query, Session
@@ -37,7 +37,7 @@ class BaseHandler:
         """Return analyses by search term qnd is visible."""
         if not search_term and not is_visible:
             return
-        filter_map: dict[Callable, Union[str, bool]] | None = {
+        filter_map: dict[Callable, str | bool] | None = {
             AnalysisFilter.FILTER_BY_IS_VISIBLE: is_visible,
             AnalysisFilter.FILTER_BY_SEARCH_TERM: search_term,
         }

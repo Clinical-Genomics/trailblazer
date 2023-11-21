@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Union
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
@@ -21,9 +20,9 @@ class TowerTask(BaseModel):
     name: str
     status: str
     nativeId: str
-    dateCreated: Union[str, datetime] | None = None
-    lastUpdated: Union[str, datetime] | None = None
-    start: Union[str, datetime] | None = None
+    dateCreated: str | datetime | None = None
+    lastUpdated: str | datetime | None = None
+    start: str | datetime | None = None
     duration: int | None = None
     hash: str | None = None
     tag: str | None = None
@@ -81,7 +80,7 @@ class TowerTask(BaseModel):
 
     @field_validator("start", "dateCreated", "lastUpdated")
     @classmethod
-    def set_datetime(cls, raw_time) -> Union[str, datetime] | None:
+    def set_datetime(cls, raw_time) -> str | datetime | None:
         if isinstance(raw_time, str):
             return tower_datetime_converter(datetime_stamp=raw_time)
         elif isinstance(raw_time, datetime):
@@ -99,8 +98,8 @@ class TowerProcess(BaseModel):
     """NF Tower task model."""
 
     process: str
-    dateCreated: Union[str, datetime] | None = None
-    lastUpdated: Union[str, datetime] | None = None
+    dateCreated: str | datetime | None = None
+    lastUpdated: str | datetime | None = None
     pending: int | None = None
     submitted: int | None = None
     running: int | None = None
@@ -118,7 +117,7 @@ class TowerProcess(BaseModel):
 
     @field_validator("dateCreated", "lastUpdated")
     @classmethod
-    def set_datetime(cls, raw_time) -> Union[str, datetime] | None:
+    def set_datetime(cls, raw_time) -> str | datetime | None:
         if isinstance(raw_time, str):
             return tower_datetime_converter(datetime_stamp=raw_time)
         elif isinstance(raw_time, datetime):
