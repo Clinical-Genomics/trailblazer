@@ -3,7 +3,6 @@
 import logging
 import os
 from pathlib import Path
-from typing import Tuple
 
 import requests
 from requests import ConnectionError, HTTPError
@@ -45,7 +44,7 @@ class TowerApiClient:
         }
 
     @property
-    def request_params(self) -> list[Tuple]:
+    def request_params(self) -> list[tuple]:
         """Return required parameters for an NF Tower API call.
         Workspace ID is mandatory."""
         return [
