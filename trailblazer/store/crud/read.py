@@ -22,7 +22,7 @@ class ReadHandler(BaseHandler):
         self, status: str, since_when: datetime = None
     ) -> list[dict[str, str | int]]:
         """Return the number of jobs with status per category (name)."""
-        filter_map: dict[Callable, str | bool] | None = {
+        filter_map: dict[Callable, str | bool | None] = {
             JobFilter.FILTER_BY_STATUS: status,
             JobFilter.FILTER_BY_SINCE_WHEN: since_when,
         }
@@ -47,7 +47,7 @@ class ReadHandler(BaseHandler):
         """Return analyses meeting supplied arguments."""
         if not before and not comment and not status:
             return
-        filter_map: dict[Callable, str | datetime | TrailblazerStatus] | None = {
+        filter_map: dict[Callable, str | datetime | TrailblazerStatus | None ] = {
             AnalysisFilter.FILTER_BY_COMMENT: comment,
             AnalysisFilter.FILTER_BY_BEFORE_STARTED_AT: before,
             AnalysisFilter.FILTER_BY_STATUS: status,
@@ -124,7 +124,7 @@ class ReadHandler(BaseHandler):
         exclude_archived: bool = True,
     ) -> User:
         """Return user from the database."""
-        filter_map: dict[Callable, str | bool] | None = {
+        filter_map: dict[Callable, str | bool | None] = {
             UserFilter.FILTER_BY_CONTAINS_EMAIL: email,
             UserFilter.FILTER_BY_IS_NOT_ARCHIVED: exclude_archived,
         }
@@ -144,7 +144,7 @@ class ReadHandler(BaseHandler):
         exclude_archived: bool = True,
     ) -> list[User]:
         """Return users from the database."""
-        filter_map: dict[Callable, str | bool] | None = {
+        filter_map: dict[Callable, str | bool | None] = {
             UserFilter.FILTER_BY_CONTAINS_EMAIL: email,
             UserFilter.FILTER_BY_CONTAINS_NAME: name,
             UserFilter.FILTER_BY_IS_NOT_ARCHIVED: exclude_archived,
