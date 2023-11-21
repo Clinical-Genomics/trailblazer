@@ -1,5 +1,3 @@
-from typing import Optional
-
 import pytest
 
 from tests.mocks.store_mock import MockStore
@@ -12,7 +10,7 @@ def test_delete_analysis_jobs(analysis_store: MockStore, tower_jobs: list[dict],
     """Test jobs are successfully deleted."""
 
     # GIVEN an analysis without failed jobs
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert not analysis.jobs
 
     # WHEN jobs are updated
@@ -32,13 +30,13 @@ def test_delete_analysis(analysis_store: MockStore, case_id: str):
 
     # GIVEN a not ongoing analysis
     analysis_store.update_analysis_status(case_id=case_id, status=TrailblazerStatus.CANCELLED)
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
 
     # WHEN deleting analysis
     analysis_store.delete_analysis(analysis_id=analysis.id)
 
     # THEN analysis object should be deleted
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert not analysis
 
 
@@ -46,14 +44,14 @@ def test_delete_analysis_with_force(analysis_store: MockStore, case_id: str):
     """Test analysis is successfully deleted when deleting an ongoing analysis."""
 
     # GIVEN an ongoing analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert analysis.status in TrailblazerStatus.ongoing_statuses()
 
     # WHEN deleting analysis
     analysis_store.delete_analysis(analysis_id=analysis.id, force=True)
 
     # THEN analysis object should be deleted
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert not analysis
 
 
@@ -75,7 +73,7 @@ def test_delete_analysis_with_ongoing_analysis_no_force(analysis_store: MockStor
     """Test analysis is not deleted when deleting an ongoing analysis without force."""
 
     # GIVEN an ongoing analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert analysis.status in TrailblazerStatus.ongoing_statuses()
 
     # WHEN deleting analysis

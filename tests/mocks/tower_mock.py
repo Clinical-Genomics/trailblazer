@@ -1,6 +1,5 @@
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Optional
 
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.apps.tower.models import TowerTaskResponse, TowerWorkflowResponse
@@ -12,11 +11,11 @@ class MockTowerAPI(TowerAPI):
     """Instance of TowerAPI that mimics expected Tower output."""
 
     @property
-    def response(self) -> Optional[dict]:
+    def response(self) -> dict | None:
         return self.mock_response or None
 
     @property
-    def tasks_response(self) -> Optional[dict]:
+    def tasks_response(self) -> dict | None:
         return self.mock_tasks_response or None
 
     def mock_query(self, response_file: Path) -> TowerWorkflowResponse:

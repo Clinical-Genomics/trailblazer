@@ -1,6 +1,6 @@
 import subprocess
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Callable
 
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.slurm.utils import formatters
@@ -22,7 +22,7 @@ def _get_squeue_jobs_flag_input(slurm_job_id_file_content: dict[str, list[str]])
     return ",".join(job_ids)
 
 
-def cancel_slurm_job(slurm_id: int, analysis_host: Optional[str] = None) -> None:
+def cancel_slurm_job(slurm_id: int, analysis_host: str | None = None) -> None:
     """Cancel SLURM job by SLURM job id."""
     scancel_commands: list[str] = ["scancel", str(slurm_id)]
     if analysis_host:
@@ -30,7 +30,7 @@ def cancel_slurm_job(slurm_id: int, analysis_host: Optional[str] = None) -> None
     subprocess.Popen(scancel_commands)
 
 
-def get_slurm_squeue_output(slurm_job_id_file: Path, analysis_host: Optional[str] = None) -> str:
+def get_slurm_squeue_output(slurm_job_id_file: Path, analysis_host: str | None = None) -> str:
     """Return squeue output from ongoing analyses in SLURM."""
     slurm_job_id_file_content: dict[str, list[str]] = ReadFile.get_content_from_file(
         file_format=FileFormat.YAML, file_path=slurm_job_id_file
@@ -112,7 +112,7 @@ def _is_analysis_ongoing(jobs_status_distribution: dict[str, float]) -> bool:
 
 def get_current_analysis_status(jobs_status_distribution: dict[str, float]) -> str:
     """Return current analysis status based on jobs status distribution."""
-    single_analysis_status: Optional[str] = _get_analysis_single_status(
+    single_analysis_status: str | None = _get_analysis_single_status(
         jobs_status_distribution=jobs_status_distribution
     )
     if single_analysis_status:

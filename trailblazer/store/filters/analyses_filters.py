@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Callable, Optional
+from typing import Callable
 
 import sqlalchemy
 from sqlalchemy.orm import Query
@@ -78,13 +78,13 @@ class AnalysisFilter(Enum):
 def apply_analysis_filter(
     analyses: Query,
     filter_functions: list[Callable],
-    analysis_id: Optional[int] = None,
-    case_id: Optional[str] = None,
-    search_term: Optional[str] = None,
-    comment: Optional[str] = None,
-    started_at: Optional[datetime] = None,
-    status: Optional[str] = None,
-    statuses: Optional[list[str]] = None,
+    analysis_id: int | None = None,
+    case_id: str | None = None,
+    search_term: str | None = None,
+    comment: str | None = None,
+    started_at: datetime | None = None,
+    status: str | None = None,
+    statuses: list[str] | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
     if statuses is None:

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Union
+from typing import Union
 
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
@@ -102,7 +102,7 @@ def test_get_latest_analysis_for_case(analysis_store: MockStore):
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
     # WHEN accessing it by case id
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(
         case_id=existing_analysis.family
     )
 
@@ -116,7 +116,7 @@ def test_get_latest_analysis_for_case_when_missing(
     """Test getting an analysis fora case when it does not exist in the database."""
 
     # WHEN accessing it by case id
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(
         case_id=case_id_not_in_db
     )
 
@@ -130,7 +130,7 @@ def test_get_analysis_with_id(analysis_store: MockStore):
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
     # WHEN accessing it by ID
-    analysis: Optional[Analysis] = analysis_store.get_analysis_with_id(
+    analysis: Analysis | None = analysis_store.get_analysis_with_id(
         analysis_id=existing_analysis.id
     )
 
@@ -144,9 +144,7 @@ def test_get_analysis_with_id_when_missing(analysis_store: MockStore):
     missing_analysis_id: int = 12312423534
 
     # WHEN accessing the analysis
-    analysis: Optional[Analysis] = analysis_store.get_analysis_with_id(
-        analysis_id=missing_analysis_id
-    )
+    analysis: Analysis | None = analysis_store.get_analysis_with_id(analysis_id=missing_analysis_id)
 
     # THEN it should return None
     assert not analysis
@@ -157,7 +155,7 @@ def test_get_analyses_for_case(analysis_store: MockStore, case_id: str):
     # GIVEN a store with an analysis
 
     # WHEN accessing it by case id
-    analyses: Optional[list[Analysis]] = analysis_store.get_analyses_for_case(case_id=case_id)
+    analyses: list[Analysis] | None = analysis_store.get_analyses_for_case(case_id=case_id)
 
     # THEN it should return the analyses
     assert analyses
@@ -168,7 +166,7 @@ def test_get_analyses_with_statuses(analysis_store: MockStore):
     # GIVEN a store with an analysis
 
     # WHEN accessing an analysis by statuses
-    analyses: Optional[list[Analysis]] = analysis_store.get_analyses_with_statuses(
+    analyses: list[Analysis] | None = analysis_store.get_analyses_with_statuses(
         statuses=list(TrailblazerStatus.ongoing_statuses())
     )
 

@@ -1,6 +1,5 @@
 """Model SLURM output."""
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -21,7 +20,7 @@ class SqueueJob(BaseModel):
     status: SlurmJobStatus = Field(..., alias=SlurmSqueueHeader.STATE.value)
     time_limit: str = Field(..., alias=SlurmSqueueHeader.TIME_LIMIT.value)
     time_elapsed: int = Field(..., alias=SlurmSqueueHeader.TIME.value)
-    started_at: Optional[datetime] = Field(None, alias=SlurmSqueueHeader.START_TIME.value)
+    started_at: datetime | None = Field(None, alias=SlurmSqueueHeader.START_TIME.value)
 
     @field_validator("status", mode="before")
     @classmethod
@@ -49,7 +48,7 @@ class SqueueJob(BaseModel):
 
     @field_validator("started_at", mode="before")
     @classmethod
-    def convert_started_at_to_datetime(cls, raw_started: str) -> Optional[datetime]:
+    def convert_started_at_to_datetime(cls, raw_started: str) -> datetime | None:
         """Convert started to datetime if string is in datetime format."""
         if isinstance(raw_started, str) and raw_started not in {"N/A"}:
             return datetime.strptime(raw_started, "%Y-%m-%dT%H:%M:%S")
@@ -59,7 +58,7 @@ class SqueueResult(BaseModel):
     """Model used to parse SLURM squeue output."""
 
     jobs: list[SqueueJob]
-    jobs_status_distribution: Optional[dict[str, float]] = None
+    jobs_status_distribution: dict[str, float] | None = None
 
     @model_validator(mode="after")
     def set_jobs_status_distribution(self):

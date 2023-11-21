@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Union
+from typing import Union
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
@@ -21,56 +21,56 @@ class TowerTask(BaseModel):
     name: str
     status: str
     nativeId: str
-    dateCreated: Optional[Union[str, datetime]] = None
-    lastUpdated: Optional[Union[str, datetime]] = None
-    start: Optional[Union[str, datetime]] = None
-    duration: Optional[int] = None
-    hash: Optional[str] = None
-    tag: Optional[str] = None
-    submit: Optional[str] = None
-    complete: Optional[str] = None
+    dateCreated: Union[str, datetime] | None = None
+    lastUpdated: Union[str, datetime] | None = None
+    start: Union[str, datetime] | None = None
+    duration: int | None = None
+    hash: str | None = None
+    tag: str | None = None
+    submit: str | None = None
+    complete: str | None = None
     module: list[str]
-    container: Optional[str] = None
-    attempt: Optional[int] = None
-    script: Optional[str] = None
-    scratch: Optional[str] = None
-    workdir: Optional[str] = None
-    queue: Optional[str] = None
-    cpus: Optional[int] = None
-    memory: Optional[int] = None
-    disk: Optional[int] = None
-    time: Optional[int] = None
-    env: Optional[str] = None
-    executor: Optional[str] = None
-    machineType: Optional[str] = None
-    cloudZone: Optional[str] = None
-    priceModel: Optional[str] = None
-    cost: Optional[float] = None
-    errorAction: Optional[str] = None
-    exitStatus: Optional[int] = None
-    realtime: Optional[int] = None
-    pcpu: Optional[float] = None
-    pmem: Optional[float] = None
-    rss: Optional[int] = None
-    vmem: Optional[int] = None
-    peakRss: Optional[int] = None
-    peakVmem: Optional[int] = None
-    rchar: Optional[int] = None
-    wchar: Optional[int] = None
-    syscr: Optional[int] = None
-    syscw: Optional[int] = None
-    readBytes: Optional[int] = None
-    writeBytes: Optional[int] = None
-    volCtxt: Optional[int] = None
-    invCtxt: Optional[int] = None
-    exit: Optional[str] = None
-    id: Optional[int] = None
-    taskId: Optional[int] = None
+    container: str | None = None
+    attempt: int | None = None
+    script: str | None = None
+    scratch: str | None = None
+    workdir: str | None = None
+    queue: str | None = None
+    cpus: int | None = None
+    memory: int | None = None
+    disk: int | None = None
+    time: int | None = None
+    env: str | None = None
+    executor: str | None = None
+    machineType: str | None = None
+    cloudZone: str | None = None
+    priceModel: str | None = None
+    cost: float | None = None
+    errorAction: str | None = None
+    exitStatus: int | None = None
+    realtime: int | None = None
+    pcpu: float | None = None
+    pmem: float | None = None
+    rss: int | None = None
+    vmem: int | None = None
+    peakRss: int | None = None
+    peakVmem: int | None = None
+    rchar: int | None = None
+    wchar: int | None = None
+    syscr: int | None = None
+    syscw: int | None = None
+    readBytes: int | None = None
+    writeBytes: int | None = None
+    volCtxt: int | None = None
+    invCtxt: int | None = None
+    exit: str | None = None
+    id: int | None = None
+    taskId: int | None = None
     model_config = ConfigDict(validate_default=True)
 
     @field_validator("duration")
     @classmethod
-    def set_duration(cls, raw_duration: Optional[int]) -> int:
+    def set_duration(cls, raw_duration: int | None) -> int:
         """Convert milliseconds to seconds or return 0 if empty."""
         return round(raw_duration / SCALE_TO_MILLISEC) if raw_duration else 0
 
@@ -81,7 +81,7 @@ class TowerTask(BaseModel):
 
     @field_validator("start", "dateCreated", "lastUpdated")
     @classmethod
-    def set_datetime(cls, raw_time) -> Optional[Union[str, datetime]]:
+    def set_datetime(cls, raw_time) -> Union[str, datetime] | None:
         if isinstance(raw_time, str):
             return tower_datetime_converter(datetime_stamp=raw_time)
         elif isinstance(raw_time, datetime):
@@ -99,26 +99,26 @@ class TowerProcess(BaseModel):
     """NF Tower task model."""
 
     process: str
-    dateCreated: Optional[Union[str, datetime]] = None
-    lastUpdated: Optional[Union[str, datetime]] = None
-    pending: Optional[int] = None
-    submitted: Optional[int] = None
-    running: Optional[int] = None
-    succeeded: Optional[int] = None
-    failed: Optional[int] = None
-    cached: Optional[int] = None
-    memoryEfficiency: Optional[float] = None
-    cpuEfficiency: Optional[float] = None
-    loadCpus: Optional[int] = None
-    loadMemory: Optional[int] = None
-    peakCpus: Optional[int] = None
-    peakTasks: Optional[int] = None
-    peakMemory: Optional[int] = None
+    dateCreated: Union[str, datetime] | None = None
+    lastUpdated: Union[str, datetime] | None = None
+    pending: int | None = None
+    submitted: int | None = None
+    running: int | None = None
+    succeeded: int | None = None
+    failed: int | None = None
+    cached: int | None = None
+    memoryEfficiency: float | None = None
+    cpuEfficiency: float | None = None
+    loadCpus: int | None = None
+    loadMemory: int | None = None
+    peakCpus: int | None = None
+    peakTasks: int | None = None
+    peakMemory: int | None = None
     model_config = ConfigDict(validate_default=True)
 
     @field_validator("dateCreated", "lastUpdated")
     @classmethod
-    def set_datetime(cls, raw_time) -> Optional[Union[str, datetime]]:
+    def set_datetime(cls, raw_time) -> Union[str, datetime] | None:
         if isinstance(raw_time, str):
             return tower_datetime_converter(datetime_stamp=raw_time)
         elif isinstance(raw_time, datetime):
@@ -155,7 +155,7 @@ class TowerProgress(BaseModel):
 class TowerTaskResponse(BaseModel):
     """NF Tower task response model."""
 
-    tasks: list[Optional[dict[str, TowerTask]]]
+    tasks: list[dict[str, TowerTask]] | None
     total: int
 
 

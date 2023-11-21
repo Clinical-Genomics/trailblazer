@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 from sqlalchemy.orm import Session
 
@@ -38,9 +37,9 @@ class UpdateHandler(BaseHandler):
         session: Session = get_session()
         session.commit()
 
-    def update_run_status(self, analysis_id: int, analysis_host: Optional[str] = None) -> None:
+    def update_run_status(self, analysis_id: int, analysis_host: str | None = None) -> None:
         """Query entries related to given analysis, and update the Trailblazer database."""
-        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        analysis: Analysis | None = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
             LOG.warning(f"Analysis {analysis_id} not found!")
             return
@@ -51,9 +50,9 @@ class UpdateHandler(BaseHandler):
                 analysis_id=analysis_id, analysis_host=analysis_host
             )
 
-    def update_ongoing_analyses(self, analysis_host: Optional[str] = None) -> None:
+    def update_ongoing_analyses(self, analysis_host: str | None = None) -> None:
         """Iterate over all analysis with ongoing status and query SLURM for current progress."""
-        ongoing_analyses: Optional[list[Analysis]] = self.get_analyses_with_statuses(
+        ongoing_analyses: list[Analysis] | None = self.get_analyses_with_statuses(
             statuses=list(TrailblazerStatus.ongoing_statuses())
         )
         for analysis in ongoing_analyses:
@@ -91,7 +90,7 @@ class UpdateHandler(BaseHandler):
         session.commit()
 
     def _update_analysis_from_slurm_squeue_output(
-        self, analysis: Analysis, analysis_host: Optional[str] = False
+        self, analysis: Analysis, analysis_host: str | None = False
     ) -> None:
         """Update analysis status based on current SLURM jobs status."""
         squeue_result: SqueueResult = get_squeue_result(
@@ -115,8 +114,8 @@ class UpdateHandler(BaseHandler):
 
     def update_tower_run_status(self, analysis_id: int) -> None:
         """Query tower for entries related to given analysis, and update the Trailblazer database."""
-        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
-        tower_api: Optional[TowerAPI] = get_tower_api(
+        analysis: Analysis | None = self.get_analysis_with_id(analysis_id=analysis_id)
+        tower_api: TowerAPI | None = get_tower_api(
             config_file_path=analysis.config_path, case_id=analysis.family
         )
 
@@ -146,10 +145,10 @@ class UpdateHandler(BaseHandler):
         LOG.debug(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
 
     def update_analysis_from_slurm_output(
-        self, analysis_id: int, analysis_host: Optional[str] = False
+        self, analysis_id: int, analysis_host: str | None = False
     ) -> None:
         """Query SLURM for entries related to given analysis, and update the analysis in the database."""
-        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        analysis: Analysis | None = self.get_analysis_with_id(analysis_id=analysis_id)
         try:
             self._update_analysis_from_slurm_squeue_output(
                 analysis=analysis, analysis_host=analysis_host
@@ -162,9 +161,9 @@ class UpdateHandler(BaseHandler):
             session: Session = get_session()
             session.commit()
 
-    def update_case_analyses_as_deleted(self, case_id: str) -> Optional[list[Analysis]]:
+    def update_case_analyses_as_deleted(self, case_id: str) -> list[Analysis] | None:
         """Mark analyses connected to a case as deleted."""
-        analyses: Optional[list[Analysis]] = self.get_analyses_for_case(case_id=case_id)
+        analyses: list[Analysis] | None = self.get_analyses_for_case(case_id=case_id)
         if analyses:
             for analysis in analyses:
                 analysis.is_deleted = True
@@ -173,14 +172,14 @@ class UpdateHandler(BaseHandler):
         return analyses
 
     def cancel_ongoing_analysis(
-        self, analysis_id: int, analysis_host: Optional[str] = None, email: Optional[str] = None
+        self, analysis_id: int, analysis_host: str | None = None, email: str | None = None
     ) -> None:
         """Cancel all ongoing slurm jobs associated with the analysis, and set analysis status to 'cancelled'.
         Raises:
             MissingAnalysis when no analysis.
             TrailblazerError for no ongoing analysis for analysis id.
         """
-        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        analysis: Analysis | None = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
             raise MissingAnalysis(f"Analysis {analysis_id} does not exist")
         if analysis.status not in TrailblazerStatus.ongoing_statuses():
@@ -199,9 +198,7 @@ class UpdateHandler(BaseHandler):
         session: Session = get_session()
         session.commit()
 
-    def cancel_slurm_analysis(
-        self, analysis: Analysis, analysis_host: Optional[str] = None
-    ) -> None:
+    def cancel_slurm_analysis(self, analysis: Analysis, analysis_host: str | None = None) -> None:
         """Cancel SLURM analysis by cancelling all associated SLURM jobs."""
         for job in analysis.jobs:
             if job.status in SlurmJobStatus.ongoing_statuses():
@@ -221,7 +218,7 @@ class UpdateHandler(BaseHandler):
         status: str = status.lower()
         if status not in set(TrailblazerStatus.statuses()):
             raise ValueError(f"Invalid status. Allowed values are: {TrailblazerStatus.statuses()}")
-        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
+        analysis: Analysis | None = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.status = status
         session: Session = get_session()
         session.commit()
@@ -229,18 +226,18 @@ class UpdateHandler(BaseHandler):
 
     def update_analysis_status_to_completed(self, analysis_id: int) -> None:
         """Set an analysis status to 'completed'."""
-        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        analysis: Analysis | None = self.get_analysis_with_id(analysis_id=analysis_id)
         self.update_analysis_status(case_id=analysis.family, status=TrailblazerStatus.COMPLETED)
 
     def update_analysis_uploaded_at(self, case_id: str, uploaded_at: datetime) -> None:
         """Set analysis uploaded at for an analysis."""
-        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
+        analysis: Analysis | None = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.uploaded_at = uploaded_at
         session: Session = get_session()
         session.commit()
 
     def update_analysis_comment(self, case_id: str, comment: str) -> None:
-        analysis: Optional[Analysis] = self.get_latest_analysis_for_case(case_id=case_id)
+        analysis: Analysis | None = self.get_latest_analysis_for_case(case_id=case_id)
         analysis.comment: str = (
             " ".join([analysis.comment, comment]) if analysis.comment else comment
         )
@@ -251,9 +248,9 @@ class UpdateHandler(BaseHandler):
     def update_analysis(
         self,
         analysis_id: int,
-        status: Optional[str] = None,
-        comment: Optional[str] = None,
-        is_visible: Optional[bool] = None,
+        status: str | None = None,
+        comment: str | None = None,
+        is_visible: bool | None = None,
     ) -> Analysis:
         """Update an analysis."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id)

@@ -1,6 +1,5 @@
 import subprocess
 from datetime import datetime
-from typing import Optional
 
 import pytest
 from click.testing import CliRunner
@@ -47,7 +46,7 @@ def test_set_analysis_completed(
     """Test setting an analysis to status complete."""
     # GIVEN an analysis with status failed
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
-    analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
+    analysis: Analysis | None = trailblazer_db.get_latest_analysis_for_case(
         case_id=failed_analysis_case_id
     )
 
@@ -61,7 +60,7 @@ def test_set_analysis_completed(
     assert result.exit_code == process_exit_success
 
     # THEN status will be set to "complete"
-    analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
+    analysis: Analysis | None = trailblazer_db.get_latest_analysis_for_case(
         case_id=failed_analysis_case_id
     )
     assert analysis.status == TrailblazerStatus.COMPLETED
@@ -77,7 +76,7 @@ def test_set_analysis_status(
 
     # GIVEN an analysis with status failed
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
-    analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
+    analysis: Analysis | None = trailblazer_db.get_latest_analysis_for_case(
         case_id=failed_analysis_case_id
     )
 
@@ -164,7 +163,7 @@ def test_cancel_not_running(
 
     # GIVEN an analysis that is NOT running
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
-    analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
+    analysis: Analysis | None = trailblazer_db.get_latest_analysis_for_case(
         case_id=failed_analysis_case_id
     )
     trailblazer_db.update_ongoing_analyses()
@@ -205,7 +204,7 @@ def test_cancel_with_ongoing_analysis(
     # GIVEN an ongoing analysis
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     trailblazer_db.update_ongoing_analyses()
-    analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
+    analysis: Analysis | None = trailblazer_db.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
 
@@ -260,7 +259,7 @@ def test_delete_ongoing_fail(
     trailblazer_db.update_ongoing_analyses()
 
     # GIVEN an analysis that is ongoing
-    analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
+    analysis: Analysis | None = trailblazer_db.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
 
@@ -289,7 +288,7 @@ def test_delete_ongoing_force(
     # GIVEN Trailblazer database with analyses and jobs and an ongoing analysis
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
     trailblazer_db.update_ongoing_analyses()
-    analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
+    analysis: Analysis | None = trailblazer_db.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
 
@@ -500,7 +499,7 @@ def test_scan(
 
     # GIVEN an analysis that is pending
     trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
-    analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
+    analysis: Analysis | None = trailblazer_db.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
     assert analysis.status == TrailblazerStatus.PENDING
@@ -510,7 +509,7 @@ def test_scan(
 
     # THEN log that analyses are updated
     assert "All analyses updated" in caplog.text
-    analysis: Optional[Analysis] = trailblazer_db.get_latest_analysis_for_case(
+    analysis: Analysis | None = trailblazer_db.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
 
