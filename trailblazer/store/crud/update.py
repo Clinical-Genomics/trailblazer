@@ -43,9 +43,9 @@ class UpdateHandler(BaseHandler):
         if not analysis:
             LOG.warning(f"Analysis {analysis_id} not found!")
             return
-        if analysis.workflow_manager == WorkflowManager.TOWER.value:
+        if analysis.workflow_manager == WorkflowManager.TOWER:
             self.update_tower_run_status(analysis_id=analysis_id)
-        elif analysis.workflow_manager == WorkflowManager.SLURM.value:
+        elif analysis.workflow_manager == WorkflowManager.SLURM:
             self.update_analysis_from_slurm_output(
                 analysis_id=analysis_id, analysis_host=analysis_host
             )
@@ -184,7 +184,7 @@ class UpdateHandler(BaseHandler):
             raise MissingAnalysis(f"Analysis {analysis_id} does not exist")
         if analysis.status not in TrailblazerStatus.ongoing_statuses():
             raise TrailblazerError(f"Analysis {analysis_id} is not running")
-        if analysis.workflow_manager == WorkflowManager.TOWER.value:
+        if analysis.workflow_manager == WorkflowManager.TOWER:
             self.cancel_tower_analysis(analysis=analysis)
         else:
             self.cancel_slurm_analysis(analysis=analysis, analysis_host=analysis_host)

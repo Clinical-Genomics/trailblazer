@@ -465,7 +465,7 @@ def test_update_run_status_using_tower(
     # GIVEN an analysis with pending status
     analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert analysis.status == TrailblazerStatus.PENDING
-    assert analysis.workflow_manager == WorkflowManager.TOWER.value
+    assert analysis.workflow_manager == WorkflowManager.TOWER
 
     # WHEN the database is updated once
     analysis_store.update_run_status(analysis_id=analysis.id)

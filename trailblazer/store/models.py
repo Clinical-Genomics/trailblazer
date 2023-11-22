@@ -90,9 +90,7 @@ class Analysis(Model):
     data_analysis = Column(types.String(32))
     ticket_id = Column(types.String(32))
     uploaded_at = Column(types.DateTime)
-    workflow_manager = Column(
-        types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM.value
-    )
+    workflow_manager = Column(types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM)
 
     jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
 

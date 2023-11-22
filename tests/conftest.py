@@ -237,7 +237,7 @@ def tower_jobs(analysis_id, started_at, slurm_id, tower_task_name) -> list[dict]
             name="NFCORE_RNAFUSION:RNAFUSION:FASTQC",
             started_at=None,
             elapsed=0,
-            status=TrailblazerStatus.PENDING.value,
+            status=TrailblazerStatus.PENDING,
         ),
     ]
 

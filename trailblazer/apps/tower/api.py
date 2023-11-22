@@ -166,7 +166,7 @@ class TowerAPI:
     def status(self) -> str:
         """Returns the status of an analysis (also called workflow in NF Tower)."""
         status: str = TOWER_WORKFLOW_STATUS.get(
-            self.response.workflow.status, TrailblazerStatus.ERROR.value
+            self.response.workflow.status, TrailblazerStatus.ERROR
         )
 
         # If the whole workflow (analysis) is completed set it as QC instead of COMPLETE
