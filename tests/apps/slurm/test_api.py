@@ -1,5 +1,3 @@
-from typing import Optional
-
 import pytest
 
 from trailblazer.apps.slurm.api import (
@@ -134,7 +132,7 @@ def test_get_current_analysis_status(
     # GIVEN a data analysis and a job status distribution
 
     # WHEN reformation the job step
-    current_analysis_status: Optional[str] = get_current_analysis_status(
+    current_analysis_status: str | None = get_current_analysis_status(
         jobs_status_distribution=job_status_distribution
     )
 

@@ -2,7 +2,7 @@ import datetime
 import multiprocessing
 import os
 from http import HTTPStatus
-from typing import Mapping, Optional, Union
+from typing import Mapping
 
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
@@ -77,9 +77,9 @@ def analysis(analysis_id):
         return abort(404)
 
     if request.method == "PUT":
-        status: Optional[str] = request.json.get("status")
-        comment: Optional[str] = request.json.get("comment")
-        is_visible: Optional[bool] = request.json.get("is_visible")
+        status: str | None = request.json.get("status")
+        comment: str | None = request.json.get("comment")
+        is_visible: bool | None = request.json.get("is_visible")
         store.update_analysis(
             analysis_id=analysis_id, comment=comment, status=status, is_visible=is_visible
         )
@@ -109,7 +109,7 @@ def aggregate_jobs():
     time_window: datetime = get_date_number_of_days_ago(
         number_of_days_ago=int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
     )
-    failed_jobs: list[dict[str, Union[str, int]]] = store.get_nr_jobs_with_status_per_category(
+    failed_jobs: list[dict[str, str | int]] = store.get_nr_jobs_with_status_per_category(
         status=TrailblazerStatus.FAILED, since_when=time_window
     )
     return jsonify(jobs=failed_jobs)
@@ -184,7 +184,7 @@ def delete(analysis_id):
 def post_get_latest_analysis():
     """Return latest analysis entry for specified case id."""
     post_request: Response.json = request.json
-    latest_case_analysis: Optional[Analysis] = store.get_latest_analysis_for_case(
+    latest_case_analysis: Analysis | None = store.get_latest_analysis_for_case(
         case_id=post_request.get("case_id")
     )
     if latest_case_analysis:
@@ -227,7 +227,7 @@ def post_delete_analysis():
 def post_mark_analyses_deleted():
     """Mark all analysis belonging to a case as deleted."""
     post_request: Response.json = request.json
-    case_analyses: Optional[list[Analysis]] = store.update_case_analyses_as_deleted(
+    case_analyses: list[Analysis] | None = store.update_case_analyses_as_deleted(
         case_id=post_request.get("case_id")
     )
     raw_analysis = [

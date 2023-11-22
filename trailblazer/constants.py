@@ -1,5 +1,4 @@
 from enum import Enum, StrEnum
-from typing import Tuple
 
 ONE_MONTH_IN_DAYS: int = 31
 HOURS_IN_DAY: int = 24
@@ -67,11 +66,11 @@ class SlurmJobStatus(StrEnum):
     TIME_OUT: str = "timeout"
 
     @classmethod
-    def statuses(cls) -> Tuple:
+    def statuses(cls) -> tuple:
         return tuple(status.value for status in cls)
 
     @classmethod
-    def ongoing_statuses(cls) -> Tuple:
+    def ongoing_statuses(cls) -> tuple:
         return cls.PENDING.value, cls.RUNNING.value, cls.COMPLETING.value
 
 
@@ -94,7 +93,7 @@ class TrailblazerStatus(StrEnum):
     RUNNING: str = "running"
 
     @classmethod
-    def statuses(cls) -> Tuple:
+    def statuses(cls) -> tuple:
         return tuple(status.value for status in cls)
 
     @classmethod

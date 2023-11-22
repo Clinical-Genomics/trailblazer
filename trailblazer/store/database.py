@@ -1,11 +1,9 @@
-from typing import Optional
-
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.engine.base import Engine
 from sqlalchemy.orm import Session, declarative_base, scoped_session, sessionmaker
 
-SESSION: Optional[Session] = None
-ENGINE: Optional[Engine] = None
+SESSION: Session | None = None
+ENGINE: Engine | None = None
 
 Model = declarative_base()
 

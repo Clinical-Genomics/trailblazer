@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Callable, Optional
+from typing import Callable
 
 from sqlalchemy.orm import Query
 
@@ -27,8 +27,8 @@ class JobFilter(Enum):
 def apply_job_filter(
     jobs: Query,
     filter_functions: list[Callable],
-    since_when: Optional[datetime] = None,
-    status: Optional[str] = None,
+    since_when: datetime | None = None,
+    status: str | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
     for function in filter_functions:

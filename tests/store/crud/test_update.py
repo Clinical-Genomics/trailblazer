@@ -1,6 +1,5 @@
 import subprocess
 from datetime import datetime
-from typing import Optional
 
 import pytest
 
@@ -89,7 +88,7 @@ def test_update_run_status(
     )
 
     # GIVEN an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
 
     # WHEN the database is updated once
     analysis_store.update_run_status(analysis_id=analysis.id)
@@ -107,7 +106,7 @@ def test_update_run_status(
 def test_update_ongoing_analyses(analysis_store: MockStore, ongoing_analysis_case_id: str):
     """Test all ongoing analysis statuses are updated."""
     # GIVEN an analysis store and analysis status
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
     assert analysis.status == TrailblazerStatus.PENDING
@@ -124,7 +123,7 @@ def test_update_ongoing_analyses_with_not_ongoing_analysis(
 ):
     """Test all ongoing analysis statuses are updated on not ongoing analysis-"""
     # GIVEN an analysis store and analysis status
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
     # GIVEN a completed analysis
@@ -143,7 +142,7 @@ def test_update_ongoing_analyseswhen_bad_call(
     """Test all ongoing analysis statuses are updated when exception is raised."""
     caplog.set_level("INFO")
     # GIVEN an analysis store and analysis status
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
     # GIVEN an analysis that is deleted
@@ -180,7 +179,7 @@ def test_update_analysis_jobs_from_slurm_jobs(analysis_store: MockStore, squeue_
 def test_update_case_analyses_as_deleted(analysis_store: MockStore, ongoing_analysis_case_id: str):
     """Test marking case analyses as deleted."""
     # GIVEN case id for a case with analyses that are not deleted
-    analyses: Optional[list[Analysis]] = analysis_store.get_analyses_for_case(
+    analyses: list[Analysis] | None = analysis_store.get_analyses_for_case(
         case_id=ongoing_analysis_case_id
     )
     for analysis in analyses:
@@ -188,7 +187,7 @@ def test_update_case_analyses_as_deleted(analysis_store: MockStore, ongoing_anal
 
     # WHEN marking analyses as deleted
     analysis_store.update_case_analyses_as_deleted(case_id=ongoing_analysis_case_id)
-    analyses: Optional[list[Analysis]] = analysis_store.get_analyses_for_case(
+    analyses: list[Analysis] | None = analysis_store.get_analyses_for_case(
         case_id=ongoing_analysis_case_id
     )
 
@@ -204,7 +203,7 @@ def test_update_case_analyses_as_deleted_with_non_existing_case(
     # GIVEN case id for that do not exist
 
     # WHEN marking analyses as deleted
-    analyses: Optional[list[Analysis]] = analysis_store.update_case_analyses_as_deleted(
+    analyses: list[Analysis] | None = analysis_store.update_case_analyses_as_deleted(
         case_id=case_id_not_in_db
     )
 
@@ -223,7 +222,7 @@ def test_cancel_ongoing_slurm_analysis(
     caplog.set_level("INFO")
 
     # GIVEN an ongoing analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(
         case_id=ongoing_analysis_case_id
     )
 
@@ -263,7 +262,7 @@ def test_cancel_ongoing_tower_analysis(
     caplog.set_level("INFO")
 
     # GIVEN an ongoing analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
 
     # WHEN running cancel ongoing analysis
     analysis_store.cancel_ongoing_analysis(analysis_id=analysis.id)
@@ -302,7 +301,7 @@ def test_cancel_ongoing_analysis_when_no_ongoing_analysis(
 
     # GIVEN a failed analysis
     analysis_store.update_ongoing_analyses()
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(
         case_id=failed_analysis_case_id
     )
 
@@ -320,7 +319,7 @@ def test_update_analysis_status_with_failed(analysis_store: MockStore, case_id: 
     """Test setting analysis to failed for an analysis."""
 
     # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert analysis.status != TrailblazerStatus.FAILED
 
     # WHEN setting analysis to failed
@@ -334,7 +333,7 @@ def test_update_analysis_status_to_completed(analysis_store: MockStore, case_id:
     """Test setting analysis to completed for an analysis."""
 
     # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert analysis.status != TrailblazerStatus.COMPLETED
 
     # WHEN setting analysis to completed
@@ -349,7 +348,7 @@ def test_update_analysis_uploaded_at(
 ):
     """Test setting analysis uploaded at for an analysis."""
     # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
 
     # WHEN setting an analysis uploaded at
     analysis_store.update_analysis_uploaded_at(case_id=analysis.family, uploaded_at=timestamp_now)
@@ -362,7 +361,7 @@ def test_update_analysis_comment(analysis_store: MockStore, case_id: str):
     """Test adding comment to an analysis."""
 
     # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     comment: str = "test comment"
 
     # WHEN adding a comment
@@ -376,7 +375,7 @@ def test_update_analysis_comment_when_existing(analysis_store: MockStore, case_i
     """Test adding comment to an analysis when a comment already exists."""
 
     # GIVEN a store with an analysis
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     first_comment: str = "One"
     second_comment: str = "Second"
 
@@ -423,7 +422,7 @@ def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: list[dict], ca
     """Assess that jobs are successfully updated when using NF Tower."""
 
     # GIVEN an analysis without jobs
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
 
     # WHEN analysis jobs are deleted
     analysis_store.delete_analysis_jobs(analysis=analysis)
@@ -464,7 +463,7 @@ def test_update_run_status_using_tower(
     mocker.patch("trailblazer.store.crud.update.get_tower_api", return_value=tower_api)
 
     # GIVEN an analysis with pending status
-    analysis: Optional[Analysis] = analysis_store.get_latest_analysis_for_case(case_id=case_id)
+    analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
     assert analysis.status == TrailblazerStatus.PENDING
     assert analysis.workflow_manager == WorkflowManager.TOWER.value
 

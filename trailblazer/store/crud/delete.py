@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 from sqlalchemy.orm import Session
 
@@ -29,7 +28,7 @@ class DeleteHandler(BaseHandler):
             TrailblazerError for ongoing analysis for analysis id.
         """
         session: Session = get_session()
-        analysis: Optional[Analysis] = self.get_analysis_with_id(analysis_id=analysis_id)
+        analysis: Analysis | None = self.get_analysis_with_id(analysis_id=analysis_id)
         if not analysis:
             raise MissingAnalysis("Analysis not found")
         if not force and analysis.status in TrailblazerStatus.ongoing_statuses():

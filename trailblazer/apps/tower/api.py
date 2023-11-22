@@ -3,7 +3,6 @@
 import logging
 import os
 from pathlib import Path
-from typing import Optional, Tuple
 
 import requests
 from requests import ConnectionError, HTTPError
@@ -45,7 +44,7 @@ class TowerApiClient:
         }
 
     @property
-    def request_params(self) -> list[Tuple]:
+    def request_params(self) -> list[tuple]:
         """Return required parameters for an NF Tower API call.
         Workspace ID is mandatory."""
         return [
@@ -249,7 +248,7 @@ def _validate_tower_api_client_requirements(tower_api: TowerAPI) -> bool:
     return True
 
 
-def get_tower_api(config_file_path: str, case_id: str) -> Optional[TowerAPI]:
+def get_tower_api(config_file_path: str, case_id: str) -> TowerAPI | None:
     """Return Tower API. Currently only one tower ID is supported."""
     workflow_id: int = ReadFile.get_content_from_file(
         file_format=FileFormat.YAML, file_path=Path(config_file_path)

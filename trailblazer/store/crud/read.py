@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable, Optional, Union
+from typing import Callable
 
 from sqlalchemy import desc
 from sqlalchemy.orm import Query
@@ -20,9 +20,9 @@ class ReadHandler(BaseHandler):
 
     def get_nr_jobs_with_status_per_category(
         self, status: str, since_when: datetime = None
-    ) -> list[dict[str, Union[str, int]]]:
+    ) -> list[dict[str, str | int]]:
         """Return the number of jobs with status per category (name)."""
-        filter_map: dict[Callable, Optional[Union[str, bool]]] = {
+        filter_map: dict[Callable, str | bool | None] = {
             JobFilter.FILTER_BY_STATUS: status,
             JobFilter.FILTER_BY_SINCE_WHEN: since_when,
         }
@@ -40,14 +40,14 @@ class ReadHandler(BaseHandler):
 
     def get_analyses_by_status_started_at_and_comment(
         self,
-        before: Optional[datetime] = None,
-        comment: Optional[str] = None,
-        status: Optional[str] = None,
-    ) -> Optional[list[Analysis]]:
+        before: datetime | None = None,
+        comment: str | None = None,
+        status: str | None = None,
+    ) -> list[Analysis] | None:
         """Return analyses meeting supplied arguments."""
         if not before and not comment and not status:
             return
-        filter_map: dict[Callable, Optional[Union[str, datetime, TrailblazerStatus]]] = {
+        filter_map: dict[Callable, str | datetime | TrailblazerStatus | None] = {
             AnalysisFilter.FILTER_BY_COMMENT: comment,
             AnalysisFilter.FILTER_BY_BEFORE_STARTED_AT: before,
             AnalysisFilter.FILTER_BY_STATUS: status,
@@ -64,7 +64,7 @@ class ReadHandler(BaseHandler):
         )
         return analyses.order_by(desc(Analysis.started_at)).all()
 
-    def get_analysis(self, case_id: str, started_at: datetime, status: str) -> Optional[Analysis]:
+    def get_analysis(self, case_id: str, started_at: datetime, status: str) -> Analysis | None:
         """Return the latest analysis for supplied parameters."""
         return apply_analysis_filter(
             analyses=self.get_query(table=Analysis),
@@ -78,7 +78,7 @@ class ReadHandler(BaseHandler):
             status=status,
         ).first()
 
-    def get_latest_analysis_for_case(self, case_id: str) -> Optional[Analysis]:
+    def get_latest_analysis_for_case(self, case_id: str) -> Analysis | None:
         """Return the latest analysis for a case."""
         return (
             apply_analysis_filter(
@@ -92,7 +92,7 @@ class ReadHandler(BaseHandler):
             .first()
         )
 
-    def get_analyses_for_case(self, case_id: str) -> Optional[list[Analysis]]:
+    def get_analyses_for_case(self, case_id: str) -> list[Analysis] | None:
         """Return all analyses for a case."""
         return apply_analysis_filter(
             analyses=self.get_query(table=Analysis),
@@ -102,7 +102,7 @@ class ReadHandler(BaseHandler):
             case_id=case_id,
         ).all()
 
-    def get_analyses_with_statuses(self, statuses: list[str]) -> Optional[list[Analysis]]:
+    def get_analyses_with_statuses(self, statuses: list[str]) -> list[Analysis] | None:
         """Get analyses by statuses."""
         return apply_analysis_filter(
             analyses=self.get_query(table=Analysis),
@@ -110,7 +110,7 @@ class ReadHandler(BaseHandler):
             statuses=statuses,
         ).all()
 
-    def get_analysis_with_id(self, analysis_id: int) -> Optional[Analysis]:
+    def get_analysis_with_id(self, analysis_id: int) -> Analysis | None:
         """Get a single analysis by id."""
         return apply_analysis_filter(
             analyses=self.get_query(table=Analysis),
@@ -124,7 +124,7 @@ class ReadHandler(BaseHandler):
         exclude_archived: bool = True,
     ) -> User:
         """Return user from the database."""
-        filter_map: dict[Callable, Optional[Union[str, bool]]] = {
+        filter_map: dict[Callable, str | bool | None] = {
             UserFilter.FILTER_BY_CONTAINS_EMAIL: email,
             UserFilter.FILTER_BY_IS_NOT_ARCHIVED: exclude_archived,
         }
@@ -144,7 +144,7 @@ class ReadHandler(BaseHandler):
         exclude_archived: bool = True,
     ) -> list[User]:
         """Return users from the database."""
-        filter_map: dict[Callable, Optional[Union[str, bool]]] = {
+        filter_map: dict[Callable, str | bool | None] = {
             UserFilter.FILTER_BY_CONTAINS_EMAIL: email,
             UserFilter.FILTER_BY_CONTAINS_NAME: name,
             UserFilter.FILTER_BY_IS_NOT_ARCHIVED: exclude_archived,
