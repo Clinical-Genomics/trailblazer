@@ -47,7 +47,7 @@ class ReadHandler(BaseHandler):
         """Return analyses meeting supplied arguments."""
         if not before and not comment and not status:
             return
-        filter_map: dict[Callable, str | datetime | TrailblazerStatus | None ] = {
+        filter_map: dict[Callable, str | datetime | TrailblazerStatus | None] = {
             AnalysisFilter.FILTER_BY_COMMENT: comment,
             AnalysisFilter.FILTER_BY_BEFORE_STARTED_AT: before,
             AnalysisFilter.FILTER_BY_STATUS: status,
