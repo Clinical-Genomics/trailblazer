@@ -96,10 +96,10 @@ def _get_analysis_single_status(jobs_status_distribution: dict[str, float]) -> s
 
 def _is_analysis_failed(jobs_status_distribution: dict[str, float]) -> bool:
     """Return true if any job was broken."""
-    broken_statuses: list[str] = [SlurmJobStatus.FAILED, SlurmJobStatus.TIME_OUT]
-    for broken_status in broken_statuses:
-        if jobs_status_distribution.get(broken_status):
-            return True
+    return any(
+        broken_status in jobs_status_distribution
+        for broken_status in [SlurmJobStatus.FAILED, SlurmJobStatus.TIME_OUT]
+    )
 
 
 def _is_analysis_ongoing(jobs_status_distribution: dict[str, float]) -> bool:
