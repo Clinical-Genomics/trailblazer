@@ -15,12 +15,12 @@ from trailblazer.utils.datetime import (
 class SqueueJob(BaseModel):
     """Model job meta data from squeue output."""
 
-    id: int = Field(..., alias=SlurmSqueueHeader.JOBID.value)
-    step: str = Field(..., alias=SlurmSqueueHeader.NAME.value)
-    status: SlurmJobStatus = Field(..., alias=SlurmSqueueHeader.STATE.value)
-    time_limit: str = Field(..., alias=SlurmSqueueHeader.TIME_LIMIT.value)
-    time_elapsed: int = Field(..., alias=SlurmSqueueHeader.TIME.value)
-    started_at: datetime | None = Field(None, alias=SlurmSqueueHeader.START_TIME.value)
+    id: int = Field(..., alias=SlurmSqueueHeader.JOBID)
+    step: str = Field(..., alias=SlurmSqueueHeader.NAME)
+    status: SlurmJobStatus = Field(..., alias=SlurmSqueueHeader.STATE)
+    time_limit: str = Field(..., alias=SlurmSqueueHeader.TIME_LIMIT)
+    time_elapsed: int = Field(..., alias=SlurmSqueueHeader.TIME)
+    started_at: datetime | None = Field(None, alias=SlurmSqueueHeader.START_TIME)
 
     @field_validator("status", mode="before")
     @classmethod

@@ -1,4 +1,4 @@
-from enum import Enum, StrEnum
+from enum import StrEnum
 
 ONE_MONTH_IN_DAYS: int = 31
 HOURS_IN_DAY: int = 24
@@ -23,7 +23,7 @@ class FileExtension(StrEnum):
     YAML: str = ".yaml"
 
 
-class WorkflowManager(Enum):
+class WorkflowManager(StrEnum):
     """Supported task managers."""
 
     SLURM: str = "slurm"
@@ -31,7 +31,7 @@ class WorkflowManager(Enum):
 
     @classmethod
     def list(cls) -> list:
-        return [task.value for task in cls]
+        return [task for task in cls]
 
 
 class Pipeline(StrEnum):
@@ -67,11 +67,11 @@ class SlurmJobStatus(StrEnum):
 
     @classmethod
     def statuses(cls) -> tuple:
-        return tuple(status.value for status in cls)
+        return tuple(status for status in cls)
 
     @classmethod
     def ongoing_statuses(cls) -> tuple:
-        return cls.PENDING.value, cls.RUNNING.value, cls.COMPLETING.value
+        return cls.PENDING, cls.RUNNING, cls.COMPLETING
 
 
 class CharacterFormat(StrEnum):
@@ -94,11 +94,11 @@ class TrailblazerStatus(StrEnum):
 
     @classmethod
     def statuses(cls) -> tuple:
-        return tuple(status.value for status in cls)
+        return tuple(status for status in cls)
 
     @classmethod
     def ongoing_statuses(cls) -> tuple[str, str, str, str]:
-        return cls.PENDING.value, cls.RUNNING.value, cls.COMPLETING.value, cls.ERROR.value
+        return cls.PENDING, cls.RUNNING, cls.COMPLETING, cls.ERROR
 
 
 class TrailblazerStatusColor(StrEnum):

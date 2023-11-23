@@ -32,7 +32,7 @@ class CreateHandler(BaseHandler):
             out_dir=out_dir,
             priority=priority,
             started_at=datetime.now(),
-            status=TrailblazerStatus.PENDING.value,
+            status=TrailblazerStatus.PENDING,
             ticket_id=ticket_id,
             type=type,
             workflow_manager=workflow_manager,
