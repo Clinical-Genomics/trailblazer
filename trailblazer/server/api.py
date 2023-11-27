@@ -88,8 +88,8 @@ def analysis(analysis_id):
                 status=analysis_update.status,
                 is_visible=analysis_update.is_visible,
             )
-        except ValidationError as e:
-            return jsonify(error=str(e)), HTTPStatus.BAD_REQUEST
+        except ValidationError as error:
+            return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
     data = analysis.to_dict()
     data["jobs"] = [job.to_dict() for job in analysis.jobs]
