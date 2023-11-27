@@ -259,7 +259,7 @@ class UpdateHandler(BaseHandler):
             LOG.info(f"Adding comment {comment} to analysis {analysis.family}")
             analysis.comment = comment
 
-        if is_visible:
+        if is_visible is not None:
             LOG.info(f"Setting visibility to {is_visible} for analysis {analysis.family}")
             analysis.is_visible = bool(is_visible)
 
