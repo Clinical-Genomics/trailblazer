@@ -99,6 +99,14 @@ class Analysis(Model):
         """Check if analysis status is ongoing."""
         return self.status in TrailblazerStatus.ongoing_statuses()
 
+    @property
+    def most_recent_failed_job(self) -> "Job" | None:
+        failed_jobs: list[Job] = [job for job in self.jobs if job.status == SlurmJobStatus.FAILED]
+        if not failed_jobs:
+            return None
+        sorted_jobs: list[Job] = sorted(failed_jobs, key=lambda job: job.started_at, reverse=True)
+        return sorted_jobs[0]
+
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object."""
         return {
