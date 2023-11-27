@@ -6,6 +6,8 @@ from typing import Dict, List, Mapping, Optional, Union
 
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
+from http import HTTPStatus
+from pydantic import ValidationError
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import (
@@ -14,6 +16,7 @@ from trailblazer.constants import (
     TrailblazerStatus,
 )
 from trailblazer.server.ext import store
+from trailblazer.server.schemas import AnalysisUpdate
 from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
@@ -77,12 +80,16 @@ def analysis(analysis_id):
         return abort(404)
 
     if request.method == "PUT":
-        status: Optional[str] = request.json.get("status")
-        comment: Optional[str] = request.json.get("comment")
-        is_visible: Optional[bool] = request.json.get("is_visible")
-        store.update_analysis(
-            analysis_id=analysis_id, comment=comment, status=status, is_visible=is_visible
-        )
+        try:
+            analysis_update = AnalysisUpdate.model_validate(request.json)
+            store.update_analysis(
+                analysis_id=analysis_id,
+                comment=analysis_update.comment,
+                status=analysis_update.status,
+                is_visible=analysis_update.is_visible,
+            )
+        except ValidationError as e:
+            return jsonify(error=str(e)), HTTPStatus.BAD_REQUEST
 
     data = analysis.to_dict()
     data["jobs"] = [job.to_dict() for job in analysis.jobs]
