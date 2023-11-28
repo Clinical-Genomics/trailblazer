@@ -100,7 +100,7 @@ class Analysis(Model):
         return self.status in TrailblazerStatus.ongoing_statuses()
 
     @property
-    def most_recent_failed_job(self):
+    def last_failed_job(self):
         failed_jobs: list[Job] = [job for job in self.jobs if job.status == SlurmJobStatus.FAILED]
         if not failed_jobs:
             return None

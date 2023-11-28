@@ -16,7 +16,7 @@ def test_user_first_name():
     assert first_name == "Paul"
 
 
-def test_most_recent_failed_job():
+def test_analysis_most_recent_failed_job():
     """Test retrieving the most recent failed job."""
     # GIVEN an Analysis with several jobs, including failed ones
     analysis = Analysis(
@@ -29,15 +29,15 @@ def test_most_recent_failed_job():
     )
 
     # WHEN retrieving the most recent failed job
-    most_recent_failed: Job | None = analysis.most_recent_failed_job
+    most_recent_failed: Job | None = analysis.last_failed_job
 
     # THEN it should return the job with the status FAILED and the most recent started_at date
-    assert most_recent_failed is not None
+    assert most_recent_failed
     assert most_recent_failed.status == SlurmJobStatus.FAILED
     assert most_recent_failed.started_at == datetime(2023, 1, 3)
 
 
-def test_retrieving_non_existing_failed_job():
+def test_get_analysis_non_existing_failed_job():
     """Test retrieving the most recent failed job, when none has failed."""
     # GIVEN an Analysis without any failed jobs
     analysis = Analysis(
@@ -45,19 +45,19 @@ def test_retrieving_non_existing_failed_job():
     )
 
     # WHEN retrieving the most recent failed job
-    most_recent_failed: Job | None = analysis.most_recent_failed_job
+    most_recent_failed: Job | None = analysis.last_failed_job
 
     # THEN it should not return any
-    assert most_recent_failed is None
+    assert most_recent_failed
 
 
-def test_most_recent_failed_job_when_no_jobs_exist():
-    """Test retrieving the most recent failed job, when none has failed."""
+def test_get_analysis_most_recent_failed_job_when_no_jobs_exist():
+    """Test retrieving the most recent failed job, when no jobs."""
     # GIVEN an Analysis without any jobs
     analysis = Analysis()
 
     # WHEN retrieving the most recent failed job
-    most_recent_failed: Job | None = analysis.most_recent_failed_job
+    most_recent_failed: Job | None = analysis.last_failed_job
 
     # THEN it should not return any
-    assert most_recent_failed is None
+    assert most_recent_failed
