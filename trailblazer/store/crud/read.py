@@ -158,3 +158,16 @@ class ReadHandler(BaseHandler):
             email=email,
             name=name,
         ).all()
+
+    def get_latest_failed_job_for_analysis(self, analysis_id: str) -> Job | None:
+        filters: list[Callable] = [
+            JobFilter.FILTER_BY_ANALYSIS_ID,
+            JobFilter.FILTER_BY_STATUS,
+            JobFilter.SORT_BY_STARTED_AT,
+        ]
+        return apply_job_filter(
+            filter_functions=filters,
+            jobs=self.get_query(Job),
+            analysis_id=analysis_id,
+            status=TrailblazerStatus.FAILED,
+        ).first()
