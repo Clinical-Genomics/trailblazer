@@ -3,7 +3,7 @@ from datetime import datetime
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.store.models import Analysis, User
+from trailblazer.store.models import Analysis, Job, User
 
 
 def test_get_analyses_by_status_started_at_and_comment(
@@ -280,8 +280,19 @@ def test_get_latest_failed_job_for_analysis(job_store: MockStore):
     analysis_id = 1
 
     # WHEN getting the latest failed job
-    job = job_store.get_latest_failed_job_for_analysis(analysis_id)
+    job: Job | None = job_store.get_latest_failed_job_for_analysis(analysis_id)
 
     # THEN the job should be returned
     assert job.analysis_id == analysis_id
     assert job.status == TrailblazerStatus.FAILED
+
+
+def test_get_latest_failed_job_when_none_failed(job_store: MockStore):
+    # GIVEN a database with an analysis without failed jobs
+    analysis_id = 0
+
+    # WHEN getting the latest failed job
+    job: Job | None = job_store.get_latest_failed_job_for_analysis(analysis_id)
+
+    # THEN no job should be returned
+    assert not job
