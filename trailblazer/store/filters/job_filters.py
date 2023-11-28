@@ -35,6 +35,7 @@ class JobFilter(Enum):
     FILTER_BY_ANALYSIS_ID: Callable = filter_jobs_by_analysis_id
     SORT_BY_STARTED_AT: Callable = sort_jobs_by_started_at
 
+
 def apply_job_filter(
     jobs: Query,
     filter_functions: list[Callable],
