@@ -272,3 +272,16 @@ def test_get_users_no_username(user_store: MockStore, user_email: str):
 
     # THEN the user should be returned
     assert users[0].email == user_email
+
+
+def test_get_latest_failed_job_for_analysis(job_store: MockStore):
+    """Test getting the latest failed job for an analysis."""
+    # GIVEN a database with a job and an analysis
+    analysis_id = 1
+
+    # WHEN getting the latest failed job
+    job = job_store.get_latest_failed_job_for_analysis(analysis_id)
+
+    # THEN the job should be returned
+    assert job.analysis_id == analysis_id
+    assert job.status == TrailblazerStatus.FAILED
