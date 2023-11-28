@@ -17,7 +17,7 @@ from trailblazer.constants import (
 )
 from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdate
-from trailblazer.store.models import Analysis, Info, User
+from trailblazer.store.models import Analysis, Info, Job, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
 ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
@@ -68,6 +68,8 @@ def analyses():
     for analysis in query_page.all():
         analysis_data = analysis.to_dict()
         analysis_data["user"] = analysis.user.to_dict() if analysis.user else None
+        failed_job: Job | None = analysis.last_failed_job
+        analysis_data["failed_job"] = failed_job.to_dict() if failed_job else None
         response_data.append(analysis_data)
     return jsonify(analyses=response_data)
 
