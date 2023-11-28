@@ -68,7 +68,7 @@ def analyses():
     for analysis in query_page.all():
         analysis_data = analysis.to_dict()
         analysis_data["user"] = analysis.user.to_dict() if analysis.user else None
-        failed_job: Job | None = analysis.most_recent_failed_job
+        failed_job: Job | None = analysis.last_failed_job
         analysis_data["failed_job"] = failed_job.to_dict() if failed_job else None
         response_data.append(analysis_data)
     return jsonify(analyses=response_data)
