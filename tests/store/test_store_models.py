@@ -45,10 +45,10 @@ def test_get_analysis_non_existing_failed_job():
     )
 
     # WHEN retrieving the last failed job
-    most_recent_failed: Job | None = analysis.last_failed_job
+    last_failed_job: Job | None = analysis.last_failed_job
 
     # THEN it should not return any
-    assert most_recent_failed
+    assert not last_failed_job
 
 
 def test_get_analysis_last_failed_job_when_no_jobs_exist():
@@ -57,7 +57,7 @@ def test_get_analysis_last_failed_job_when_no_jobs_exist():
     analysis = Analysis()
 
     # WHEN retrieving the last failed job
-    most_recent_failed: Job | None = analysis.last_failed_job
+    last_failed_job: Job | None = analysis.last_failed_job
 
     # THEN it should not return any
-    assert most_recent_failed
+    assert not last_failed_job
