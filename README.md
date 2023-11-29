@@ -17,7 +17,6 @@ pip install trailblazer
 ```
 
 If you would like to install the latest development version:
-
 ```bash
 git clone https://github.com/Clinical-Genomics/trailblazer
 cd trailblazer
