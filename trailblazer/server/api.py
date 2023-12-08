@@ -84,7 +84,7 @@ def analysis(analysis_id):
     if request.method == "PUT":
         try:
             analysis_update = AnalysisUpdate.model_validate(request.json)
-            store.update_analysis(
+            analysis = store.update_analysis(
                 analysis_id=analysis_id,
                 comment=analysis_update.comment,
                 status=analysis_update.status,
