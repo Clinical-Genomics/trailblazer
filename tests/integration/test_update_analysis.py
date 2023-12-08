@@ -1,0 +1,68 @@
+from flask.testing import FlaskClient
+from http import HTTPStatus
+from trailblazer.constants import TrailblazerStatus
+from trailblazer.server.schemas import AnalysisUpdateRequest
+
+from trailblazer.store.models import Analysis
+
+
+def test_update_analysis_status(client: FlaskClient, analysis: Analysis):
+    # GIVEN an analysis with a pending status
+
+    # GIVEN a valid request to set the status to completed
+    request = AnalysisUpdateRequest(status=TrailblazerStatus.COMPLETED)
+    data = request.model_dump_json()
+
+    # WHEN updating the analysis to be completed
+    response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json")
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN it should return the analysis
+    assert response.json["id"] == analysis.id
+
+    # THEN it should have the new status
+    assert response.json["status"] == TrailblazerStatus.COMPLETED
+
+
+
+def test_update_analysis_comment(client: FlaskClient, analysis: Analysis):
+    # GIVEN an analysis
+
+    # GIVEN a valid request to set the comment
+    new_comment = "new comment"
+    request = AnalysisUpdateRequest(comment=new_comment)
+    data = request.model_dump_json()
+
+    # WHEN updating the analysis with a comment
+    response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json")
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN it returns the analysis
+    assert response.json["id"] == analysis.id
+
+    # THEN it has the new comment
+    assert response.json["comment"] == new_comment
+
+
+def test_update_analysis_visibility(client: FlaskClient, analysis: Analysis):
+    # GIVEN an analysis tagged as visible
+
+    # GIVEN a valid request to set the visibility
+    request = AnalysisUpdateRequest(is_visible=False)
+    data = request.model_dump_json()
+
+    # WHEN updating the analysis with a comment
+    response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json")
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN it returns the analysis
+    assert response.json["id"] == analysis.id
+
+    # THEN it has the new visibility
+    assert response.json["is_visible"] == False

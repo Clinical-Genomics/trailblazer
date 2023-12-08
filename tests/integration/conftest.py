@@ -38,6 +38,7 @@ def analysis() -> Analysis:
         ticket_id="ticket_id",
         type=TYPES[0],
         workflow_manager=WorkflowManager.SLURM,
+        is_visible=True,
     )
     session: Session = get_session()
     session.add(analysis)
