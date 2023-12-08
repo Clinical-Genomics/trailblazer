@@ -19,11 +19,10 @@ def flask_app(store: Store):
 
 @pytest.fixture
 def client(flask_app: Flask) -> FlaskClient:
-   # Bypass authentication
-   with patch.object(flask_app, "before_request_funcs", new={}):
+    # Bypass authentication
+    with patch.object(flask_app, "before_request_funcs", new={}):
         client = flask_app.test_client()
         yield client
-
 
 
 @pytest.fixture
