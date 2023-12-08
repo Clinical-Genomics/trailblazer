@@ -256,15 +256,16 @@ class UpdateHandler(BaseHandler):
         analysis: Analysis = self.get_analysis_with_id(analysis_id)
 
         if comment:
-            LOG.info(f"Adding comment {comment} to analysis {analysis.family}")
+            LOG.info(f"Adding comment {comment} to analysis {analysis.id}")
             analysis.comment = comment
 
         if is_visible is not None:
-            LOG.info(f"Setting visibility to {is_visible} for analysis {analysis.family}")
+            LOG.info(f"Setting visibility to {is_visible} for analysis {analysis.id}")
             analysis.is_visible = bool(is_visible)
 
         if status:
-            self.update_analysis_status(case_id=analysis.family, status=status)
+            LOG.info(f"Setting status to {status} for analysis {analysis.family}")
+            analysis.status = status
 
         session: Session = get_session()
         session.commit()
