@@ -13,7 +13,7 @@ from trailblazer.constants import PRIORITY_OPTIONS, TYPES, TrailblazerStatus, Wo
 
 
 @pytest.fixture
-def flask_app():
+def flask_app(store: Store):
     yield app
 
 
@@ -27,7 +27,7 @@ def client(flask_app: Flask) -> FlaskClient:
 
 
 @pytest.fixture
-def analysis(store: Store):
+def analysis() -> Analysis:
     analysis = Analysis(
         config_path="config_path",
         data_analysis="data_analysis",
