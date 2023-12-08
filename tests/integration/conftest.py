@@ -1,4 +1,5 @@
 import datetime
+from typing import Generator
 from unittest.mock import patch
 from flask import Flask
 from flask.testing import FlaskClient
@@ -18,7 +19,7 @@ def flask_app(store: Store):
 
 
 @pytest.fixture
-def client(flask_app: Flask) -> FlaskClient:
+def client(flask_app: Flask) -> Generator[FlaskClient, None, None]:
     # Bypass authentication
     with patch.object(flask_app, "before_request_funcs", new={}):
         client = flask_app.test_client()

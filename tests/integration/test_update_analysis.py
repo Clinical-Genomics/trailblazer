@@ -6,6 +6,8 @@ from trailblazer.constants import TrailblazerStatus
 from trailblazer.server.schemas import AnalysisUpdateRequest
 from trailblazer.store.models import Analysis
 
+TYPE_JSON = "application/json"
+
 
 def test_update_analysis_status(client: FlaskClient, analysis: Analysis):
     # GIVEN an analysis with a pending status
@@ -15,9 +17,7 @@ def test_update_analysis_status(client: FlaskClient, analysis: Analysis):
     data = request.model_dump_json()
 
     # WHEN updating the analysis to be completed
-    response = client.put(
-        f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json"
-    )
+    response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON)
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -39,7 +39,7 @@ def test_update_analysis_comment(client: FlaskClient, analysis: Analysis):
 
     # WHEN updating the analysis with a comment
     response = client.put(
-        f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json"
+        f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON
     )
 
     # THEN it gives a success response
@@ -61,7 +61,7 @@ def test_update_analysis_visibility(client: FlaskClient, analysis: Analysis):
 
     # WHEN updating the analysis with a comment
     response = client.put(
-        f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json"
+        f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON
     )
 
     # THEN it gives a success response
@@ -80,7 +80,7 @@ def test_update_analysis_invalid_request(client: FlaskClient, analysis: Analysis
 
     # WHEN updating the analysis with an invalid request
     response = client.put(
-        f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json"
+        f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON
     )
 
     # THEN it gives a bad request response
