@@ -1,8 +1,9 @@
+import json
 from flask.testing import FlaskClient
 from http import HTTPStatus
+
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.server.schemas import AnalysisUpdateRequest
-
 from trailblazer.store.models import Analysis
 
 
@@ -14,7 +15,9 @@ def test_update_analysis_status(client: FlaskClient, analysis: Analysis):
     data = request.model_dump_json()
 
     # WHEN updating the analysis to be completed
-    response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json")
+    response = client.put(
+        f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json"
+    )
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -26,7 +29,6 @@ def test_update_analysis_status(client: FlaskClient, analysis: Analysis):
     assert response.json["status"] == TrailblazerStatus.COMPLETED
 
 
-
 def test_update_analysis_comment(client: FlaskClient, analysis: Analysis):
     # GIVEN an analysis
 
@@ -36,7 +38,9 @@ def test_update_analysis_comment(client: FlaskClient, analysis: Analysis):
     data = request.model_dump_json()
 
     # WHEN updating the analysis with a comment
-    response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json")
+    response = client.put(
+        f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json"
+    )
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -56,7 +60,9 @@ def test_update_analysis_visibility(client: FlaskClient, analysis: Analysis):
     data = request.model_dump_json()
 
     # WHEN updating the analysis with a comment
-    response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json")
+    response = client.put(
+        f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json"
+    )
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -66,3 +72,16 @@ def test_update_analysis_visibility(client: FlaskClient, analysis: Analysis):
 
     # THEN it has the new visibility
     assert response.json["is_visible"] == False
+
+
+def test_update_analysis_invalid_request(client: FlaskClient, analysis: Analysis):
+    # GIVEN an invalid request
+    data = json.dumps({"status": "invalid_status"})
+
+    # WHEN updating the analysis with an invalid request
+    response = client.put(
+        f"/api/v1/analyses/{analysis.id}", data=data, content_type="application/json"
+    )
+
+    # THEN it gives a bad request response
+    assert response.status_code == HTTPStatus.BAD_REQUEST
