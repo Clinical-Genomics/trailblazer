@@ -38,9 +38,7 @@ def test_update_analysis_comment(client: FlaskClient, analysis: Analysis):
     data = request.model_dump_json()
 
     # WHEN updating the analysis with a comment
-    response = client.put(
-        f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON
-    )
+    response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON)
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -60,9 +58,7 @@ def test_update_analysis_visibility(client: FlaskClient, analysis: Analysis):
     data = request.model_dump_json()
 
     # WHEN updating the analysis with a comment
-    response = client.put(
-        f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON
-    )
+    response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON)
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -79,9 +75,7 @@ def test_update_analysis_invalid_request(client: FlaskClient, analysis: Analysis
     data = json.dumps({"status": "invalid_status"})
 
     # WHEN updating the analysis with an invalid request
-    response = client.put(
-        f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON
-    )
+    response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON)
 
     # THEN it gives a bad request response
     assert response.status_code == HTTPStatus.BAD_REQUEST
