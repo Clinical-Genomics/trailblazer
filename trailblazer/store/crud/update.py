@@ -264,7 +264,7 @@ class UpdateHandler(BaseHandler):
             analysis.is_visible = bool(is_visible)
 
         if status:
-            LOG.info(f"Setting status to {status} for analysis {analysis.family}")
+            LOG.info(f"Setting status to {status} for analysis {analysis.id}")
             analysis.status = status
 
         session: Session = get_session()
