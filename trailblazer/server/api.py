@@ -16,7 +16,7 @@ from trailblazer.constants import (
     TrailblazerStatus,
 )
 from trailblazer.server.ext import store
-from trailblazer.server.schemas import AnalysisUpdate
+from trailblazer.server.schemas import AnalysisUpdateRequest
 from trailblazer.store.models import Analysis, Info, Job, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
@@ -83,7 +83,7 @@ def analysis(analysis_id):
 
     if request.method == "PUT":
         try:
-            analysis_update = AnalysisUpdate.model_validate(request.json)
+            analysis_update = AnalysisUpdateRequest.model_validate(request.json)
             analysis = store.update_analysis(
                 analysis_id=analysis_id,
                 comment=analysis_update.comment,
