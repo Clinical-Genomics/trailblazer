@@ -22,8 +22,7 @@ def flask_app(store: Store):
 def client(flask_app: Flask) -> Generator[FlaskClient, None, None]:
     # Bypass authentication
     with patch.object(flask_app, "before_request_funcs", new={}):
-        client = flask_app.test_client()
-        yield client
+        yield flask_app.test_client()
 
 
 @pytest.fixture
@@ -45,3 +44,8 @@ def analysis() -> Analysis:
     session.add(analysis)
     session.commit()
     return analysis
+
+
+@pytest.fixture
+def non_existing_analysis_id() -> str:
+    return "00"

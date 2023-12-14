@@ -14,7 +14,7 @@ def test_update_analysis_status(client: FlaskClient, analysis: Analysis):
 
     # GIVEN a valid request to set the status to completed
     request = AnalysisUpdateRequest(status=TrailblazerStatus.COMPLETED)
-    data = request.model_dump_json()
+    data: str = request.model_dump_json()
 
     # WHEN updating the analysis to be completed
     response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON)
@@ -35,7 +35,7 @@ def test_update_analysis_comment(client: FlaskClient, analysis: Analysis):
     # GIVEN a valid request to set the comment
     new_comment = "new comment"
     request = AnalysisUpdateRequest(comment=new_comment)
-    data = request.model_dump_json()
+    data: str = request.model_dump_json()
 
     # WHEN updating the analysis with a comment
     response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON)
@@ -55,7 +55,7 @@ def test_update_analysis_visibility(client: FlaskClient, analysis: Analysis):
 
     # GIVEN a valid request to set the visibility
     request = AnalysisUpdateRequest(is_visible=False)
-    data = request.model_dump_json()
+    data: str = request.model_dump_json()
 
     # WHEN updating the analysis with a comment
     response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON)
@@ -72,7 +72,7 @@ def test_update_analysis_visibility(client: FlaskClient, analysis: Analysis):
 
 def test_update_analysis_invalid_request(client: FlaskClient, analysis: Analysis):
     # GIVEN an invalid request
-    data = json.dumps({"status": "invalid_status"})
+    data: str = json.dumps({"status": "invalid_status"})
 
     # WHEN updating the analysis with an invalid request
     response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON)
