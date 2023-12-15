@@ -5,12 +5,12 @@ from trailblazer.store.models import Analysis
 def _get_ls_analysis_message(analysis: Analysis) -> tuple[str, str]:
     """Return the log message for the analysis."""
     message: str = (
-        f"{analysis.id} | {analysis.family} {analysis.started_at.date()} "
+        f"{analysis.id} | {analysis.case_id} {analysis.started_at.date()} "
         f"[{analysis.type.upper()}/{analysis.status.upper()}]"
     )
     message_map: dict[str, tuple] = {
         TrailblazerStatus.PENDING: (
-            f"{analysis.id} | {analysis.family} [{analysis.status.upper()}]",
+            f"{analysis.id} | {analysis.case_id} [{analysis.status.upper()}]",
             TrailblazerStatusColor.PENDING,
         ),
         TrailblazerStatus.RUNNING: (

@@ -60,7 +60,7 @@ class UpdateHandler(BaseHandler):
                 self.update_run_status(analysis_id=analysis.id, analysis_host=analysis_host)
             except Exception as error:
                 LOG.error(
-                    f"Failed to update {analysis.family} - {analysis.id}: {type(error).__name__}"
+                    f"Failed to update {analysis.case_id} - {analysis.id}: {type(error).__name__}"
                 )
 
     def update_analysis_jobs_from_slurm_jobs(
@@ -99,7 +99,7 @@ class UpdateHandler(BaseHandler):
             )
         )
         self.update_analysis_jobs_from_slurm_jobs(analysis=analysis, squeue_result=squeue_result)
-        LOG.debug(f"Status in SLURM: {analysis.family} - {analysis.id}")
+        LOG.debug(f"Status in SLURM: {analysis.case_id} - {analysis.id}")
         LOG.debug(squeue_result.jobs)
         analysis.progress = squeue_result.jobs_status_distribution.get(
             SlurmJobStatus.COMPLETED, 0.0
@@ -107,7 +107,7 @@ class UpdateHandler(BaseHandler):
         analysis.status = get_current_analysis_status(
             jobs_status_distribution=squeue_result.jobs_status_distribution
         )
-        LOG.info(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
+        LOG.info(f"Updated status {analysis.case_id} - {analysis.id}: {analysis.status} ")
         analysis.logged_at = datetime.now()
         session: Session = get_session()
         session.commit()
@@ -116,7 +116,7 @@ class UpdateHandler(BaseHandler):
         """Query tower for entries related to given analysis, and update the Trailblazer database."""
         analysis: Analysis | None = self.get_analysis_with_id(analysis_id=analysis_id)
         tower_api: TowerAPI | None = get_tower_api(
-            config_file_path=analysis.config_path, case_id=analysis.family
+            config_file_path=analysis.config_path, case_id=analysis.case_id
         )
 
         try:
@@ -124,7 +124,7 @@ class UpdateHandler(BaseHandler):
                 analysis=analysis, analysis_id=analysis_id, tower_api=tower_api
             )
         except Exception as error:
-            LOG.error(f"Error logging case - {analysis.family} :  {type(error).__name__}")
+            LOG.error(f"Error logging case - {analysis.case_id} :  {type(error).__name__}")
             analysis.status = TrailblazerStatus.ERROR
             session: Session = get_session()
             session.commit()
@@ -132,7 +132,7 @@ class UpdateHandler(BaseHandler):
     def _update_analysis_from_tower_output(
         self, analysis: Analysis, analysis_id: int, tower_api: TowerAPI
     ):
-        LOG.info(f"Status in Tower: {analysis.family} - {analysis_id} - {tower_api.workflow_id}")
+        LOG.info(f"Status in Tower: {analysis.case_id} - {analysis_id} - {tower_api.workflow_id}")
         analysis.status = tower_api.status
         analysis.progress = tower_api.progress
         analysis.logged_at = datetime.now()
@@ -142,7 +142,7 @@ class UpdateHandler(BaseHandler):
         )
         session: Session = get_session()
         session.commit()
-        LOG.debug(f"Updated status {analysis.family} - {analysis.id}: {analysis.status} ")
+        LOG.debug(f"Updated status {analysis.case_id} - {analysis.id}: {analysis.status} ")
 
     def update_analysis_from_slurm_output(
         self, analysis_id: int, analysis_host: str | None = False
@@ -155,7 +155,7 @@ class UpdateHandler(BaseHandler):
             )
         except Exception as exception:
             LOG.error(
-                f"Error updating analysis for: case - {analysis.family} : {exception.__class__.__name__}"
+                f"Error updating analysis for: case - {analysis.case_id} : {exception.__class__.__name__}"
             )
             analysis.status = TrailblazerStatus.ERROR
             session: Session = get_session()
@@ -188,7 +188,7 @@ class UpdateHandler(BaseHandler):
             self.cancel_tower_analysis(analysis=analysis)
         else:
             self.cancel_slurm_analysis(analysis=analysis, analysis_host=analysis_host)
-        LOG.info(f"Case {analysis.family} - Analysis {analysis.id}: cancelled successfully!")
+        LOG.info(f"Case {analysis.case_id} - Analysis {analysis.id}: cancelled successfully!")
         self.update_run_status(analysis_id=analysis_id, analysis_host=analysis_host)
         analysis.status = TrailblazerStatus.CANCELLED
         analysis.comment = (
@@ -207,9 +207,9 @@ class UpdateHandler(BaseHandler):
 
     def cancel_tower_analysis(self, analysis: Analysis) -> None:
         """Cancel a NF-Tower analysis. Associated jobs are cancelled by Tower."""
-        LOG.info(f"Cancelling Tower workflow for {analysis.family}")
+        LOG.info(f"Cancelling Tower workflow for {analysis.case_id}")
         tower_api: TowerAPI = get_tower_api(
-            config_file_path=analysis.config_path, case_id=analysis.family
+            config_file_path=analysis.config_path, case_id=analysis.case_id
         )
         tower_api.cancel()
 
@@ -222,12 +222,12 @@ class UpdateHandler(BaseHandler):
         analysis.status = status
         session: Session = get_session()
         session.commit()
-        LOG.info(f"{analysis.family} - Status set to {status.upper()}")
+        LOG.info(f"{analysis.case_id} - Status set to {status.upper()}")
 
     def update_analysis_status_to_completed(self, analysis_id: int) -> None:
         """Set an analysis status to 'completed'."""
         analysis: Analysis | None = self.get_analysis_with_id(analysis_id=analysis_id)
-        self.update_analysis_status(case_id=analysis.family, status=TrailblazerStatus.COMPLETED)
+        self.update_analysis_status(case_id=analysis.case_id, status=TrailblazerStatus.COMPLETED)
 
     def update_analysis_uploaded_at(self, case_id: str, uploaded_at: datetime) -> None:
         """Set analysis uploaded at for an analysis."""
@@ -243,7 +243,7 @@ class UpdateHandler(BaseHandler):
         )
         session: Session = get_session()
         session.commit()
-        LOG.info(f"Adding comment {comment} to analysis {analysis.family}")
+        LOG.info(f"Adding comment {comment} to analysis {analysis.case_id}")
 
     def update_analysis(
         self,

@@ -13,7 +13,7 @@ def test_add_pending_analysis(raw_analyses: list[dict], store: MockStore, user_e
 
     # WHEN adding a new analysis
     new_analysis: Analysis = store.add_pending_analysis(
-        case_id=analysis.get("family"),
+        case_id=analysis.get("case_id"),
         config_path=analysis.get("config_path"),
         email=user_email,
         out_dir=analysis.get("out_dir"),
@@ -23,7 +23,7 @@ def test_add_pending_analysis(raw_analyses: list[dict], store: MockStore, user_e
 
     # THEN it should be stored in the database
     stored_analysis: Analysis = store.get_analysis(
-        case_id=analysis.get("family"),
+        case_id=analysis.get("case_id"),
         started_at=new_analysis.started_at,
         status=analysis.get("status"),
     )

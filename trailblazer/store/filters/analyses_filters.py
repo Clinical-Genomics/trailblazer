@@ -16,7 +16,7 @@ def filter_analyses_by_comment(analyses: Query, comment: str, **kwargs) -> Query
 
 def filter_analyses_by_case_id(analyses: Query, case_id: str, **kwargs) -> Query:
     """Filter analyses by case id."""
-    return analyses.filter(Analysis.family == case_id)
+    return analyses.filter(Analysis.case_id == case_id)
 
 
 def filter_analyses_by_entry_id(analyses: Query, analysis_id: int, **kwargs) -> Query:
@@ -33,7 +33,7 @@ def filter_analyses_by_search_term(analyses: Query, search_term: str, **kwargs) 
     """Filter analyses by search term using multiple fields."""
     return analyses.filter(
         sqlalchemy.or_(
-            Analysis.family.ilike(f"%{search_term}%"),
+            Analysis.case_id.ilike(f"%{search_term}%"),
             Analysis.status.ilike(f"%{search_term}%"),
             Analysis.data_analysis.ilike(f"%{search_term}%"),
             Analysis.comment.ilike(f"%{search_term}%"),

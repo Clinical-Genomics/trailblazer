@@ -28,7 +28,7 @@ class CreateHandler(BaseHandler):
         new_analysis = Analysis(
             config_path=config_path,
             data_analysis=data_analysis,
-            family=case_id,
+            case_id=case_id,
             out_dir=out_dir,
             priority=priority,
             started_at=datetime.now(),
