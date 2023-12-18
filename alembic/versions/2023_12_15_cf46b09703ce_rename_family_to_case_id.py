@@ -19,9 +19,9 @@ from alembic import op
 
 def upgrade():
     op.alter_column(
-        "analysis", "family", new_column_name="case_id", existing_type=sa.Integer()
+        "analysis", "family", new_column_name="case_id", existing_type=sa.String(128)
     )  # Drop the unique constraint
 
 
 def downgrade():
-    op.alter_column("analysis", "case_id", new_column_name="family", existing_type=sa.Integer())
+    op.alter_column("analysis", "case_id", new_column_name="family", existing_type=sa.String(128))
