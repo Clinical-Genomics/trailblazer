@@ -166,7 +166,6 @@ def raw_analyses(analysis_data: dict[str, list[Dict]]) -> list[dict]:
     """Return raw analyses data."""
     analyses: list[dict] = []
     for analysis in analysis_data["analyses"]:
-        analysis["case_id"] = analysis["case_id"]
         analyses.append(analysis)
     return analyses
 
