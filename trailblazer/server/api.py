@@ -6,7 +6,6 @@ from typing import Mapping
 
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
-from http import HTTPStatus
 from pydantic import ValidationError
 from sqlalchemy.orm import Query
 

@@ -67,11 +67,11 @@ class Analysis(Model):
 
     __tablename__ = "analysis"
     __table_args__ = (
-        UniqueConstraint("family", "started_at", "status", name="_uc_family_start_status"),
+        UniqueConstraint("case_id", "started_at", "status", name="_uc_case_id_start_status"),
     )
 
     id = Column(types.Integer, primary_key=True)
-    family = Column(types.String(128), nullable=False)
+    case_id = Column(types.String(128), nullable=False)
 
     version = Column(types.String(32))
     logged_at = Column(types.DateTime, default=datetime.datetime.now)
@@ -103,7 +103,7 @@ class Analysis(Model):
         """Return a dictionary representation of the object."""
         return {
             "id": self.id,
-            "family": self.family,
+            "case_id": self.case_id,
             "version": self.version,
             "logged_at": self.logged_at,
             "started_at": self.started_at,

@@ -153,7 +153,7 @@ def test_update_ongoing_analyseswhen_bad_call(
         analysis_store.update_ongoing_analyses()
 
         # THEN error should be raised
-        assert f"Failed to update {analysis.family} - {analysis.id}" in caplog.text
+        assert f"Failed to update {analysis.case_id} - {analysis.id}" in caplog.text
 
 
 def test_update_analysis_jobs_from_slurm_jobs(analysis_store: MockStore, squeue_stream_jobs: str):
@@ -169,7 +169,7 @@ def test_update_analysis_jobs_from_slurm_jobs(analysis_store: MockStore, squeue_
         analysis=analysis, squeue_result=squeue_result
     )
     updated_analysis: Analysis = analysis_store.get_analysis(
-        case_id=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.PENDING
+        case_id=analysis.case_id, started_at=analysis.started_at, status=TrailblazerStatus.PENDING
     )
 
     # THEN it should update the analysis jobs
@@ -323,7 +323,7 @@ def test_update_analysis_status_with_failed(analysis_store: MockStore, case_id: 
     assert analysis.status != TrailblazerStatus.FAILED
 
     # WHEN setting analysis to failed
-    analysis_store.update_analysis_status(case_id=analysis.family, status=TrailblazerStatus.FAILED)
+    analysis_store.update_analysis_status(case_id=analysis.case_id, status=TrailblazerStatus.FAILED)
 
     # THEN the analysis status should be updated to failed
     assert analysis.status == TrailblazerStatus.FAILED
@@ -351,7 +351,7 @@ def test_update_analysis_uploaded_at(
     analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
 
     # WHEN setting an analysis uploaded at
-    analysis_store.update_analysis_uploaded_at(case_id=analysis.family, uploaded_at=timestamp_now)
+    analysis_store.update_analysis_uploaded_at(case_id=analysis.case_id, uploaded_at=timestamp_now)
 
     # THEN uploaded at should be updated
     assert analysis.uploaded_at == timestamp_now
@@ -365,7 +365,7 @@ def test_update_analysis_comment(analysis_store: MockStore, case_id: str):
     comment: str = "test comment"
 
     # WHEN adding a comment
-    analysis_store.update_analysis_comment(case_id=analysis.family, comment=comment)
+    analysis_store.update_analysis_comment(case_id=analysis.case_id, comment=comment)
 
     # THEN a comment should have been added
     assert analysis.comment == comment
@@ -380,8 +380,8 @@ def test_update_analysis_comment_when_existing(analysis_store: MockStore, case_i
     second_comment: str = "Second"
 
     # WHEN adding a comment
-    analysis_store.update_analysis_comment(case_id=analysis.family, comment=first_comment)
-    analysis_store.update_analysis_comment(case_id=analysis.family, comment=second_comment)
+    analysis_store.update_analysis_comment(case_id=analysis.case_id, comment=first_comment)
+    analysis_store.update_analysis_comment(case_id=analysis.case_id, comment=second_comment)
 
     # THEN comments should have been added
     assert analysis.comment == f"{first_comment} {second_comment}"
@@ -411,7 +411,7 @@ def test_update_analysis_from_slurm_run_status(
         analysis_id=analysis.id, analysis_host="a_host"
     )
     updated_analysis: Analysis = analysis_store.get_analysis(
-        case_id=analysis.family, started_at=analysis.started_at, status=TrailblazerStatus.RUNNING
+        case_id=analysis.case_id, started_at=analysis.started_at, status=TrailblazerStatus.RUNNING
     )
 
     # THEN it should update the analysis jobs

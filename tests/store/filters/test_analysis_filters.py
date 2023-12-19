@@ -41,7 +41,7 @@ def test_filter_analyses_by_case_id(analysis_store: MockStore):
 
     # WHEN retrieving an analysis by case id
     analysis: Query = filter_analyses_by_case_id(
-        analyses=analysis_store.get_query(table=Analysis), case_id=existing_analysis.family
+        analyses=analysis_store.get_query(table=Analysis), case_id=existing_analysis.case_id
     )
 
     # THEN that the analysis is a query
@@ -174,7 +174,7 @@ def test_filter_analyses_by_search_term_in_case(analysis_store: MockStore):
 
     # WHEN retrieving analyses by search term
     analyses: Query = filter_analyses_by_search_term(
-        analyses=analysis_store.get_query(table=Analysis), search_term=existing_analysis.family
+        analyses=analysis_store.get_query(table=Analysis), search_term=existing_analysis.case_id
     )
 
     # THEN the analysis is a query

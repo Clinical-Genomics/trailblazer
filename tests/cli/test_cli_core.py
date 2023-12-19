@@ -302,7 +302,7 @@ def test_delete_ongoing_force(
     assert "Deleting" in caplog.text
 
     # THEN the analysis should have been deleted from the database
-    assert not trailblazer_db.get_latest_analysis_for_case(case_id=analysis.family)
+    assert not trailblazer_db.get_latest_analysis_for_case(case_id=analysis.case_id)
 
 
 def test_get_user_not_in_database(

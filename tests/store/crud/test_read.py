@@ -15,7 +15,7 @@ def test_get_analyses_by_status_started_at_and_comment(
 
     # GIVEN a comment
     analysis_store.update_analysis_comment(
-        case_id=existing_analysis.family, comment="a new comment"
+        case_id=existing_analysis.case_id, comment="a new comment"
     )
 
     # WHEN getting analysis that fulfills criteria
@@ -36,7 +36,7 @@ def test_get_analyses_by_status_started_at_and_comment_with_comment(analysis_sto
 
     # GIVEN a comment
     analysis_store.update_analysis_comment(
-        case_id=existing_analysis.family, comment="a new comment"
+        case_id=existing_analysis.case_id, comment="a new comment"
     )
 
     # WHEN getting analysis that fulfills criteria
@@ -86,7 +86,7 @@ def test_get_analysis(analysis_store: MockStore):
 
     # WHEN getting analysis
     analysis: Analysis = analysis_store.get_analysis(
-        case_id=existing_analysis.family,
+        case_id=existing_analysis.case_id,
         started_at=existing_analysis.started_at,
         status=existing_analysis.status,
     )
@@ -102,7 +102,7 @@ def test_get_latest_analysis_for_case(analysis_store: MockStore):
 
     # WHEN accessing it by case id
     analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(
-        case_id=existing_analysis.family
+        case_id=existing_analysis.case_id
     )
 
     # THEN it should return the same analysis

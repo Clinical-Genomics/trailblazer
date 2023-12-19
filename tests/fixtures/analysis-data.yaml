@@ -6,7 +6,7 @@ users:
     email: tom.cruise@magnolia.com
 
 analyses:
-  - family: cuddlyhen
+  - case_id: cuddlyhen
     version: v4.2.0
     started_at: 2017-06-17T12:11:42
     status: pending
@@ -19,7 +19,7 @@ analyses:
     ticket_id: 123456
     workflow_manager: nf_tower
 
-  - family: cuddlyhen_pending
+  - case_id: cuddlyhen_pending
     version: v4.2.0
     started_at: 2017-06-17T12:11:42
     status: pending
@@ -32,7 +32,7 @@ analyses:
     ticket_id: 123456
     workflow_manager: nf_tower
 
-  - family: cuddlyhen_completed
+  - case_id: cuddlyhen_completed
     version: v4.2.0
     started_at: 2017-06-17T12:11:42
     status: pending
@@ -45,7 +45,7 @@ analyses:
     ticket_id: 123456
     workflow_manager: nf_tower
 
-  - family: blazinginsect
+  - case_id: blazinginsect
     version: v4.2.0
     started_at: 2017-06-17T12:11:42
     status: pending
@@ -59,7 +59,7 @@ analyses:
     ticket_id: 123456
     workflow_manager: slurm
 
-  - family: nicemice
+  - case_id: nicemice
     version: v3.5.0
     started_at: 2017-06-17T12:11:42
     completed_at: 2017-06-18T12:11:44
@@ -71,7 +71,7 @@ analyses:
     user: paul.anderson@magnolia.com
     data_analysis: MIP-RNA
 
-  - family: lateraligator
+  - case_id: lateraligator
     version: v4.2.0
     started_at: 2017-06-15T11:00:42
     status: pending
@@ -82,7 +82,7 @@ analyses:
     user: tom.cruise@magnolia.com
     data_analysis: BALSAMIC
 
-  - family: escapedgoat
+  - case_id: escapedgoat
     version: v3.6.0
     started_at: 2017-06-17T12:11:42
     completed_at: 2017-06-18T12:11:44
@@ -94,7 +94,7 @@ analyses:
     user: paul.anderson@magnolia.com
     data_analysis: MIP-DNA
 
-  - family: crackpanda
+  - case_id: crackpanda
     version: v3.6.0
     started_at: 2017-06-17T12:11:42
     completed_at: 2017-06-18T12:11:44
@@ -107,7 +107,7 @@ analyses:
     data_analysis: FLUFFY
 
 
-  - family: fancymole
+  - case_id: fancymole
     version: v3.6.0
     started_at: 2017-06-17T12:11:42
     completed_at: 2017-06-18T12:11:44
@@ -120,7 +120,7 @@ analyses:
     data_analysis: MIP-DNA
 
 
-  - family: trueferret
+  - case_id: trueferret
     version: v3.6.0
     started_at: 2017-06-17T12:11:42
     completed_at: 2017-06-18T12:11:44
@@ -133,7 +133,7 @@ analyses:
     data_analysis: MIP-DNA
 
 
-  - family: daringpidgeon
+  - case_id: daringpidgeon
     version: v3.6.0
     started_at: 2017-06-17T12:11:42
     completed_at: 2017-06-18T12:11:44
@@ -145,7 +145,7 @@ analyses:
     user: paul.anderson@magnolia.com
     data_analysis: MIP-DNA
 
-  - family: happycow
+  - case_id: happycow
     version: v3.6.0
     started_at: 2017-06-17T12:11:42
     completed_at: 2017-06-18T12:11:44
@@ -157,7 +157,7 @@ analyses:
     user: paul.anderson@magnolia.com
     data_analysis: MIP-DNA
 
-  - family: rarekitten
+  - case_id: rarekitten
     version: v3.6.0
     started_at: 2017-06-17T12:11:42
     completed_at: 2017-06-18T12:11:44
@@ -169,7 +169,7 @@ analyses:
     user: paul.anderson@magnolia.com
     data_analysis: MIP-DNA
 
-  - family: liberatedunicorn
+  - case_id: liberatedunicorn
     version: v3.6.0
     started_at: 2017-06-17T12:11:42
     completed_at: 2017-06-18T12:11:44
@@ -181,7 +181,7 @@ analyses:
     user: paul.anderson@magnolia.com
     data_analysis: MIP-DNA
 
-  - family: emptydinosaur
+  - case_id: emptydinosaur
     version: v3.6.0
     started_at: 2017-06-17T12:11:42
     completed_at: 2017-06-18T12:11:44

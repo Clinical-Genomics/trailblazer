@@ -166,7 +166,6 @@ def raw_analyses(analysis_data: dict[str, list[Dict]]) -> list[dict]:
     """Return raw analyses data."""
     analyses: list[dict] = []
     for analysis in analysis_data["analyses"]:
-        analysis["case_id"] = analysis["family"]
         analyses.append(analysis)
     return analyses
 
@@ -186,7 +185,7 @@ def analysis_store(
         store.add_user(name=user_data["name"], email=user_data["email"])
     for raw_analysis in raw_analyses:
         raw_analysis["user"] = store.get_user(email=raw_analysis["user"])
-        raw_analysis["family"] = raw_analysis.pop("case_id")
+        raw_analysis["case_id"] = raw_analysis.pop("case_id")
         session.add(Analysis(**raw_analysis))
     yield store
 

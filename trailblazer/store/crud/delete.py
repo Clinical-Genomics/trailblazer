@@ -33,8 +33,8 @@ class DeleteHandler(BaseHandler):
             raise MissingAnalysis("Analysis not found")
         if not force and analysis.status in TrailblazerStatus.ongoing_statuses():
             raise TrailblazerError(
-                f"Analysis for {analysis.family} is currently ongoing! Use --force flag to delete ongoing analysis."
+                f"Analysis for {analysis.case_id} is currently ongoing! Use --force flag to delete ongoing analysis."
             )
-        LOG.info(f"Deleting analysis: {analysis_id}, for case: {analysis.family}")
+        LOG.info(f"Deleting analysis: {analysis_id}, for case: {analysis.case_id}")
         session.delete(analysis)
         session.commit()

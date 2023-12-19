@@ -1,16 +1,22 @@
 import datetime
 from typing import Generator
 from unittest.mock import patch
+
+import pytest
 from flask import Flask
 from flask.testing import FlaskClient
-import pytest
 from sqlalchemy.orm import Session
 
+from trailblazer.constants import (
+    PRIORITY_OPTIONS,
+    TYPES,
+    TrailblazerStatus,
+    WorkflowManager,
+)
 from trailblazer.server.app import app
 from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis
 from trailblazer.store.store import Store
-from trailblazer.constants import PRIORITY_OPTIONS, TYPES, TrailblazerStatus, WorkflowManager
 
 
 @pytest.fixture
@@ -30,7 +36,7 @@ def analysis() -> Analysis:
     analysis = Analysis(
         config_path="config_path",
         data_analysis="data_analysis",
-        family="case_id",
+        case_id="case_id",
         out_dir="out_dir",
         priority=PRIORITY_OPTIONS[0],
         started_at=datetime.datetime.now(),
