@@ -7,6 +7,7 @@ from typing import Mapping
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 from pydantic import ValidationError
+from sqlalchemy import asc, desc
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import (
@@ -57,10 +58,19 @@ def analyses():
     """Display analyses."""
     per_page = int(request.args.get("per_page", 100))
     page = int(request.args.get("page", 1))
+    search = request.args.get("query", "")
+    is_visible = bool(request.args.get("is_visible"))
+    sort_field = request.args.get("sortField")
+    sort_order = request.args.get("sortOrder")
+
     analyses: Query = store.get_analyses_query_by_search_term_and_is_visible(
-        search_term=request.args.get("query"),
-        is_visible=bool(request.args.get("is_visible")),
+        search_term=search,
+        is_visible=is_visible,
     )
+
+    if sort_field:
+        order_function = asc if sort_order == 'asc' else desc
+        analyses = analyses.order_by(order_function(getattr(Analysis, sort_field)))
 
     total: int = analyses.count()
     query_page: Query = store.paginate_query(query=analyses, page=page, per_page=per_page)
