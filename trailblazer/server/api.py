@@ -7,7 +7,7 @@ from typing import Mapping
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 from pydantic import ValidationError
-from sqlalchemy import asc, desc
+from sqlalchemy.sql.expression import asc, desc
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import (
