@@ -53,5 +53,30 @@ def analysis() -> Analysis:
 
 
 @pytest.fixture
+def analyses() -> list[Analysis]:
+    analyses: list[Analysis] = []
+    for i, priority in enumerate(PRIORITY_OPTIONS):
+        for j, type in enumerate(TYPES):
+            analysis = Analysis(
+                config_path="config_path",
+                data_analysis="data_analysis",
+                case_id="case_id",
+                out_dir="out_dir",
+                priority=priority,
+                started_at=datetime.datetime.now(),
+                status=TrailblazerStatus.PENDING,
+                ticket_id=f"{i}{j}",
+                type=type,
+                workflow_manager=WorkflowManager.SLURM,
+                is_visible=True,
+            )
+            analyses.append(analysis)
+    session: Session = get_session()
+    session.add_all(analyses)
+    session.commit()
+    return analyses
+
+
+@pytest.fixture
 def non_existing_analysis_id() -> str:
     return "00"

@@ -31,12 +31,10 @@ class BaseHandler:
 
     def get_analyses_query_by_search_term_and_is_visible(
         self,
-        search_term: str | None = None,
+        search_term: str | None = "",
         is_visible: bool = False,
     ) -> Query:
         """Return analyses by search term qnd is visible."""
-        if not search_term and not is_visible:
-            return
         filter_map: dict[Callable, str | bool] | None = {
             AnalysisFilter.FILTER_BY_IS_VISIBLE: is_visible,
             AnalysisFilter.FILTER_BY_SEARCH_TERM: search_term,
@@ -49,4 +47,4 @@ class BaseHandler:
             analyses=self.get_query(Analysis),
             search_term=search_term,
         )
-        return analyses.order_by(Analysis.started_at.desc())
+        return analyses
