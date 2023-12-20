@@ -64,7 +64,7 @@ def analyses() -> list[Analysis]:
                 out_dir="out_dir",
                 priority=priority,
                 started_at=datetime.datetime.now(),
-                status=TrailblazerStatus.PENDING,
+                status=TrailblazerStatus.COMPLETED,
                 ticket_id=f"{i}{j}",
                 type=type,
                 workflow_manager=WorkflowManager.SLURM,
@@ -73,7 +73,6 @@ def analyses() -> list[Analysis]:
             analyses.append(analysis)
     session: Session = get_session()
     session.add_all(analyses)
-    session.commit()
     return analyses
 
 

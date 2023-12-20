@@ -7,7 +7,7 @@ from typing import Mapping
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 from pydantic import ValidationError
-from sqlalchemy import asc, desc
+from sqlalchemy import and_, asc, desc
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import (
@@ -72,6 +72,16 @@ def analyses():
         column = getattr(Analysis, sort_field)
         order_function = asc if sort_order == "asc" else desc
         analyses = analyses.order_by(order_function(column))
+
+    filter_criteria = []
+    for key in request.args:
+        if key.endswith('[]'):
+            filter_key = key[:-2]
+            values = request.args.getlist(key)
+            filter_criteria.append(getattr(Analysis, filter_key).in_(values))
+
+    if filter_criteria:
+        analyses = analyses.filter(and_(*filter_criteria))
 
     total: int = analyses.count()
     query_page: Query = store.paginate_query(query=analyses, page=page, per_page=per_page)
