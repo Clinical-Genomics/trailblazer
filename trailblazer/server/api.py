@@ -7,7 +7,7 @@ from typing import Mapping
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 from pydantic import ValidationError
-from sqlalchemy import and_, asc, desc
+from sqlalchemy import and_, asc, desc, or_
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import (
@@ -78,7 +78,11 @@ def analyses():
         if key.endswith("[]"):
             filter_key = key[:-2]
             values = request.args.getlist(key)
-            filter_criteria.append(getattr(Analysis, filter_key).in_(values))
+
+            if filter_key == "comment" and values == [""]:
+                filter_criteria.append(or_(Analysis.comment.is_(None), Analysis.comment == ""))
+            else:
+                filter_criteria.append(getattr(Analysis, filter_key).in_(values))
 
     if filter_criteria:
         analyses = analyses.filter(and_(*filter_criteria))

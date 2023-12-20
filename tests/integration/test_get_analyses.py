@@ -47,3 +47,17 @@ def test_get_analyses_filtered_by_status(client: FlaskClient, analyses: list[Ana
     # THEN it should return all analyses with the status completed
     completed_analyses = [a for a in analyses if a.status == TrailblazerStatus.COMPLETED]
     assert len(response.json["analyses"]) == len(completed_analyses)
+
+
+def test_get_analyses_without_comments(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN an analysis
+
+    # WHEN requesting the analysis
+    response = client.get("/api/v1/analyses?comment%5B%5D=")
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN it should return all analyses without comments
+    analyses_without_comments = [a for a in analyses if not a.comment]
+    assert len(response.json["analyses"]) == len(analyses_without_comments)
