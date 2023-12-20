@@ -69,7 +69,7 @@ def analyses():
     )
 
     if sort_field:
-        order_function = asc if sort_order == 'asc' else desc
+        order_function = asc if sort_order == "asc" else desc
         analyses = analyses.order_by(order_function(getattr(Analysis, sort_field)))
 
     total: int = analyses.count()
