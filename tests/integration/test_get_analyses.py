@@ -45,5 +45,5 @@ def test_get_analyses_filtered_by_status(client: FlaskClient, analyses: list[Ana
     assert response.status_code == HTTPStatus.OK
 
     # THEN it should return all analyses with the status completed
-    completed_analyses = [analysis for analysis in analyses if analysis.status == TrailblazerStatus.COMPLETED]
+    completed_analyses = [a for a in analyses if a.status == TrailblazerStatus.COMPLETED]
     assert len(response.json["analyses"]) == len(completed_analyses)

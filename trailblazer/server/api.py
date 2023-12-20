@@ -75,7 +75,7 @@ def analyses():
 
     filter_criteria = []
     for key in request.args:
-        if key.endswith('[]'):
+        if key.endswith("[]"):
             filter_key = key[:-2]
             values = request.args.getlist(key)
             filter_criteria.append(getattr(Analysis, filter_key).in_(values))
