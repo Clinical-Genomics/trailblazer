@@ -56,10 +56,10 @@ def before_request():
 @blueprint.route("/analyses")
 def analyses():
     """Display analyses."""
-    per_page = int(request.args.get("per_page", 100))
+    per_page = int(request.args.get("pageSize", 100))
     page = int(request.args.get("page", 1))
     search = request.args.get("query")
-    is_visible = bool(request.args.get("is_visible"))
+    is_visible = bool(request.args.get("isVisible", False))
     sort_field = request.args.get("sortField", "started_at")
     sort_order = request.args.get("sortOrder")
 
@@ -70,7 +70,7 @@ def analyses():
 
     if sort_field:
         column = getattr(Analysis, sort_field)
-        order_function = desc if sort_order == "desc" else asc
+        order_function = asc if sort_order == "asc" else desc
         analyses = analyses.order_by(order_function(column))
 
     total: int = analyses.count()
