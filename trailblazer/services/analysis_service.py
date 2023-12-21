@@ -1,11 +1,7 @@
-from sqlalchemy import and_, asc, desc
-from sqlalchemy.orm import Query
 from trailblazer.dto.analysis_request import AnalysisRequest
 from trailblazer.dto.analysis_response import AnalysisResponse
-from trailblazer.store.models import Analysis, Job
+from trailblazer.store.models import Analysis
 from trailblazer.store.store import Store
-
-from sqlalchemy import or_, and_
 
 
 class AnalysisService:

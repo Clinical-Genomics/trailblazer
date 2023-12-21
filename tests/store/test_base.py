@@ -45,7 +45,7 @@ def test_get_analyses_query_by_search_term_and_is_visible(analysis_store: MockSt
     # GIVEN a store
 
     # WHEN getting an object using the query
-    analyses: Query = analysis_store.get_analyses_query_by_search_term_and_is_visible(
+    analyses: Query = analysis_store.get_analyses_query_by_search(
         search_term=TrailblazerStatus.PENDING
     )
 

@@ -6,7 +6,7 @@ from trailblazer.store.models import Analysis
 
 
 def test_get_analyses(client: FlaskClient, analyses: list[Analysis]):
-    # GIVEN some analyses
+    # GIVEN analyses
 
     # WHEN retrieving all analyses
     response = client.get("/api/v1/analyses")
@@ -19,9 +19,9 @@ def test_get_analyses(client: FlaskClient, analyses: list[Analysis]):
 
 
 def test_get_analyses_sorted_by_ticket_id(client: FlaskClient, analyses: list[Analysis]):
-    # GIVEN some analyses
+    # GIVEN analyses
 
-    # WHEN requesting the analysis
+    # WHEN retrieving analyses sorted by ticket id
     response = client.get("/api/v1/analyses?sortField=ticket_id&sortOrder=asc")
 
     # THEN it gives a success response
@@ -35,10 +35,10 @@ def test_get_analyses_sorted_by_ticket_id(client: FlaskClient, analyses: list[An
     assert ticket_ids == sorted(ticket_ids)
 
 
-def test_get_analyses_filtered_by_status(client: FlaskClient, analyses: list[Analysis]):
-    # GIVEN an analysis
+def test_get_analyses_filtered_by_single_status(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different statuses
 
-    # WHEN requesting the analysis
+    # WHEN retrieving completed analyses
     response = client.get("/api/v1/analyses?status%5B%5D=completed")
 
     # THEN it gives a success response
@@ -49,10 +49,42 @@ def test_get_analyses_filtered_by_status(client: FlaskClient, analyses: list[Ana
     assert len(response.json["analyses"]) == len(completed_analyses)
 
 
-def test_get_analyses_without_comments(client: FlaskClient, analyses: list[Analysis]):
-    # GIVEN an analysis
+def test_get_analyses_filtered_by_multiple_statuses(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different statuses
 
-    # WHEN requesting the analysis
+    # WHEN retrieving analyses with either the status error or failed
+    response = client.get("/api/v1/analyses?status%5B%5D=error&status%5B%5D=failed")
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN it should return all analyses with the status completed or failed
+    completed_or_failed_analyses = [
+        a for a in analyses if a.status in [TrailblazerStatus.ERROR, TrailblazerStatus.FAILED]
+    ]
+    assert len(response.json["analyses"]) == len(completed_or_failed_analyses)
+
+
+def test_get_analyses_filter_by_multiple_criteria(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different statuses
+
+    # WHEN retrieving failed analyses with high priority
+    response = client.get("/api/v1/analyses?status%5B%5D=failed&priority%5B%5D=high")
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN it should return all failed analyses with high priority
+    failed_high_prio = [
+        a for a in analyses if a.status == TrailblazerStatus.FAILED and a.priority == "high"
+    ]
+    assert len(response.json["analyses"]) == len(failed_high_prio)
+
+
+def test_get_analyses_without_comments(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with and without comments
+
+    # WHEN retrieving all analyses without comments
     response = client.get("/api/v1/analyses?comment%5B%5D=")
 
     # THEN it gives a success response

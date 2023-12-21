@@ -17,6 +17,7 @@ from trailblazer.dto.analysis_request import AnalysisRequest
 from trailblazer.dto.analysis_response import AnalysisResponse
 from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdateRequest
+from trailblazer.server.utils import parse_query_params
 from trailblazer.services.analysis_service import AnalysisService
 from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
@@ -59,11 +60,14 @@ def analyses():
     """Display analyses."""
     analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
     try:
-        query = AnalysisRequest(**request.args)
+        params = parse_query_params(request)
+        query = AnalysisRequest(**params)
         response: AnalysisResponse = analysis_service.get_analyses(query)
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
+    except Exception as e:
+        return jsonify(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])

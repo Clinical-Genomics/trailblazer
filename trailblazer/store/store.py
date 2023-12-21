@@ -1,5 +1,3 @@
-from sqlalchemy.orm import Query
-
 from trailblazer.store.crud.create import CreateHandler
 from trailblazer.store.crud.delete import DeleteHandler
 from trailblazer.store.crud.read import ReadHandler

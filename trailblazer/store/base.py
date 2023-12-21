@@ -30,7 +30,7 @@ class BaseHandler:
             func.count(Job.id).label("count"),
         )
 
-    def get_analyses_query_by_search_term_and_is_visible(
+    def get_analyses_query_by_search(
         self,
         search_term: str | None = "",
         is_visible: bool = False,
@@ -51,33 +51,30 @@ class BaseHandler:
         return analyses
 
     def filter(self, analyses: Query, query: AnalysisRequest) -> Query:
-        filter_criteria = []
-        for filter_key, values in query.filters.items():
-            if filter_key == "comment" and values == [""]:
-                filter_criteria.append(or_(Analysis.comment.is_(None), Analysis.comment == ""))
-            else:
-                filter_criteria.append(getattr(Analysis, filter_key).in_(values))
-        if filter_criteria:
-            analyses = analyses.filter(and_(*filter_criteria))
+        if query.status:
+            analyses = analyses.filter(Analysis.status.in_(query.status))
+        if query.priority:
+            analyses = analyses.filter(Analysis.priority.in_(query.priority))
+        if query.type:
+            analyses = analyses.filter(Analysis.type.in_(query.type))
+        if query.comment:
+            analyses = analyses.filter(or_(Analysis.comment.is_(None), Analysis.comment == ""))
         return analyses
 
     def sort(self, analyses: Query, query: AnalysisRequest) -> Query:
-        if query.sort_field:
-            column = getattr(Analysis, query.sort_field)
-            order_function = asc if query.sort_order == "asc" else desc
+        if query.sortField:
+            column = getattr(Analysis, query.sortField)
+            order_function = asc if query.sortOrder == "asc" else desc
             analyses = analyses.order_by(order_function(column))
         return analyses
 
     def paginate(self, analyses: Query, query: AnalysisRequest) -> Query:
-        return analyses.limit(query.per_page).offset((query.page - 1) * query.per_page)
+        return analyses.limit(query.pageSize).offset((query.page - 1) * query.pageSize)
 
     def get_filtered_sorted_paginated_analyses(
         self, query: AnalysisRequest
     ) -> tuple[list[Analysis], int]:
-        analyses: Query = self.get_analyses_query_by_search_term_and_is_visible(
-            search_term=query.search,
-            is_visible=query.is_visible,
-        )
+        analyses: Query = self.get_analyses_query_by_search(query.search)
 
         analyses = self.filter(analyses, query)
         analyses = self.sort(analyses, query)
