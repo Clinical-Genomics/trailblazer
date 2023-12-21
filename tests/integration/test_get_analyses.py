@@ -9,7 +9,7 @@ def test_get_analyses(client: FlaskClient, analyses: list[Analysis]):
     # GIVEN analyses
 
     # WHEN retrieving all analyses
-    response = client.get("/api/v1/analyses")
+    response = client.get(f"/api/v1/analyses?pageSize={len(analyses)}")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -22,7 +22,9 @@ def test_get_analyses_sorted_by_ticket_id(client: FlaskClient, analyses: list[An
     # GIVEN analyses
 
     # WHEN retrieving analyses sorted by ticket id
-    response = client.get("/api/v1/analyses?sortField=ticket_id&sortOrder=asc")
+    response = client.get(
+        f"/api/v1/analyses?pageSize={len(analyses)}&sortField=ticket_id&sortOrder=asc"
+    )
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -39,7 +41,7 @@ def test_get_analyses_filtered_by_single_status(client: FlaskClient, analyses: l
     # GIVEN analyses with different statuses
 
     # WHEN retrieving completed analyses
-    response = client.get("/api/v1/analyses?status%5B%5D=completed")
+    response = client.get("/api/v1/analyses?status[]=completed")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -53,7 +55,9 @@ def test_get_analyses_filtered_by_multiple_statuses(client: FlaskClient, analyse
     # GIVEN analyses with different statuses
 
     # WHEN retrieving analyses with either the status error or failed
-    response = client.get("/api/v1/analyses?status%5B%5D=error&status%5B%5D=failed")
+    response = client.get(
+        f"/api/v1/analyses?pageSize={len(analyses)}&status[]=error&status[]=failed"
+    )
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -69,7 +73,7 @@ def test_get_analyses_filter_by_multiple_criteria(client: FlaskClient, analyses:
     # GIVEN analyses with different statuses
 
     # WHEN retrieving failed analyses with high priority
-    response = client.get("/api/v1/analyses?status%5B%5D=failed&priority%5B%5D=high")
+    response = client.get("/api/v1/analyses?status[]=failed&priority[]=high")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -85,7 +89,7 @@ def test_get_analyses_without_comments(client: FlaskClient, analyses: list[Analy
     # GIVEN analyses with and without comments
 
     # WHEN retrieving all analyses without comments
-    response = client.get("/api/v1/analyses?comment%5B%5D=")
+    response = client.get(f"/api/v1/analyses?pageSize={len(analyses)}&comment[]=")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -98,11 +102,11 @@ def test_get_analyses_without_comments(client: FlaskClient, analyses: list[Analy
 def test_get_analyses_by_pipeline(client: FlaskClient, analyses: list[Analysis]):
     # GIVEN analyses with different pipelines
 
-    # WHEN retrieving all balsamic analyses
-    response = client.get("/api/v1/analyses?search=balsamic")
+    # WHEN retrieving all mip analyses
+    response = client.get("/api/v1/analyses?pipeline=mip-dna")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
 
-    # THEN it should only return balsamic analyses
-    assert all(a["data_analysis"] == Pipeline.BALSAMIC for a in response.json["analyses"])
+    # THEN it should only return mip analyses
+    assert all(a["data_analysis"] == "mip-dna" for a in response.json["analyses"])

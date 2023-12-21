@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from typing import Callable, Type
+from typing import Type
 
-from sqlalchemy import and_, asc, desc, func, or_
+from sqlalchemy import asc, desc, func, or_
 from sqlalchemy.orm import Query, Session
 from trailblazer.dto.analysis_request import AnalysisRequest
 
@@ -30,25 +30,25 @@ class BaseHandler:
             func.count(Job.id).label("count"),
         )
 
-    def get_analyses_query_by_search(
-        self,
-        search_term: str | None = "",
-        is_visible: bool = False,
-    ) -> Query:
-        """Return analyses by search term qnd is visible."""
-        filter_map: dict[Callable, str | bool] | None = {
-            AnalysisFilter.FILTER_BY_IS_VISIBLE: is_visible,
-            AnalysisFilter.FILTER_BY_SEARCH_TERM: search_term,
-        }
-        filter_functions: list[Callable] = [
-            function for function, supplied_arg in filter_map.items() if supplied_arg
-        ]
-        analyses: Query = apply_analysis_filter(
-            filter_functions=filter_functions,
-            analyses=self.get_query(Analysis),
-            search_term=search_term,
-        )
+    def get_analyses_query_by_search(self, analyses: Query, search_term: str) -> Query:
+        """Return analyses by search term."""
+        if search_term:
+            analyses: Query = apply_analysis_filter(
+                filter_functions=[AnalysisFilter.FILTER_BY_SEARCH_TERM],
+                analyses=analyses,
+                search_term=search_term,
+            )
         return analyses
+
+    def get_analyses_query_by_pipeline(self, pipeline: str) -> Query:
+        """Return analyses by pipeline."""
+        analyses: Query = self.get_query(Analysis)
+        # Group existing variants of balsamic
+        if pipeline == "balsamic":
+            analyses = analyses.filter(Analysis.data_analysis.like("%balsamic%"))
+        if pipeline:
+            analyses = analyses.filter(Analysis.data_analysis == pipeline)
+        return analyses.filter(Analysis.is_visible.is_(True))
 
     def filter(self, analyses: Query, query: AnalysisRequest) -> Query:
         if query.status:
@@ -74,10 +74,10 @@ class BaseHandler:
     def get_filtered_sorted_paginated_analyses(
         self, query: AnalysisRequest
     ) -> tuple[list[Analysis], int]:
-        analyses: Query = self.get_analyses_query_by_search(query.search)
-
+        analyses: Query = self.get_analyses_query_by_pipeline(query.pipeline)
         analyses = self.filter(analyses, query)
-        analyses = self.sort(analyses, query)
+        analyses = self.get_analyses_query_by_search(analyses=analyses, search_term=query.search)
+        analyses = self.sort(analyses=analyses, query=query)
         total: int = analyses.count()
         query_page = self.paginate(analyses, query)
         return query_page.all(), total

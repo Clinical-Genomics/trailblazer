@@ -58,21 +58,24 @@ def analyses() -> list[Analysis]:
     for i, priority in enumerate(PRIORITY_OPTIONS):
         for j, type in enumerate(TYPES):
             for k, status in enumerate(TrailblazerStatus.statuses()):
-                analysis = Analysis(
-                    config_path="config_path",
-                    data_analysis="data_analysis",
-                    case_id="case_id",
-                    out_dir="out_dir",
-                    priority=priority,
-                    started_at=datetime.datetime.now(),
-                    status=status,
-                    ticket_id=f"{i}{j}{k}",
-                    type=type,
-                    workflow_manager=WorkflowManager.SLURM,
-                    is_visible=True,
-                )
-                analyses.append(analysis)
-            analysis.comment = "comment"  # Ensure some analyses have a comment
+                for l, pipeline in enumerate(
+                    ["balsamic", "balsamic-umi", "mip-dna", "mip-rna", "microsalt"]
+                ):
+                    analysis = Analysis(
+                        config_path="config_path",
+                        data_analysis=pipeline,
+                        case_id="case_id",
+                        out_dir="out_dir",
+                        priority=priority,
+                        started_at=datetime.datetime.now(),
+                        status=status,
+                        ticket_id=f"{i}{j}{k}{l}",
+                        type=type,
+                        workflow_manager=WorkflowManager.SLURM,
+                        is_visible=True,
+                    )
+                    analyses.append(analysis)
+                analysis.comment = "comment"  # Ensure some analyses have a comment
     session: Session = get_session()
     session.add_all(analyses)
     return analyses

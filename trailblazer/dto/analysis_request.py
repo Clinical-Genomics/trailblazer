@@ -4,6 +4,7 @@ from trailblazer.constants import TrailblazerPriority, TrailblazerStatus, Trailb
 
 
 class AnalysisRequest(BaseModel):
+    pipeline: str | None = ""
     search: str | None = None
     page_size: int | None = Field(alias="pageSize", default=250)
     page: int | None = 1
