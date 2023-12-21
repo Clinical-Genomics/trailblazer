@@ -7,7 +7,9 @@ from flask_reverse_proxy import FlaskReverseProxied
 from sqlalchemy.orm import scoped_session
 
 from trailblazer.server import api, ext
+from trailblazer.services.analysis_service import AnalysisService
 from trailblazer.store.database import get_session
+from trailblazer.store.store import Store
 
 app = Flask(__name__)
 
@@ -24,10 +26,15 @@ app.config.from_object(__name__)
 # register blueprints
 app.register_blueprint(api.blueprint)
 
+# services
+store = Store()
+analysis_service = AnalysisService(store)
+
 # configure extensions
 FlaskReverseProxied(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 ext.store.init_app(app)
+app.extensions["analysis_service"] = analysis_service
 
 
 @app.route("/")

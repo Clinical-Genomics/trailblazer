@@ -4,20 +4,21 @@ import os
 from http import HTTPStatus
 from typing import Mapping
 
-from flask import Blueprint, Response, abort, g, jsonify, make_response, request
+from flask import Blueprint, Response, abort, current_app, g, jsonify, make_response, request
 from google.auth import jwt
 from pydantic import ValidationError
-from sqlalchemy import and_, asc, desc, or_
-from sqlalchemy.orm import Query
 
 from trailblazer.constants import (
     ONE_MONTH_IN_DAYS,
     TRAILBLAZER_TIME_STAMP,
     TrailblazerStatus,
 )
+from trailblazer.dto.analyses_request import AnalysesRequest
+from trailblazer.dto.analyses_response import AnalysesResponse
 from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdateRequest
-from trailblazer.store.models import Analysis, Info, Job, User
+from trailblazer.services.analysis_service import AnalysisService
+from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
 ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
@@ -56,48 +57,10 @@ def before_request():
 @blueprint.route("/analyses")
 def analyses():
     """Display analyses."""
-    per_page = int(request.args.get("pageSize", 100))
-    page = int(request.args.get("page", 1))
-    search = request.args.get("query")
-    is_visible = bool(request.args.get("isVisible", False))
-    sort_field = request.args.get("sortField", "started_at")
-    sort_order = request.args.get("sortOrder")
-
-    analyses: Query = store.get_analyses_query_by_search_term_and_is_visible(
-        search_term=search,
-        is_visible=is_visible,
-    )
-
-    if sort_field:
-        column = getattr(Analysis, sort_field)
-        order_function = asc if sort_order == "asc" else desc
-        analyses = analyses.order_by(order_function(column))
-
-    filter_criteria = []
-    for key in request.args:
-        if key.endswith("[]"):
-            filter_key = key[:-2]
-            values = request.args.getlist(key)
-
-            if filter_key == "comment" and values == [""]:
-                filter_criteria.append(or_(Analysis.comment.is_(None), Analysis.comment == ""))
-            else:
-                filter_criteria.append(getattr(Analysis, filter_key).in_(values))
-
-    if filter_criteria:
-        analyses = analyses.filter(and_(*filter_criteria))
-
-    total: int = analyses.count()
-    query_page: Query = store.paginate_query(query=analyses, page=page, per_page=per_page)
-    response_data = []
-
-    for analysis in query_page.all():
-        analysis_data = analysis.to_dict()
-        analysis_data["user"] = analysis.user.to_dict() if analysis.user else None
-        failed_job: Job | None = store.get_latest_failed_job_for_analysis(analysis.id)
-        analysis_data["failed_job"] = failed_job.to_dict() if failed_job else None
-        response_data.append(analysis_data)
-    return jsonify(analyses=response_data, total_count=total)
+    analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
+    query = AnalysesRequest(**request.args)
+    response: AnalysesResponse = analysis_service.get_analyses(query)
+    return jsonify(response.model_dump()), HTTPStatus.OK
 
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])
