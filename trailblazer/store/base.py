@@ -3,7 +3,7 @@ from typing import Callable, Type
 
 from sqlalchemy import and_, asc, desc, func, or_
 from sqlalchemy.orm import Query, Session
-from trailblazer.dto.analyses_request import AnalysisRequest
+from trailblazer.dto.analysis_request import AnalysisRequest
 
 from trailblazer.store.database import get_session
 from trailblazer.store.filters.analyses_filters import (

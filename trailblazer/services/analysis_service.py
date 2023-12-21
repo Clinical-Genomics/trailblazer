@@ -1,7 +1,7 @@
 from sqlalchemy import and_, asc, desc
 from sqlalchemy.orm import Query
-from trailblazer.dto.analyses_request import AnalysisRequest
-from trailblazer.dto.analyses_response import AnalysisResponse
+from trailblazer.dto.analysis_request import AnalysisRequest
+from trailblazer.dto.analysis_response import AnalysisResponse
 from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 

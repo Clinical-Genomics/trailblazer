@@ -13,8 +13,8 @@ from trailblazer.constants import (
     TRAILBLAZER_TIME_STAMP,
     TrailblazerStatus,
 )
-from trailblazer.dto.analyses_request import AnalysisRequest
-from trailblazer.dto.analyses_response import AnalysisResponse
+from trailblazer.dto.analysis_request import AnalysisRequest
+from trailblazer.dto.analysis_response import AnalysisResponse
 from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdateRequest
 from trailblazer.services.analysis_service import AnalysisService
