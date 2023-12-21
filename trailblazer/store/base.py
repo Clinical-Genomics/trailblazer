@@ -62,14 +62,14 @@ class BaseHandler:
         return analyses
 
     def sort(self, analyses: Query, query: AnalysisRequest) -> Query:
-        if query.sortField:
-            column = getattr(Analysis, query.sortField)
-            order_function = asc if query.sortOrder == "asc" else desc
+        if query.sort_field:
+            column = getattr(Analysis, query.sort_field)
+            order_function = asc if query.sort_order == "asc" else desc
             analyses = analyses.order_by(order_function(column))
         return analyses
 
     def paginate(self, analyses: Query, query: AnalysisRequest) -> Query:
-        return analyses.limit(query.pageSize).offset((query.page - 1) * query.pageSize)
+        return analyses.limit(query.page_size).offset((query.page - 1) * query.page_size)
 
     def get_filtered_sorted_paginated_analyses(
         self, query: AnalysisRequest
