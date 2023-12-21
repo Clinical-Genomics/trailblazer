@@ -13,6 +13,3 @@ class Store(
     UpdateHandler,
 ):
     """Aggregating class for the store API handlers."""
-
-    def paginate_query(self, query: Query, page: int, per_page: int) -> Query:
-        return query.limit(per_page).offset((page - 1) * per_page)

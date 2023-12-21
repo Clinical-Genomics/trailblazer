@@ -48,6 +48,6 @@ class Analysis(BaseModel):
     workflow_manager: str
 
 
-class AnalysesResponse(BaseModel):
+class AnalysisResponse(BaseModel):
     analyses: List[Analysis]
     total_count: int

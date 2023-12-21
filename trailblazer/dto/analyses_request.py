@@ -2,7 +2,7 @@ from typing import Any
 from pydantic import BaseModel, Field, root_validator, validator
 
 
-class AnalysesRequest(BaseModel):
+class AnalysisRequest(BaseModel):
     per_page: int = Field(default=100, alias="pageSize")
     page: int = Field(default=1)
     search: str | None = Field(default=None, alias="query")

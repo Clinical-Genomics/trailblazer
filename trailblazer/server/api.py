@@ -13,8 +13,8 @@ from trailblazer.constants import (
     TRAILBLAZER_TIME_STAMP,
     TrailblazerStatus,
 )
-from trailblazer.dto.analyses_request import AnalysesRequest
-from trailblazer.dto.analyses_response import AnalysesResponse
+from trailblazer.dto.analyses_request import AnalysisRequest
+from trailblazer.dto.analyses_response import AnalysisResponse
 from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdateRequest
 from trailblazer.services.analysis_service import AnalysisService
@@ -58,8 +58,8 @@ def before_request():
 def analyses():
     """Display analyses."""
     analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
-    query = AnalysesRequest(**request.args)
-    response: AnalysesResponse = analysis_service.get_analyses(query)
+    query = AnalysisRequest(**request.args)
+    response: AnalysisResponse = analysis_service.get_analyses(query)
     return jsonify(response.model_dump()), HTTPStatus.OK
 
 
