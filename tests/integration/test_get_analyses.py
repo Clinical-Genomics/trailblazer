@@ -1,6 +1,6 @@
 from http import HTTPStatus
 from flask.testing import FlaskClient
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.constants import Pipeline, TrailblazerStatus
 
 from trailblazer.store.models import Analysis
 
@@ -93,3 +93,16 @@ def test_get_analyses_without_comments(client: FlaskClient, analyses: list[Analy
     # THEN it should return all analyses without comments
     analyses_without_comments = [a for a in analyses if not a.comment]
     assert len(response.json["analyses"]) == len(analyses_without_comments)
+
+
+def test_get_analyses_by_pipeline(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different pipelines
+
+    # WHEN retrieving all balsamic analyses
+    response = client.get("/api/v1/analyses?search=balsamic")
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN it should only return balsamic analyses
+    assert all(a["data_analysis"] == Pipeline.BALSAMIC for a in response.json["analyses"])
