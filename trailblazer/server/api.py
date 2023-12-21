@@ -58,9 +58,12 @@ def before_request():
 def analyses():
     """Display analyses."""
     analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
-    query = AnalysisRequest(**request.args)
-    response: AnalysisResponse = analysis_service.get_analyses(query)
-    return jsonify(response.model_dump()), HTTPStatus.OK
+    try:
+        query = AnalysisRequest(**request.args)
+        response: AnalysisResponse = analysis_service.get_analyses(query)
+        return jsonify(response.model_dump()), HTTPStatus.OK
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])
