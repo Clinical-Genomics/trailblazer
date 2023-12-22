@@ -77,7 +77,9 @@ def test_get_analyses_filter_by_multiple_criteria(client: FlaskClient, analyses:
     # GIVEN analyses with different statuses
 
     # WHEN retrieving failed analyses with high priority
-    response = client.get("/api/v1/analyses?status[]=failed&priority[]=high")
+    high_prio: str = TrailblazerPriority.HIGH
+    failed_status: str = TrailblazerStatus.FAILED
+    response = client.get(f"/api/v1/analyses?status[]={failed_status}&priority[]={high_prio}")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -86,8 +88,7 @@ def test_get_analyses_filter_by_multiple_criteria(client: FlaskClient, analyses:
     failed_high_prio = [
         analysis
         for analysis in analyses
-        if analysis.status == TrailblazerStatus.FAILED
-        and analysis.priority == TrailblazerPriority.HIGH
+        if analysis.status == failed_status and analysis.priority == high_prio
     ]
     assert len(response.json["analyses"]) == len(failed_high_prio)
 
@@ -102,7 +103,7 @@ def test_get_analyses_without_comments(client: FlaskClient, analyses: list[Analy
     assert response.status_code == HTTPStatus.OK
 
     # THEN it should return all analyses without comments
-    analyses_without_comments = [a for a in analyses if not a.comment]
+    analyses_without_comments = [analysis for analysis in analyses if not analysis.comment]
     assert len(response.json["analyses"]) == len(analyses_without_comments)
 
 
@@ -116,4 +117,4 @@ def test_get_analyses_by_pipeline(client: FlaskClient, analyses: list[Analysis])
     assert response.status_code == HTTPStatus.OK
 
     # THEN it should only return mip analyses
-    assert all(a["data_analysis"] == "mip-dna" for a in response.json["analyses"])
+    assert all(a["data_analysis"] == Pipeline.MIP_DNA.lower() for a in response.json["analyses"])

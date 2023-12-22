@@ -65,8 +65,6 @@ def analyses():
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
-    except Exception as e:
-        return jsonify(error=str(e)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])
