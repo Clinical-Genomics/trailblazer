@@ -22,6 +22,7 @@ from trailblazer.store.store import Store
 
 PIPELINES = [pipeline.lower() for pipeline in Pipeline]
 
+
 @pytest.fixture
 def flask_app(store: Store):
     yield app
