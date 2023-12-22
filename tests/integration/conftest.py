@@ -9,6 +9,7 @@ from flask.testing import FlaskClient
 from sqlalchemy.orm import Session
 
 from trailblazer.constants import (
+    PIPELINES,
     PRIORITY_OPTIONS,
     TYPES,
     Pipeline,
@@ -19,8 +20,6 @@ from trailblazer.server.app import app
 from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis
 from trailblazer.store.store import Store
-
-PIPELINES = [pipeline.lower() for pipeline in Pipeline]
 
 
 @pytest.fixture

@@ -168,3 +168,5 @@ TOWER_TASK_STATUS: dict[str, str] = {
     "SUCCEEDED": SlurmJobStatus.COMPLETED,
     "UNKNOWN": SlurmJobStatus.FAILED,
 }
+
+PIPELINES = [pipeline.lower() for pipeline in Pipeline]
