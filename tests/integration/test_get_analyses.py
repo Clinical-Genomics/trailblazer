@@ -1,6 +1,6 @@
 from http import HTTPStatus
 from flask.testing import FlaskClient
-from trailblazer.constants import Pipeline, TrailblazerStatus
+from trailblazer.constants import Pipeline, TrailblazerPriority, TrailblazerStatus
 
 from trailblazer.store.models import Analysis
 
@@ -84,7 +84,10 @@ def test_get_analyses_filter_by_multiple_criteria(client: FlaskClient, analyses:
 
     # THEN it should return all failed analyses with high priority
     failed_high_prio = [
-        a for a in analyses if a.status == TrailblazerStatus.FAILED and a.priority == "high"
+        analysis
+        for analysis in analyses
+        if analysis.status == TrailblazerStatus.FAILED
+        and analysis.priority == TrailblazerPriority.HIGH
     ]
     assert len(response.json["analyses"]) == len(failed_high_prio)
 

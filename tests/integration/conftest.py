@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from trailblazer.constants import (
     PRIORITY_OPTIONS,
     TYPES,
+    Pipeline,
     TrailblazerStatus,
     WorkflowManager,
 )
@@ -19,6 +20,7 @@ from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis
 from trailblazer.store.store import Store
 
+PIPELINES = [pipeline.lower() for pipeline in Pipeline]
 
 @pytest.fixture
 def flask_app(store: Store):
@@ -60,7 +62,7 @@ def analyses() -> list[Analysis]:
     for priority in PRIORITY_OPTIONS:
         for type in TYPES:
             for status in TrailblazerStatus.statuses():
-                for pipeline in ["mip-dna", "mip-rna"]:
+                for pipeline in PIPELINES:
                     analysis = Analysis(
                         config_path="config_path",
                         data_analysis=pipeline,

@@ -3,6 +3,7 @@ from typing import Type
 
 from sqlalchemy import asc, desc, func, or_
 from sqlalchemy.orm import Query, Session
+from trailblazer.constants import Pipeline
 from trailblazer.dto.analysis_request import AnalysisRequest
 
 from trailblazer.store.database import get_session
@@ -44,13 +45,14 @@ class BaseHandler:
         """Return analyses by pipeline."""
         analyses: Query = self.get_query(Analysis)
         # Group existing variants of balsamic
-        if pipeline == "balsamic":
-            analyses = analyses.filter(Analysis.data_analysis.startswith("balsamic"))
+        balsamic_pipeline: str = Pipeline.BALSAMIC.lower()
+        if pipeline == balsamic_pipeline:
+            analyses = analyses.filter(Analysis.data_analysis.startswith(balsamic_pipeline))
         if pipeline:
             analyses = analyses.filter(Analysis.data_analysis == pipeline)
         return analyses.filter(Analysis.is_visible.is_(True))
 
-    def filter(self, analyses: Query, query: AnalysisRequest) -> Query:
+    def get_filtered_analyses(self, analyses: Query, query: AnalysisRequest) -> Query:
         if query.status:
             analyses = analyses.filter(Analysis.status.in_(query.status))
         if query.priority:
@@ -61,23 +63,25 @@ class BaseHandler:
             analyses = analyses.filter(or_(Analysis.comment.is_(None), Analysis.comment == ""))
         return analyses
 
-    def sort(self, analyses: Query, query: AnalysisRequest) -> Query:
+    def sort_analyses(self, analyses: Query, query: AnalysisRequest) -> Query:
         if query.sort_field:
             column = getattr(Analysis, query.sort_field)
-            order_function = asc if query.sort_order == "asc" else desc
-            analyses = analyses.order_by(order_function(column))
+            if query.sort_order == "asc":
+                analyses = analyses.order_by(asc(column))
+            else:
+                analyses = analyses.order_by(desc(column))
         return analyses
 
-    def paginate(self, analyses: Query, query: AnalysisRequest) -> Query:
+    def paginate_analyses(self, analyses: Query, query: AnalysisRequest) -> Query:
         return analyses.limit(query.page_size).offset((query.page - 1) * query.page_size)
 
     def get_filtered_sorted_paginated_analyses(
         self, query: AnalysisRequest
     ) -> tuple[list[Analysis], int]:
         analyses: Query = self.get_analyses_query_by_pipeline(query.pipeline)
-        analyses = self.filter(analyses, query)
+        analyses = self.get_filtered_analyses(analyses=analyses, query=query)
         analyses = self.get_analyses_query_by_search(analyses=analyses, search_term=query.search)
-        analyses = self.sort(analyses=analyses, query=query)
-        total: int = analyses.count()
-        query_page = self.paginate(analyses, query)
-        return query_page.all(), total
+        analyses = self.sort_analyses(analyses=analyses, query=query)
+        total_analyses_count: int = analyses.count()
+        query_page: Query = self.paginate_analyses(analyses=analyses, query=query)
+        return query_page.all(), total_analyses_count
