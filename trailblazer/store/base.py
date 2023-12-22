@@ -53,15 +53,23 @@ class BaseHandler:
         return analyses.filter(Analysis.is_visible.is_(True))
 
     def get_filtered_analyses(self, analyses: Query, query: AnalysisRequest) -> Query:
+        filters: list[AnalysisFilter] = []
         if query.status:
-            analyses = analyses.filter(Analysis.status.in_(query.status))
+            filters.append(AnalysisFilter.FILTER_BY_STATUSES)
         if query.priority:
-            analyses = analyses.filter(Analysis.priority.in_(query.priority))
+            filters.append(AnalysisFilter.FILTER_BY_PRIORITIES)
         if query.type:
-            analyses = analyses.filter(Analysis.type.in_(query.type))
+            filters.append(AnalysisFilter.FILTER_BY_TYPES)
         if query.comment:
-            analyses = analyses.filter(or_(Analysis.comment.is_(None), Analysis.comment == ""))
-        return analyses
+            filters.append(AnalysisFilter.FILTER_BY_EMPTY_COMMENT)
+        return apply_analysis_filter(
+            filter_functions=filters,
+            analyses=analyses,
+            comment=query.comment,
+            statuses=query.status,
+            priorities=query.priority,
+            types=query.type,
+        )
 
     def sort_analyses(self, analyses: Query, query: AnalysisRequest) -> Query:
         if query.sort_field:
