@@ -4,19 +4,22 @@ import os
 from http import HTTPStatus
 from typing import Mapping
 
-from flask import Blueprint, Response, abort, g, jsonify, make_response, request
+from flask import Blueprint, Response, abort, current_app, g, jsonify, make_response, request
 from google.auth import jwt
 from pydantic import ValidationError
-from sqlalchemy.orm import Query
 
 from trailblazer.constants import (
     ONE_MONTH_IN_DAYS,
     TRAILBLAZER_TIME_STAMP,
     TrailblazerStatus,
 )
+from trailblazer.dto.analysis_request import AnalysisRequest
+from trailblazer.dto.analysis_response import AnalysisResponse
 from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdateRequest
-from trailblazer.store.models import Analysis, Info, Job, User
+from trailblazer.server.utils import parse_analysis_request
+from trailblazer.services.analysis_service import AnalysisService
+from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
 ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
@@ -55,22 +58,13 @@ def before_request():
 @blueprint.route("/analyses")
 def analyses():
     """Display analyses."""
-    per_page = int(request.args.get("per_page", 100))
-    page = int(request.args.get("page", 1))
-    analyses: Query = store.get_analyses_query_by_search_term_and_is_visible(
-        search_term=request.args.get("query"),
-        is_visible=bool(request.args.get("is_visible")),
-    )
-
-    query_page: Query = store.paginate_query(query=analyses, page=page, per_page=per_page)
-    response_data = []
-    for analysis in query_page.all():
-        analysis_data = analysis.to_dict()
-        analysis_data["user"] = analysis.user.to_dict() if analysis.user else None
-        failed_job: Job | None = store.get_latest_failed_job_for_analysis(analysis.id)
-        analysis_data["failed_job"] = failed_job.to_dict() if failed_job else None
-        response_data.append(analysis_data)
-    return jsonify(analyses=response_data)
+    analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
+    try:
+        query: AnalysisRequest = parse_analysis_request(request)
+        response: AnalysisResponse = analysis_service.get_analyses(query)
+        return jsonify(response.model_dump()), HTTPStatus.OK
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])

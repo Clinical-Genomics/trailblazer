@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from typing import Callable, Type
+from typing import Type
 
-from sqlalchemy import func
+from sqlalchemy import asc, desc, func, or_
 from sqlalchemy.orm import Query, Session
+from trailblazer.constants import Pipeline
+from trailblazer.dto.analysis_request import AnalysisRequest
 
 from trailblazer.store.database import get_session
 from trailblazer.store.filters.analyses_filters import (
@@ -29,24 +31,65 @@ class BaseHandler:
             func.count(Job.id).label("count"),
         )
 
-    def get_analyses_query_by_search_term_and_is_visible(
-        self,
-        search_term: str | None = None,
-        is_visible: bool = False,
-    ) -> Query:
-        """Return analyses by search term qnd is visible."""
-        if not search_term and not is_visible:
-            return
-        filter_map: dict[Callable, str | bool] | None = {
-            AnalysisFilter.FILTER_BY_IS_VISIBLE: is_visible,
-            AnalysisFilter.FILTER_BY_SEARCH_TERM: search_term,
-        }
-        filter_functions: list[Callable] = [
-            function for function, supplied_arg in filter_map.items() if supplied_arg
-        ]
-        analyses: Query = apply_analysis_filter(
-            filter_functions=filter_functions,
-            analyses=self.get_query(Analysis),
-            search_term=search_term,
+    def get_analyses_query_by_search(self, analyses: Query, search_term: str) -> Query:
+        """Return analyses by search term."""
+        if search_term:
+            analyses: Query = apply_analysis_filter(
+                filter_functions=[AnalysisFilter.FILTER_BY_SEARCH_TERM],
+                analyses=analyses,
+                search_term=search_term,
+            )
+        return analyses
+
+    def get_analyses_query_by_pipeline(self, pipeline: str) -> Query:
+        """Return analyses by pipeline."""
+        analyses: Query = self.get_query(Analysis)
+        # Group existing variants of balsamic
+        balsamic_pipeline: str = Pipeline.BALSAMIC.lower()
+        if pipeline == balsamic_pipeline:
+            analyses = analyses.filter(Analysis.data_analysis.startswith(balsamic_pipeline))
+        if pipeline:
+            analyses = analyses.filter(Analysis.data_analysis == pipeline)
+        return analyses.filter(Analysis.is_visible.is_(True))
+
+    def get_filtered_analyses(self, analyses: Query, query: AnalysisRequest) -> Query:
+        filters: list[AnalysisFilter] = []
+        if query.status:
+            filters.append(AnalysisFilter.FILTER_BY_STATUSES)
+        if query.priority:
+            filters.append(AnalysisFilter.FILTER_BY_PRIORITIES)
+        if query.type:
+            filters.append(AnalysisFilter.FILTER_BY_TYPES)
+        if query.comment:
+            filters.append(AnalysisFilter.FILTER_BY_EMPTY_COMMENT)
+        return apply_analysis_filter(
+            filter_functions=filters,
+            analyses=analyses,
+            comment=query.comment,
+            statuses=query.status,
+            priorities=query.priority,
+            types=query.type,
         )
-        return analyses.order_by(Analysis.started_at.desc())
+
+    def sort_analyses(self, analyses: Query, query: AnalysisRequest) -> Query:
+        if query.sort_field:
+            column = getattr(Analysis, query.sort_field)
+            if query.sort_order == "asc":
+                analyses = analyses.order_by(asc(column))
+            else:
+                analyses = analyses.order_by(desc(column))
+        return analyses
+
+    def paginate_analyses(self, analyses: Query, query: AnalysisRequest) -> Query:
+        return analyses.limit(query.page_size).offset((query.page - 1) * query.page_size)
+
+    def get_filtered_sorted_paginated_analyses(
+        self, query: AnalysisRequest
+    ) -> tuple[list[Analysis], int]:
+        analyses: Query = self.get_analyses_query_by_pipeline(query.pipeline)
+        analyses = self.get_filtered_analyses(analyses=analyses, query=query)
+        analyses = self.get_analyses_query_by_search(analyses=analyses, search_term=query.search)
+        analyses = self.sort_analyses(analyses=analyses, query=query)
+        total_analyses_count: int = analyses.count()
+        query_page: Query = self.paginate_analyses(analyses=analyses, query=query)
+        return query_page.all(), total_analyses_count

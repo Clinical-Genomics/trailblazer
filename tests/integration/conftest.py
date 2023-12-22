@@ -1,6 +1,7 @@
 import datetime
 from typing import Generator
 from unittest.mock import patch
+import uuid
 
 import pytest
 from flask import Flask
@@ -8,8 +9,10 @@ from flask.testing import FlaskClient
 from sqlalchemy.orm import Session
 
 from trailblazer.constants import (
+    PIPELINES,
     PRIORITY_OPTIONS,
     TYPES,
+    Pipeline,
     TrailblazerStatus,
     WorkflowManager,
 )
@@ -50,6 +53,34 @@ def analysis() -> Analysis:
     session.add(analysis)
     session.commit()
     return analysis
+
+
+@pytest.fixture
+def analyses() -> list[Analysis]:
+    """Analyses with different statuses, priorities, types, and pipelines."""
+    analyses: list[Analysis] = []
+    for priority in PRIORITY_OPTIONS:
+        for type in TYPES:
+            for status in TrailblazerStatus.statuses():
+                for pipeline in PIPELINES:
+                    analysis = Analysis(
+                        config_path="config_path",
+                        data_analysis=pipeline,
+                        case_id="case_id",
+                        out_dir="out_dir",
+                        priority=priority,
+                        started_at=datetime.datetime.now(),
+                        status=status,
+                        ticket_id=str(uuid.uuid4()),
+                        type=type,
+                        workflow_manager=WorkflowManager.SLURM,
+                        is_visible=True,
+                    )
+                    analyses.append(analysis)
+                analysis.comment = "comment"  # Ensure some analyses have a comment
+    session: Session = get_session()
+    session.add_all(analyses)
+    return analyses
 
 
 @pytest.fixture

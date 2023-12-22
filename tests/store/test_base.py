@@ -4,7 +4,7 @@ from sqlalchemy.orm import Query
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.store.models import Info, Job
+from trailblazer.store.models import Analysis, Info, Job
 
 
 def test_info_query(info_store: MockStore):
@@ -43,10 +43,11 @@ def test_get_analyses_query_by_search_term_and_is_visible(analysis_store: MockSt
     """Test return analyses query by search term and is visible"""
 
     # GIVEN a store
+    analyses_query: Query = analysis_store.get_query(table=Analysis)
 
     # WHEN getting an object using the query
-    analyses: Query = analysis_store.get_analyses_query_by_search_term_and_is_visible(
-        search_term=TrailblazerStatus.PENDING
+    analyses: Query = analysis_store.get_analyses_query_by_search(
+        search_term=TrailblazerStatus.PENDING, analyses=analyses_query
     )
 
     # THEN it should return a query

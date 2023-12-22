@@ -80,6 +80,27 @@ class CharacterFormat(StrEnum):
     UNICODE_TRANSFORMATION_FORMAT_8: str = "utf-8"
 
 
+class TrailblazerTypes(StrEnum):
+    """Trailblazer analysis types."""
+
+    OTHER: str = "other"
+    RNA: str = "rna"
+    TGS: str = "tgs"
+    WES: str = "wes"
+    WGS: str = "wgs"
+    WTS: str = "wts"
+
+
+class TrailblazerPriority(StrEnum):
+    """Trailblazer analysis priorities."""
+
+    LOW: str = "low"
+    NORMAL: str = "normal"
+    HIGH: str = "high"
+    EXPRESS: str = "express"
+    MAINTENANCE: str = "maintenance"
+
+
 class TrailblazerStatus(StrEnum):
     """Trailblazer allowed status."""
 
@@ -147,3 +168,5 @@ TOWER_TASK_STATUS: dict[str, str] = {
     "SUCCEEDED": SlurmJobStatus.COMPLETED,
     "UNKNOWN": SlurmJobStatus.FAILED,
 }
+
+PIPELINES = [pipeline.lower() for pipeline in Pipeline]
