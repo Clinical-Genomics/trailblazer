@@ -47,7 +47,9 @@ def test_get_analyses_filtered_by_single_status(client: FlaskClient, analyses: l
     assert response.status_code == HTTPStatus.OK
 
     # THEN it should return all analyses with the status completed
-    completed_analyses = [a for a in analyses if a.status == TrailblazerStatus.COMPLETED]
+    completed_analyses = [
+        analysis for analysis in analyses if analysis.status == TrailblazerStatus.COMPLETED
+    ]
     assert len(response.json["analyses"]) == len(completed_analyses)
 
 
@@ -64,7 +66,9 @@ def test_get_analyses_filtered_by_multiple_statuses(client: FlaskClient, analyse
 
     # THEN it should return all analyses with the status completed or failed
     completed_or_failed_analyses = [
-        a for a in analyses if a.status in [TrailblazerStatus.ERROR, TrailblazerStatus.FAILED]
+        analysis
+        for analysis in analyses
+        if analysis.status in [TrailblazerStatus.ERROR, TrailblazerStatus.FAILED]
     ]
     assert len(response.json["analyses"]) == len(completed_or_failed_analyses)
 

@@ -1,6 +1,7 @@
 import datetime
 from typing import Generator
 from unittest.mock import patch
+import uuid
 
 import pytest
 from flask import Flask
@@ -56,12 +57,10 @@ def analysis() -> Analysis:
 def analyses() -> list[Analysis]:
     """Analyses with different statuses, priorities, types, and pipelines."""
     analyses: list[Analysis] = []
-    for i, priority in enumerate(PRIORITY_OPTIONS):
-        for j, type in enumerate(TYPES):
-            for k, status in enumerate(TrailblazerStatus.statuses()):
-                for l, pipeline in enumerate(
-                    ["balsamic", "balsamic-umi", "mip-dna", "mip-rna", "microsalt"]
-                ):
+    for priority in PRIORITY_OPTIONS:
+        for type in TYPES:
+            for status in TrailblazerStatus.statuses():
+                for pipeline in ["mip-dna", "mip-rna"]:
                     analysis = Analysis(
                         config_path="config_path",
                         data_analysis=pipeline,
@@ -70,7 +69,7 @@ def analyses() -> list[Analysis]:
                         priority=priority,
                         started_at=datetime.datetime.now(),
                         status=status,
-                        ticket_id=f"{i}{j}{k}{l}",
+                        ticket_id=str(uuid.uuid4()),
                         type=type,
                         workflow_manager=WorkflowManager.SLURM,
                         is_visible=True,
