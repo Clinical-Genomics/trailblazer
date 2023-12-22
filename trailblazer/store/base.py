@@ -45,7 +45,7 @@ class BaseHandler:
         analyses: Query = self.get_query(Analysis)
         # Group existing variants of balsamic
         if pipeline == "balsamic":
-            analyses = analyses.filter(Analysis.data_analysis.like("%balsamic%"))
+            analyses = analyses.filter(Analysis.data_analysis.startswith("balsamic"))
         if pipeline:
             analyses = analyses.filter(Analysis.data_analysis == pipeline)
         return analyses.filter(Analysis.is_visible.is_(True))

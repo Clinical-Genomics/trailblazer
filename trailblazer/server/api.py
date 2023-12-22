@@ -17,7 +17,7 @@ from trailblazer.dto.analysis_request import AnalysisRequest
 from trailblazer.dto.analysis_response import AnalysisResponse
 from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdateRequest
-from trailblazer.server.utils import parse_query_params
+from trailblazer.server.utils import parse_analysis_request
 from trailblazer.services.analysis_service import AnalysisService
 from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
@@ -60,8 +60,7 @@ def analyses():
     """Display analyses."""
     analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
     try:
-        params = parse_query_params(request)
-        query = AnalysisRequest(**params)
+        query: AnalysisRequest = parse_analysis_request(request)
         response: AnalysisResponse = analysis_service.get_analyses(query)
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:

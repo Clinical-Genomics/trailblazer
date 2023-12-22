@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from typing import List, Optional
 from datetime import datetime
 
 
@@ -41,13 +40,13 @@ class Analysis(BaseModel):
     status: str | None = None
     ticket_id: str | None = None
     type: str | None = None
-    uploaded_at: Optional[datetime]
+    uploaded_at: datetime | None = None
     user: User | None = None
     user_id: int | None = None
-    version: Optional[str]
+    version: str | None = None
     workflow_manager: str
 
 
 class AnalysisResponse(BaseModel):
-    analyses: List[Analysis]
+    analyses: list[Analysis]
     total_count: int

@@ -54,6 +54,7 @@ def analysis() -> Analysis:
 
 @pytest.fixture
 def analyses() -> list[Analysis]:
+    """Analyses with different statuses, priorities, types, and pipelines."""
     analyses: list[Analysis] = []
     for i, priority in enumerate(PRIORITY_OPTIONS):
         for j, type in enumerate(TYPES):
