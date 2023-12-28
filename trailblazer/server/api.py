@@ -4,7 +4,16 @@ import os
 from http import HTTPStatus
 from typing import Mapping
 
-from flask import Blueprint, Response, abort, current_app, g, jsonify, make_response, request
+from flask import (
+    Blueprint,
+    Response,
+    abort,
+    current_app,
+    g,
+    jsonify,
+    make_response,
+    request,
+)
 from google.auth import jwt
 from pydantic import ValidationError
 
@@ -223,21 +232,6 @@ def post_delete_analysis():
         return jsonify(None), HTTPStatus.CREATED
     except Exception as error:
         return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
-
-
-@blueprint.route("/mark-analyses-deleted", methods=["POST"])
-def post_mark_analyses_deleted():
-    """Mark all analysis belonging to a case as deleted."""
-    post_request: Response.json = request.json
-    case_analyses: list[Analysis] | None = store.update_case_analyses_as_deleted(
-        case_id=post_request.get("case_id")
-    )
-    raw_analysis = [
-        stringify_timestamps(case_analysis.to_dict()) for case_analysis in case_analyses
-    ]
-    if raw_analysis:
-        return jsonify(*raw_analysis), HTTPStatus.CREATED
-    return jsonify(None), HTTPStatus.CREATED
 
 
 @blueprint.route("/add-pending-analysis", methods=["POST"])

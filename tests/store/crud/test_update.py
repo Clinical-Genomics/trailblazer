@@ -176,41 +176,6 @@ def test_update_analysis_jobs_from_slurm_jobs(analysis_store: MockStore, squeue_
     assert updated_analysis.jobs
 
 
-def test_update_case_analyses_as_deleted(analysis_store: MockStore, ongoing_analysis_case_id: str):
-    """Test marking case analyses as deleted."""
-    # GIVEN case id for a case with analyses that are not deleted
-    analyses: list[Analysis] | None = analysis_store.get_analyses_for_case(
-        case_id=ongoing_analysis_case_id
-    )
-    for analysis in analyses:
-        assert not analysis.is_deleted
-
-    # WHEN marking analyses as deleted
-    analysis_store.update_case_analyses_as_deleted(case_id=ongoing_analysis_case_id)
-    analyses: list[Analysis] | None = analysis_store.get_analyses_for_case(
-        case_id=ongoing_analysis_case_id
-    )
-
-    # THEN analyses are marked as deleted
-    for analysis in analyses:
-        assert analysis.is_deleted
-
-
-def test_update_case_analyses_as_deleted_with_non_existing_case(
-    analysis_store: MockStore, case_id_not_in_db: str
-):
-    """Test marking case analyses as deleted."""
-    # GIVEN case id for that do not exist
-
-    # WHEN marking analyses as deleted
-    analyses: list[Analysis] | None = analysis_store.update_case_analyses_as_deleted(
-        case_id=case_id_not_in_db
-    )
-
-    # THEN no analyses are returned
-    assert not analyses
-
-
 def test_cancel_ongoing_slurm_analysis(
     analysis_store: MockStore, caplog, mocker, ongoing_analysis_case_id: str, tower_jobs: list[dict]
 ):
