@@ -50,7 +50,7 @@ class BaseHandler:
             analyses = analyses.filter(Analysis.data_analysis.startswith(balsamic_pipeline))
         if pipeline:
             analyses = analyses.filter(Analysis.data_analysis == pipeline)
-        return analyses.filter(Analysis.is_visible.is_(True))
+        return analyses
 
     def get_filtered_analyses(self, analyses: Query, query: AnalysisRequest) -> Query:
         filters: list[AnalysisFilter] = []
@@ -69,6 +69,12 @@ class BaseHandler:
             statuses=query.status,
             priorities=query.priority,
             types=query.type,
+        )
+
+    def get_visible_analyses(self, analyses: Query) -> Query:
+        return apply_analysis_filter(
+            filter_functions=[AnalysisFilter.FILTER_BY_IS_VISIBLE],
+            analyses=analyses,
         )
 
     def sort_analyses(self, analyses: Query, query: AnalysisRequest) -> Query:
@@ -90,6 +96,10 @@ class BaseHandler:
         analyses = self.get_filtered_analyses(analyses=analyses, query=query)
         analyses = self.get_analyses_query_by_search(analyses=analyses, search_term=query.search)
         analyses = self.sort_analyses(analyses=analyses, query=query)
+
+        if not query.search:
+            analyses = self.get_visible_analyses(analyses)
+
         total_analyses_count: int = analyses.count()
         query_page: Query = self.paginate_analyses(analyses=analyses, query=query)
         return query_page.all(), total_analyses_count
