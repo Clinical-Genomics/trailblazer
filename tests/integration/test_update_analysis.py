@@ -79,3 +79,17 @@ def test_update_analysis_invalid_request(client: FlaskClient, analysis: Analysis
 
     # THEN it gives a bad request response
     assert response.status_code == HTTPStatus.BAD_REQUEST
+
+
+def test_delete_comment_on_analysis(client: FlaskClient, analysis: Analysis):
+    # GIVEN a valid request to delete a comment
+    data: str = json.dumps({"comment": ""})
+
+    # WHEN sending the request
+    response = client.put(f"/api/v1/analyses/{analysis.id}", data=data, content_type=TYPE_JSON)
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN it returns the analysis without a comment
+    assert response.json["comment"] == ""
