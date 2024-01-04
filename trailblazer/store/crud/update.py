@@ -255,7 +255,7 @@ class UpdateHandler(BaseHandler):
         """Update an analysis."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id)
 
-        if comment:
+        if comment is not None:
             LOG.info(f"Adding comment {comment} to analysis {analysis.id}")
             analysis.comment = comment
 
@@ -263,7 +263,7 @@ class UpdateHandler(BaseHandler):
             LOG.info(f"Setting visibility to {is_visible} for analysis {analysis.id}")
             analysis.is_visible = bool(is_visible)
 
-        if status:
+        if status is not None:
             LOG.info(f"Setting status to {status} for analysis {analysis.id}")
             analysis.status = status
 
