@@ -154,9 +154,7 @@ class UpdateHandler(BaseHandler):
                 analysis=analysis, analysis_host=analysis_host
             )
         except Exception as exception:
-            LOG.error(
-                f"Error updating analysis for: case - {analysis.case_id} : {exception.__class__.__name__}"
-            )
+            LOG.error(f"Error updating analysis for: case - {analysis.case_id} : {exception}")
             analysis.status = TrailblazerStatus.ERROR
             session: Session = get_session()
             session.commit()
