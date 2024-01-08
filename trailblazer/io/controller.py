@@ -20,8 +20,8 @@ class ReadFile:
         """Read file using file format dispatch table."""
         try:
             return cls.read_file[file_format](file_path=file_path)
-        except FileNotFoundError as e:
-            raise FileNotFoundError(f"File not found: {file_path}") from e
+        except FileNotFoundError as error:
+            raise FileNotFoundError(f"File not found: {file_path}") from error
 
 
 class ReadStream:
