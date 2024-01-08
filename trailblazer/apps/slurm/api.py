@@ -32,12 +32,10 @@ def cancel_slurm_job(slurm_id: int, analysis_host: str | None = None) -> None:
 
 def get_slurm_squeue_output(slurm_job_id_file: Path, analysis_host: str | None = None) -> str:
     """Return squeue output from ongoing analyses in SLURM."""
-    try:
-        slurm_job_id_file_content: dict[str, list[str]] = ReadFile.get_content_from_file(
-            file_format=FileFormat.YAML, file_path=slurm_job_id_file
-        )
-    except FileNotFoundError as e:
-        raise FileNotFoundError(f"File not found: {slurm_job_id_file}") from e
+    slurm_job_id_file_content: dict[str, list[str]] = ReadFile.get_content_from_file(
+        file_format=FileFormat.YAML, file_path=slurm_job_id_file
+    )
+
     slurm_jobs: str = _get_squeue_jobs_flag_input(
         slurm_job_id_file_content=slurm_job_id_file_content
     )
