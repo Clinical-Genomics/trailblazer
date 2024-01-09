@@ -59,24 +59,35 @@ def analyses():
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
-@blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])
-def analysis(analysis_id):
-    """Retrieve or update an analysis."""
+@blueprint.route("/analyses/<int:analysis_id>", methods=["GET"])
+def get_analysis(analysis_id):
+    """Retrieve an analysis."""
     analysis: Analysis = store.get_analysis_with_id(analysis_id)
     if analysis is None:
         return abort(404)
 
-    if request.method == "PUT":
-        try:
-            analysis_update = AnalysisUpdateRequest.model_validate(request.json)
-            analysis = store.update_analysis(
-                analysis_id=analysis_id,
-                comment=analysis_update.comment,
-                status=analysis_update.status,
-                is_visible=analysis_update.is_visible,
-            )
-        except ValidationError as error:
-            return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
+    data = analysis.to_dict()
+    data["jobs"] = [job.to_dict() for job in analysis.jobs]
+    data["user"] = analysis.user.to_dict() if analysis.user else None
+    return jsonify(**data)
+
+@blueprint.route("/analyses/<int:analysis_id>", methods=["PUT"])
+def update_analysis(analysis_id):
+    """Update an analysis."""
+    analysis: Analysis = store.get_analysis_with_id(analysis_id)
+    if analysis is None:
+        return abort(404)
+
+    try:
+        analysis_update = AnalysisUpdateRequest.model_validate(request.json)
+        analysis = store.update_analysis(
+            analysis_id=analysis_id,
+            comment=analysis_update.comment,
+            status=analysis_update.status,
+            is_visible=analysis_update.is_visible,
+        )
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
     data = analysis.to_dict()
     data["jobs"] = [job.to_dict() for job in analysis.jobs]
