@@ -130,7 +130,7 @@ def update_analyses():
 
 
 @blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
-def update_analysis(analysis_id):
+def update_analysis_via_process(analysis_id):
     """Update a specific analysis."""
     try:
         process = multiprocessing.Process(
