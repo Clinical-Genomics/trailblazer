@@ -17,7 +17,7 @@ from trailblazer.dto.analysis_request import AnalysisRequest
 from trailblazer.dto.analysis_response import AnalysisResponse
 from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdateRequest
-from trailblazer.server.utils import parse_analysis_request
+from trailblazer.server.utils import parse_analysis_request, stringify_timestamps
 from trailblazer.services.analysis_service import AnalysisService
 from trailblazer.store.models import Analysis, Info, User
 from trailblazer.utils.datetime import get_date_number_of_days_ago
@@ -25,14 +25,6 @@ from trailblazer.utils.datetime import get_date_number_of_days_ago
 ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
-
-
-def stringify_timestamps(data: dict) -> dict[str, str]:
-    """Convert datetime into string before dumping in order to avoid information loss"""
-    for key, val in data.items():
-        if isinstance(val, datetime.datetime):
-            data[key] = str(val)
-    return data
 
 
 @blueprint.before_request
