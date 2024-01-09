@@ -8,6 +8,7 @@ from sqlalchemy.orm import scoped_session
 
 from trailblazer.server import api, ext
 from trailblazer.services.analysis_service import AnalysisService
+from trailblazer.services.job_service import JobService
 from trailblazer.store.database import get_session
 from trailblazer.store.store import Store
 
@@ -29,12 +30,15 @@ app.register_blueprint(api.blueprint)
 # services
 store = Store()
 analysis_service = AnalysisService(store)
+job_service = JobService(store)
 
 # configure extensions
 FlaskReverseProxied(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 ext.store.init_app(app)
+
 app.extensions["analysis_service"] = analysis_service
+app.extensions["job_service"] = job_service
 
 
 @app.route("/")

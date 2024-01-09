@@ -16,15 +16,19 @@ from trailblazer.constants import (
 from trailblazer.dto.analyses_request import AnalysesRequest
 from trailblazer.dto.analyses_response import AnalysesResponse
 from trailblazer.dto.analysis_response import AnalysisResponse
+from trailblazer.dto.failed_jobs_request import FailedJobsRequest
+from trailblazer.dto.failed_jobs_response import FailedJobsResponse
 from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdateRequest
 from trailblazer.server.utils import (
     parse_analyses_request,
     parse_analysis_update_request,
+    parse_get_failed_jobs_request,
     stringify_timestamps,
 )
 from trailblazer.services.analysis_service import AnalysisService
+from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Analysis, Info
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
@@ -67,8 +71,8 @@ def analyses():
 def get_analysis(analysis_id):
     analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
     try:
-        analysis: AnalysisResponse = analysis_service.get_analysis(analysis_id)
-        return jsonify(analysis.model_dump()), HTTPStatus.OK
+        response: AnalysisResponse = analysis_service.get_analysis(analysis_id)
+        return jsonify(response.model_dump()), HTTPStatus.OK
     except MissingAnalysis as error:
         return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
 
@@ -78,14 +82,15 @@ def update_analysis(analysis_id):
     analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
     try:
         update: AnalysisUpdateRequest = parse_analysis_update_request(request)
-        analysis: AnalysisResponse = analysis_service.update_analysis(
+        response: AnalysisResponse = analysis_service.update_analysis(
             analysis_id=analysis_id, update=update
         )
-        return jsonify(analysis.model_dump()), HTTPStatus.OK
+        return jsonify(response.model_dump()), HTTPStatus.OK
     except MissingAnalysis as error:
         return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
+
 
 @blueprint.route("/info")
 def info():
@@ -101,14 +106,14 @@ def me():
 
 
 @blueprint.route("/aggregate/jobs")
-def aggregate_jobs():
-    """Return stats about failed jobs."""
-    number_of_days_ago = int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
-    time_window: datetime = get_date_number_of_days_ago(number_of_days_ago)
-    failed_jobs: list[dict[str, str | int]] = store.get_nr_jobs_with_status_per_category(
-        status=TrailblazerStatus.FAILED, since_when=time_window
-    )
-    return jsonify(jobs=failed_jobs)
+def get_failed_jobs():
+    job_service: JobService = current_app.extensions.get("job_service")
+    try:
+        query: FailedJobsRequest = parse_get_failed_jobs_request(request)
+        response: FailedJobsResponse = job_service.get_failed_jobs(query)
+        return jsonify(response.model_dump()), HTTPStatus.OK
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
 @blueprint.route("/update-all")

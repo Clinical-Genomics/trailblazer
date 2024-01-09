@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
-class FailedJob(BaseModel):
+class Job(BaseModel):
     analysis_id: int
     context: str | None = None
     elapsed: int
@@ -28,7 +28,7 @@ class Analysis(BaseModel):
     completed_at: datetime | None = None
     config_path: str | None = None
     data_analysis: str | None = None
-    failed_job: FailedJob | None = None
+    failed_job: Job | None = None
     id: int
     is_deleted: bool = False
     is_visible: bool = True
