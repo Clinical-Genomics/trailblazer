@@ -15,6 +15,8 @@ from trailblazer.constants import (
 )
 from trailblazer.dto.analyses_request import AnalysesRequest
 from trailblazer.dto.analyses_response import AnalysesResponse
+from trailblazer.dto.analysis_response import AnalysisResponse
+from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdateRequest
 from trailblazer.server.utils import parse_analyses_request, stringify_timestamps
@@ -48,7 +50,6 @@ def before_request():
 
 @blueprint.route("/analyses")
 def analyses():
-    """Display analyses."""
     analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
     try:
         query: AnalysesRequest = parse_analyses_request(request)
@@ -58,17 +59,15 @@ def analyses():
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
-@blueprint.route("/analyses/<int:analysis_id>", methods=["GET"])
+@blueprint.route("/analyses/<int:analysis_id>", methods=["GET"]) 
 def get_analysis(analysis_id):
-    """Retrieve an analysis."""
-    analysis: Analysis = store.get_analysis_with_id(analysis_id)
-    if analysis is None:
-        return abort(404)
+    analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
+    try:
+        analysis: AnalysisResponse = analysis_service.get_analysis(analysis_id)
+        return jsonify(analysis.model_dump()), HTTPStatus.OK
+    except MissingAnalysis as error:
+        return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
 
-    data = analysis.to_dict()
-    data["jobs"] = [job.to_dict() for job in analysis.jobs]
-    data["user"] = analysis.user.to_dict() if analysis.user else None
-    return jsonify(**data)
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["PUT"])
 def update_analysis(analysis_id):

@@ -1,5 +1,7 @@
 from trailblazer.dto.analyses_request import AnalysesRequest
 from trailblazer.dto.analyses_response import AnalysesResponse
+from trailblazer.dto.analysis_response import AnalysisResponse
+from trailblazer.exc import MissingAnalysis
 from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 
@@ -10,13 +12,20 @@ class AnalysisService:
 
     def get_analyses(self, query: AnalysesRequest) -> AnalysesResponse:
         analyses, total_analysis_count = self.store.get_filtered_sorted_paginated_analyses(query)
-        response: AnalysesResponse = self.create_analyses_response(
+        return self.create_analyses_response(
             analyses=analyses, total_analysis_count=total_analysis_count
         )
-        return response
 
-    def get_analysis(self, analysis_id: int) -> Analysis:
-        return self.store.get_analysis(analysis_id)
+    def get_analysis(self, analysis_id: int) -> AnalysisResponse:
+        if not (analysis := self.store.get_analysis_with_id(analysis_id)):
+            raise MissingAnalysis(f"Analysis with id {analysis_id} not found")
+        return self.create_analysis_response(analysis)
+
+    def create_analysis_response(self, analysis: Analysis) -> AnalysisResponse:
+        analysis_data: dict = analysis.to_dict()
+        analysis_data["jobs"] = [job.to_dict() for job in analysis.jobs]
+        analysis_data["user"] = analysis.user.to_dict() if analysis.user else None
+        return AnalysisResponse(**analysis_data)
 
     def create_analyses_response(
         self, analyses: list[Analysis], total_analysis_count: int
