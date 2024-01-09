@@ -5,6 +5,7 @@ from trailblazer.dto import (
     AnalysisResponse,
 )
 from trailblazer.exc import MissingAnalysis
+from trailblazer.services.utils import create_analysis_response
 from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 
@@ -22,7 +23,7 @@ class AnalysisService:
     def get_analysis(self, analysis_id: int) -> AnalysisResponse:
         if not (analysis := self.store.get_analysis_with_id(analysis_id)):
             raise MissingAnalysis(f"Analysis with id {analysis_id} not found")
-        return self.create_analysis_response(analysis)
+        return create_analysis_response(analysis)
 
     def update_analysis(self, analysis_id: int, update: AnalysisUpdateRequest) -> AnalysisResponse:
         analysis: Analysis = self.store.update_analysis(
@@ -31,13 +32,7 @@ class AnalysisService:
             status=update.status,
             is_visible=update.is_visible,
         )
-        return self.create_analysis_response(analysis)
-
-    def create_analysis_response(self, analysis: Analysis) -> AnalysisResponse:
-        analysis_data: dict = analysis.to_dict()
-        analysis_data["jobs"] = [job.to_dict() for job in analysis.jobs]
-        analysis_data["user"] = analysis.user.to_dict() if analysis.user else None
-        return AnalysisResponse(**analysis_data)
+        return create_analysis_response(analysis)
 
     def create_analyses_response(
         self, analyses: list[Analysis], total_analysis_count: int
