@@ -19,7 +19,7 @@ from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdateRequest
 from trailblazer.server.utils import parse_analysis_request
 from trailblazer.services.analysis_service import AnalysisService
-from trailblazer.store.models import Analysis, Info, User
+from trailblazer.store.models import Analysis, Info
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
 ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
@@ -42,17 +42,16 @@ def before_request():
         return make_response(jsonify(ok=True), 204)
     if os.environ.get("SCOPE") == "DEVELOPMENT":
         return
-    auth_header = request.headers.get("Authorization")
-    if auth_header:
+    if auth_header := request.headers.get("Authorization"):
         jwt_token = auth_header.split("Bearer ")[-1]
     else:
         return abort(403, "no JWT token found on request")
 
     user_data: Mapping = jwt.decode(jwt_token, verify=False)
-    user: User = store.get_user(email=user_data["email"], exclude_archived=True)
-    if not user:
+    if user := store.get_user(email=user_data["email"], exclude_archived=True):
+        g.current_user = user
+    else:
         return abort(403, f"{user_data['email']} doesn't have access")
-    g.current_user = user
 
 
 @blueprint.route("/analyses")
@@ -108,9 +107,8 @@ def me():
 @blueprint.route("/aggregate/jobs")
 def aggregate_jobs():
     """Return stats about failed jobs."""
-    time_window: datetime = get_date_number_of_days_ago(
-        number_of_days_ago=int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
-    )
+    number_of_days_ago = int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
+    time_window: datetime = get_date_number_of_days_ago(number_of_days_ago)
     failed_jobs: list[dict[str, str | int]] = store.get_nr_jobs_with_status_per_category(
         status=TrailblazerStatus.FAILED, since_when=time_window
     )
@@ -185,11 +183,9 @@ def delete(analysis_id):
 @blueprint.route("/get-latest-analysis", methods=["POST"])
 def post_get_latest_analysis():
     """Return latest analysis entry for specified case id."""
-    post_request: Response.json = request.json
-    latest_case_analysis: Analysis | None = store.get_latest_analysis_for_case(
-        case_id=post_request.get("case_id")
-    )
-    if latest_case_analysis:
+    post_request = request.json
+    case_id: str = post_request.get("case_id")
+    if latest_case_analysis := store.get_latest_analysis_for_case(case_id):
         raw_analysis: dict[str, str] = stringify_timestamps(latest_case_analysis.to_dict())
         return jsonify(**raw_analysis), HTTPStatus.OK
     return jsonify(None), HTTPStatus.OK
@@ -199,12 +195,14 @@ def post_get_latest_analysis():
 def post_find_analysis():
     """Find analysis using case id, date, and status."""
     post_request: Response.json = request.json
-    analysis: Analysis = store.get_analysis(
-        case_id=post_request.get("case_id"),
-        started_at=datetime.strptime(post_request.get("started_at"), TRAILBLAZER_TIME_STAMP).date(),
-        status=post_request.get("status"),
-    )
-    if analysis:
+    case_id: str = post_request.get("case_id")
+    started_at = datetime.strptime(post_request.get("started_at"), TRAILBLAZER_TIME_STAMP).date()
+    status: str = post_request.get("status")
+    if analysis := store.get_analysis(
+        case_id=case_id,
+        started_at=started_at,
+        status=status,
+    ):
         raw_analysis: dict[str, str] = stringify_timestamps(analysis.to_dict())
         return jsonify(**raw_analysis), HTTPStatus.OK
     return jsonify(None), HTTPStatus.OK
@@ -216,10 +214,10 @@ def post_delete_analysis():
     To delete ongoing analysis, --force flag should also be passed.
     If an ongoing analysis is deleted in ths manner, all ongoing jobs will be cancelled"""
     post_request: Response.json = request.json
+    analysis_id: str = post_request.get("analysis_id")
+    force: str = post_request.get("force")
     try:
-        store.delete_analysis(
-            analysis_id=post_request.get("analysis_id"), force=post_request.get("force")
-        )
+        store.delete_analysis(analysis_id=analysis_id, force=force)
         return jsonify(None), HTTPStatus.CREATED
     except Exception as error:
         return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
@@ -229,13 +227,11 @@ def post_delete_analysis():
 def post_mark_analyses_deleted():
     """Mark all analysis belonging to a case as deleted."""
     post_request: Response.json = request.json
-    case_analyses: list[Analysis] | None = store.update_case_analyses_as_deleted(
-        case_id=post_request.get("case_id")
-    )
-    raw_analysis = [
+    case_id: str = post_request.get("case_id")
+    case_analyses: list[Analysis] | None = store.update_case_analyses_as_deleted(case_id)
+    if raw_analysis := [
         stringify_timestamps(case_analysis.to_dict()) for case_analysis in case_analyses
-    ]
-    if raw_analysis:
+    ]:
         return jsonify(*raw_analysis), HTTPStatus.CREATED
     return jsonify(None), HTTPStatus.CREATED
 
@@ -280,9 +276,9 @@ def set_analysis_status():
     """Update analysis status of a case with supplied status."""
     put_request: Response.json = request.json
     try:
-        store.update_analysis_status(
-            case_id=put_request.get("case_id"), status=put_request.get("status")
-        )
+        case_id: str = put_request.get("case_id")
+        status: str = put_request.get("status")
+        store.update_analysis_status(case_id=case_id, status=status)
         return (
             jsonify(f"Success! Analysis set to {put_request.get('status')} request sent"),
             HTTPStatus.CREATED,
@@ -296,9 +292,9 @@ def add_comment():
     """Updating comment on analysis."""
     put_request: Response.json = request.json
     try:
-        store.update_analysis_comment(
-            case_id=put_request.get("case_id"), comment=put_request.get("comment")
-        )
+        case_id: str = put_request.get("case_id")
+        comment: str = put_request.get("comment")
+        store.update_analysis_comment(case_id=case_id, comment=comment)
         return jsonify("Success! Adding comment request sent"), HTTPStatus.CREATED
     except Exception as error:
         return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
