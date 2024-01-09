@@ -19,7 +19,11 @@ from trailblazer.dto.analysis_response import AnalysisResponse
 from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdateRequest
-from trailblazer.server.utils import parse_analyses_request, stringify_timestamps
+from trailblazer.server.utils import (
+    parse_analyses_request,
+    parse_analysis_update_request,
+    stringify_timestamps,
+)
 from trailblazer.services.analysis_service import AnalysisService
 from trailblazer.store.models import Analysis, Info
 from trailblazer.utils.datetime import get_date_number_of_days_ago
@@ -71,27 +75,17 @@ def get_analysis(analysis_id):
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["PUT"])
 def update_analysis(analysis_id):
-    """Update an analysis."""
-    analysis: Analysis = store.get_analysis_with_id(analysis_id)
-    if analysis is None:
-        return abort(404)
-
+    analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
     try:
-        analysis_update = AnalysisUpdateRequest.model_validate(request.json)
-        analysis = store.update_analysis(
-            analysis_id=analysis_id,
-            comment=analysis_update.comment,
-            status=analysis_update.status,
-            is_visible=analysis_update.is_visible,
+        update: AnalysisUpdateRequest = parse_analysis_update_request(request)
+        analysis: AnalysisResponse = analysis_service.update_analysis(
+            analysis_id=analysis_id, update=update
         )
+        return jsonify(analysis.model_dump()), HTTPStatus.OK
+    except MissingAnalysis as error:
+        return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
-
-    data = analysis.to_dict()
-    data["jobs"] = [job.to_dict() for job in analysis.jobs]
-    data["user"] = analysis.user.to_dict() if analysis.user else None
-    return jsonify(**data)
-
 
 @blueprint.route("/info")
 def info():

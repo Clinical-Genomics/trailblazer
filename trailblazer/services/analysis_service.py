@@ -2,6 +2,7 @@ from trailblazer.dto.analyses_request import AnalysesRequest
 from trailblazer.dto.analyses_response import AnalysesResponse
 from trailblazer.dto.analysis_response import AnalysisResponse
 from trailblazer.exc import MissingAnalysis
+from trailblazer.server.schemas import AnalysisUpdateRequest
 from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 
@@ -19,6 +20,15 @@ class AnalysisService:
     def get_analysis(self, analysis_id: int) -> AnalysisResponse:
         if not (analysis := self.store.get_analysis_with_id(analysis_id)):
             raise MissingAnalysis(f"Analysis with id {analysis_id} not found")
+        return self.create_analysis_response(analysis)
+
+    def update_analysis(self, analysis_id: int, update: AnalysisUpdateRequest) -> AnalysisResponse:
+        analysis: Analysis = self.store.update_analysis(
+            analysis_id=analysis_id,
+            comment=update.comment,
+            status=update.status,
+            is_visible=update.is_visible,
+        )
         return self.create_analysis_response(analysis)
 
     def create_analysis_response(self, analysis: Analysis) -> AnalysisResponse:
