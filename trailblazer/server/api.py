@@ -19,7 +19,7 @@ from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdateRequest
 from trailblazer.server.utils import parse_analysis_request
 from trailblazer.services.analysis_service import AnalysisService
-from trailblazer.store.models import Analysis, Info, User
+from trailblazer.store.models import Analysis, Info
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
 ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
@@ -42,17 +42,16 @@ def before_request():
         return make_response(jsonify(ok=True), 204)
     if os.environ.get("SCOPE") == "DEVELOPMENT":
         return
-    auth_header = request.headers.get("Authorization")
-    if auth_header:
+    if auth_header := request.headers.get("Authorization"):
         jwt_token = auth_header.split("Bearer ")[-1]
     else:
         return abort(403, "no JWT token found on request")
 
     user_data: Mapping = jwt.decode(jwt_token, verify=False)
-    user: User = store.get_user(email=user_data["email"], exclude_archived=True)
-    if not user:
+    if user := store.get_user(email=user_data["email"], exclude_archived=True):
+        g.current_user = user
+    else:
         return abort(403, f"{user_data['email']} doesn't have access")
-    g.current_user = user
 
 
 @blueprint.route("/analyses")
@@ -186,10 +185,9 @@ def delete(analysis_id):
 def post_get_latest_analysis():
     """Return latest analysis entry for specified case id."""
     post_request: Response.json = request.json
-    latest_case_analysis: Analysis | None = store.get_latest_analysis_for_case(
+    if latest_case_analysis := store.get_latest_analysis_for_case(
         case_id=post_request.get("case_id")
-    )
-    if latest_case_analysis:
+    ):
         raw_analysis: dict[str, str] = stringify_timestamps(latest_case_analysis.to_dict())
         return jsonify(**raw_analysis), HTTPStatus.OK
     return jsonify(None), HTTPStatus.OK
@@ -199,12 +197,11 @@ def post_get_latest_analysis():
 def post_find_analysis():
     """Find analysis using case id, date, and status."""
     post_request: Response.json = request.json
-    analysis: Analysis = store.get_analysis(
+    if analysis := store.get_analysis(
         case_id=post_request.get("case_id"),
         started_at=datetime.strptime(post_request.get("started_at"), TRAILBLAZER_TIME_STAMP).date(),
         status=post_request.get("status"),
-    )
-    if analysis:
+    ):
         raw_analysis: dict[str, str] = stringify_timestamps(analysis.to_dict())
         return jsonify(**raw_analysis), HTTPStatus.OK
     return jsonify(None), HTTPStatus.OK
@@ -232,10 +229,10 @@ def post_mark_analyses_deleted():
     case_analyses: list[Analysis] | None = store.update_case_analyses_as_deleted(
         case_id=post_request.get("case_id")
     )
-    raw_analysis = [
-        stringify_timestamps(case_analysis.to_dict()) for case_analysis in case_analyses
-    ]
-    if raw_analysis:
+    if raw_analysis := [
+        stringify_timestamps(case_analysis.to_dict())
+        for case_analysis in case_analyses
+    ]:
         return jsonify(*raw_analysis), HTTPStatus.CREATED
     return jsonify(None), HTTPStatus.CREATED
 
