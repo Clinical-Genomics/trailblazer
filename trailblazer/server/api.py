@@ -11,9 +11,15 @@ from pydantic import ValidationError
 from trailblazer.constants import (
     TRAILBLAZER_TIME_STAMP,
 )
-from trailblazer.dto.analyses_request import AnalysesRequest
-from trailblazer.dto.analyses_response import AnalysesResponse
-from trailblazer.dto import AnalysisResponse, AnalysisUpdateRequest, FailedJobsRequest, FailedJobsResponse
+
+from trailblazer.dto import (
+    AnalysesRequest,
+    AnalysisResponse,
+    AnalysesResponse,
+    AnalysisUpdateRequest,
+    FailedJobsRequest,
+    FailedJobsResponse,
+)
 from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
 from trailblazer.server.utils import (

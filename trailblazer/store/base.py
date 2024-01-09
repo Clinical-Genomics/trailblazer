@@ -4,7 +4,7 @@ from typing import Type
 from sqlalchemy import asc, desc, func
 from sqlalchemy.orm import Query, Session
 from trailblazer.constants import Pipeline
-from trailblazer.dto.analyses_request import AnalysesRequest
+from trailblazer.dto import AnalysesRequest
 
 from trailblazer.store.database import get_session
 from trailblazer.store.filters.analyses_filters import (

@@ -1,10 +1,8 @@
 from datetime import datetime
 from trailblazer.constants import TrailblazerStatus
 
-from trailblazer.dto.failed_jobs_request import FailedJobsRequest
-from trailblazer.dto.failed_jobs_response import FailedJobsResponse
+from trailblazer.dto import FailedJobsRequest, FailedJobsResponse
 from trailblazer.services.utils import create_jobs_response
-from trailblazer.store.models import Job
 from trailblazer.store.store import Store
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
