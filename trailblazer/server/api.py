@@ -59,7 +59,7 @@ def analyses():
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
-@blueprint.route("/analyses/<int:analysis_id>", methods=["GET"]) 
+@blueprint.route("/analyses/<int:analysis_id>", methods=["GET"])
 def get_analysis(analysis_id):
     analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
     try:
