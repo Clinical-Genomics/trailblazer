@@ -1,8 +1,10 @@
-from trailblazer.dto.analyses_request import AnalysesRequest
-from trailblazer.dto.analyses_response import AnalysesResponse
-from trailblazer.dto.analysis_response import AnalysisResponse
+from trailblazer.dto import (
+    AnalysesRequest,
+    AnalysisUpdateRequest,
+    AnalysesResponse,
+    AnalysisResponse,
+)
 from trailblazer.exc import MissingAnalysis
-from trailblazer.server.schemas import AnalysisUpdateRequest
 from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 

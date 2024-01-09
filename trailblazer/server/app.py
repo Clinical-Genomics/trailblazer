@@ -7,8 +7,7 @@ from flask_reverse_proxy import FlaskReverseProxied
 from sqlalchemy.orm import scoped_session
 
 from trailblazer.server import api, ext
-from trailblazer.services.analysis_service import AnalysisService
-from trailblazer.services.job_service import JobService
+from trailblazer.services import AnalysisService, JobService
 from trailblazer.store.database import get_session
 from trailblazer.store.store import Store
 

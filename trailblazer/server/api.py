@@ -9,28 +9,21 @@ from google.auth import jwt
 from pydantic import ValidationError
 
 from trailblazer.constants import (
-    ONE_MONTH_IN_DAYS,
     TRAILBLAZER_TIME_STAMP,
-    TrailblazerStatus,
 )
 from trailblazer.dto.analyses_request import AnalysesRequest
 from trailblazer.dto.analyses_response import AnalysesResponse
-from trailblazer.dto.analysis_response import AnalysisResponse
-from trailblazer.dto.failed_jobs_request import FailedJobsRequest
-from trailblazer.dto.failed_jobs_response import FailedJobsResponse
+from trailblazer.dto import AnalysisResponse, AnalysisUpdateRequest, FailedJobsRequest, FailedJobsResponse
 from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
-from trailblazer.server.schemas import AnalysisUpdateRequest
 from trailblazer.server.utils import (
     parse_analyses_request,
     parse_analysis_update_request,
     parse_get_failed_jobs_request,
     stringify_timestamps,
 )
-from trailblazer.services.analysis_service import AnalysisService
-from trailblazer.services.job_service import JobService
+from trailblazer.services import AnalysisService, JobService
 from trailblazer.store.models import Analysis, Info
-from trailblazer.utils.datetime import get_date_number_of_days_ago
 
 ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
 

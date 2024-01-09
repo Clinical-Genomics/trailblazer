@@ -1,9 +1,7 @@
 import datetime
 from flask import Request
 
-from trailblazer.dto.analyses_request import AnalysesRequest
-from trailblazer.dto.failed_jobs_request import FailedJobsRequest
-from trailblazer.server.schemas import AnalysisUpdateRequest
+from trailblazer.dto import AnalysesRequest, AnalysisUpdateRequest, FailedJobsRequest
 
 
 def parse_analyses_request(request: Request) -> AnalysesRequest:
