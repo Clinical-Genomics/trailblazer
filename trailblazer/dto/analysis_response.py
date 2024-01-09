@@ -9,7 +9,7 @@ class FailedJob(BaseModel):
     id: int
     name: str
     slurm_id: int
-    started_at: datetime
+    started_at: datetime | None = None
     status: str
 
 
