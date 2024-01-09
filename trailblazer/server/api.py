@@ -13,11 +13,11 @@ from trailblazer.constants import (
     TRAILBLAZER_TIME_STAMP,
     TrailblazerStatus,
 )
-from trailblazer.dto.analysis_request import AnalysisRequest
-from trailblazer.dto.analysis_response import AnalysisResponse
+from trailblazer.dto.analyses_request import AnalysesRequest
+from trailblazer.dto.analyses_response import AnalysesResponse
 from trailblazer.server.ext import store
 from trailblazer.server.schemas import AnalysisUpdateRequest
-from trailblazer.server.utils import parse_analysis_request, stringify_timestamps
+from trailblazer.server.utils import parse_analyses_request, stringify_timestamps
 from trailblazer.services.analysis_service import AnalysisService
 from trailblazer.store.models import Analysis, Info
 from trailblazer.utils.datetime import get_date_number_of_days_ago
@@ -51,8 +51,8 @@ def analyses():
     """Display analyses."""
     analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
     try:
-        query: AnalysisRequest = parse_analysis_request(request)
-        response: AnalysisResponse = analysis_service.get_analyses(query)
+        query: AnalysesRequest = parse_analyses_request(request)
+        response: AnalysesResponse = analysis_service.get_analyses(query)
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST

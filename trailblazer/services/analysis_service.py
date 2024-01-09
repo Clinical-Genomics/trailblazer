@@ -1,5 +1,5 @@
-from trailblazer.dto.analysis_request import AnalysisRequest
-from trailblazer.dto.analysis_response import AnalysisResponse
+from trailblazer.dto.analyses_request import AnalysesRequest
+from trailblazer.dto.analyses_response import AnalysesResponse
 from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 
@@ -8,16 +8,19 @@ class AnalysisService:
     def __init__(self, store: Store):
         self.store = store
 
-    def get_analyses(self, query: AnalysisRequest) -> AnalysisResponse:
+    def get_analyses(self, query: AnalysesRequest) -> AnalysesResponse:
         analyses, total_analysis_count = self.store.get_filtered_sorted_paginated_analyses(query)
-        response: AnalysisResponse = self._format_response(
+        response: AnalysesResponse = self.create_analyses_response(
             analyses=analyses, total_analysis_count=total_analysis_count
         )
         return response
 
-    def _format_response(
+    def get_analysis(self, analysis_id: int) -> Analysis:
+        return self.store.get_analysis(analysis_id)
+
+    def create_analyses_response(
         self, analyses: list[Analysis], total_analysis_count: int
-    ) -> AnalysisResponse:
+    ) -> AnalysesResponse:
         response_data: list[dict] = []
         for analysis in analyses:
             analysis_data = analysis.to_dict()
@@ -25,4 +28,4 @@ class AnalysisService:
             failed_job: Job = self.store.get_latest_failed_job_for_analysis(analysis.id)
             analysis_data["failed_job"] = failed_job.to_dict() if failed_job else None
             response_data.append(analysis_data)
-        return AnalysisResponse(analyses=response_data, total_count=total_analysis_count)
+        return AnalysesResponse(analyses=response_data, total_count=total_analysis_count)

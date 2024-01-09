@@ -1,10 +1,10 @@
 import datetime
 from flask import Request
 
-from trailblazer.dto.analysis_request import AnalysisRequest
+from trailblazer.dto.analyses_request import AnalysesRequest
 
 
-def parse_analysis_request(request: Request) -> AnalysisRequest:
+def parse_analyses_request(request: Request) -> AnalysesRequest:
     """Parse a request for retrieving analyses."""
     query_params = {}
     for key in request.args.keys():
@@ -12,7 +12,7 @@ def parse_analysis_request(request: Request) -> AnalysisRequest:
             query_params[key[:-2]] = request.args.getlist(key)
         else:
             query_params[key] = request.args.get(key)
-    return AnalysisRequest.model_validate(query_params)
+    return AnalysesRequest.model_validate(query_params)
 
 
 def stringify_timestamps(data: dict) -> dict[str, str]:
