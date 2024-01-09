@@ -107,7 +107,7 @@ def me():
 @blueprint.route("/aggregate/jobs")
 def aggregate_jobs():
     """Return stats about failed jobs."""
-    number_of_days_ago: int = int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
+    number_of_days_ago = int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
     time_window: datetime = get_date_number_of_days_ago(number_of_days_ago)
     failed_jobs: list[dict[str, str | int]] = store.get_nr_jobs_with_status_per_category(
         status=TrailblazerStatus.FAILED, since_when=time_window
@@ -183,7 +183,7 @@ def delete(analysis_id):
 @blueprint.route("/get-latest-analysis", methods=["POST"])
 def post_get_latest_analysis():
     """Return latest analysis entry for specified case id."""
-    post_request: Response.json = request.json
+    post_request = request.json
     case_id: str = post_request.get("case_id")
     if latest_case_analysis := store.get_latest_analysis_for_case(case_id):
         raw_analysis: dict[str, str] = stringify_timestamps(latest_case_analysis.to_dict())
