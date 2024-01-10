@@ -13,15 +13,6 @@ class FailedJob(BaseModel):
     status: str
 
 
-class User(BaseModel):
-    avatar: str | None = None
-    created_at: datetime
-    email: str
-    id: int
-    is_archived: bool
-    name: str
-
-
 class Analysis(BaseModel):
     case_id: str
     comment: str | None = None
@@ -41,7 +32,6 @@ class Analysis(BaseModel):
     ticket_id: str | None = None
     type: str | None = None
     uploaded_at: datetime | None = None
-    user: User | None = None
     user_id: int | None = None
     version: str | None = None
     workflow_manager: str
