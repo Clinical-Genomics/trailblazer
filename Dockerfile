@@ -27,4 +27,3 @@ CMD gunicorn \
   --access-logfile - \
   --log-level="debug" \
   trailblazer.server.app:app
-
