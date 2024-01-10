@@ -12,10 +12,10 @@ jobs:
       - name: Extract branch name and remove illegal chars
         id: get_branch_name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo "$(tr "/" "-" <<<${GITHUB_REF#refs/heads/})")"
+        run: echo "::set-output name=branch::$(echo "${GITHUB_REF#refs/heads/}" | tr '/' '-')"
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: "clinicalgenomics/trailblazer-stage:${{steps.get_branch_name.outputs.branch}}"
+          image-ref: "clinicalgenomics/trailblazer-stage:${{ steps.get_branch_name.outputs.branch }}"
           format: "sarif"
