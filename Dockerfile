@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bullseye
+FROM registry.redhat.io/ubi9/python-311:latest
 
 ENV GUNICORN_WORKERS=1
 ENV GUNICORN_TREADS=1
