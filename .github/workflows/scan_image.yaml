@@ -1,21 +1,31 @@
-name: build
+name: Trivy Vulnerability Scanning
+
 on:
-  push:
-    branches-ignore:
-      - main
-  pull_request:
+  workflow_run:
+    workflows: ["Build and publish docker image on push"]
+    types:
+      - completed
+
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-20.04
+  trivy-scan:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Extract branch name for Docker tag
+        id: branch-name
+        shell: bash
+        run: |
+          BRANCH_REF="${{ github.event.workflow_run.head_branch }}"
+          BRANCH_NAME=$(echo $BRANCH_REF | sed 's/\//-/g')
+          echo "::set-output name=branch_name::$BRANCH_NAME"
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: "clinicalgenomics/trailblazer:${{ github.ref_name }}"
+          image-ref: "clinicalgenomics/trailblazer-stage:${{ steps.branch-name.outputs.branch_name }}"
           format: "sarif"
           output: "trivy-results.sarif"
 
