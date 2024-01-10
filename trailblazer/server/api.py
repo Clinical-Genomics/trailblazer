@@ -1,4 +1,3 @@
-import datetime
 import multiprocessing
 import os
 from http import HTTPStatus
@@ -8,9 +7,6 @@ from flask import Blueprint, Response, abort, current_app, g, jsonify, make_resp
 from google.auth import jwt
 from pydantic import ValidationError
 
-from trailblazer.constants import (
-    TRAILBLAZER_TIME_STAMP,
-)
 
 from trailblazer.dto import (
     AnalysesRequest,
@@ -115,17 +111,6 @@ def get_failed_jobs():
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
-@blueprint.route("/update-all")
-def update_analyses():
-    """Update all ongoing analysis by querying SLURM."""
-    process = multiprocessing.Process(
-        target=store.update_ongoing_analyses,
-        kwargs={"analysis_host": ANALYSIS_HOST},
-    )
-    process.start()
-    return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), HTTPStatus.CREATED
-
-
 @blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
 def update_analysis_via_process(analysis_id):
     """Update a specific analysis."""
@@ -136,27 +121,6 @@ def update_analysis_via_process(analysis_id):
         )
         process.start()
         return jsonify("Success! Update request sent"), HTTPStatus.CREATED
-    except Exception as error:
-        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
-
-
-@blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])
-def cancel(analysis_id):
-    """Cancel an analysis and all slurm jobs associated with it."""
-    auth_header = request.headers.get("Authorization")
-    jwt_token = auth_header.split("Bearer ")[-1]
-    user_data = jwt.decode(jwt_token, verify=False)
-    try:
-        process = multiprocessing.Process(
-            target=store.cancel_ongoing_analysis,
-            kwargs={
-                "analysis_id": analysis_id,
-                "analysis_host": ANALYSIS_HOST,
-                "email": user_data["email"],
-            },
-        )
-        process.start()
-        return jsonify("Success! Cancel request sent"), HTTPStatus.CREATED
     except Exception as error:
         return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
@@ -189,51 +153,6 @@ def post_get_latest_analysis():
         raw_analysis: dict[str, str] = stringify_timestamps(latest_case_analysis.to_dict())
         return jsonify(**raw_analysis), HTTPStatus.OK
     return jsonify(None), HTTPStatus.OK
-
-
-@blueprint.route("/find-analysis", methods=["POST"])
-def post_find_analysis():
-    """Find analysis using case id, date, and status."""
-    post_request: Response.json = request.json
-    case_id: str = post_request.get("case_id")
-    started_at = datetime.strptime(post_request.get("started_at"), TRAILBLAZER_TIME_STAMP).date()
-    status: str = post_request.get("status")
-    if analysis := store.get_analysis(
-        case_id=case_id,
-        started_at=started_at,
-        status=status,
-    ):
-        raw_analysis: dict[str, str] = stringify_timestamps(analysis.to_dict())
-        return jsonify(**raw_analysis), HTTPStatus.OK
-    return jsonify(None), HTTPStatus.OK
-
-
-@blueprint.route("/delete-analysis", methods=["POST"])
-def post_delete_analysis():
-    """Delete analysis using analysis_id. If analysis is ongoing, an error will be raised.
-    To delete ongoing analysis, --force flag should also be passed.
-    If an ongoing analysis is deleted in ths manner, all ongoing jobs will be cancelled"""
-    post_request: Response.json = request.json
-    analysis_id: str = post_request.get("analysis_id")
-    force: str = post_request.get("force")
-    try:
-        store.delete_analysis(analysis_id=analysis_id, force=force)
-        return jsonify(None), HTTPStatus.CREATED
-    except Exception as error:
-        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
-
-
-@blueprint.route("/mark-analyses-deleted", methods=["POST"])
-def post_mark_analyses_deleted():
-    """Mark all analysis belonging to a case as deleted."""
-    post_request: Response.json = request.json
-    case_id: str = post_request.get("case_id")
-    case_analyses: list[Analysis] | None = store.update_case_analyses_as_deleted(case_id)
-    if raw_analysis := [
-        stringify_timestamps(case_analysis.to_dict()) for case_analysis in case_analyses
-    ]:
-        return jsonify(*raw_analysis), HTTPStatus.CREATED
-    return jsonify(None), HTTPStatus.CREATED
 
 
 @blueprint.route("/add-pending-analysis", methods=["POST"])
