@@ -1,4 +1,3 @@
-import datetime
 import multiprocessing
 import os
 from http import HTTPStatus
@@ -8,9 +7,6 @@ from flask import Blueprint, Response, abort, current_app, g, jsonify, make_resp
 from google.auth import jwt
 from pydantic import ValidationError
 
-from trailblazer.constants import (
-    TRAILBLAZER_TIME_STAMP,
-)
 
 from trailblazer.dto import (
     AnalysesRequest,
@@ -176,23 +172,6 @@ def post_get_latest_analysis():
     case_id: str = post_request.get("case_id")
     if latest_case_analysis := store.get_latest_analysis_for_case(case_id):
         raw_analysis: dict[str, str] = stringify_timestamps(latest_case_analysis.to_dict())
-        return jsonify(**raw_analysis), HTTPStatus.OK
-    return jsonify(None), HTTPStatus.OK
-
-
-@blueprint.route("/find-analysis", methods=["POST"])
-def post_find_analysis():
-    """Find analysis using case id, date, and status."""
-    post_request: Response.json = request.json
-    case_id: str = post_request.get("case_id")
-    started_at = datetime.strptime(post_request.get("started_at"), TRAILBLAZER_TIME_STAMP).date()
-    status: str = post_request.get("status")
-    if analysis := store.get_analysis(
-        case_id=case_id,
-        started_at=started_at,
-        status=status,
-    ):
-        raw_analysis: dict[str, str] = stringify_timestamps(analysis.to_dict())
         return jsonify(**raw_analysis), HTTPStatus.OK
     return jsonify(None), HTTPStatus.OK
 
