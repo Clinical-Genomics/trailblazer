@@ -176,19 +176,6 @@ def post_get_latest_analysis():
     return jsonify(None), HTTPStatus.OK
 
 
-@blueprint.route("/mark-analyses-deleted", methods=["POST"])
-def post_mark_analyses_deleted():
-    """Mark all analysis belonging to a case as deleted."""
-    post_request: Response.json = request.json
-    case_id: str = post_request.get("case_id")
-    case_analyses: list[Analysis] | None = store.update_case_analyses_as_deleted(case_id)
-    if raw_analysis := [
-        stringify_timestamps(case_analysis.to_dict()) for case_analysis in case_analyses
-    ]:
-        return jsonify(*raw_analysis), HTTPStatus.CREATED
-    return jsonify(None), HTTPStatus.CREATED
-
-
 @blueprint.route("/add-pending-analysis", methods=["POST"])
 def post_add_pending_analysis():
     """Add new analysis with status: pending."""
