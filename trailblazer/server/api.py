@@ -115,17 +115,6 @@ def get_failed_jobs():
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
-@blueprint.route("/update-all")
-def update_analyses():
-    """Update all ongoing analysis by querying SLURM."""
-    process = multiprocessing.Process(
-        target=store.update_ongoing_analyses,
-        kwargs={"analysis_host": ANALYSIS_HOST},
-    )
-    process.start()
-    return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), HTTPStatus.CREATED
-
-
 @blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
 def update_analysis_via_process(analysis_id):
     """Update a specific analysis."""
