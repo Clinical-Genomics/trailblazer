@@ -1,10 +1,7 @@
 name: Trivy Vulnerability Scanning
 
 on:
-  workflow_run:
-    workflows: ["Build and publish docker image on push"]
-    types:
-      - completed
+  pull_request:
 
 jobs:
   trivy-scan:
