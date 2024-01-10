@@ -43,7 +43,7 @@ class AnalysisResponse(BaseModel):
     progress: float
     data_analysis: str | None = None
     ticket_id: str | None = None
-    uploaded_at: datetime | None
+    uploaded_at: datetime | None = None
     workflow_manager: WorkflowManager
     user: User | None = None
     latest_failed_job: Job | None = None
