@@ -3,7 +3,7 @@ from flask.testing import FlaskClient
 from http import HTTPStatus
 
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.server.schemas import AnalysisUpdateRequest
+from trailblazer.dto import AnalysisUpdateRequest
 from trailblazer.store.models import Analysis
 
 TYPE_JSON = "application/json"

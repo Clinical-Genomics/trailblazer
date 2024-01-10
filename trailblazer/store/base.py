@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from typing import Type
 
-from sqlalchemy import asc, desc, func, or_
+from sqlalchemy import asc, desc, func
 from sqlalchemy.orm import Query, Session
 from trailblazer.constants import Pipeline
-from trailblazer.dto.analysis_request import AnalysisRequest
+from trailblazer.dto import AnalysesRequest
 
 from trailblazer.store.database import get_session
 from trailblazer.store.filters.analyses_filters import (
@@ -52,7 +52,7 @@ class BaseHandler:
             analyses = analyses.filter(Analysis.data_analysis == pipeline)
         return analyses
 
-    def get_filtered_analyses(self, analyses: Query, query: AnalysisRequest) -> Query:
+    def get_filtered_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
         filters: list[AnalysisFilter] = []
         if query.status:
             filters.append(AnalysisFilter.FILTER_BY_STATUSES)
@@ -77,7 +77,7 @@ class BaseHandler:
             analyses=analyses,
         )
 
-    def sort_analyses(self, analyses: Query, query: AnalysisRequest) -> Query:
+    def sort_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
         if query.sort_field:
             column = getattr(Analysis, query.sort_field)
             if query.sort_order == "asc":
@@ -86,11 +86,11 @@ class BaseHandler:
                 analyses = analyses.order_by(desc(column))
         return analyses
 
-    def paginate_analyses(self, analyses: Query, query: AnalysisRequest) -> Query:
+    def paginate_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
         return analyses.limit(query.page_size).offset((query.page - 1) * query.page_size)
 
     def get_filtered_sorted_paginated_analyses(
-        self, query: AnalysisRequest
+        self, query: AnalysesRequest
     ) -> tuple[list[Analysis], int]:
         analyses: Query = self.get_analyses_query_by_pipeline(query.pipeline)
         analyses = self.get_filtered_analyses(analyses=analyses, query=query)
