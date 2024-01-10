@@ -176,21 +176,6 @@ def post_get_latest_analysis():
     return jsonify(None), HTTPStatus.OK
 
 
-@blueprint.route("/delete-analysis", methods=["POST"])
-def post_delete_analysis():
-    """Delete analysis using analysis_id. If analysis is ongoing, an error will be raised.
-    To delete ongoing analysis, --force flag should also be passed.
-    If an ongoing analysis is deleted in ths manner, all ongoing jobs will be cancelled"""
-    post_request: Response.json = request.json
-    analysis_id: str = post_request.get("analysis_id")
-    force: str = post_request.get("force")
-    try:
-        store.delete_analysis(analysis_id=analysis_id, force=force)
-        return jsonify(None), HTTPStatus.CREATED
-    except Exception as error:
-        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
-
-
 @blueprint.route("/mark-analyses-deleted", methods=["POST"])
 def post_mark_analyses_deleted():
     """Mark all analysis belonging to a case as deleted."""
