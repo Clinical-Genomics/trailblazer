@@ -125,27 +125,6 @@ def update_analysis_via_process(analysis_id):
         return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
-@blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])
-def cancel(analysis_id):
-    """Cancel an analysis and all slurm jobs associated with it."""
-    auth_header = request.headers.get("Authorization")
-    jwt_token = auth_header.split("Bearer ")[-1]
-    user_data = jwt.decode(jwt_token, verify=False)
-    try:
-        process = multiprocessing.Process(
-            target=store.cancel_ongoing_analysis,
-            kwargs={
-                "analysis_id": analysis_id,
-                "analysis_host": ANALYSIS_HOST,
-                "email": user_data["email"],
-            },
-        )
-        process.start()
-        return jsonify("Success! Cancel request sent"), HTTPStatus.CREATED
-    except Exception as error:
-        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
-
-
 @blueprint.route("/delete/<int:analysis_id>", methods=["PUT"])
 def delete(analysis_id):
     """Delete an analysis and all slurm jobs associated with it."""
