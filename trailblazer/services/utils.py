@@ -10,4 +10,4 @@ def create_analysis_response(analysis: Analysis) -> AnalysisResponse:
     analysis_data: dict = analysis.to_dict()
     analysis_data["jobs"] = [job.to_dict() for job in analysis.jobs]
     analysis_data["user"] = analysis.user.to_dict() if analysis.user else None
-    return AnalysisResponse(**analysis_data)
+    return AnalysisResponse.model_validate(analysis_data)

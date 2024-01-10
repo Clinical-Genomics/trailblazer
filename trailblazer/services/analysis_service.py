@@ -22,7 +22,7 @@ class AnalysisService:
 
     def get_analysis(self, analysis_id: int) -> AnalysisResponse:
         if not (analysis := self.store.get_analysis_with_id(analysis_id)):
-            raise MissingAnalysis(f"Analysis with id {analysis_id} not found")
+            raise MissingAnalysis(f"Analysis with id: {analysis_id} not found")
         return create_analysis_response(analysis)
 
     def update_analysis(self, analysis_id: int, update: AnalysisUpdateRequest) -> AnalysisResponse:

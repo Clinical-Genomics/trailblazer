@@ -55,8 +55,8 @@ def before_request():
         return abort(403, f"{user_data['email']} doesn't have access")
 
 
-@blueprint.route("/analyses")
-def analyses():
+@blueprint.route("/analyses", methods=["GET"])
+def get_analyses():
     analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
     try:
         query: AnalysesRequest = parse_analyses_request(request)
@@ -104,7 +104,7 @@ def me():
     return jsonify(**g.current_user.to_dict())
 
 
-@blueprint.route("/aggregate/jobs")
+@blueprint.route("/aggregate/jobs", methods=["GET"])
 def get_failed_jobs():
     job_service: JobService = current_app.extensions.get("job_service")
     try:

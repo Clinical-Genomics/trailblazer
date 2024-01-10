@@ -4,22 +4,12 @@ from datetime import datetime
 
 class Job(BaseModel):
     analysis_id: int
-    context: str | None = None
     elapsed: int
     id: int
     name: str
     slurm_id: int
     started_at: datetime | None = None
     status: str
-
-
-class User(BaseModel):
-    avatar: str | None = None
-    created_at: datetime
-    email: str
-    id: int
-    is_archived: bool
-    name: str
 
 
 class Analysis(BaseModel):
@@ -41,7 +31,6 @@ class Analysis(BaseModel):
     ticket_id: str | None = None
     type: str | None = None
     uploaded_at: datetime | None = None
-    user: User | None = None
     user_id: int | None = None
     version: str | None = None
     workflow_manager: str
