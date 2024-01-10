@@ -251,7 +251,10 @@ class UpdateHandler(BaseHandler):
         is_visible: bool | None = None,
     ) -> Analysis:
         """Update an analysis."""
-        analysis: Analysis = self.get_analysis_with_id(analysis_id)
+        analysis: Analysis | None = self.get_analysis_with_id(analysis_id)
+
+        if not analysis:
+            raise MissingAnalysis(f"Analysis {analysis_id} does not exist")
 
         if comment is not None:
             LOG.info(f"Adding comment {comment} to analysis {analysis.id}")

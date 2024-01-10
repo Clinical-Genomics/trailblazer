@@ -9,30 +9,31 @@ from google.auth import jwt
 from pydantic import ValidationError
 
 from trailblazer.constants import (
-    ONE_MONTH_IN_DAYS,
     TRAILBLAZER_TIME_STAMP,
-    TrailblazerStatus,
 )
-from trailblazer.dto.analysis_request import AnalysisRequest
-from trailblazer.dto.analysis_response import AnalysisResponse
+
+from trailblazer.dto import (
+    AnalysesRequest,
+    AnalysisResponse,
+    AnalysesResponse,
+    AnalysisUpdateRequest,
+    FailedJobsRequest,
+    FailedJobsResponse,
+)
+from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
-from trailblazer.server.schemas import AnalysisUpdateRequest
-from trailblazer.server.utils import parse_analysis_request
-from trailblazer.services.analysis_service import AnalysisService
+from trailblazer.server.utils import (
+    parse_analyses_request,
+    parse_analysis_update_request,
+    parse_get_failed_jobs_request,
+    stringify_timestamps,
+)
+from trailblazer.services import AnalysisService, JobService
 from trailblazer.store.models import Analysis, Info
-from trailblazer.utils.datetime import get_date_number_of_days_ago
 
 ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
-
-
-def stringify_timestamps(data: dict) -> dict[str, str]:
-    """Convert datetime into string before dumping in order to avoid information loss"""
-    for key, val in data.items():
-        if isinstance(val, datetime.datetime):
-            data[key] = str(val)
-    return data
 
 
 @blueprint.before_request
@@ -54,41 +55,40 @@ def before_request():
         return abort(403, f"{user_data['email']} doesn't have access")
 
 
-@blueprint.route("/analyses")
-def analyses():
-    """Display analyses."""
+@blueprint.route("/analyses", methods=["GET"])
+def get_analyses():
     analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
     try:
-        query: AnalysisRequest = parse_analysis_request(request)
-        response: AnalysisResponse = analysis_service.get_analyses(query)
+        query: AnalysesRequest = parse_analyses_request(request)
+        response: AnalysesResponse = analysis_service.get_analyses(query)
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
-@blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])
-def analysis(analysis_id):
-    """Retrieve or update an analysis."""
-    analysis: Analysis = store.get_analysis_with_id(analysis_id)
-    if analysis is None:
-        return abort(404)
+@blueprint.route("/analyses/<int:analysis_id>", methods=["GET"])
+def get_analysis(analysis_id):
+    analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
+    try:
+        response: AnalysisResponse = analysis_service.get_analysis(analysis_id)
+        return jsonify(response.model_dump()), HTTPStatus.OK
+    except MissingAnalysis as error:
+        return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
 
-    if request.method == "PUT":
-        try:
-            analysis_update = AnalysisUpdateRequest.model_validate(request.json)
-            analysis = store.update_analysis(
-                analysis_id=analysis_id,
-                comment=analysis_update.comment,
-                status=analysis_update.status,
-                is_visible=analysis_update.is_visible,
-            )
-        except ValidationError as error:
-            return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
-    data = analysis.to_dict()
-    data["jobs"] = [job.to_dict() for job in analysis.jobs]
-    data["user"] = analysis.user.to_dict() if analysis.user else None
-    return jsonify(**data)
+@blueprint.route("/analyses/<int:analysis_id>", methods=["PUT"])
+def update_analysis(analysis_id):
+    analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
+    try:
+        update: AnalysisUpdateRequest = parse_analysis_update_request(request)
+        response: AnalysisResponse = analysis_service.update_analysis(
+            analysis_id=analysis_id, update=update
+        )
+        return jsonify(response.model_dump()), HTTPStatus.OK
+    except MissingAnalysis as error:
+        return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
 @blueprint.route("/info")
@@ -104,15 +104,15 @@ def me():
     return jsonify(**g.current_user.to_dict())
 
 
-@blueprint.route("/aggregate/jobs")
-def aggregate_jobs():
-    """Return stats about failed jobs."""
-    number_of_days_ago = int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
-    time_window: datetime = get_date_number_of_days_ago(number_of_days_ago)
-    failed_jobs: list[dict[str, str | int]] = store.get_nr_jobs_with_status_per_category(
-        status=TrailblazerStatus.FAILED, since_when=time_window
-    )
-    return jsonify(jobs=failed_jobs)
+@blueprint.route("/aggregate/jobs", methods=["GET"])
+def get_failed_jobs():
+    job_service: JobService = current_app.extensions.get("job_service")
+    try:
+        query: FailedJobsRequest = parse_get_failed_jobs_request(request)
+        response: FailedJobsResponse = job_service.get_failed_jobs(query)
+        return jsonify(response.model_dump()), HTTPStatus.OK
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
 @blueprint.route("/update-all")
@@ -127,7 +127,7 @@ def update_analyses():
 
 
 @blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
-def update_analysis(analysis_id):
+def update_analysis_via_process(analysis_id):
     """Update a specific analysis."""
     try:
         process = multiprocessing.Process(

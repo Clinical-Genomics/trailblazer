@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-
 from trailblazer.constants import TrailblazerStatus
 
 
