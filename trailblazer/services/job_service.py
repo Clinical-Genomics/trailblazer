@@ -1,6 +1,6 @@
 from datetime import datetime
-from trailblazer.constants import TrailblazerStatus
 
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.dto import FailedJobsRequest, FailedJobsResponse
 from trailblazer.services.utils import create_jobs_response
 from trailblazer.store.store import Store

@@ -82,7 +82,6 @@ class Analysis(Model):
     out_dir = Column(types.Text)
     config_path = Column(types.Text)
     comment = Column(types.Text)
-    is_deleted = Column(types.Boolean, default=False)
     is_visible = Column(types.Boolean, default=True)
     type = Column(types.Enum(*TYPES))
     user_id = Column(ForeignKey(User.id))
@@ -113,7 +112,6 @@ class Analysis(Model):
             "out_dir": self.out_dir,
             "config_path": self.config_path,
             "comment": self.comment,
-            "is_deleted": self.is_deleted,
             "is_visible": self.is_visible,
             "type": self.type,
             "user_id": self.user_id,

@@ -1,8 +1,8 @@
 from http import HTTPStatus
-from flask.testing import FlaskClient
-from trailblazer.constants import TrailblazerStatus
-from trailblazer.dto import FailedJobsRequest
 
+from flask.testing import FlaskClient
+
+from trailblazer.dto import FailedJobsRequest
 from trailblazer.store.models import Analysis
 
 

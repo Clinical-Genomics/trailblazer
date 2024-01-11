@@ -1,6 +1,10 @@
 from pydantic import BaseModel, Field
 
-from trailblazer.constants import TrailblazerPriority, TrailblazerStatus, TrailblazerTypes
+from trailblazer.constants import (
+    TrailblazerPriority,
+    TrailblazerStatus,
+    TrailblazerTypes,
+)
 
 
 class AnalysesRequest(BaseModel):

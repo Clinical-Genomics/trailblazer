@@ -1,8 +1,8 @@
 from trailblazer.dto import (
     AnalysesRequest,
-    AnalysisUpdateRequest,
     AnalysesResponse,
     AnalysisResponse,
+    AnalysisUpdateRequest,
 )
 from trailblazer.exc import MissingAnalysis
 from trailblazer.services.utils import create_analysis_response

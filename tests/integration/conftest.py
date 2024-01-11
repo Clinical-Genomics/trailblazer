@@ -1,7 +1,7 @@
 import datetime
+import uuid
 from typing import Generator
 from unittest.mock import patch
-import uuid
 
 import pytest
 from flask import Flask

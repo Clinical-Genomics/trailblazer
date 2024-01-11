@@ -1,6 +1,7 @@
 import json
-from flask.testing import FlaskClient
 from http import HTTPStatus
+
+from flask.testing import FlaskClient
 
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.dto import AnalysisUpdateRequest

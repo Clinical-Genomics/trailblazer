@@ -1,4 +1,5 @@
 import datetime
+
 from flask import Request
 
 from trailblazer.dto import AnalysesRequest, AnalysisUpdateRequest, FailedJobsRequest

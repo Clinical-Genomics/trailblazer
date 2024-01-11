@@ -159,16 +159,6 @@ class UpdateHandler(BaseHandler):
             session: Session = get_session()
             session.commit()
 
-    def update_case_analyses_as_deleted(self, case_id: str) -> list[Analysis] | None:
-        """Mark analyses connected to a case as deleted."""
-        analyses: list[Analysis] | None = self.get_analyses_for_case(case_id=case_id)
-        if analyses:
-            for analysis in analyses:
-                analysis.is_deleted = True
-            session: Session = get_session()
-            session.commit()
-        return analyses
-
     def cancel_ongoing_analysis(
         self, analysis_id: int, analysis_host: str | None = None, email: str | None = None
     ) -> None:

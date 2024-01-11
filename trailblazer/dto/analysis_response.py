@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from pydantic import BaseModel
 
 from trailblazer.constants import TrailblazerStatus, WorkflowManager
@@ -36,7 +37,6 @@ class AnalysisResponse(BaseModel):
     out_dir: str | None = None
     config_path: str | None = None
     comment: str | None = None
-    is_deleted: bool = False
     is_visible: bool = True
     type: str | None = None
     user_id: int | None = None

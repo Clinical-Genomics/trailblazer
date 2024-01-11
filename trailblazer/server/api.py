@@ -3,15 +3,23 @@ import os
 from http import HTTPStatus
 from typing import Mapping
 
-from flask import Blueprint, Response, abort, current_app, g, jsonify, make_response, request
+from flask import (
+    Blueprint,
+    Response,
+    abort,
+    current_app,
+    g,
+    jsonify,
+    make_response,
+    request,
+)
 from google.auth import jwt
 from pydantic import ValidationError
 
-
 from trailblazer.dto import (
     AnalysesRequest,
-    AnalysisResponse,
     AnalysesResponse,
+    AnalysisResponse,
     AnalysisUpdateRequest,
     FailedJobsRequest,
     FailedJobsResponse,
