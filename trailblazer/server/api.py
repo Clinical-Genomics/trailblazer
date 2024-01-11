@@ -1,4 +1,3 @@
-import datetime
 import multiprocessing
 import os
 from http import HTTPStatus
@@ -17,31 +16,28 @@ from flask import (
 from google.auth import jwt
 from pydantic import ValidationError
 
-from trailblazer.constants import (
-    ONE_MONTH_IN_DAYS,
-    TRAILBLAZER_TIME_STAMP,
-    TrailblazerStatus,
+from trailblazer.dto import (
+    AnalysesRequest,
+    AnalysesResponse,
+    AnalysisResponse,
+    AnalysisUpdateRequest,
+    FailedJobsRequest,
+    FailedJobsResponse,
 )
-from trailblazer.dto.analysis_request import AnalysisRequest
-from trailblazer.dto.analysis_response import AnalysisResponse
+from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
-from trailblazer.server.schemas import AnalysisUpdateRequest
-from trailblazer.server.utils import parse_analysis_request
-from trailblazer.services.analysis_service import AnalysisService
-from trailblazer.store.models import Analysis, Info, User
-from trailblazer.utils.datetime import get_date_number_of_days_ago
+from trailblazer.server.utils import (
+    parse_analyses_request,
+    parse_analysis_update_request,
+    parse_get_failed_jobs_request,
+    stringify_timestamps,
+)
+from trailblazer.services import AnalysisService, JobService
+from trailblazer.store.models import Analysis, Info
 
 ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
-
-
-def stringify_timestamps(data: dict) -> dict[str, str]:
-    """Convert datetime into string before dumping in order to avoid information loss"""
-    for key, val in data.items():
-        if isinstance(val, datetime.datetime):
-            data[key] = str(val)
-    return data
 
 
 @blueprint.before_request
@@ -51,54 +47,52 @@ def before_request():
         return make_response(jsonify(ok=True), 204)
     if os.environ.get("SCOPE") == "DEVELOPMENT":
         return
-    auth_header = request.headers.get("Authorization")
-    if auth_header:
+    if auth_header := request.headers.get("Authorization"):
         jwt_token = auth_header.split("Bearer ")[-1]
     else:
         return abort(403, "no JWT token found on request")
 
     user_data: Mapping = jwt.decode(jwt_token, verify=False)
-    user: User = store.get_user(email=user_data["email"], exclude_archived=True)
-    if not user:
+    if user := store.get_user(email=user_data["email"], exclude_archived=True):
+        g.current_user = user
+    else:
         return abort(403, f"{user_data['email']} doesn't have access")
-    g.current_user = user
 
 
-@blueprint.route("/analyses")
-def analyses():
-    """Display analyses."""
+@blueprint.route("/analyses", methods=["GET"])
+def get_analyses():
     analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
     try:
-        query: AnalysisRequest = parse_analysis_request(request)
-        response: AnalysisResponse = analysis_service.get_analyses(query)
+        query: AnalysesRequest = parse_analyses_request(request)
+        response: AnalysesResponse = analysis_service.get_analyses(query)
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
-@blueprint.route("/analyses/<int:analysis_id>", methods=["GET", "PUT"])
-def analysis(analysis_id):
-    """Retrieve or update an analysis."""
-    analysis: Analysis = store.get_analysis_with_id(analysis_id)
-    if analysis is None:
-        return abort(404)
+@blueprint.route("/analyses/<int:analysis_id>", methods=["GET"])
+def get_analysis(analysis_id):
+    analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
+    try:
+        response: AnalysisResponse = analysis_service.get_analysis(analysis_id)
+        return jsonify(response.model_dump()), HTTPStatus.OK
+    except MissingAnalysis as error:
+        return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
 
-    if request.method == "PUT":
-        try:
-            analysis_update = AnalysisUpdateRequest.model_validate(request.json)
-            analysis = store.update_analysis(
-                analysis_id=analysis_id,
-                comment=analysis_update.comment,
-                status=analysis_update.status,
-                is_visible=analysis_update.is_visible,
-            )
-        except ValidationError as error:
-            return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
-    data = analysis.to_dict()
-    data["jobs"] = [job.to_dict() for job in analysis.jobs]
-    data["user"] = analysis.user.to_dict() if analysis.user else None
-    return jsonify(**data)
+@blueprint.route("/analyses/<int:analysis_id>", methods=["PUT"])
+def update_analysis(analysis_id):
+    analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
+    try:
+        update: AnalysisUpdateRequest = parse_analysis_update_request(request)
+        response: AnalysisResponse = analysis_service.update_analysis(
+            analysis_id=analysis_id, update=update
+        )
+        return jsonify(response.model_dump()), HTTPStatus.OK
+    except MissingAnalysis as error:
+        return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
 @blueprint.route("/info")
@@ -114,31 +108,19 @@ def me():
     return jsonify(**g.current_user.to_dict())
 
 
-@blueprint.route("/aggregate/jobs")
-def aggregate_jobs():
-    """Return stats about failed jobs."""
-    time_window: datetime = get_date_number_of_days_ago(
-        number_of_days_ago=int(request.args.get("days_back", ONE_MONTH_IN_DAYS))
-    )
-    failed_jobs: list[dict[str, str | int]] = store.get_nr_jobs_with_status_per_category(
-        status=TrailblazerStatus.FAILED, since_when=time_window
-    )
-    return jsonify(jobs=failed_jobs)
-
-
-@blueprint.route("/update-all")
-def update_analyses():
-    """Update all ongoing analysis by querying SLURM."""
-    process = multiprocessing.Process(
-        target=store.update_ongoing_analyses,
-        kwargs={"analysis_host": ANALYSIS_HOST},
-    )
-    process.start()
-    return jsonify(f"Success! Trailblazer updated {datetime.datetime.now()}"), HTTPStatus.CREATED
+@blueprint.route("/aggregate/jobs", methods=["GET"])
+def get_failed_jobs():
+    job_service: JobService = current_app.extensions.get("job_service")
+    try:
+        query: FailedJobsRequest = parse_get_failed_jobs_request(request)
+        response: FailedJobsResponse = job_service.get_failed_jobs(query)
+        return jsonify(response.model_dump()), HTTPStatus.OK
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
 @blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
-def update_analysis(analysis_id):
+def update_analysis_via_process(analysis_id):
     """Update a specific analysis."""
     try:
         process = multiprocessing.Process(
@@ -147,27 +129,6 @@ def update_analysis(analysis_id):
         )
         process.start()
         return jsonify("Success! Update request sent"), HTTPStatus.CREATED
-    except Exception as error:
-        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
-
-
-@blueprint.route("/cancel/<int:analysis_id>", methods=["PUT"])
-def cancel(analysis_id):
-    """Cancel an analysis and all slurm jobs associated with it."""
-    auth_header = request.headers.get("Authorization")
-    jwt_token = auth_header.split("Bearer ")[-1]
-    user_data = jwt.decode(jwt_token, verify=False)
-    try:
-        process = multiprocessing.Process(
-            target=store.cancel_ongoing_analysis,
-            kwargs={
-                "analysis_id": analysis_id,
-                "analysis_host": ANALYSIS_HOST,
-                "email": user_data["email"],
-            },
-        )
-        process.start()
-        return jsonify("Success! Cancel request sent"), HTTPStatus.CREATED
     except Exception as error:
         return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
@@ -194,44 +155,12 @@ def delete(analysis_id):
 @blueprint.route("/get-latest-analysis", methods=["POST"])
 def post_get_latest_analysis():
     """Return latest analysis entry for specified case id."""
-    post_request: Response.json = request.json
-    latest_case_analysis: Analysis | None = store.get_latest_analysis_for_case(
-        case_id=post_request.get("case_id")
-    )
-    if latest_case_analysis:
+    post_request = request.json
+    case_id: str = post_request.get("case_id")
+    if latest_case_analysis := store.get_latest_analysis_for_case(case_id):
         raw_analysis: dict[str, str] = stringify_timestamps(latest_case_analysis.to_dict())
         return jsonify(**raw_analysis), HTTPStatus.OK
     return jsonify(None), HTTPStatus.OK
-
-
-@blueprint.route("/find-analysis", methods=["POST"])
-def post_find_analysis():
-    """Find analysis using case id, date, and status."""
-    post_request: Response.json = request.json
-    analysis: Analysis = store.get_analysis(
-        case_id=post_request.get("case_id"),
-        started_at=datetime.strptime(post_request.get("started_at"), TRAILBLAZER_TIME_STAMP).date(),
-        status=post_request.get("status"),
-    )
-    if analysis:
-        raw_analysis: dict[str, str] = stringify_timestamps(analysis.to_dict())
-        return jsonify(**raw_analysis), HTTPStatus.OK
-    return jsonify(None), HTTPStatus.OK
-
-
-@blueprint.route("/delete-analysis", methods=["POST"])
-def post_delete_analysis():
-    """Delete analysis using analysis_id. If analysis is ongoing, an error will be raised.
-    To delete ongoing analysis, --force flag should also be passed.
-    If an ongoing analysis is deleted in ths manner, all ongoing jobs will be cancelled"""
-    post_request: Response.json = request.json
-    try:
-        store.delete_analysis(
-            analysis_id=post_request.get("analysis_id"), force=post_request.get("force")
-        )
-        return jsonify(None), HTTPStatus.CREATED
-    except Exception as error:
-        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/add-pending-analysis", methods=["POST"])
@@ -274,9 +203,9 @@ def set_analysis_status():
     """Update analysis status of a case with supplied status."""
     put_request: Response.json = request.json
     try:
-        store.update_analysis_status(
-            case_id=put_request.get("case_id"), status=put_request.get("status")
-        )
+        case_id: str = put_request.get("case_id")
+        status: str = put_request.get("status")
+        store.update_analysis_status(case_id=case_id, status=status)
         return (
             jsonify(f"Success! Analysis set to {put_request.get('status')} request sent"),
             HTTPStatus.CREATED,
@@ -290,9 +219,9 @@ def add_comment():
     """Updating comment on analysis."""
     put_request: Response.json = request.json
     try:
-        store.update_analysis_comment(
-            case_id=put_request.get("case_id"), comment=put_request.get("comment")
-        )
+        case_id: str = put_request.get("case_id")
+        comment: str = put_request.get("comment")
+        store.update_analysis_comment(case_id=case_id, comment=comment)
         return jsonify("Success! Adding comment request sent"), HTTPStatus.CREATED
     except Exception as error:
         return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
