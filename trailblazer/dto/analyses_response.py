@@ -21,7 +21,6 @@ class Analysis(BaseModel):
     data_analysis: str | None = None
     failed_job: Job | None = None
     id: int
-    is_deleted: bool = False
     is_visible: bool = True
     logged_at: datetime | None = None
     out_dir: str | None = None
