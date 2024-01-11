@@ -154,9 +154,7 @@ class UpdateHandler(BaseHandler):
                 analysis=analysis, analysis_host=analysis_host
             )
         except Exception as exception:
-            LOG.error(
-                f"Error updating analysis for: case - {analysis.case_id} : {exception.__class__.__name__}"
-            )
+            LOG.error(f"Error updating analysis for: case - {analysis.case_id} : {exception}")
             analysis.status = TrailblazerStatus.ERROR
             session: Session = get_session()
             session.commit()
@@ -243,9 +241,12 @@ class UpdateHandler(BaseHandler):
         is_visible: bool | None = None,
     ) -> Analysis:
         """Update an analysis."""
-        analysis: Analysis = self.get_analysis_with_id(analysis_id)
+        analysis: Analysis | None = self.get_analysis_with_id(analysis_id)
 
-        if comment:
+        if not analysis:
+            raise MissingAnalysis(f"Analysis {analysis_id} does not exist")
+
+        if comment is not None:
             LOG.info(f"Adding comment {comment} to analysis {analysis.id}")
             analysis.comment = comment
 
@@ -253,7 +254,7 @@ class UpdateHandler(BaseHandler):
             LOG.info(f"Setting visibility to {is_visible} for analysis {analysis.id}")
             analysis.is_visible = bool(is_visible)
 
-        if status:
+        if status is not None:
             LOG.info(f"Setting status to {status} for analysis {analysis.id}")
             analysis.status = status
 

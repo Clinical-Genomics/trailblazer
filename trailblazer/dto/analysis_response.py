@@ -1,52 +1,50 @@
-from pydantic import BaseModel
 from datetime import datetime
 
+from pydantic import BaseModel
 
-class FailedJob(BaseModel):
+from trailblazer.constants import TrailblazerStatus, WorkflowManager
+
+
+class User(BaseModel):
+    avatar: str | None = None
+    created_at: datetime | None = None
+    email: str | None = None
+    id: int
+    is_archived: bool | None = False
+    name: str | None = None
+
+
+class Job(BaseModel):
     analysis_id: int
     context: str | None = None
     elapsed: int
     id: int
     name: str
     slurm_id: int
-    started_at: datetime
+    started_at: datetime | None = None
     status: str
 
 
-class User(BaseModel):
-    avatar: str | None = None
-    created_at: datetime
-    email: str
+class AnalysisResponse(BaseModel):
     id: int
-    is_archived: bool
-    name: str
-
-
-class Analysis(BaseModel):
     case_id: str
-    comment: str | None = None
+    version: str | None = None
+    logged_at: datetime | None = None
+    started_at: datetime | None = None
     completed_at: datetime | None = None
+    status: TrailblazerStatus
+    priority: str
+    out_dir: str | None = None
     config_path: str | None = None
-    data_analysis: str | None = None
-    failed_job: FailedJob | None = None
-    id: int
+    comment: str | None = None
     is_deleted: bool = False
     is_visible: bool = True
-    logged_at: datetime | None = None
-    out_dir: str | None = None
-    priority: str | None = None
-    progress: float = 0.0
-    started_at: datetime | None = None
-    status: str | None = None
-    ticket_id: str | None = None
     type: str | None = None
-    uploaded_at: datetime | None = None
-    user: User | None = None
     user_id: int | None = None
-    version: str | None = None
-    workflow_manager: str
-
-
-class AnalysisResponse(BaseModel):
-    analyses: list[Analysis]
-    total_count: int
+    progress: float
+    data_analysis: str | None = None
+    ticket_id: str | None = None
+    uploaded_at: datetime | None = None
+    workflow_manager: WorkflowManager
+    user: User | None = None
+    latest_failed_job: Job | None = None

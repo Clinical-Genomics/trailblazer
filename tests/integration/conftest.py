@@ -1,7 +1,7 @@
 import datetime
+import uuid
 from typing import Generator
 from unittest.mock import patch
-import uuid
 
 import pytest
 from flask import Flask
@@ -12,13 +12,12 @@ from trailblazer.constants import (
     PIPELINES,
     PRIORITY_OPTIONS,
     TYPES,
-    Pipeline,
     TrailblazerStatus,
     WorkflowManager,
 )
 from trailblazer.server.app import app
 from trailblazer.store.database import get_session
-from trailblazer.store.models import Analysis
+from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 
 
@@ -81,6 +80,45 @@ def analyses() -> list[Analysis]:
     session: Session = get_session()
     session.add_all(analyses)
     return analyses
+
+
+@pytest.fixture
+def analysis_with_failed_job() -> Analysis:
+    analysis = Analysis(
+        config_path="config_path",
+        data_analysis="data_analysis",
+        case_id="case_id",
+        out_dir="out_dir",
+        priority=PRIORITY_OPTIONS[0],
+        started_at=datetime.datetime.now(),
+        status=TrailblazerStatus.FAILED,
+        ticket_id="ticket_id",
+        type=TYPES[0],
+        workflow_manager=WorkflowManager.SLURM,
+        is_visible=True,
+    )
+
+    failed_job = Job(
+        analysis_id=analysis.id,
+        name="name",
+        slurm_id=1,
+        status=TrailblazerStatus.FAILED,
+        started_at=datetime.datetime.now(),
+        elapsed=1,
+    )
+    running_job = Job(
+        analysis_id=analysis.id,
+        name="name",
+        slurm_id=1,
+        status=TrailblazerStatus.RUNNING,
+        started_at=datetime.datetime.now(),
+        elapsed=1,
+    )
+    analysis.jobs.append(failed_job)
+    analysis.jobs.append(running_job)
+    session = get_session()
+    session.add_all([analysis, failed_job, running_job])
+    session.commit()
 
 
 @pytest.fixture

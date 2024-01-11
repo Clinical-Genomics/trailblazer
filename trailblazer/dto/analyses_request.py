@@ -1,9 +1,13 @@
 from pydantic import BaseModel, Field
 
-from trailblazer.constants import TrailblazerPriority, TrailblazerStatus, TrailblazerTypes
+from trailblazer.constants import (
+    TrailblazerPriority,
+    TrailblazerStatus,
+    TrailblazerTypes,
+)
 
 
-class AnalysisRequest(BaseModel):
+class AnalysesRequest(BaseModel):
     pipeline: str | None = ""
     search: str | None = None
     page_size: int | None = Field(alias="pageSize", default=250)
