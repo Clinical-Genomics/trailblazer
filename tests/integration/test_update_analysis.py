@@ -68,7 +68,7 @@ def test_update_analysis_visibility(client: FlaskClient, analysis: Analysis):
     assert response.json["id"] == analysis.id
 
     # THEN it has the new visibility
-    assert response.json["is_visible"] == False
+    assert response.json["is_visible"] is False
 
 
 def test_update_analysis_invalid_request(client: FlaskClient, analysis: Analysis):
