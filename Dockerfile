@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bullseye
+FROM registry.access.redhat.com/ubi9/python-311:latest
 
 ENV GUNICORN_WORKERS=1
 ENV GUNICORN_TREADS=1
@@ -27,4 +27,3 @@ CMD gunicorn \
   --access-logfile - \
   --log-level="debug" \
   trailblazer.server.app:app
-
