@@ -1,7 +1,4 @@
-from datetime import datetime
-
-from trailblazer.constants import SlurmJobStatus
-from trailblazer.store.models import Analysis, Job, User
+from trailblazer.store.models import User
 
 
 def test_user_first_name():
