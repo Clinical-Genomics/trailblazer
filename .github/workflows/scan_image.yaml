@@ -17,5 +17,5 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: "clinicalgenomics/trailblazer-stage:${{ steps.get_branch_name.outputs.branch }}"
+          image-ref: "clinicalgenomics/trailblazer:${{ steps.get_branch_name.outputs.branch }}"
           format: "sarif"
