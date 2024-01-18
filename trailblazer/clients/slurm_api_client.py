@@ -8,7 +8,11 @@ class SlurmRestApiClient:
         self.base_url = base_url
         self.headers = {"X-SLURM-USER-NAME": user_name, "X-SLURM-USER-TOKEN": access_token}
 
-    def get_job_info(self, job_id: str) -> JobInfoResponse:
-        endpoint: str = f"{self.base_url}/slurmV0040GetJob/{job_id}"
+    def get_job(self, job_id: str) -> JobInfoResponse:
+        endpoint: str = f"{self.base_url}/slurmV0040/job/{job_id}"
         response = requests.get(endpoint, headers=self.headers)
         return JobInfoResponse.model_validate(response.json())
+
+    def cancel_job(self, job_id: str) -> None:
+        endpoint: str = f"{self.base_url}/slurmV0040/job/{job_id}"
+        requests.delete(endpoint, headers=self.headers)
