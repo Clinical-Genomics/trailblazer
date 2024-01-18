@@ -1,7 +1,9 @@
 from pydantic import BaseModel
 
+from trailblazer.clients.common import SlurmError, SlurmWarning
 
-class JobInfo(BaseModel):
+
+class SlurmJobInfo(BaseModel):
     account: str | None
     accrue_time: str | None
     admin_comment: str | None
@@ -133,25 +135,7 @@ class JobInfo(BaseModel):
     current_working_directory: str | None
 
 
-class NumberInfo(BaseModel):
-    number: int | None = None
-    set: bool | None = False
-    infinite: bool | None = False
-
-
-class Error(BaseModel):
-    description: str | None = None
-    error_number: int | None = None
-    error: str | None = None
-    source: str | None = None
-
-
-class Warning(BaseModel):
-    description: str | None = None
-    source: str | None = None
-
-
-class JobInfoResponse(BaseModel):
-    jobs: list[JobInfo]
-    errors: list[Error]
-    warnings: list[Warning]
+class SlurmJobInfoResponse(BaseModel):
+    jobs: list[SlurmJobInfo]
+    errors: list[SlurmError] | None
+    warnings: list[SlurmWarning] | None
