@@ -1,7 +1,7 @@
 import requests
 
 from trailblazer.clients.cancel_job_response import SlurmCancelJobResponse
-from trailblazer.clients.job_info_response import SlurmJobInfoResponse
+from trailblazer.clients.job_info_response import SlurmJobInfoResponse, SlurmJobsInfoResponse
 
 
 class SlurmRestApiClient:
@@ -13,6 +13,11 @@ class SlurmRestApiClient:
         endpoint: str = f"{self.base_url}/slurmV0040/job/{job_id}"
         response = requests.get(endpoint, headers=self.headers)
         return SlurmJobInfoResponse.model_validate(response.json())
+
+    def get_jobs(self) -> SlurmJobsInfoResponse:
+        endpoint: str = f"{self.base_url}/slurmV0040/jobs"
+        response = requests.get(endpoint, headers=self.headers)
+        return SlurmJobsInfoResponse.model_validate(response.json())
 
     def cancel_job(self, job_id: str) -> SlurmCancelJobResponse:
         endpoint: str = f"{self.base_url}/slurmV0040/job/{job_id}"

@@ -139,3 +139,9 @@ class SlurmJobInfoResponse(BaseModel):
     jobs: list[SlurmJobInfo]
     errors: list[SlurmError] | None
     warnings: list[SlurmWarning] | None
+
+
+class SlurmJobsInfoResponse(BaseModel):
+    jobs: list[SlurmJobInfo]
+    errors: list[SlurmError] | None
+    warnings: list[SlurmWarning] | None
