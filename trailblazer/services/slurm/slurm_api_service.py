@@ -1,0 +1,2 @@
+class SlurmAPIService:
+    pass
