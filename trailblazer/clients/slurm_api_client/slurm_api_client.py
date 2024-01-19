@@ -1,7 +1,7 @@
 import requests
 
-from trailblazer.clients.cancel_job_response import SlurmCancelJobResponse
-from trailblazer.clients.job_info_response import SlurmJobInfoResponse, SlurmJobsInfoResponse
+from trailblazer.clients.slurm_api_client.dtos.cancel_job_response import SlurmCancelJobResponse
+from trailblazer.clients.slurm_api_client.dtos.job_info_response import SlurmJobInfoResponse, SlurmJobsInfoResponse
 
 
 class SlurmRestApiClient:
