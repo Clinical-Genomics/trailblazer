@@ -8,5 +8,3 @@ class SlurmAPIService(SlurmService):
 
     def cancel_job(self, job_id: str) -> None:
         self.slurm_client.cancel_job(job_id)
-    
-    
