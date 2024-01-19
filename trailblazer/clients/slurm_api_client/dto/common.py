@@ -1,6 +1,16 @@
 from pydantic import BaseModel
 
-from trailblazer.clients.slurm_api_client.dtos.common import SlurmError, SlurmWarning
+
+class SlurmError(BaseModel):
+    description: str | None = None
+    error_number: int | None = None
+    error: str | None = None
+    source: str | None = None
+
+
+class SlurmWarning(BaseModel):
+    description: str | None = None
+    source: str | None = None
 
 
 class SlurmJobInfo(BaseModel):
@@ -133,15 +143,3 @@ class SlurmJobInfo(BaseModel):
     maximum_switch_wait_time: int | None
     wckey: str | None
     current_working_directory: str | None
-
-
-class SlurmJobInfoResponse(BaseModel):
-    jobs: list[SlurmJobInfo]
-    errors: list[SlurmError] | None
-    warnings: list[SlurmWarning] | None
-
-
-class SlurmJobsInfoResponse(BaseModel):
-    jobs: list[SlurmJobInfo]
-    errors: list[SlurmError] | None
-    warnings: list[SlurmWarning] | None
