@@ -1,12 +1,12 @@
 import pytest
 import requests_mock
 
-from trailblazer.clients.slurm_api_client.slurm_api_client import SlurmRestApiClient
+from trailblazer.clients.slurm_api_client.slurm_api_client import SlurmApiClient
 
 
 @pytest.fixture
-def client() -> SlurmRestApiClient:
-    return SlurmRestApiClient(
+def client() -> SlurmApiClient:
+    return SlurmApiClient(
         base_url="https://slurm.example.com",
         access_token="access_token",
         user_name="user_name",
