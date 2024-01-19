@@ -1,13 +1,13 @@
 import requests
 
-from trailblazer.services.slurm.api_service.slurm_api_client.dto import (
+from trailblazer.clients.slurm_api_client.dto import (
     SlurmCancelJobResponse,
     SlurmJobResponse,
     SlurmJobsResponse,
 )
 
 
-class SlurmAPIClient:
+class SlurmApiClient:
     def __init__(self, base_url: str, access_token: str, user_name: str) -> None:
         self.base_url = base_url
         self.headers = {"X-SLURM-USER-NAME": user_name, "X-SLURM-USER-TOKEN": access_token}

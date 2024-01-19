@@ -1,2 +1,0 @@
-class SlurmCLIService:
-    pass
