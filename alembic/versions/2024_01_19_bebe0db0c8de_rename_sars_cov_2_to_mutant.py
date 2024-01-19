@@ -36,7 +36,7 @@ def downgrade():
     bind = op.get_bind()
     session = orm.Session(bind=bind)
 
-    for analysis in session.query(Analysis).filter(Analysis.pipeline == "mutant"):
+    for analysis in session.query(Analysis).filter(Analysis.data_analysis == "mutant"):
         print(f"Altering analysis: {str(analysis)}")
         analysis.data_analysis = "sars-cov-2"
         print(f"Altered analysis: {str(analysis)}")
