@@ -21,15 +21,4 @@ def mock_request():
 
 @pytest.fixture
 def jobs_response() -> dict:
-    return {
-        "jobs": [
-            {
-                "name": "job 1",
-                "priority": "high",
-            },
-            {
-                "name": "job 2",
-                "priority": "low",
-            },
-        ]
-    }
+    return {"jobs": [{"name": "job 1"}, {"name": "job 2"}]}
