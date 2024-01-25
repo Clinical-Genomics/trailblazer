@@ -91,8 +91,8 @@ class Analysis(Model):
     uploaded_at = Column(types.DateTime)
     workflow_manager = Column(types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM)
 
-    jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
-    upload_jobs = orm.relationship("Job", foreign_keys="[Job.upload_analysis_id]")
+    jobs = orm.relationship("Job", cascade="all,delete", foreign_keys="Job.analysis_id")
+    upload_jobs = orm.relationship("Job", foreign_keys="Job.upload_analysis_id")
 
     @property
     def has_ongoing_status(self) -> bool:
