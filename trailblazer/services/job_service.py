@@ -2,7 +2,10 @@ from datetime import datetime
 
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.dto import FailedJobsRequest, FailedJobsResponse
-from trailblazer.services.utils import create_jobs_response
+from trailblazer.dto.create_job_request import CreateJobRequest
+from trailblazer.dto.job_response import JobResponse
+from trailblazer.services.utils import create_job_response, create_jobs_response
+from trailblazer.store.models import Job
 from trailblazer.store.store import Store
 from trailblazer.utils.datetime import get_date_number_of_days_ago
 
@@ -17,3 +20,7 @@ class JobService:
             status=TrailblazerStatus.FAILED, since_when=time_window
         )
         return create_jobs_response(failed_jobs)
+
+    def add_job(self, analysis_id: int, data: CreateJobRequest) -> JobResponse:
+        job: Job = self.store.add_job(analysis_id=analysis_id, data=data)
+        return create_job_response(job)

@@ -24,12 +24,14 @@ from trailblazer.dto import (
     FailedJobsRequest,
     FailedJobsResponse,
 )
+from trailblazer.dto.create_job_request import CreateJobRequest
 from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
 from trailblazer.server.utils import (
     parse_analyses_request,
     parse_analysis_update_request,
     parse_get_failed_jobs_request,
+    parse_job_create_request,
     stringify_timestamps,
 )
 from trailblazer.services import AnalysisService, JobService
@@ -78,6 +80,21 @@ def get_analysis(analysis_id):
         return jsonify(response.model_dump()), HTTPStatus.OK
     except MissingAnalysis as error:
         return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
+
+
+@blueprint.route("/analyses/<int:analysis_id>/jobs", methods=["POST"])
+def add_job(analysis_id):
+    job_service: JobService = current_app.extensions.get("job_service")
+    try:
+        data: CreateJobRequest = parse_job_create_request(request)
+        response: AnalysisResponse = job_service.add_job(analysis_id=analysis_id, data=data)
+        return jsonify(response.model_dump()), HTTPStatus.CREATED
+    except MissingAnalysis as error:
+        return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
+    except Exception as error:
+        return jsonify(error=str(error)), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["PUT"])
