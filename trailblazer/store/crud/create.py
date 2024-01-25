@@ -51,14 +51,14 @@ class CreateHandler(BaseHandler):
         session.commit()
         return new_user
 
-    def add_job(self, analysis_id: int, data: CreateJobRequest) -> Job:
+    def add_job(self, analysis_id: int, job_request: CreateJobRequest) -> Job:
         """Add a new job to the database."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id)
         job = Job(
-            name=data.name,
+            name=job_request.name,
             status=SlurmJobStatus.PENDING,
-            slurm_id=data.slurm_id,
-            job_type=data.job_type,
+            slurm_id=job_request.slurm_id,
+            job_type=job_request.job_type,
         )
         analysis.jobs.append(job)
         session: Session = get_session()

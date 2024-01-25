@@ -82,20 +82,17 @@ def get_analysis(analysis_id):
         return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
 
 
-@blueprint.route("/analyses/<int:analysis_id>/jobs", methods=["POST"])
-def add_job(analysis_id):
+@blueprint.route("/analysis/<int:analysis_id>/jobs", methods=["POST"])
+def add_job(analysis_id: int):
     job_service: JobService = current_app.extensions.get("job_service")
     try:
-        data: CreateJobRequest = parse_job_create_request(request)
-        response: AnalysisResponse = job_service.add_job(analysis_id=analysis_id, data=data)
+        job_request: CreateJobRequest = parse_job_create_request(request)
+        response: AnalysisResponse = job_service.add_job(analysis_id=analysis_id, data=job_request)
         return jsonify(response.model_dump()), HTTPStatus.CREATED
     except MissingAnalysis as error:
         return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
-    except Exception as error:
-        return jsonify(error=str(error)), HTTPStatus.CONFLICT
-
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["PUT"])
 def update_analysis(analysis_id):

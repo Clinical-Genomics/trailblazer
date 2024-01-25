@@ -22,5 +22,5 @@ class JobService:
         return create_jobs_response(failed_jobs)
 
     def add_job(self, analysis_id: int, data: CreateJobRequest) -> JobResponse:
-        job: Job = self.store.add_job(analysis_id=analysis_id, data=data)
+        job: Job = self.store.add_job(analysis_id=analysis_id, job_request=data)
         return create_job_response(job)

@@ -16,7 +16,7 @@ def test_add_job_to_analysis(client: FlaskClient, analysis: Analysis):
 
     # WHEN sending the request
     response = client.post(
-        f"/api/v1/analyses/{analysis.id}/jobs", data=data, content_type=TYPE_JSON
+        f"/api/v1/analysis/{analysis.id}/jobs", data=data, content_type=TYPE_JSON
     )
 
     # THEN it gives a success response
