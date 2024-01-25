@@ -5,6 +5,7 @@ from sqlalchemy import Column, ForeignKey, UniqueConstraint, orm, types
 from trailblazer.constants import (
     PRIORITY_OPTIONS,
     TYPES,
+    JobType,
     SlurmJobStatus,
     TrailblazerStatus,
     WorkflowManager,
@@ -91,8 +92,7 @@ class Analysis(Model):
     uploaded_at = Column(types.DateTime)
     workflow_manager = Column(types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM)
 
-    jobs = orm.relationship("Job", cascade="all,delete", foreign_keys="Job.analysis_id")
-    upload_jobs = orm.relationship("Job", foreign_keys="Job.upload_analysis_id")
+    jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
 
     @property
     def has_ongoing_status(self) -> bool:
@@ -131,13 +131,13 @@ class Job(Model):
 
     id = Column(types.Integer, primary_key=True)
     analysis_id = Column(ForeignKey(Analysis.id, ondelete="CASCADE"), nullable=False)
-    upload_analysis_id = Column(ForeignKey(Analysis.id))
     slurm_id = Column(types.Integer)
     name = Column(types.String(64))
     context = Column(types.String(64))
     started_at = Column(types.DateTime)
     elapsed = Column(types.Integer)
     status = Column(types.Enum(*SlurmJobStatus.statuses()))
+    job_type = Column(types.Enum(*JobType.types()), default=JobType.ANALYSIS, nullable=False)
 
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object."""
