@@ -18,6 +18,12 @@ from trailblazer.store.models import Analysis, Job, User
 class ReadHandler(BaseHandler):
     """Class for reading items in the database."""
 
+    def get_failed_jobs(self, since_when: datetime = None) -> list[dict[str, str | int]]:
+        """Return the number of failed jobs per category (name)."""
+        return self.get_nr_jobs_with_status_per_category(
+            status=TrailblazerStatus.FAILED, since_when=since_when
+        )
+
     def get_nr_jobs_with_status_per_category(
         self, status: str, since_when: datetime = None
     ) -> list[dict[str, str | int]]:
@@ -83,9 +89,7 @@ class ReadHandler(BaseHandler):
         return (
             apply_analysis_filter(
                 analyses=self.get_query(table=Analysis),
-                filter_functions=[
-                    AnalysisFilter.FILTER_BY_CASE_ID,
-                ],
+                filter_functions=[AnalysisFilter.FILTER_BY_CASE_ID],
                 case_id=case_id,
             )
             .order_by(desc(Analysis.started_at))
@@ -96,9 +100,7 @@ class ReadHandler(BaseHandler):
         """Return all analyses for a case."""
         return apply_analysis_filter(
             analyses=self.get_query(table=Analysis),
-            filter_functions=[
-                AnalysisFilter.FILTER_BY_CASE_ID,
-            ],
+            filter_functions=[AnalysisFilter.FILTER_BY_CASE_ID],
             case_id=case_id,
         ).all()
 
@@ -171,3 +173,6 @@ class ReadHandler(BaseHandler):
             analysis_id=analysis_id,
             status=TrailblazerStatus.FAILED,
         ).first()
+
+    def get_ongoing_upload_jobs(self) -> list[Job]:
+        pass

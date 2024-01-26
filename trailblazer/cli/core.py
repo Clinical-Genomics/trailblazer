@@ -94,9 +94,7 @@ def init(context, reset, force):
 def scan(context):
     """Scan ongoing analyses in SLURM"""
     trailblazer_db: Store = context.obj["trailblazer_db"]
-    job_service = JobService(trailblazer_db)
     trailblazer_db.update_ongoing_analyses()
-    job_service.update_upload_jobs()
     LOG.info("All analyses updated!")
 
 

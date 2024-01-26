@@ -136,7 +136,7 @@ class UpdateHandler(BaseHandler):
         analysis.progress = tower_api.progress
         analysis.logged_at = datetime.now()
         self.delete_analysis_jobs(analysis)
-        jobs: list[dict] = tower_api.get_jobs(analysis_id)
+        jobs: list[dict] = tower_api.get_jobs(analysis.id)
         self.update_analysis_jobs(analysis=analysis, jobs=jobs)
         session: Session = get_session()
         session.commit()
