@@ -7,7 +7,7 @@ from tests.apps.tower.conftest import CaseId
 from tests.mocks.store_mock import MockStore
 from tests.mocks.tower_mock import MockTowerAPI
 from trailblazer.apps.slurm.api import get_squeue_result
-from trailblazer.apps.slurm.models import SqueueResult
+from trailblazer.apps.slurm.models import SlurmQueue
 from trailblazer.apps.tower.api import TowerAPI
 from trailblazer.constants import CharacterFormat, TrailblazerStatus, WorkflowManager
 from trailblazer.exc import MissingAnalysis, TrailblazerError
@@ -162,7 +162,7 @@ def test_update_analysis_jobs_from_slurm_jobs(analysis_store: MockStore, squeue_
     analysis: Analysis = analysis_store.get_query(table=Analysis).first()
     assert not analysis.jobs
 
-    squeue_result: SqueueResult = get_squeue_result(squeue_response=squeue_stream_jobs)
+    squeue_result: SlurmQueue = get_squeue_result(squeue_response=squeue_stream_jobs)
 
     # WHEN updating the analysis
     analysis_store.update_analysis_jobs_from_slurm_jobs(

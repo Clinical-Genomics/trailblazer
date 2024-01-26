@@ -55,7 +55,7 @@ class SqueueJob(BaseModel):
             return datetime.strptime(raw_started, "%Y-%m-%dT%H:%M:%S")
 
 
-class SqueueResult(BaseModel):
+class SlurmQueue(BaseModel):
     """Model used to parse SLURM squeue output."""
 
     jobs: list[SqueueJob]

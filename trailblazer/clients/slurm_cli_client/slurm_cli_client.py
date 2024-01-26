@@ -6,4 +6,5 @@ class SlurmCLIClient:
         self.host = host
 
     def get_job(self, job_id: str) -> JobDto:
+        # Get slurm queue
         pass

@@ -2,7 +2,7 @@ import subprocess
 from pathlib import Path
 from typing import Callable
 
-from trailblazer.apps.slurm.models import SqueueResult
+from trailblazer.apps.slurm.models import SlurmQueue
 from trailblazer.apps.slurm.utils import formatters
 from trailblazer.constants import (
     CharacterFormat,
@@ -65,7 +65,7 @@ def get_slurm_queue(job_ids: str, analysis_host: str | None = None) -> str:
     )
 
 
-def get_squeue_result(squeue_response: str) -> SqueueResult:
+def get_squeue_result(squeue_response: str) -> SlurmQueue:
     """Return SqueueResult object from squeue response.
     Raises:
         TrailblazerError: when no entries were returned by squeue command.
@@ -77,7 +77,7 @@ def get_squeue_result(squeue_response: str) -> SqueueResult:
         stream=squeue_response,
         read_to_dict=True,
     )
-    return SqueueResult(jobs=squeue_response_content)
+    return SlurmQueue(jobs=squeue_response_content)
 
 
 def reformat_squeue_result_job_step(data_analysis: str, job_step: str) -> str:

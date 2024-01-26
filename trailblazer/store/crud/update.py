@@ -11,7 +11,7 @@ from trailblazer.apps.slurm.api import (
     get_squeue_result,
     reformat_squeue_result_job_step,
 )
-from trailblazer.apps.slurm.models import SqueueResult
+from trailblazer.apps.slurm.models import SlurmQueue
 from trailblazer.apps.tower.api import TowerAPI, get_tower_api
 from trailblazer.constants import SlurmJobStatus, TrailblazerStatus, WorkflowManager
 from trailblazer.exc import MissingAnalysis, TrailblazerError
@@ -65,7 +65,7 @@ class UpdateHandler(BaseHandler):
         return self.get_analyses_with_statuses(ongoing_statuses)
 
     def update_analysis_jobs_from_slurm_jobs(
-        self, analysis: Analysis, squeue_result: SqueueResult
+        self, analysis: Analysis, squeue_result: SlurmQueue
     ) -> None:
         """Update analysis jobs from supplied squeue results."""
         if len(squeue_result.jobs) == 0:
@@ -98,7 +98,7 @@ class UpdateHandler(BaseHandler):
         queue_output = get_slurm_squeue_output(
             analysis_host=analysis_host, slurm_job_id_file=slurm_job_id_file
         )
-        squeue_result: SqueueResult = get_squeue_result(queue_output)
+        squeue_result: SlurmQueue = get_squeue_result(queue_output)
         self.update_analysis_jobs_from_slurm_jobs(analysis=analysis, squeue_result=squeue_result)
         LOG.debug(f"Status in SLURM: {analysis.case_id} - {analysis.id}")
         LOG.debug(squeue_result.jobs)
