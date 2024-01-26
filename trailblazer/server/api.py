@@ -94,6 +94,7 @@ def add_job(analysis_id: int):
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
+
 @blueprint.route("/analyses/<int:analysis_id>", methods=["PUT"])
 def update_analysis(analysis_id):
     analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
