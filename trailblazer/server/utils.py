@@ -3,6 +3,7 @@ import datetime
 from flask import Request
 
 from trailblazer.dto import AnalysesRequest, AnalysisUpdateRequest, FailedJobsRequest
+from trailblazer.dto.create_job_request import CreateJobRequest
 
 
 def parse_analyses_request(request: Request) -> AnalysesRequest:
@@ -34,3 +35,7 @@ def stringify_timestamps(data: dict) -> dict[str, str]:
         if isinstance(val, datetime.datetime):
             data[key] = str(val)
     return data
+
+
+def parse_job_create_request(request: Request) -> CreateJobRequest:
+    return CreateJobRequest.model_validate(request.json)

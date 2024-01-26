@@ -5,6 +5,7 @@ from sqlalchemy import Column, ForeignKey, UniqueConstraint, orm, types
 from trailblazer.constants import (
     PRIORITY_OPTIONS,
     TYPES,
+    JobType,
     SlurmJobStatus,
     TrailblazerStatus,
     WorkflowManager,
@@ -136,6 +137,7 @@ class Job(Model):
     started_at = Column(types.DateTime)
     elapsed = Column(types.Integer)
     status = Column(types.Enum(*SlurmJobStatus.statuses()))
+    job_type = Column(types.Enum(*JobType.types()), default=JobType.ANALYSIS, nullable=False)
 
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object."""
