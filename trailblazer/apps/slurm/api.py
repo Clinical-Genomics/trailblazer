@@ -30,16 +30,22 @@ def cancel_slurm_job(slurm_id: int, analysis_host: str | None = None) -> None:
     subprocess.Popen(scancel_commands)
 
 
+def get_slurm_queue(job_ids: str, analysis_host: str | None = None) -> SlurmQueue:
+    """Return squeue output from ongoing analyses in SLURM."""
+    queue_output: str = get_slurm_queue_output(job_ids=job_ids, analysis_host=analysis_host)
+    return get_squeue_result(queue_output)
+
+
 def get_slurm_squeue_output(slurm_job_id_file: Path, analysis_host: str | None = None) -> str:
     """Return squeue output from ongoing analyses in SLURM."""
     slurm_job_id_file_content: dict[str, list[str]] = ReadFile.get_content_from_file(
         file_format=FileFormat.YAML, file_path=slurm_job_id_file
     )
     slurm_jobs: str = _get_squeue_jobs_flag_input(slurm_job_id_file_content)
-    return get_slurm_queue(job_ids=slurm_jobs, analysis_host=analysis_host)
+    return get_slurm_queue_output(job_ids=slurm_jobs, analysis_host=analysis_host)
 
 
-def get_slurm_queue(job_ids: str, analysis_host: str | None = None) -> str:
+def get_slurm_queue_output(job_ids: str, analysis_host: str | None = None) -> str:
     """Return squeue output from ongoing analyses in SLURM."""
     squeue_commands: list[str] = [
         "squeue",

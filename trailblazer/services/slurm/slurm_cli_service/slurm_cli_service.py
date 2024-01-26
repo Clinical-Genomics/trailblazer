@@ -8,4 +8,4 @@ class SlurmCLIService(SlurmService):
         self.client = client
 
     def get_job(self, job_id: str) -> JobDto:
-        self.client.get_job(job_id)
+        return self.client.get_job(job_id)
