@@ -24,3 +24,6 @@ class JobService:
     def add_job(self, analysis_id: int, data: CreateJobRequest) -> JobResponse:
         job: Job = self.store.add_job(analysis_id=analysis_id, job_request=data)
         return create_job_response(job)
+
+    def update_upload_jobs(self):
+        pass

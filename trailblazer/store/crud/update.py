@@ -52,13 +52,17 @@ class UpdateHandler(BaseHandler):
 
     def update_ongoing_analyses(self, analysis_host: str | None = None) -> None:
         """Iterate over all analysis with ongoing status and query SLURM for current progress."""
-        ongoing_statuses: list[str] = list(TrailblazerStatus.ongoing_statuses())
-        ongoing_analyses: list[Analysis] | None = self.get_analyses_with_statuses(ongoing_statuses)
+        ongoing_analyses: list[Analysis] = self.get_ongoing_analyses()
         for analysis in ongoing_analyses:
             try:
                 self.update_run_status(analysis_id=analysis.id, analysis_host=analysis_host)
             except Exception as error:
                 LOG.error(f"Failed to update {analysis.case_id} - {analysis.id}: {error}")
+
+    def get_ongoing_analyses(self) -> list[Analysis]:
+        """Return all analyses with ongoing status."""
+        ongoing_statuses: list[str] = list(TrailblazerStatus.ongoing_statuses())
+        return self.get_analyses_with_statuses(ongoing_statuses)
 
     def update_analysis_jobs_from_slurm_jobs(
         self, analysis: Analysis, squeue_result: SqueueResult

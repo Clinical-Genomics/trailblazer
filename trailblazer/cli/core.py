@@ -14,6 +14,7 @@ from trailblazer.constants import TRAILBLAZER_TIME_STAMP, FileFormat, Trailblaze
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.models import Config
+from trailblazer.services.job_service import JobService
 from trailblazer.store.database import get_session, initialize_database
 from trailblazer.store.models import Analysis, User
 from trailblazer.store.store import Store
@@ -93,7 +94,9 @@ def init(context, reset, force):
 def scan(context):
     """Scan ongoing analyses in SLURM"""
     trailblazer_db: Store = context.obj["trailblazer_db"]
+    job_service = JobService(trailblazer_db)
     trailblazer_db.update_ongoing_analyses()
+    job_service.update_upload_jobs()
     LOG.info("All analyses updated!")
 
 
