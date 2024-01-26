@@ -21,10 +21,11 @@ from trailblazer.dto import (
     AnalysesResponse,
     AnalysisResponse,
     AnalysisUpdateRequest,
+    CreateJobRequest,
+    JobResponse,
     FailedJobsRequest,
     FailedJobsResponse,
 )
-from trailblazer.dto.create_job_request import CreateJobRequest
 from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
 from trailblazer.server.utils import (
@@ -87,7 +88,7 @@ def add_job(analysis_id: int):
     job_service: JobService = current_app.extensions.get("job_service")
     try:
         job_request: CreateJobRequest = parse_job_create_request(request)
-        response: AnalysisResponse = job_service.add_job(analysis_id=analysis_id, data=job_request)
+        response: JobResponse = job_service.add_job(analysis_id=analysis_id, data=job_request)
         return jsonify(response.model_dump()), HTTPStatus.CREATED
     except MissingAnalysis as error:
         return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
