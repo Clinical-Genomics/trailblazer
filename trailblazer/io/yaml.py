@@ -1,4 +1,5 @@
 """Module to read YAML files."""
+
 from pathlib import Path
 from typing import Any
 from ruamel.yaml import YAML
