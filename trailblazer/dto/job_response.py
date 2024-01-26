@@ -4,4 +4,5 @@ from trailblazer.constants import JobType
 
 
 class JobResponse(BaseModel):
-    name: str
+    slurm_id: int
+    analysis_id: int

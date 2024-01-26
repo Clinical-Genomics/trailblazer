@@ -11,7 +11,7 @@ def test_add_job_to_analysis(client: FlaskClient, analysis: Analysis):
     # GIVEN an analysis
 
     # GIVEN a valid request to add a job to the analysis
-    create_job_request = CreateJobRequest(name="job", slurm_id="12345")
+    create_job_request = CreateJobRequest(slurm_id=123)
     data: str = create_job_request.model_dump_json()
 
     # WHEN sending the request
@@ -23,4 +23,4 @@ def test_add_job_to_analysis(client: FlaskClient, analysis: Analysis):
     assert response.status_code == HTTPStatus.CREATED
 
     # THEN it should return the job
-    assert response.json["name"] == create_job_request.name
+    assert response.json["slurm_id"] == create_job_request.slurm_id

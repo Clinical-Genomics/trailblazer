@@ -55,7 +55,6 @@ class CreateHandler(BaseHandler):
         """Add a new job to the database."""
         analysis: Analysis = self.get_analysis_with_id(analysis_id)
         job = Job(
-            name=job_request.name,
             status=SlurmJobStatus.PENDING,
             slurm_id=job_request.slurm_id,
             job_type=job_request.job_type,
