@@ -6,7 +6,6 @@ from trailblazer.constants import TrailblazerStatus, WorkflowManager
 
 
 class User(BaseModel):
-    avatar: str | None = None
     created_at: datetime | None = None
     email: str | None = None
     id: int
