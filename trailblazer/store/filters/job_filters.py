@@ -27,28 +27,36 @@ def sort_jobs_by_started_at(jobs: Query, **kwargs) -> Query:
     return jobs.order_by(Job.started_at.desc())
 
 
+def filter_jobs_by_id(jobs: Query, job_id: int, **kwargs) -> Query:
+    """Filter jobs with matching id."""
+    return jobs.filter(Job.id == job_id)
+
+
 class JobFilter(Enum):
     """Define Job filter functions."""
 
     FILTER_BY_SINCE_WHEN: Callable = filter_jobs_by_since_when
     FILTER_BY_STATUS: Callable = filter_jobs_by_status
     FILTER_BY_ANALYSIS_ID: Callable = filter_jobs_by_analysis_id
+    FILTER_BY_ID: Callable = filter_jobs_by_id
     SORT_BY_STARTED_AT: Callable = sort_jobs_by_started_at
 
 
-def apply_job_filter(
+def apply_job_filters(
     jobs: Query,
-    filter_functions: list[Callable],
+    filters: list[Callable],
     since_when: datetime | None = None,
     status: str | None = None,
     analysis_id: str | None = None,
+    job_id: int | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
-    for function in filter_functions:
+    for function in filters:
         jobs: Query = function(
             jobs=jobs,
             since_when=since_when,
             status=status,
             analysis_id=analysis_id,
+            job_id=job_id,
         )
     return jobs

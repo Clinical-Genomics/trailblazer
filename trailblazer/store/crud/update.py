@@ -260,3 +260,6 @@ class UpdateHandler(BaseHandler):
         session.commit()
 
         return analysis
+
+    def update_job(self, job_id: int, job_data: str) -> Job:
+        job: Job = self.get_job_by_id(job_id)

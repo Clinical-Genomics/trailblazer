@@ -10,7 +10,7 @@ from trailblazer.store.filters.analyses_filters import (
     AnalysisFilter,
     apply_analysis_filter,
 )
-from trailblazer.store.filters.job_filters import JobFilter, apply_job_filter
+from trailblazer.store.filters.job_filters import JobFilter, apply_job_filters
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, Job, User
 
@@ -35,8 +35,8 @@ class ReadHandler(BaseHandler):
         filter_functions: list[Callable] = [
             function for function, supplied_arg in filter_map.items() if supplied_arg
         ]
-        categories = apply_job_filter(
-            filter_functions=filter_functions,
+        categories = apply_job_filters(
+            filters=filter_functions,
             jobs=self.get_job_query_with_name_and_count_labels(),
             since_when=since_when,
             status=status,
@@ -167,8 +167,8 @@ class ReadHandler(BaseHandler):
             JobFilter.FILTER_BY_STATUS,
             JobFilter.SORT_BY_STARTED_AT,
         ]
-        return apply_job_filter(
-            filter_functions=filters,
+        return apply_job_filters(
+            filters=filters,
             jobs=self.get_query(Job),
             analysis_id=analysis_id,
             status=TrailblazerStatus.FAILED,
@@ -176,3 +176,11 @@ class ReadHandler(BaseHandler):
 
     def get_ongoing_upload_jobs(self) -> list[Job]:
         pass
+
+    def get_job_by_id(self, job_id: int) -> Job | None:
+        """Return job from the database."""
+        return apply_job_filters(
+            filters=[JobFilter.FILTER_BY_ID],
+            jobs=self.get_query(table=Job),
+            job_id=job_id,
+        ).first()
