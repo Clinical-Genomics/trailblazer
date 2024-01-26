@@ -21,11 +21,11 @@ from trailblazer.dto import (
     AnalysesResponse,
     AnalysisResponse,
     AnalysisUpdateRequest,
+    CreateJobRequest,
+    JobResponse,
     FailedJobsRequest,
     FailedJobsResponse,
 )
-from trailblazer.dto.create_job_request import CreateJobRequest
-from trailblazer.dto.job_response import JobResponse
 from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
 from trailblazer.server.utils import (
