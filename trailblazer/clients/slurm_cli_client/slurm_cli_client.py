@@ -8,7 +8,7 @@ class SlurmCLIClient:
     def __init__(self, host: str):
         self.host = host
 
-    def get_job_info(self, job_id: str) -> SlurmJobInfo:
-        queue: SqueueResult = get_slurm_queue(job_ids=[job_id], analysis_host=self.host)
+    def get_job_info(self, job_id: int) -> SlurmJobInfo:
+        queue: SqueueResult = get_slurm_queue(job_ids=f"{job_id}", analysis_host=self.host)
         job: SqueueJob = queue.jobs[0]
         return create_job_info_dto(job)

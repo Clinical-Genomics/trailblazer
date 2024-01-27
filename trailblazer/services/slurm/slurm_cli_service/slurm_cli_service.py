@@ -7,5 +7,5 @@ class SlurmCLIService(SlurmService):
     def __init__(self, client: SlurmCLIClient):
         self.client = client
 
-    def get_job_info(self, job_id: str) -> SlurmJobInfo:
+    def get_job_info(self, job_id: int) -> SlurmJobInfo:
         return self.client.get_job_info(job_id)

@@ -6,7 +6,7 @@ from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.filters.job_filters import (
     filter_jobs_by_analysis_id,
-    filter_jobs_by_status,
+    filter_jobs_by_statuses,
     filter_jobs_by_since_when,
 )
 from trailblazer.store.models import Job
@@ -47,7 +47,7 @@ def test_filter_jobs_by_status(job_store: MockStore):
     # GIVEN a store containing jobs
 
     # WHEN retrieving a job by status
-    jobs: Query = filter_jobs_by_status(
+    jobs: Query = filter_jobs_by_statuses(
         jobs=job_store.get_query(table=Job), status=TrailblazerStatus.COMPLETED
     )
 

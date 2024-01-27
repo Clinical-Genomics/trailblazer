@@ -3,6 +3,7 @@ from enum import Enum
 from typing import Callable
 
 from sqlalchemy.orm import Query
+from trailblazer.constants import JobType
 
 from trailblazer.store.models import Job
 
@@ -15,6 +16,10 @@ def filter_jobs_by_since_when(jobs: Query, since_when: datetime, **kwargs) -> Qu
 def filter_jobs_by_status(jobs: Query, status: str, **kwargs) -> Query:
     """Filter jobs with matching status."""
     return jobs.filter(Job.status == status)
+
+
+def filter_jobs_by_statuses(jobs: Query, statuses: list[str], **kwargs) -> Query:
+    return jobs.filter(Job.status.in_(statuses))
 
 
 def filter_jobs_by_analysis_id(jobs: Query, analysis_id: str, **kwargs) -> Query:
@@ -32,13 +37,19 @@ def filter_jobs_by_id(jobs: Query, job_id: int, **kwargs) -> Query:
     return jobs.filter(Job.id == job_id)
 
 
+def filter_by_job_type(jobs: Query, job_type: JobType):
+    return jobs.filter(Job.job_type == job_type)
+
+
 class JobFilter(Enum):
     """Define Job filter functions."""
 
     FILTER_BY_SINCE_WHEN: Callable = filter_jobs_by_since_when
     FILTER_BY_STATUS: Callable = filter_jobs_by_status
+    FILTER_BY_STATUSES: Callable = filter_jobs_by_statuses
     FILTER_BY_ANALYSIS_ID: Callable = filter_jobs_by_analysis_id
     FILTER_BY_ID: Callable = filter_jobs_by_id
+    FILTER_BY_JOB_TYPE: Callable = filter_by_job_type
     SORT_BY_STARTED_AT: Callable = sort_jobs_by_started_at
 
 
@@ -47,6 +58,7 @@ def apply_job_filters(
     filters: list[Callable],
     since_when: datetime | None = None,
     status: str | None = None,
+    statuses: list[str] | None = None,
     analysis_id: str | None = None,
     job_id: int | None = None,
 ) -> Query:
@@ -56,6 +68,7 @@ def apply_job_filters(
             jobs=jobs,
             since_when=since_when,
             status=status,
+            statuses=statuses,
             analysis_id=analysis_id,
             job_id=job_id,
         )
