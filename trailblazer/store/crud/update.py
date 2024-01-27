@@ -262,11 +262,11 @@ class UpdateHandler(BaseHandler):
 
         return analysis
 
-    def update_job(self, job_id: int, job_data: SlurmJobInfo) -> Job:
+    def update_job(self, job_id: int, job_info: SlurmJobInfo) -> Job:
         job: Job | None = self.get_job_by_id(job_id)
-        job.name = job_data.name
-        job.status = job_data.status
-        job.elapsed = job_data.elapsed
-        job.started_at = job_data.started_at
+        job.name = job_info.name
+        job.status = job_info.status
+        job.elapsed = job_info.elapsed
+        job.started_at = job_info.started_at
         session: Session = get_session()
         session.commit()

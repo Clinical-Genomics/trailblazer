@@ -37,7 +37,7 @@ def filter_jobs_by_id(jobs: Query, job_id: int, **kwargs) -> Query:
     return jobs.filter(Job.id == job_id)
 
 
-def filter_by_job_type(jobs: Query, job_type: JobType):
+def filter_by_job_type(jobs: Query, job_type: str):
     return jobs.filter(Job.job_type == job_type)
 
 
@@ -49,7 +49,7 @@ class JobFilter(Enum):
     FILTER_BY_STATUSES: Callable = filter_jobs_by_statuses
     FILTER_BY_ANALYSIS_ID: Callable = filter_jobs_by_analysis_id
     FILTER_BY_ID: Callable = filter_jobs_by_id
-    FILTER_BY_JOB_TYPE: Callable = filter_by_job_type
+    FILTER_BY_TYPE: Callable = filter_by_job_type
     SORT_BY_STARTED_AT: Callable = sort_jobs_by_started_at
 
 
@@ -61,6 +61,7 @@ def apply_job_filters(
     statuses: list[str] | None = None,
     analysis_id: str | None = None,
     job_id: int | None = None,
+    job_type: str | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
     for function in filters:
@@ -71,5 +72,6 @@ def apply_job_filters(
             statuses=statuses,
             analysis_id=analysis_id,
             job_id=job_id,
+            job_type=job_type,
         )
     return jobs

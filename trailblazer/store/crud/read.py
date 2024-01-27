@@ -177,7 +177,7 @@ class ReadHandler(BaseHandler):
     def get_ongoing_upload_jobs(self) -> list[Job]:
         ongoing_statuses: list[str] = list(TrailblazerStatus.ongoing_statuses())
         return apply_job_filters(
-            filters=[JobFilter.FILTER_BY_JOB_TYPE, JobFilter.FILTER_BY_STATUSES],
+            filters=[JobFilter.FILTER_BY_TYPE, JobFilter.FILTER_BY_STATUSES],
             jobs=self.get_query(Job),
             job_type=JobType.UPLOAD,
             statuses=ongoing_statuses,

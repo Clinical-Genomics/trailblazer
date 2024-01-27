@@ -27,4 +27,4 @@ class JobService:
         jobs: list[Job] = self.store.get_ongoing_upload_jobs()
         for job in jobs:
             updated_job: SlurmJobInfo = self.slurm_service.get_job_info(job.slurm_id)
-            self.store.update_job(job_id=job.id, job_data=updated_job)
+            self.store.update_job(job_id=job.id, job_info=updated_job)
