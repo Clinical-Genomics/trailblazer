@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class JobDto(BaseModel):
+class JobInfoDto(BaseModel):
     slurm_id: int
     name: str
     status: str

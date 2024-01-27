@@ -18,7 +18,7 @@ from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis, Job, User
-from trailblazer.services.slurm.dtos import JobDto
+from trailblazer.services.slurm.dtos import JobInfoDto
 
 LOG = logging.getLogger(__name__)
 
@@ -262,7 +262,7 @@ class UpdateHandler(BaseHandler):
 
         return analysis
 
-    def update_job(self, job_id: int, job_data: JobDto) -> Job:
+    def update_job(self, job_id: int, job_data: JobInfoDto) -> Job:
         job: Job | None = self.get_job_by_id(job_id)
         job.name = job_data.name
         job.status = job_data.status

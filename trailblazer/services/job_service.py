@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from trailblazer.dto import CreateJobRequest, FailedJobsRequest, FailedJobsResponse, JobResponse
-from trailblazer.services.slurm.dtos import JobDto
+from trailblazer.services.slurm.dtos import JobInfoDto
 from trailblazer.services.slurm.slurm_service import SlurmService
 from trailblazer.services.utils import create_job_response, create_failed_jobs_response
 from trailblazer.store.models import Job
@@ -26,5 +26,5 @@ class JobService:
     def update_upload_jobs(self) -> None:
         jobs: list[Job] = self.store.get_ongoing_upload_jobs()
         for job in jobs:
-            updated_job: JobDto = self.slurm_service.get_job(job.slurm_id)
+            updated_job: JobInfoDto = self.slurm_service.get_job_info(job.slurm_id)
             self.store.update_job(job_id=job.id, job_data=updated_job)
