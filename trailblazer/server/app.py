@@ -9,7 +9,8 @@ from trailblazer.clients.slurm_api_client.slurm_api_client import SlurmApiClient
 from trailblazer.clients.slurm_cli_client.slurm_cli_client import SlurmCLIClient
 
 from trailblazer.server import api, ext
-from trailblazer.services import AnalysisService, JobService
+from trailblazer.services.analysis_service import AnalysisService
+from trailblazer.services.job_service import JobService
 from trailblazer.services.slurm.slurm_cli_service.slurm_cli_service import SlurmCLIService
 from trailblazer.store.database import get_session
 from trailblazer.store.store import Store

@@ -178,7 +178,6 @@ class ReadHandler(BaseHandler):
         pass
 
     def get_job_by_id(self, job_id: int) -> Job | None:
-        """Return job from the database."""
         return apply_job_filters(
             filters=[JobFilter.FILTER_BY_ID],
             jobs=self.get_query(table=Job),

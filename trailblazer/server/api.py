@@ -35,7 +35,8 @@ from trailblazer.server.utils import (
     parse_job_create_request,
     stringify_timestamps,
 )
-from trailblazer.services import AnalysisService, JobService
+from trailblazer.services.analysis_service import AnalysisService
+from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Analysis, Info
 
 ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
