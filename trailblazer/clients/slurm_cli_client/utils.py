@@ -1,9 +1,9 @@
 from trailblazer.apps.slurm.models import SqueueJob
-from trailblazer.services.slurm.dtos import JobInfoDto
+from trailblazer.services.slurm.dtos import SlurmJobInfo
 
 
-def create_job_info_dto(job: SqueueJob) -> JobInfoDto:
-    return JobInfoDto(
+def create_job_info_dto(job: SqueueJob) -> SlurmJobInfo:
+    return SlurmJobInfo(
         job_name=job.step,
         slurm_id=job.id,
         status=job.status,
