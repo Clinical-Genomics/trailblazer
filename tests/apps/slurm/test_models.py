@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from trailblazer.apps.slurm.models import SqueueJob, SlurmQueue
+from trailblazer.apps.slurm.models import SqueueJob, SQueueResult
 from trailblazer.constants import FileFormat, SlurmJobStatus
 from trailblazer.io.controller import ReadStream
 
@@ -20,10 +20,10 @@ def test_instantiate_squeue_result(squeue_stream_pending_job: str):
     )
 
     # WHEN instantiating a SqueueJob object
-    squeue_result: SlurmQueue = SlurmQueue(jobs=csv_content)
+    squeue_result: SQueueResult = SQueueResult(jobs=csv_content)
 
     # THEN it should be successfully created
-    assert isinstance(squeue_result, SlurmQueue)
+    assert isinstance(squeue_result, SQueueResult)
 
 
 def test_instantiate_squeue_job(squeue_stream_pending_job: str):
@@ -128,7 +128,7 @@ def test_set_jobs_status_distribution(squeue_stream_pending_job: str):
     )
 
     # WHEN instantiating a SqueueResult object
-    squeue_result: SlurmQueue = SlurmQueue(jobs=csv_content)
+    squeue_result: SQueueResult = SQueueResult(jobs=csv_content)
 
     # THEN a job status distribution should be returned
     assert squeue_result.jobs_status_distribution == {SlurmJobStatus.PENDING: 1}
