@@ -5,8 +5,8 @@ from flask import Flask
 from flask_cors import CORS
 from flask_reverse_proxy import FlaskReverseProxied
 from sqlalchemy.orm import scoped_session
-from trailblazer.clients.slurm_api_client.slurm_api_client import SlurmApiClient
 from trailblazer.clients.slurm_cli_client.slurm_cli_client import SlurmCLIClient
+from trailblazer.containers import Container
 
 from trailblazer.server import api, ext
 from trailblazer.services.analysis_service import AnalysisService

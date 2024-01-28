@@ -15,7 +15,9 @@ from flask import (
 )
 from google.auth import jwt
 from pydantic import ValidationError
+from dependency_injector.wiring import inject, Provide
 
+from trailblazer.containers import Container
 from trailblazer.dto import (
     AnalysesRequest,
     AnalysesResponse,
@@ -40,6 +42,9 @@ from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Analysis, Info
 
 ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
+
+container = Container()
+
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
@@ -85,8 +90,9 @@ def get_analysis(analysis_id):
 
 
 @blueprint.route("/analysis/<int:analysis_id>/jobs", methods=["POST"])
-def add_job(analysis_id: int):
-    job_service: JobService = current_app.extensions.get("job_service")
+@inject
+def add_job(analysis_id: int, job_service: JobService = Provide[Container.job_service]):
+    job_service = container.job_service()
     try:
         job_request: CreateJobRequest = parse_job_create_request(request)
         response: JobResponse = job_service.add_job(analysis_id=analysis_id, data=job_request)
@@ -126,8 +132,9 @@ def me():
 
 
 @blueprint.route("/aggregate/jobs", methods=["GET"])
-def get_failed_jobs():
-    job_service: JobService = current_app.extensions.get("job_service")
+@inject
+def get_failed_jobs(job_service: JobService = Provide[Container.job_service]):
+    job_service = container.job_service()
     try:
         query: FailedJobsRequest = parse_get_failed_jobs_request(request)
         response: FailedJobsResponse = job_service.get_failed_jobs(query)

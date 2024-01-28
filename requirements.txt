@@ -1,3 +1,4 @@
+dependency_injector
 Click
 SQLAlchemy
 alembic
