@@ -149,20 +149,6 @@ def update_analysis_via_process(analysis_id):
         return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
-@blueprint.route("/delete/<int:analysis_id>", methods=["PUT"])
-def delete(analysis_id):
-    """Delete an analysis and all slurm jobs associated with it."""
-    try:
-        process = multiprocessing.Process(
-            target=store.delete_analysis,
-            kwargs={"analysis_id": analysis_id, "force": True},
-        )
-        process.start()
-        return jsonify("Success! Delete request sent!"), HTTPStatus.CREATED
-    except Exception as error:
-        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
-
-
 # CG REST INTERFACE ###
 # ONLY POST routes which accept messages in specific format
 # NOT for use with GUI (for now)
