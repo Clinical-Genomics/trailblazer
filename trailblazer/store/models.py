@@ -100,7 +100,7 @@ class Analysis(Model):
     @property
     def upload_jobs(self) -> list:
         """Return upload jobs."""
-        return [job for job in self.jobs if job.job_type == "upload"]
+        return [job for job in self.jobs if job.job_type == JobType.UPLOAD]
 
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object."""
