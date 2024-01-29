@@ -7,7 +7,6 @@ from flask import (
     Blueprint,
     Response,
     abort,
-    current_app,
     g,
     jsonify,
     make_response,
@@ -42,9 +41,6 @@ from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Analysis, Info
 
 ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
-
-container = Container()
-
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
