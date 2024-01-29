@@ -2,10 +2,11 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.constants import JobType, SlurmJobStatus, TrailblazerStatus
+from trailblazer.dto.create_job_request import CreateJobRequest
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.database import get_session
-from trailblazer.store.models import Analysis, User
+from trailblazer.store.models import Analysis, Job, User
 
 
 class CreateHandler(BaseHandler):
@@ -49,3 +50,16 @@ class CreateHandler(BaseHandler):
         session.add(new_user)
         session.commit()
         return new_user
+
+    def add_job(self, analysis_id: int, job_request: CreateJobRequest) -> Job:
+        """Add a new job to the database."""
+        analysis: Analysis = self.get_analysis_with_id(analysis_id)
+        job = Job(
+            status=SlurmJobStatus.PENDING,
+            slurm_id=job_request.slurm_id,
+            job_type=job_request.job_type,
+        )
+        analysis.jobs.append(job)
+        session: Session = get_session()
+        session.commit()
+        return job

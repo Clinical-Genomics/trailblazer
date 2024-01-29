@@ -5,6 +5,7 @@ from sqlalchemy import Column, ForeignKey, UniqueConstraint, orm, types
 from trailblazer.constants import (
     PRIORITY_OPTIONS,
     TYPES,
+    JobType,
     SlurmJobStatus,
     TrailblazerStatus,
     WorkflowManager,
@@ -33,7 +34,6 @@ class Info(Model):
 class User(Model):
     __tablename__ = "user"
 
-    avatar = Column(types.Text)
     created_at = Column(types.DateTime, default=datetime.datetime.now)
     email = Column(types.String(128), unique=True)
     google_id = Column(types.String(128), unique=True)
@@ -56,7 +56,6 @@ class User(Model):
             "id": self.id,
             "name": self.name,
             "email": self.email,
-            "avatar": self.avatar,
             "created_at": self.created_at,
             "is_archived": self.is_archived,
         }
@@ -136,6 +135,7 @@ class Job(Model):
     started_at = Column(types.DateTime)
     elapsed = Column(types.Integer)
     status = Column(types.Enum(*SlurmJobStatus.statuses()))
+    job_type = Column(types.Enum(*JobType.types()), default=JobType.ANALYSIS, nullable=False)
 
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object."""

@@ -21,6 +21,8 @@ from trailblazer.dto import (
     AnalysesResponse,
     AnalysisResponse,
     AnalysisUpdateRequest,
+    CreateJobRequest,
+    JobResponse,
     FailedJobsRequest,
     FailedJobsResponse,
 )
@@ -30,6 +32,7 @@ from trailblazer.server.utils import (
     parse_analyses_request,
     parse_analysis_update_request,
     parse_get_failed_jobs_request,
+    parse_job_create_request,
     stringify_timestamps,
 )
 from trailblazer.services import AnalysisService, JobService
@@ -78,6 +81,19 @@ def get_analysis(analysis_id):
         return jsonify(response.model_dump()), HTTPStatus.OK
     except MissingAnalysis as error:
         return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
+
+
+@blueprint.route("/analysis/<int:analysis_id>/jobs", methods=["POST"])
+def add_job(analysis_id: int):
+    job_service: JobService = current_app.extensions.get("job_service")
+    try:
+        job_request: CreateJobRequest = parse_job_create_request(request)
+        response: JobResponse = job_service.add_job(analysis_id=analysis_id, data=job_request)
+        return jsonify(response.model_dump()), HTTPStatus.CREATED
+    except MissingAnalysis as error:
+        return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["PUT"])

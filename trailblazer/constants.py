@@ -170,3 +170,12 @@ TOWER_TASK_STATUS: dict[str, str] = {
 }
 
 PIPELINES = [pipeline.lower() for pipeline in Pipeline]
+
+
+class JobType(StrEnum):
+    UPLOAD: str = "upload"
+    ANALYSIS: str = "analysis"
+
+    @classmethod
+    def types(cls) -> tuple:
+        return tuple(cls)
