@@ -6,9 +6,9 @@ from flask_cors import CORS
 from flask_reverse_proxy import FlaskReverseProxied
 from sqlalchemy.orm import scoped_session
 from trailblazer.clients.slurm_cli_client.slurm_cli_client import SlurmCLIClient
-from trailblazer.containers import Container
 
 from trailblazer.server import api, ext
+from trailblazer.server.wiring import setup_dependency_injection
 from trailblazer.services.analysis_service import AnalysisService
 from trailblazer.services.job_service import JobService
 from trailblazer.services.slurm.slurm_cli_service.slurm_cli_service import SlurmCLIService
@@ -16,6 +16,7 @@ from trailblazer.store.database import get_session
 from trailblazer.store.store import Store
 
 app = Flask(__name__)
+setup_dependency_injection()
 
 LOG = logging.getLogger(__name__)
 
@@ -37,18 +38,15 @@ slurm_cli_client = SlurmCLIClient(ANALYSIS_HOST)
 store = Store()
 
 # Services
-slurm_service = SlurmCLIService(slurm_cli_client)
 analysis_service = AnalysisService(store)
-job_service = JobService(store=store, slurm_service=slurm_service)
 
 # configure extensions
 FlaskReverseProxied(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 ext.store.init_app(app)
 
-# Register services (we should use dependency injection instead. See dependency-injector for example.)
+# Register services
 app.extensions["analysis_service"] = analysis_service
-app.extensions["job_service"] = job_service
 
 
 @app.route("/")
