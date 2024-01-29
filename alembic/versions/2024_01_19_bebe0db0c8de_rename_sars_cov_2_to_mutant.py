@@ -5,6 +5,7 @@ Revises: 6c3da78d1af0
 Create Date: 2024-01-19 11:36:22.328953
 
 """
+
 from sqlalchemy import orm
 
 from trailblazer.store.models import Analysis
