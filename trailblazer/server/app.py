@@ -33,20 +33,10 @@ app.config.from_object(__name__)
 # register blueprints
 app.register_blueprint(api.blueprint)
 
-# Clients
-slurm_cli_client = SlurmCLIClient(ANALYSIS_HOST)
-store = Store()
-
-# Services
-analysis_service = AnalysisService(store)
-
 # configure extensions
 FlaskReverseProxied(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 ext.store.init_app(app)
-
-# Register services
-app.extensions["analysis_service"] = analysis_service
 
 
 @app.route("/")
