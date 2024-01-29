@@ -34,7 +34,6 @@ class Info(Model):
 class User(Model):
     __tablename__ = "user"
 
-    avatar = Column(types.Text)
     created_at = Column(types.DateTime, default=datetime.datetime.now)
     email = Column(types.String(128), unique=True)
     google_id = Column(types.String(128), unique=True)
@@ -57,7 +56,6 @@ class User(Model):
             "id": self.id,
             "name": self.name,
             "email": self.email,
-            "avatar": self.avatar,
             "created_at": self.created_at,
             "is_archived": self.is_archived,
         }
