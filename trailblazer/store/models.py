@@ -97,6 +97,11 @@ class Analysis(Model):
         """Check if analysis status is ongoing."""
         return self.status in TrailblazerStatus.ongoing_statuses()
 
+    @property
+    def upload_jobs(self) -> list:
+        """Return upload jobs."""
+        return [job for job in self.jobs if job.job_type == "upload"]
+
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object."""
         return {
