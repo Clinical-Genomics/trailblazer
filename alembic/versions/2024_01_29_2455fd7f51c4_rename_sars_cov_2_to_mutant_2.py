@@ -1,8 +1,8 @@
-"""rename_sars-cov-2_to_mutant
+"""rename_sars-cov-2_to_mutant_2
 
-Revision ID: bebe0db0c8de
-Revises: 6c3da78d1af0
-Create Date: 2024-01-19 11:36:22.328953
+Revision ID: 2455fd7f51c4
+Revises: dc1aadf08b4d
+Create Date: 2024-01-29 16:26:01.232870
 
 """
 
@@ -11,8 +11,8 @@ from sqlalchemy import orm
 from trailblazer.store.models import Analysis
 
 # revision identifiers, used by Alembic.
-revision = "bebe0db0c8de"
-down_revision = "6c3da78d1af0"
+revision = "2455fd7f51c4"
+down_revision = "dc1aadf08b4d"
 branch_labels = None
 depends_on = None
 
