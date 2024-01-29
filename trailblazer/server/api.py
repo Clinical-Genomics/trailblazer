@@ -135,20 +135,6 @@ def get_failed_jobs():
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
-@blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
-def update_analysis_via_process(analysis_id):
-    """Update a specific analysis."""
-    try:
-        process = multiprocessing.Process(
-            target=store.update_run_status,
-            kwargs={"analysis_id": analysis_id, "analysis_host": ANALYSIS_HOST},
-        )
-        process.start()
-        return jsonify("Success! Update request sent"), HTTPStatus.CREATED
-    except Exception as error:
-        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
-
-
 # CG REST INTERFACE ###
 # ONLY POST routes which accept messages in specific format
 # NOT for use with GUI (for now)
