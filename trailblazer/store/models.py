@@ -98,7 +98,7 @@ class Analysis(Model):
         return self.status in TrailblazerStatus.ongoing_statuses()
 
     @property
-    def upload_jobs(self) -> list:
+    def upload_jobs(self) -> list["Job"]:
         """Return upload jobs."""
         return [job for job in self.jobs if job.job_type == JobType.UPLOAD]
 
