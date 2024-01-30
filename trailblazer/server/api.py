@@ -1,4 +1,3 @@
-import multiprocessing
 import os
 from http import HTTPStatus
 from typing import Mapping
@@ -139,34 +138,6 @@ def get_failed_jobs(job_service: JobService = Provide[Container.job_service]):
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
-
-
-@blueprint.route("/update/<int:analysis_id>", methods=["PUT"])
-def update_analysis_via_process(analysis_id):
-    """Update a specific analysis."""
-    try:
-        process = multiprocessing.Process(
-            target=store.update_run_status,
-            kwargs={"analysis_id": analysis_id, "analysis_host": ANALYSIS_HOST},
-        )
-        process.start()
-        return jsonify("Success! Update request sent"), HTTPStatus.CREATED
-    except Exception as error:
-        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
-
-
-@blueprint.route("/delete/<int:analysis_id>", methods=["PUT"])
-def delete(analysis_id):
-    """Delete an analysis and all slurm jobs associated with it."""
-    try:
-        process = multiprocessing.Process(
-            target=store.delete_analysis,
-            kwargs={"analysis_id": analysis_id, "force": True},
-        )
-        process.start()
-        return jsonify("Success! Delete request sent!"), HTTPStatus.CREATED
-    except Exception as error:
-        return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
 
 
 # CG REST INTERFACE ###
