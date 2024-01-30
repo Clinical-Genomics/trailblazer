@@ -6,14 +6,18 @@ from pathlib import Path
 import click
 import coloredlogs
 from sqlalchemy.orm import scoped_session
+from dependency_injector.wiring import inject, Provide
 
 import trailblazer
 from trailblazer.cli.utils.ls_helper import _get_ls_analysis_message
 from trailblazer.cli.utils.user_helper import is_existing_user, is_user_archived
 from trailblazer.constants import TRAILBLAZER_TIME_STAMP, FileFormat, TrailblazerStatus
+from trailblazer.containers import Container
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.models import Config
+from trailblazer.services.analysis_service import AnalysisService
+from trailblazer.services.job_service import JobService
 from trailblazer.store.database import get_session, initialize_database
 from trailblazer.store.models import Analysis, User
 from trailblazer.store.store import Store
@@ -89,11 +93,14 @@ def init(context, reset, force):
 
 
 @base.command()
-@click.pass_context
-def scan(context):
+@inject
+def scan(
+    job_service: JobService = Provide[Container.job_service],
+    analysis_service: AnalysisService = Provide[Container.analysis_service],
+):
     """Scan ongoing analyses in SLURM"""
-    trailblazer_db: Store = context.obj["trailblazer_db"]
-    trailblazer_db.update_ongoing_analyses()
+    analysis_service.update_ongoing_analyses()
+    job_service.update_upload_jobs()
     LOG.info("All analyses updated!")
 
 

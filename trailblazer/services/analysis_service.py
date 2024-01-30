@@ -44,3 +44,6 @@ class AnalysisService:
             analysis_data["failed_job"] = failed_job.to_dict() if failed_job else None
             response_data.append(analysis_data)
         return AnalysesResponse(analyses=response_data, total_count=total_analysis_count)
+
+    def update_ongoing_analyses(self) -> None:
+        self.update_ongoing_analyses()
