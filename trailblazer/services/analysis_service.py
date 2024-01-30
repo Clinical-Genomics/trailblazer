@@ -46,4 +46,4 @@ class AnalysisService:
         return AnalysesResponse(analyses=response_data, total_count=total_analysis_count)
 
     def update_ongoing_analyses(self) -> None:
-        self.update_ongoing_analyses()
+        self.store.update_ongoing_analyses()
