@@ -16,7 +16,7 @@ class JobService:
 
     def get_failed_jobs(self, request: FailedJobsRequest) -> FailedJobsResponse:
         time_window: datetime = get_date_number_of_days_ago(request.days_back)
-        failed_jobs: list[dict] = self.store.get_failed_jobs(time_window)
+        failed_jobs: list[dict] = self.store.get_failed_jobs_stats(time_window)
         return create_failed_jobs_response(failed_jobs)
 
     def add_job(self, analysis_id: int, data: CreateJobRequest) -> JobResponse:

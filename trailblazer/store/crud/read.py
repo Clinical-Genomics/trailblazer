@@ -18,7 +18,7 @@ from trailblazer.store.models import Analysis, Job, User
 class ReadHandler(BaseHandler):
     """Class for reading items in the database."""
 
-    def get_failed_jobs(self, since_when: datetime = None) -> list[dict[str, str | int]]:
+    def get_failed_jobs_stats(self, since_when: datetime = None) -> list[dict]:
         """Return the number of failed jobs per category (name)."""
         return self.get_nr_jobs_with_status_per_category(
             status=TrailblazerStatus.FAILED, since_when=since_when
