@@ -9,11 +9,13 @@ from trailblazer.store.store import Store
 
 
 class Container(containers.DeclarativeContainer):
+    """Dependency injection container for the application."""
+
     slurm_host: str | None = os.environ.get("ANALYSIS_HOST")
 
     store = providers.Singleton(Store)
     slurm_client = providers.Singleton(SlurmCLIClient, host=slurm_host)
-    slurm_service = providers.Singleton(SlurmCLIService, client=slurm_client)
 
+    slurm_service = providers.Singleton(SlurmCLIService, client=slurm_client)
     job_service = providers.Factory(JobService, store=store, slurm_service=slurm_service)
     analysis_service = providers.Factory(AnalysisService, store=store)

@@ -5,7 +5,7 @@ from trailblazer.dto.create_job_request import CreateJobRequest
 from trailblazer.store.models import Analysis
 from trailblazer.store.store import Store
 
-TYPE_JSON = "application/json"
+JSON = "application/json"
 
 
 def test_add_job_to_analysis(client: FlaskClient, analysis: Analysis, store: Store):
@@ -17,9 +17,8 @@ def test_add_job_to_analysis(client: FlaskClient, analysis: Analysis, store: Sto
     data: str = create_job_request.model_dump_json()
 
     # WHEN sending the request
-    response = client.post(
-        f"/api/v1/analysis/{analysis_id}/jobs", data=data, content_type=TYPE_JSON
-    )
+    jobs_endpoint: str = f"/api/v1/analysis/{analysis_id}/jobs"
+    response = client.post(jobs_endpoint, data=data, content_type=JSON)
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.CREATED
