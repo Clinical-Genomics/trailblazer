@@ -498,10 +498,8 @@ def test_scan(
     # GIVEN populated Trailblazer database with pending analyses
 
     # GIVEN an analysis that is pending
-    trailblazer_db: MockStore = trailblazer_context["trailblazer_db"]
-    analysis: Analysis | None = trailblazer_db.get_latest_analysis_for_case(
-        case_id=ongoing_analysis_case_id
-    )
+    db: MockStore = trailblazer_context["trailblazer_db"]
+    analysis: Analysis | None = db.get_latest_analysis_for_case(ongoing_analysis_case_id)
     assert analysis.status == TrailblazerStatus.PENDING
 
     # WHEN running trailblazer scan command
@@ -509,9 +507,7 @@ def test_scan(
 
     # THEN log that analyses are updated
     assert "All analyses updated" in caplog.text
-    analysis: Analysis | None = trailblazer_db.get_latest_analysis_for_case(
-        case_id=ongoing_analysis_case_id
-    )
+    analysis: Analysis | None = db.get_latest_analysis_for_case(ongoing_analysis_case_id)
 
     # THEN the status of analysis should be updated
     assert analysis.status == TrailblazerStatus.RUNNING

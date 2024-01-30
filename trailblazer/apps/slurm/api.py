@@ -30,19 +30,27 @@ def cancel_slurm_job(slurm_id: int, analysis_host: str | None = None) -> None:
     subprocess.Popen(scancel_commands)
 
 
+def get_slurm_queue(job_ids: str, analysis_host: str | None = None) -> SqueueResult:
+    """Return squeue output from ongoing analyses in SLURM."""
+    queue_output: str = get_slurm_queue_output(job_ids=job_ids, analysis_host=analysis_host)
+    return get_squeue_result(queue_output)
+
+
 def get_slurm_squeue_output(slurm_job_id_file: Path, analysis_host: str | None = None) -> str:
     """Return squeue output from ongoing analyses in SLURM."""
     slurm_job_id_file_content: dict[str, list[str]] = ReadFile.get_content_from_file(
         file_format=FileFormat.YAML, file_path=slurm_job_id_file
     )
+    slurm_jobs: str = _get_squeue_jobs_flag_input(slurm_job_id_file_content)
+    return get_slurm_queue_output(job_ids=slurm_jobs, analysis_host=analysis_host)
 
-    slurm_jobs: str = _get_squeue_jobs_flag_input(
-        slurm_job_id_file_content=slurm_job_id_file_content
-    )
+
+def get_slurm_queue_output(job_ids: str, analysis_host: str | None = None) -> str:
+    """Return squeue output from ongoing analyses in SLURM."""
     squeue_commands: list[str] = [
         "squeue",
         "--jobs",
-        slurm_jobs,
+        job_ids,
         "--states=all",
         "--format",
         "%A,%j,%T,%l,%M,%S",
@@ -113,17 +121,10 @@ def _is_analysis_ongoing(jobs_status_distribution: dict[str, float]) -> bool:
 
 def get_current_analysis_status(jobs_status_distribution: dict[str, float]) -> str:
     """Return current analysis status based on jobs status distribution."""
-    single_analysis_status: str | None = _get_analysis_single_status(
-        jobs_status_distribution=jobs_status_distribution
-    )
-    if single_analysis_status:
+    if single_analysis_status := _get_analysis_single_status(jobs_status_distribution):
         return single_analysis_status
-    is_analysis_ongoing: bool = _is_analysis_ongoing(
-        jobs_status_distribution=jobs_status_distribution
-    )
-    is_analysis_failed: bool = _is_analysis_failed(
-        jobs_status_distribution=jobs_status_distribution
-    )
+    is_analysis_ongoing: bool = _is_analysis_ongoing(jobs_status_distribution)
+    is_analysis_failed: bool = _is_analysis_failed(jobs_status_distribution)
     if is_analysis_failed:
         return TrailblazerStatus.ERROR if is_analysis_ongoing else TrailblazerStatus.FAILED
     if is_analysis_ongoing:
