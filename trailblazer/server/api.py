@@ -39,8 +39,6 @@ from trailblazer.services.analysis_service import AnalysisService
 from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Analysis, Info
 
-ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
-
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
 
