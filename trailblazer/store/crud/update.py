@@ -263,7 +263,7 @@ class UpdateHandler(BaseHandler):
         return analysis
 
     def update_job(self, job_id: int, job_info: SlurmJobInfo) -> Job:
-        job: Job | None = self.get_job_by_id(job_id)
+        job: Job = self.get_job_by_id(job_id)
         job.name = job_info.name
         job.status = job_info.status
         job.elapsed = job_info.elapsed

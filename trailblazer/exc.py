@@ -10,6 +10,10 @@ class MissingAnalysis(TrailblazerError):
     """Error for missing analysis"""
 
 
+class MissingJob(TrailblazerError):
+    pass
+
+
 class MissingFileError(TrailblazerError):
     pass
 

@@ -5,6 +5,7 @@ from sqlalchemy import desc
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import JobType, TrailblazerStatus
+from trailblazer.exc import MissingJob
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.filters.analyses_filters import (
     AnalysisFilter,
@@ -183,9 +184,12 @@ class ReadHandler(BaseHandler):
             statuses=ongoing_statuses,
         )
 
-    def get_job_by_id(self, job_id: int) -> Job | None:
-        return apply_job_filters(
+    def get_job_by_id(self, job_id: int) -> Job:
+        job: Job | None = apply_job_filters(
             filters=[JobFilter.FILTER_BY_ID],
             jobs=self.get_query(Job),
             job_id=job_id,
         ).first()
+        if job:
+            return job
+        raise MissingJob(f"Job {job_id} does not exist.")
