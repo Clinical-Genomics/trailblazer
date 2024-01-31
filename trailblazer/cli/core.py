@@ -196,9 +196,9 @@ def cancel(context, analysis_id):
         LOG.error(error)
 
 
-@base.command()
+@base.command("get-job")
 @click.argument("job_id", type=int)
-def api_cancel(job_id: int):
+def get_job(job_id: int):
     token = os.environ.get("SLURM_API_TOKEN")
     user = os.environ.get("SLURM_API_USER")
     slurm_client = SlurmApiClient(
