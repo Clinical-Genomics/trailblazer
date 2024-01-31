@@ -30,4 +30,5 @@ class SlurmApiClient:
         endpoint: str = f"{self.base_url}/slurm/v0.0.40/job/{job_id}"
         response = requests.delete(endpoint, headers=self.headers)
         response.raise_for_status()
+        print(json.dumps(response.json(), indent=4))
         return SlurmCancelJobResponse.model_validate(response.json())
