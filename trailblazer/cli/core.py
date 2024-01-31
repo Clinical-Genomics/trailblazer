@@ -206,6 +206,16 @@ def get_job(job_id: int):
     slurm_client = SlurmApiClient(base_url=url, access_token=token, user_name=user)
     slurm_client.get_job(str(job_id))
 
+@base.command("cancel-job")
+@click.argument("job_id", type=int)
+def cancel_job(job_id: int):
+    token = os.environ.get("SLURM_API_TOKEN")
+    user = os.environ.get("SLURM_API_USER")
+    url = os.environ.get("SLURM_API_URL")
+
+    slurm_client = SlurmApiClient(base_url=url, access_token=token, user_name=user)
+    slurm_client.cancel_job(str(job_id))
+
 
 @base.command("set-completed")
 @click.argument("analysis_id", type=int)
