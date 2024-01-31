@@ -1,4 +1,5 @@
 from datetime import datetime
+import logging
 
 from trailblazer.dto import CreateJobRequest, FailedJobsRequest, FailedJobsResponse, JobResponse
 from trailblazer.services.slurm.dtos import SlurmJobInfo
@@ -7,6 +8,8 @@ from trailblazer.services.utils import create_job_response, create_failed_jobs_r
 from trailblazer.store.models import Job
 from trailblazer.store.store import Store
 from trailblazer.utils.datetime import get_date_number_of_days_ago
+
+LOG = logging.getLogger(__name__)
 
 
 class JobService:
@@ -26,5 +29,6 @@ class JobService:
     def update_upload_jobs(self) -> None:
         jobs: list[Job] = self.store.get_ongoing_upload_jobs()
         for job in jobs:
+            LOG.info(f"Updating upload job {job.id}")
             updated_job: SlurmJobInfo = self.slurm_service.get_job_info(job.slurm_id)
             self.store.update_job(job_id=job.id, job_info=updated_job)
