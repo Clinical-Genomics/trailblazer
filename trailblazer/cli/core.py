@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -10,6 +11,7 @@ from sqlalchemy.orm import scoped_session
 import trailblazer
 from trailblazer.cli.utils.ls_helper import _get_ls_analysis_message
 from trailblazer.cli.utils.user_helper import is_existing_user, is_user_archived
+from trailblazer.clients.slurm_api_client.slurm_api_client import SlurmApiClient
 from trailblazer.constants import TRAILBLAZER_TIME_STAMP, FileFormat, TrailblazerStatus
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
@@ -192,6 +194,18 @@ def cancel(context, analysis_id):
         trailblazer_db.cancel_ongoing_analysis(analysis_id=analysis_id, email=environ_email())
     except Exception as error:
         LOG.error(error)
+
+
+@base.command()
+@click.argument("job_id", type=int)
+def api_cancel(job_id: int):
+    token = os.environ.get("SLURM_API_TOKEN")
+    user = os.environ.get("SLURM_API_USER")
+    slurm_client = SlurmApiClient(
+        base_url="http://localhost:6820", access_token=token, user_name=user
+    )
+    job_info = slurm_client.get_job(str(job_id))
+    print(job_info)
 
 
 @base.command("set-completed")
