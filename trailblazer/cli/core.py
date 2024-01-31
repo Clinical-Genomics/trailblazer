@@ -201,9 +201,9 @@ def cancel(context, analysis_id):
 def get_job(job_id: int):
     token = os.environ.get("SLURM_API_TOKEN")
     user = os.environ.get("SLURM_API_USER")
-    slurm_client = SlurmApiClient(
-        base_url="http://localhost:6820", access_token=token, user_name=user
-    )
+    url = os.environ.get("SLURM_API_URL")
+
+    slurm_client = SlurmApiClient(base_url=url, access_token=token, user_name=user)
     job_info = slurm_client.get_job(str(job_id))
     print(job_info)
 
