@@ -204,8 +204,7 @@ def get_job(job_id: int):
     url = os.environ.get("SLURM_API_URL")
 
     slurm_client = SlurmApiClient(base_url=url, access_token=token, user_name=user)
-    job_info = slurm_client.get_job(str(job_id))
-    print(job_info)
+    slurm_client.get_job(str(job_id))
 
 
 @base.command("set-completed")
