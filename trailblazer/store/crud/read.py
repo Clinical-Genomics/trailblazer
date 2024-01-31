@@ -181,7 +181,7 @@ class ReadHandler(BaseHandler):
             jobs=self.get_query(Job),
             job_type=JobType.UPLOAD,
             statuses=ongoing_statuses,
-        )
+        ).all()
 
     def get_job_by_id(self, job_id: int) -> Job | None:
         return apply_job_filters(
