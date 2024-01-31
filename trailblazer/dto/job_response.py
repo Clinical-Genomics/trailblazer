@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from trailblazer.constants import JobType, SlurmJobStatus
+from trailblazer.constants import SlurmJobStatus
 
 
 class JobResponse(BaseModel):

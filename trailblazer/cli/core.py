@@ -16,6 +16,7 @@ from trailblazer.containers import Container
 from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.models import Config
+from trailblazer.server.wiring import setup_dependency_injection
 from trailblazer.services.analysis_service import AnalysisService
 from trailblazer.services.job_service import JobService
 from trailblazer.store.database import get_session, initialize_database
@@ -64,6 +65,7 @@ def base(
         log_format = "%(message)s" if sys.stdout.isatty() else None
 
     coloredlogs.install(level=log_level, fmt=log_format)
+    setup_dependency_injection()
 
     validated_config = Config(
         **ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=Path(config.name))
