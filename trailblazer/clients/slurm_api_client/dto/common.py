@@ -55,11 +55,11 @@ class SlurmJobInfo(BaseModel):
     deadline: NumberWithFlags | None = None
     delay_boot: NumberWithFlags | None = None
     dependency: str | None = None
-    derived_exit_code: str | None = None
+    #derived_exit_code: str | None = None
     eligible_time: NumberWithFlags | None = None
     end_time: NumberWithFlags | None = None
     excluded_nodes: str | None = None
-    exit_code: str | None = None
+    #exit_code: str | None = None
     extra: str | None = None
     failed_node: str | None = None
     features: str | None = None
@@ -73,7 +73,7 @@ class SlurmJobInfo(BaseModel):
     het_job_id_set: str | None = None
     het_job_offset: NumberWithFlags | None = None
     job_id: int | None = None
-    job_resources: str | None = None
+    #job_resources: str | None = None
     job_size_str: list[str] | None = None
     job_state: list[str] | None = None
     last_sched_evaluation: NumberWithFlags | None = None
@@ -102,7 +102,7 @@ class SlurmJobInfo(BaseModel):
     memory_per_node: NumberWithFlags | None = None
     minimum_cpus_per_node: NumberWithFlags | None = None
     minimum_tmp_disk_per_node: NumberWithFlags | None = None
-    power: str | None = None
+    #power: str | None = None
     preempt_time: NumberWithFlags | None = None
     preemptable_time: NumberWithFlags | None = None
     pre_sus_time: NumberWithFlags | None = None
