@@ -47,3 +47,4 @@ class AnalysisResponse(BaseModel):
     user: User | None = None
     latest_failed_job: Job | None = None
     jobs: list[Job] = []
+    upload_jobs: list[Job] = []
