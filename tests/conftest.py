@@ -18,6 +18,7 @@ from trailblazer.constants import (
     TOWER_TIMESTAMP_FORMAT,
     FileExtension,
     FileFormat,
+    JobType,
     TrailblazerStatus,
 )
 from trailblazer.io.controller import ReadFile
@@ -27,7 +28,7 @@ from trailblazer.store.database import (
     get_session,
     initialize_database,
 )
-from trailblazer.store.models import Analysis
+from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 
 
@@ -344,3 +345,20 @@ def tower_case_config() -> dict[str, dict]:
             "analysis_id": 1,
         },
     }
+
+
+@pytest.fixture
+def analysis_with_upload_jobs(case_id: str) -> Analysis:
+    upload_job = Job(
+        name="upload",
+        slurm_id="123456",
+        job_type=JobType.UPLOAD,
+        status=TrailblazerStatus.COMPLETED,
+        started_at=datetime.now(),
+        elapsed=10,
+    )
+    analysis = Analysis(case_id=case_id)
+    analysis.jobs.append(upload_job)
+    session = get_session()
+    session.add(analysis)
+    return analysis

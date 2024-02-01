@@ -14,7 +14,7 @@ def test_delete_analysis_jobs(analysis_store: MockStore, tower_jobs: list[dict],
     assert not analysis.jobs
 
     # WHEN jobs are updated
-    analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
+    analysis_store.update_jobs(jobs=tower_jobs[:2])
 
     assert analysis.jobs
 
@@ -81,3 +81,15 @@ def test_delete_analysis_with_ongoing_analysis_no_force(analysis_store: MockStor
         analysis_store.delete_analysis(analysis_id=analysis.id)
 
     # THEN error should be raised
+
+
+def test_upload_jobs_remain_when_analysis_jobs_are_deleted(
+    analysis_store: MockStore, analysis_with_upload_jobs: Analysis
+):
+    # GIVEN an analysis with upload jobs
+
+    # WHEN deleting its analysis jobs
+    analysis_store.delete_analysis_jobs(analysis_with_upload_jobs)
+
+    # THEN the upload job remains
+    assert analysis_with_upload_jobs.jobs
