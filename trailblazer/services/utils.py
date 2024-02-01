@@ -3,7 +3,7 @@ from trailblazer.dto.job_response import JobResponse
 from trailblazer.store.models import Analysis, Job
 
 
-def create_jobs_response(failed_job_statistics: list[dict]) -> FailedJobsResponse:
+def create_failed_jobs_response(failed_job_statistics: list[dict]) -> FailedJobsResponse:
     return FailedJobsResponse(jobs=failed_job_statistics)
 
 

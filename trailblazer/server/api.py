@@ -6,7 +6,6 @@ from flask import (
     Blueprint,
     Response,
     abort,
-    current_app,
     g,
     jsonify,
     make_response,
@@ -14,7 +13,9 @@ from flask import (
 )
 from google.auth import jwt
 from pydantic import ValidationError
+from dependency_injector.wiring import inject, Provide
 
+from trailblazer.containers import Container
 from trailblazer.dto import (
     AnalysesRequest,
     AnalysesResponse,
@@ -34,10 +35,9 @@ from trailblazer.server.utils import (
     parse_job_create_request,
     stringify_timestamps,
 )
-from trailblazer.services import AnalysisService, JobService
+from trailblazer.services.analysis_service import AnalysisService
+from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Analysis, Info
-
-ANALYSIS_HOST: str = os.environ.get("ANALYSIS_HOST")
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
@@ -62,8 +62,8 @@ def before_request():
 
 
 @blueprint.route("/analyses", methods=["GET"])
-def get_analyses():
-    analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
+@inject
+def get_analyses(analysis_service: AnalysisService = Provide[Container.analysis_service]):
     try:
         query: AnalysesRequest = parse_analyses_request(request)
         response: AnalysesResponse = analysis_service.get_analyses(query)
@@ -73,8 +73,10 @@ def get_analyses():
 
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET"])
-def get_analysis(analysis_id):
-    analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
+@inject
+def get_analysis(
+    analysis_id: int, analysis_service: AnalysisService = Provide[Container.analysis_service]
+):
     try:
         response: AnalysisResponse = analysis_service.get_analysis(analysis_id)
         return jsonify(response.model_dump()), HTTPStatus.OK
@@ -83,8 +85,8 @@ def get_analysis(analysis_id):
 
 
 @blueprint.route("/analysis/<int:analysis_id>/jobs", methods=["POST"])
-def add_job(analysis_id: int):
-    job_service: JobService = current_app.extensions.get("job_service")
+@inject
+def add_job(analysis_id: int, job_service: JobService = Provide[Container.job_service]):
     try:
         job_request: CreateJobRequest = parse_job_create_request(request)
         response: JobResponse = job_service.add_job(analysis_id=analysis_id, data=job_request)
@@ -96,8 +98,10 @@ def add_job(analysis_id: int):
 
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["PUT"])
-def update_analysis(analysis_id):
-    analysis_service: AnalysisService = current_app.extensions.get("analysis_service")
+@inject
+def update_analysis(
+    analysis_id: int, analysis_service: AnalysisService = Provide[Container.analysis_service]
+):
     try:
         update: AnalysisUpdateRequest = parse_analysis_update_request(request)
         response: AnalysisResponse = analysis_service.update_analysis(
@@ -124,8 +128,8 @@ def me():
 
 
 @blueprint.route("/aggregate/jobs", methods=["GET"])
-def get_failed_jobs():
-    job_service: JobService = current_app.extensions.get("job_service")
+@inject
+def get_failed_jobs(job_service: JobService = Provide[Container.job_service]):
     try:
         query: FailedJobsRequest = parse_get_failed_jobs_request(request)
         response: FailedJobsResponse = job_service.get_failed_jobs(query)
