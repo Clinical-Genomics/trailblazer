@@ -26,10 +26,12 @@ LOG = logging.getLogger(__name__)
 class UpdateHandler(BaseHandler):
     """Class for updating items in the database."""
 
-    def update_analysis_jobs(self, analysis: Analysis, jobs: list[dict]) -> None:
+    def update_analysis_jobs(self, jobs: list[dict]) -> None:
         """Update jobs in the analysis."""
-        analysis.jobs = [Job(**job) for job in jobs]
         session: Session = get_session()
+        for job in jobs:
+            updated_job = Job(**job)
+            session.add(updated_job)
         session.commit()
 
     def update_user_is_archived(self, user: User, archive: bool = True) -> None:
@@ -71,14 +73,14 @@ class UpdateHandler(BaseHandler):
         """Update analysis jobs from supplied squeue results."""
         if len(squeue_result.jobs) == 0:
             return
+        self.delete_analysis_jobs(analysis)
+
+        session: Session = get_session()
         for job in squeue_result.jobs:
             job.step = reformat_squeue_result_job_step(
                 data_analysis=analysis.data_analysis, job_step=job.step
             )
-
-        self.delete_analysis_jobs(analysis=analysis)
-        analysis.jobs = [
-            Job(
+            new_job = Job(
                 analysis_id=analysis.id,
                 slurm_id=job.id,
                 name=job.step,
@@ -86,9 +88,7 @@ class UpdateHandler(BaseHandler):
                 started_at=job.started_at,
                 elapsed=job.time_elapsed,
             )
-            for job in squeue_result.jobs
-        ]
-        session: Session = get_session()
+            session.add(new_job)
         session.commit()
 
     def _update_analysis_from_slurm_squeue_output(
@@ -138,7 +138,7 @@ class UpdateHandler(BaseHandler):
         analysis.logged_at = datetime.now()
         self.delete_analysis_jobs(analysis)
         jobs: list[dict] = tower_api.get_jobs(analysis.id)
-        self.update_analysis_jobs(analysis=analysis, jobs=jobs)
+        self.update_analysis_jobs(jobs)
         session: Session = get_session()
         session.commit()
         LOG.debug(f"Updated status {analysis.case_id} - {analysis.id}: {analysis.status} ")
