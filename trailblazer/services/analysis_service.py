@@ -3,6 +3,7 @@ from trailblazer.dto import (
     AnalysesResponse,
     AnalysisResponse,
     AnalysisUpdateRequest,
+    CreateAnalysisRequest,
 )
 from trailblazer.exc import MissingAnalysis
 from trailblazer.services.utils import create_analysis_response
@@ -32,6 +33,10 @@ class AnalysisService:
             status=update.status,
             is_visible=update.is_visible,
         )
+        return create_analysis_response(analysis)
+
+    def add_pending_analysis(self, request_data: CreateAnalysisRequest) -> AnalysisResponse:
+        analysis: Analysis = self.store.add_pending_analysis(request_data)
         return create_analysis_response(analysis)
 
     def create_analyses_response(
