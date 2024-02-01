@@ -4,7 +4,7 @@ from trailblazer.services.slurm.dtos import SlurmJobInfo
 
 def create_job_info_dto(job: SqueueJob) -> SlurmJobInfo:
     return SlurmJobInfo(
-        job_name=job.step,
+        name=job.step,
         slurm_id=job.id,
         status=job.status,
         started_at=job.started_at,
