@@ -19,6 +19,6 @@ def test_update_upload_jobs(
     job_service.update_upload_jobs()
 
     # THEN the upload job is marked as completed
-    analysis = job_service.store.get_analysis_with_id(analysis.id)
+    analysis: Analysis = job_service.store.get_analysis_with_id(analysis.id)
     assert analysis.upload_jobs
     assert analysis.upload_jobs[0].status == SlurmJobStatus.COMPLETED
