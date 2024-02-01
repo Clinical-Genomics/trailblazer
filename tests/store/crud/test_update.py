@@ -26,7 +26,7 @@ def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: list[dict],
     assert not analysis.jobs
 
     # WHEN jobs are updated
-    analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
+    analysis_store.update_jobs(jobs=tower_jobs[:2])
 
     # THEN there should be jobs
     assert analysis.jobs
@@ -191,8 +191,11 @@ def test_cancel_ongoing_slurm_analysis(
         case_id=ongoing_analysis_case_id
     )
 
+    for job in tower_jobs:
+        job["analysis_id"] = analysis.id
+
     # Analysis should have jobs that can be cancelled
-    analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
+    analysis_store.update_jobs(jobs=tower_jobs[:2])
     assert analysis.jobs
 
     # WHEN running cancel ongoing analysis
@@ -396,7 +399,7 @@ def test_update_tower_jobs(analysis_store: MockStore, tower_jobs: list[dict], ca
     assert not analysis.jobs
 
     # WHEN jobs are updated
-    analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
+    analysis_store.update_jobs(jobs=tower_jobs[:2])
 
     # THEN jobs should be updated
     assert len(analysis.jobs) == 2

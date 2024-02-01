@@ -2,7 +2,7 @@ import logging
 
 from sqlalchemy.orm import Session
 
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.constants import JobType, TrailblazerStatus
 from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.database import get_session
@@ -18,7 +18,8 @@ class DeleteHandler(BaseHandler):
         """Delete all jobs linked to the given analysis."""
         session: Session = get_session()
         for job in analysis.jobs:
-            session.delete(job)
+            if job.job_type == JobType.ANALYSIS:
+                session.delete(job)
         session.commit()
 
     def delete_analysis(self, analysis_id: int, force: bool = False) -> None:
