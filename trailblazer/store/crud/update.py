@@ -26,7 +26,7 @@ LOG = logging.getLogger(__name__)
 class UpdateHandler(BaseHandler):
     """Class for updating items in the database."""
 
-    def update_analysis_jobs(self, jobs: list[dict]) -> None:
+    def update_jobs(self, jobs: list[dict]) -> None:
         """Update jobs in the analysis."""
         session: Session = get_session()
         for job in jobs:
@@ -138,7 +138,7 @@ class UpdateHandler(BaseHandler):
         analysis.logged_at = datetime.now()
         self.delete_analysis_jobs(analysis)
         jobs: list[dict] = tower_api.get_jobs(analysis.id)
-        self.update_analysis_jobs(jobs)
+        self.update_jobs(jobs)
         session: Session = get_session()
         session.commit()
         LOG.debug(f"Updated status {analysis.case_id} - {analysis.id}: {analysis.status} ")

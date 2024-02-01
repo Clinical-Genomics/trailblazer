@@ -14,7 +14,7 @@ def test_delete_analysis_jobs(analysis_store: MockStore, tower_jobs: list[dict],
     assert not analysis.jobs
 
     # WHEN jobs are updated
-    analysis_store.update_analysis_jobs(analysis=analysis, jobs=tower_jobs[:2])
+    analysis_store.update_jobs(jobs=tower_jobs[:2])
 
     assert analysis.jobs
 
