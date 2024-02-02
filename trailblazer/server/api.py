@@ -66,8 +66,8 @@ def before_request():
 @inject
 def get_analyses(analysis_service: AnalysisService = Provide[Container.analysis_service]):
     try:
-        query: AnalysesRequest = parse_analyses_request(request)
-        response: AnalysesResponse = analysis_service.get_analyses(query)
+        request_data: AnalysesRequest = parse_analyses_request(request)
+        response: AnalysesResponse = analysis_service.get_analyses(request_data)
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
@@ -104,9 +104,9 @@ def update_analysis(
     analysis_id: int, analysis_service: AnalysisService = Provide[Container.analysis_service]
 ):
     try:
-        update: AnalysisUpdateRequest = parse_analysis_update_request(request)
+        request_data: AnalysisUpdateRequest = parse_analysis_update_request(request)
         response: AnalysisResponse = analysis_service.update_analysis(
-            analysis_id=analysis_id, update=update
+            analysis_id=analysis_id, update=request_data
         )
         return jsonify(response.model_dump()), HTTPStatus.OK
     except MissingAnalysis as error:
