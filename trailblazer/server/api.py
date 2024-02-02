@@ -38,7 +38,7 @@ from trailblazer.server.utils import (
 )
 from trailblazer.services.analysis_service import AnalysisService
 from trailblazer.services.job_service import JobService
-from trailblazer.store.models import Analysis, Info
+from trailblazer.store.models import Info
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
@@ -166,8 +166,6 @@ def post_add_pending_analysis(
         return jsonify(response.model_dump()), HTTPStatus.CREATED
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
-    except Exception as error:
-        return jsonify(error=str(error)), HTTPStatus.CONFLICT
 
 
 @blueprint.route("/set-analysis-uploaded", methods=["PUT"])
