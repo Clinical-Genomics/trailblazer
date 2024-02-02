@@ -23,6 +23,7 @@ class Analysis(BaseModel):
     id: int
     is_visible: bool = True
     logged_at: datetime | None = None
+    order_id: int | None = None
     out_dir: str | None = None
     priority: str | None = None
     progress: float = 0.0
