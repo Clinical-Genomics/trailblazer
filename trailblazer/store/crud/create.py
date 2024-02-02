@@ -25,7 +25,6 @@ class CreateHandler(BaseHandler):
             started_at=datetime.now(),
             status=TrailblazerStatus.PENDING,
             ticket_id=analysis_data.ticket_id,
-            type=analysis_data.type,
             workflow_manager=analysis_data.workflow_manager,
         )
 

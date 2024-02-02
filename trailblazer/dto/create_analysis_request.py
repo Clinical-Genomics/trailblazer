@@ -6,7 +6,6 @@ from trailblazer.constants import JobType, TrailblazerPriority, TrailblazerTypes
 class CreateAnalysisRequest(BaseModel):
     case_id: str
     email: str | None = None
-    type: JobType | None = JobType.ANALYSIS
     config_path: str
     out_dir: str
     priority: TrailblazerPriority
