@@ -89,6 +89,7 @@ class Analysis(Model):
     ticket_id = Column(types.String(32))
     uploaded_at = Column(types.DateTime)
     workflow_manager = Column(types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM)
+    order_id = Column(types.Integer, index=True)
 
     jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
 

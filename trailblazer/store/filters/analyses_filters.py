@@ -29,6 +29,11 @@ def filter_analyses_by_is_visible(analyses: Query, **kwargs) -> Query:
     return analyses.filter(Analysis.is_visible.is_(True))
 
 
+def filter_analyses_by_order_id(analyses: Query, order_id: int, **kwargs) -> Query:
+    """Filter analyses by case when is visible is true."""
+    return analyses.filter(Analysis.order_id == order_id)
+
+
 def filter_analyses_by_search_term(analyses: Query, search_term: str, **kwargs) -> Query:
     """Filter analyses by search term using multiple fields."""
     return analyses.filter(
@@ -85,6 +90,7 @@ class AnalysisFilter(Enum):
     FILTER_BY_ENTRY_ID: Callable = filter_analyses_by_entry_id
     FILTER_BY_SEARCH_TERM: Callable = filter_analyses_by_search_term
     FILTER_BY_IS_VISIBLE: Callable = filter_analyses_by_is_visible
+    FILTER_BY_ORDER_ID: Callable = filter_analyses_by_order_id
     FILTER_BY_PRIORITIES: Callable = filter_analyses_by_priorites
     FILTER_BY_STARTED_AT: Callable = filter_analyses_by_started_at
     FILTER_BY_STATUS: Callable = filter_analyses_by_status
@@ -97,12 +103,13 @@ def apply_analysis_filter(
     filter_functions: list[Callable],
     analysis_id: int | None = None,
     case_id: str | None = None,
-    search_term: str | None = None,
     comment: str | None = None,
+    order_id: int | None = None,
+    priorities: list[str] | None = None,
+    search_term: str | None = None,
     started_at: datetime | None = None,
     status: str | None = None,
     statuses: list[str] | None = None,
-    priorities: list[str] | None = None,
     types: list[str] | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
@@ -114,11 +121,12 @@ def apply_analysis_filter(
             analysis_id=analysis_id,
             case_id=case_id,
             comment=comment,
+            order_id=order_id,
+            priorities=priorities,
             search_term=search_term,
             started_at=started_at,
             status=status,
             statuses=statuses,
-            priorities=priorities,
             types=types,
         )
     return analyses
