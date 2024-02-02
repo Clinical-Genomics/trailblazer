@@ -12,6 +12,7 @@ from trailblazer.constants import (
     PIPELINES,
     PRIORITY_OPTIONS,
     TYPES,
+    JobType,
     TrailblazerStatus,
     WorkflowManager,
 )
@@ -50,6 +51,29 @@ def analysis() -> Analysis:
     )
     session: Session = get_session()
     session.add(analysis)
+    session.commit()
+    session.add(analysis)
+    session.commit()
+
+    analysis_job = Job(
+        analysis_id=analysis.id,
+        name="name",
+        slurm_id=1,
+        status=TrailblazerStatus.COMPLETED,
+        started_at=datetime.datetime.now(),
+        elapsed=1,
+        job_type=JobType.ANALYSIS,
+    )
+    upload_job = Job(
+        analysis_id=analysis.id,
+        name="name",
+        slurm_id=2,
+        status=TrailblazerStatus.RUNNING,
+        started_at=datetime.datetime.now(),
+        elapsed=1,
+        job_type=JobType.UPLOAD,
+    )
+    session.add_all([analysis_job, upload_job])
     session.commit()
     return analysis
 

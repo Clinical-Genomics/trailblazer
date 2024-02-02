@@ -21,6 +21,7 @@ from trailblazer.cli.core import (
     unarchive_user,
 )
 from trailblazer.constants import CharacterFormat, SlurmJobStatus, TrailblazerStatus
+from trailblazer.containers import Container
 from trailblazer.store.models import Analysis
 
 FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH: str = "trailblazer.store.crud.update.get_slurm_squeue_output"
@@ -478,7 +479,7 @@ def test_unarchive_user(
 
 def test_scan(
     cli_runner: CliRunner,
-    trailblazer_context: dict[str, MockStore],
+    analysis_store: MockStore,
     caplog,
     mocker,
     ongoing_analysis_case_id: str,
@@ -497,19 +498,14 @@ def test_scan(
 
     # GIVEN populated Trailblazer database with pending analyses
 
-    # GIVEN an analysis that is pending
-    db: MockStore = trailblazer_context["trailblazer_db"]
-    analysis: Analysis | None = db.get_latest_analysis_for_case(ongoing_analysis_case_id)
-    assert analysis.status == TrailblazerStatus.PENDING
-
     # WHEN running trailblazer scan command
-    cli_runner.invoke(scan, [], obj=trailblazer_context)
+    cli_runner.invoke(scan, [])
 
     # THEN log that analyses are updated
     assert "All analyses updated" in caplog.text
-    analysis: Analysis | None = db.get_latest_analysis_for_case(ongoing_analysis_case_id)
 
-    # THEN the status of analysis should be updated
+    # THEN the status of analysis should be updated from pending
+    analysis = analysis_store.get_latest_analysis_for_case(ongoing_analysis_case_id)
     assert analysis.status == TrailblazerStatus.RUNNING
 
 
