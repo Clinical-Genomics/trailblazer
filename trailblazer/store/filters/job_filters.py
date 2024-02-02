@@ -37,7 +37,7 @@ def filter_jobs_by_id(jobs: Query, job_id: int, **kwargs) -> Query:
     return jobs.filter(Job.id == job_id)
 
 
-def filter_by_job_type(jobs: Query, job_type: str):
+def filter_by_job_type(jobs: Query, job_type: str, **kwargs):
     return jobs.filter(Job.job_type == job_type)
 
 

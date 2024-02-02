@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from trailblazer.constants import JobType, SlurmJobStatus, TrailblazerStatus
+from trailblazer.constants import SlurmJobStatus, TrailblazerStatus
 from trailblazer.dto.create_job_request import CreateJobRequest
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.database import get_session

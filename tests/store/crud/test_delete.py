@@ -92,4 +92,7 @@ def test_upload_jobs_remain_when_analysis_jobs_are_deleted(
     analysis_store.delete_analysis_jobs(analysis_with_upload_jobs)
 
     # THEN the upload job remains
-    assert analysis_with_upload_jobs.jobs
+    assert analysis_with_upload_jobs.upload_jobs
+
+    # THEN the analysis jobs are deleted
+    assert not analysis_with_upload_jobs.analysis_jobs
