@@ -119,6 +119,7 @@ class Analysis(Model):
             "completed_at": self.completed_at,
             "status": self.status,
             "priority": self.priority,
+            "order_id": self.order_id,
             "out_dir": self.out_dir,
             "config_path": self.config_path,
             "comment": self.comment,

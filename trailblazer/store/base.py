@@ -7,10 +7,7 @@ from sqlalchemy.orm import Query, Session
 from trailblazer.constants import Pipeline
 from trailblazer.dto import AnalysesRequest
 from trailblazer.store.database import get_session
-from trailblazer.store.filters.analyses_filters import (
-    AnalysisFilter,
-    apply_analysis_filter,
-)
+from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
 from trailblazer.store.models import Analysis, Job, Model
 
 
@@ -56,7 +53,7 @@ class BaseHandler:
         filters: list[AnalysisFilter] = []
         if query.comment:
             filters.append(AnalysisFilter.FILTER_BY_EMPTY_COMMENT)
-        if query.order_id:
+        if query.order_id is not None:
             filters.append(AnalysisFilter.FILTER_BY_ORDER_ID)
         if query.priority:
             filters.append(AnalysisFilter.FILTER_BY_PRIORITIES)
