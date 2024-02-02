@@ -98,7 +98,7 @@ def analyses() -> list[Analysis]:
                         type=type,
                         workflow_manager=WorkflowManager.SLURM,
                         is_visible=True,
-                        order_id=len(analyses)
+                        order_id=len(analyses),
                     )
                     analyses.append(analysis)
                 analysis.comment = "comment"  # Ensure some analyses have a comment

@@ -7,17 +7,20 @@ Create Date: 2024-02-02 13:22:01.439426
 """
 
 # revision identifiers, used by Alembic.
-revision = '4b925b29ac45'
-down_revision = '2455fd7f51c4'
+revision = "4b925b29ac45"
+down_revision = "2455fd7f51c4"
 branch_labels = None
 depends_on = None
 
-from alembic import op
 import sqlalchemy as sa
+
+from alembic import op
 
 
 def upgrade():
-    op.add_column(table_name="analysis", column=sa.Column(name="order_id", type_=sa.Integer, index=True))
+    op.add_column(
+        table_name="analysis", column=sa.Column(name="order_id", type_=sa.Integer, index=True)
+    )
 
 
 def downgrade():
