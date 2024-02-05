@@ -89,6 +89,7 @@ class Analysis(Model):
     ticket_id = Column(types.String(32))
     uploaded_at = Column(types.DateTime)
     workflow_manager = Column(types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM)
+    order_id = Column(types.Integer, index=True)
 
     jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
 
@@ -118,6 +119,7 @@ class Analysis(Model):
             "completed_at": self.completed_at,
             "status": self.status,
             "priority": self.priority,
+            "order_id": self.order_id,
             "out_dir": self.out_dir,
             "config_path": self.config_path,
             "comment": self.comment,
