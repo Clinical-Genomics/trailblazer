@@ -30,7 +30,7 @@ def filter_analyses_by_is_visible(analyses: Query, **kwargs) -> Query:
 
 
 def filter_analyses_by_order_id(analyses: Query, order_id: int, **kwargs) -> Query:
-    """Filter analyses by case when is visible is true."""
+    """Filter analyses by order id."""
     return analyses.filter(Analysis.order_id == order_id)
 
 
