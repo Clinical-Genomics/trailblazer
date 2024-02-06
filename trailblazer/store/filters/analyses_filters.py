@@ -80,6 +80,10 @@ def filter_analyses_by_empty_comment(analyses: Query, **kwargs) -> Query:
     return analyses.filter(sqlalchemy.or_(Analysis.comment.is_(None), Analysis.comment == ""))
 
 
+def filter_analyses_by_most_recent(analyses: Query, **kwargs) -> Query:
+    return analyses.order_by(Analysis.started_at.desc()).limit(1)
+
+
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
@@ -96,6 +100,7 @@ class AnalysisFilter(Enum):
     FILTER_BY_STATUS: Callable = filter_analyses_by_status
     FILTER_BY_STATUSES: Callable = filter_analyses_by_statuses
     FILTER_BY_TYPES: Callable = filter_analyses_by_types
+    FILTER_BY_MOST_RECENT: Callable = filter_analyses_by_most_recent
 
 
 def apply_analysis_filter(
