@@ -20,4 +20,3 @@ class AnalysesRequest(BaseModel):
     comment: list[str] | None = []
     order_id: int | None = Field(alias="orderId", default=None)
     case_id: str | None = None
-    most_recent: bool | None = None

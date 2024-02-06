@@ -63,8 +63,6 @@ class BaseHandler:
             filters.append(AnalysisFilter.FILTER_BY_TYPES)
         if query.case_id:
             filters.append(AnalysisFilter.FILTER_BY_CASE_ID)
-        if query.most_recent:
-            filters.append(AnalysisFilter.FILTER_BY_MOST_RECENT)
 
         return apply_analysis_filter(
             filter_functions=filters,
