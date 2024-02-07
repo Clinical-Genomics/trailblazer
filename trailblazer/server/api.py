@@ -26,6 +26,7 @@ from trailblazer.dto import (
     FailedJobsRequest,
     FailedJobsResponse,
 )
+from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
 from trailblazer.server.utils import (
@@ -37,7 +38,7 @@ from trailblazer.server.utils import (
 )
 from trailblazer.services.analysis_service import AnalysisService
 from trailblazer.services.job_service import JobService
-from trailblazer.store.models import Analysis, Info
+from trailblazer.store.models import Info
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
@@ -65,8 +66,8 @@ def before_request():
 @inject
 def get_analyses(analysis_service: AnalysisService = Provide[Container.analysis_service]):
     try:
-        query: AnalysesRequest = parse_analyses_request(request)
-        response: AnalysesResponse = analysis_service.get_analyses(query)
+        request_data: AnalysesRequest = parse_analyses_request(request)
+        response: AnalysesResponse = analysis_service.get_analyses(request_data)
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
@@ -103,9 +104,9 @@ def update_analysis(
     analysis_id: int, analysis_service: AnalysisService = Provide[Container.analysis_service]
 ):
     try:
-        update: AnalysisUpdateRequest = parse_analysis_update_request(request)
+        request_data: AnalysisUpdateRequest = parse_analysis_update_request(request)
         response: AnalysisResponse = analysis_service.update_analysis(
-            analysis_id=analysis_id, update=update
+            analysis_id=analysis_id, update=request_data
         )
         return jsonify(response.model_dump()), HTTPStatus.OK
     except MissingAnalysis as error:
@@ -155,25 +156,16 @@ def post_get_latest_analysis():
 
 
 @blueprint.route("/add-pending-analysis", methods=["POST"])
-def post_add_pending_analysis():
-    """Add new analysis with status: pending."""
-    post_request: Response.json = request.json
+@inject
+def post_add_pending_analysis(
+    analysis_service: AnalysisService = Provide[Container.analysis_service],
+):
     try:
-        analysis: Analysis = store.add_pending_analysis(
-            case_id=post_request.get("case_id"),
-            email=post_request.get("email"),
-            type=post_request.get("type"),
-            config_path=post_request.get("config_path"),
-            out_dir=post_request.get("out_dir"),
-            priority=post_request.get("priority"),
-            data_analysis=post_request.get("data_analysis"),
-            ticket_id=post_request.get("ticket"),
-            workflow_manager=post_request.get("workflow_manager"),
-        )
-        raw_analysis: dict = stringify_timestamps(analysis.to_dict())
-        return jsonify(**raw_analysis), 201
-    except Exception as exception:
-        return jsonify(f"Exception: {exception}"), 409
+        request_data = CreateAnalysisRequest.model_validate(request.json)
+        response: AnalysisResponse = analysis_service.add_pending_analysis(request_data)
+        return jsonify(response.model_dump()), HTTPStatus.CREATED
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
 @blueprint.route("/set-analysis-uploaded", methods=["PUT"])

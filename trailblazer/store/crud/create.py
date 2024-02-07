@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 
 from trailblazer.constants import SlurmJobStatus, TrailblazerStatus
+from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.dto.create_job_request import CreateJobRequest
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.database import get_session
@@ -12,33 +13,25 @@ from trailblazer.store.models import Analysis, Job, User
 class CreateHandler(BaseHandler):
     """Class for creating items in the database."""
 
-    def add_pending_analysis(
-        self,
-        case_id: str,
-        config_path: str,
-        out_dir: str,
-        priority: str,
-        type: str,
-        email: str = None,
-        data_analysis: str = None,
-        ticket_id: str = None,
-        workflow_manager: str = None,
-    ) -> Analysis:
-        """Add pending analysis with user if supplied with email."""
+    def add_pending_analysis(self, analysis_data: CreateAnalysisRequest) -> Analysis:
         session: Session = get_session()
+
         new_analysis = Analysis(
-            config_path=config_path,
-            data_analysis=data_analysis,
-            case_id=case_id,
-            out_dir=out_dir,
-            priority=priority,
+            config_path=analysis_data.config_path,
+            data_analysis=analysis_data.data_analysis,
+            case_id=analysis_data.case_id,
+            out_dir=analysis_data.out_dir,
+            priority=analysis_data.priority,
             started_at=datetime.now(),
             status=TrailblazerStatus.PENDING,
-            ticket_id=ticket_id,
-            type=type,
-            workflow_manager=workflow_manager,
+            ticket_id=analysis_data.ticket_id,
+            workflow_manager=analysis_data.workflow_manager,
         )
-        new_analysis.user = self.get_user(email=email) if email else None
+
+        if analysis_data.email:
+            user: User = self.get_user(analysis_data.email)
+            new_analysis.user = user
+
         session.add(new_analysis)
         session.commit()
         return new_analysis
