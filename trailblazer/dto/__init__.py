@@ -6,3 +6,4 @@ from trailblazer.dto.failed_jobs_request import FailedJobsRequest  # noqa: F401
 from trailblazer.dto.failed_jobs_response import FailedJobsResponse  # noqa: F401
 from trailblazer.dto.create_job_request import CreateJobRequest  # noqa: F401
 from trailblazer.dto.job_response import JobResponse  # noqa: F401
+from trailblazer.dto.create_analysis_request import CreateAnalysisRequest  # noqa: F401
