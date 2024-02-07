@@ -8,6 +8,7 @@ class CreateAnalysisRequest(BaseModel):
     email: str | None = None
     config_path: str
     out_dir: str
+    order_id: int | None = None
     priority: TrailblazerPriority
     data_analysis: TrailblazerTypes | None = None
     ticket_id: str | None = None
