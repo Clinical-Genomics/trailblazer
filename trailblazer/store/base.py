@@ -61,6 +61,8 @@ class BaseHandler:
             filters.append(AnalysisFilter.FILTER_BY_STATUSES)
         if query.type:
             filters.append(AnalysisFilter.FILTER_BY_TYPES)
+        if query.case_id:
+            filters.append(AnalysisFilter.FILTER_BY_CASE_ID)
 
         return apply_analysis_filter(
             filter_functions=filters,
@@ -70,6 +72,7 @@ class BaseHandler:
             priorities=query.priority,
             statuses=query.status,
             types=query.type,
+            case_id=query.case_id,
         )
 
     def get_visible_analyses(self, analyses: Query) -> Query:
