@@ -1,7 +1,8 @@
-from flask.testing import FlaskClient
 from http import HTTPStatus
-from trailblazer.constants import TrailblazerPriority, TrailblazerTypes
 
+from flask.testing import FlaskClient
+
+from trailblazer.constants import TrailblazerPriority, TrailblazerTypes
 from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.store.store import Store
 
@@ -17,6 +18,7 @@ def test_adding_analysis(client: FlaskClient, store: Store):
         priority=TrailblazerPriority.NORMAL,
         out_dir="out_dir",
         ticket_id="ticket_id",
+        order_id=123,
     )
     data: str = create_analysis_request.model_dump_json()
 

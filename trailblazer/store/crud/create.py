@@ -21,6 +21,7 @@ class CreateHandler(BaseHandler):
             data_analysis=analysis_data.data_analysis,
             case_id=analysis_data.case_id,
             out_dir=analysis_data.out_dir,
+            order_id=analysis_data.order_id,
             priority=analysis_data.priority,
             started_at=datetime.now(),
             status=TrailblazerStatus.PENDING,
