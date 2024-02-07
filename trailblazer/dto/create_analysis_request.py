@@ -10,6 +10,6 @@ class CreateAnalysisRequest(BaseModel):
     out_dir: str
     order_id: int | None = None
     priority: TrailblazerPriority
-    data_analysis: TrailblazerTypes | None = None
+    data_analysis: str | None = None
     ticket_id: str | None = None
     workflow_manager: WorkflowManager | None = None
