@@ -18,3 +18,4 @@ class AnalysesRequest(BaseModel):
     priority: list[TrailblazerPriority] | None = []
     type: list[TrailblazerTypes] | None = []
     comment: list[str] | None = []
+    order_id: int | None = Field(alias="orderId", default=None)
