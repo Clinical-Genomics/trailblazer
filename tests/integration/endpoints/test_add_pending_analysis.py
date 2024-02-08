@@ -17,7 +17,7 @@ def test_adding_analysis(client: FlaskClient, store: Store):
         data_analysis=TrailblazerTypes.WGS,
         priority=TrailblazerPriority.NORMAL,
         out_dir="out_dir",
-        ticket_id="ticket_id",
+        ticket="ticket_id",
         order_id=123,
     )
     data: str = create_analysis_request.model_dump_json()
