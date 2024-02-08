@@ -12,4 +12,5 @@ class CreateAnalysisRequest(BaseModel):
     priority: TrailblazerPriority
     data_analysis: str | None = None
     ticket: str | None = None
+    type: TrailblazerTypes
     workflow_manager: WorkflowManager | None = None
