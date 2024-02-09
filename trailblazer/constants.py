@@ -40,7 +40,7 @@ class Workflow(StrEnum):
     BALSAMIC: str = "BALSAMIC"
     MIP_DNA: str = "MIP-DNA"
     MIP_RNA: str = "MIP-RNA"
-    SARS_COV_2: str = "SARS-COV-2"
+    MUTANT: str = "MUTANT"
 
 
 class SlurmSqueueHeader(StrEnum):

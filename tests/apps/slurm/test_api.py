@@ -45,7 +45,7 @@ def test_get_squeue_jobs_flag_input(job_id: dict[str, list[str]], expected_job_i
         (Workflow.MIP_DNA, "mipdnastep_jobstep", "mipdnastep"),
         (Workflow.MIP_RNA, "miprnastep_jobstep", "miprnastep"),
         (Workflow.BALSAMIC, "job.step.balsamicstep", "balsamicstep"),
-        (Workflow.SARS_COV_2, "job_step_mutantstep", "mutantstep"),
+        (Workflow.MUTANT, "job_step_mutantstep", "mutantstep"),
     ],
 )
 def test_reformat_squeue_result_job_step(workflow: str, raw_job_step: str, expected_job_step: str):
@@ -67,7 +67,7 @@ def test_reformat_squeue_result_job_step(workflow: str, raw_job_step: str, expec
         (Workflow.MIP_DNA, "jobstep", "jobstep"),
         (Workflow.MIP_RNA, "jobstep", "jobstep"),
         (Workflow.BALSAMIC, "job.step", "job.step"),
-        (Workflow.SARS_COV_2, "jobstep", "jobstep"),
+        (Workflow.MUTANT, "jobstep", "jobstep"),
     ],
 )
 def test_reformat_squeue_result_job_step_malformed_job_step(

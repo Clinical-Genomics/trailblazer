@@ -47,5 +47,5 @@ formatter_map: dict[str, Callable] = {
     Workflow.MIP_DNA: reformat_mip_job_step,
     Workflow.MIP_RNA: reformat_mip_job_step,
     Workflow.BALSAMIC: reformat_balsamic_job_step,
-    Workflow.SARS_COV_2: reformat_mutant_job_step,
+    Workflow.MUTANT: reformat_mutant_job_step,
 }
