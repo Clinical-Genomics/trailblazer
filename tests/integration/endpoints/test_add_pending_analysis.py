@@ -14,7 +14,7 @@ def test_adding_analysis(client: FlaskClient, store: Store):
     create_analysis_request = CreateAnalysisRequest(
         case_id="case_id",
         config_path="config_path",
-        data_analysis=TrailblazerTypes.WGS,
+        workflow=TrailblazerTypes.WGS,
         priority=TrailblazerPriority.NORMAL,
         out_dir="out_dir",
         ticket="ticket_id",

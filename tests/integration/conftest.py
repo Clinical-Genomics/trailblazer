@@ -38,7 +38,7 @@ def client(flask_app: Flask) -> Generator[FlaskClient, None, None]:
 def analysis() -> Analysis:
     analysis = Analysis(
         config_path="config_path",
-        data_analysis="data_analysis",
+        data_analysis="workflow",
         case_id="case_id",
         out_dir="out_dir",
         priority=PRIORITY_OPTIONS[0],
@@ -111,7 +111,7 @@ def analyses() -> list[Analysis]:
 def analysis_with_failed_job() -> Analysis:
     analysis = Analysis(
         config_path="config_path",
-        data_analysis="data_analysis",
+        data_analysis="workflow",
         case_id="case_id",
         out_dir="out_dir",
         priority=PRIORITY_OPTIONS[0],

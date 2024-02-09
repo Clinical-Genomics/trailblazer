@@ -18,7 +18,7 @@ class CreateHandler(BaseHandler):
 
         new_analysis = Analysis(
             config_path=analysis_data.config_path,
-            data_analysis=analysis_data.data_analysis,
+            data_analysis=analysis_data.workflow,
             case_id=analysis_data.case_id,
             out_dir=analysis_data.out_dir,
             order_id=analysis_data.order_id,
