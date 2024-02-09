@@ -169,7 +169,7 @@ TOWER_TASK_STATUS: dict[str, str] = {
     "UNKNOWN": SlurmJobStatus.FAILED,
 }
 
-PIPELINES = [pipeline.lower() for pipeline in Workflow]
+WORKFLOWS = [workflow.lower() for workflow in Workflow]
 
 
 class JobType(StrEnum):

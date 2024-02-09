@@ -108,8 +108,8 @@ def test_get_analyses_without_comments(client: FlaskClient, analyses: list[Analy
     assert len(response.json["analyses"]) == len(analyses_without_comments)
 
 
-def test_get_analyses_by_pipeline(client: FlaskClient, analyses: list[Analysis]):
-    # GIVEN analyses with different pipelines
+def test_get_analyses_by_workflow(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different workflows
 
     # WHEN retrieving all mip analyses
     response = client.get("/api/v1/analyses?workflow=mip-dna")
@@ -118,11 +118,14 @@ def test_get_analyses_by_pipeline(client: FlaskClient, analyses: list[Analysis])
     assert response.status_code == HTTPStatus.OK
 
     # THEN it should only return mip analyses
-    assert all(a["data_analysis"] == Workflow.MIP_DNA.lower() for a in response.json["analyses"])
+    assert all(
+        analysis["data_analysis"] == Workflow.MIP_DNA.lower()
+        for analysis in response.json["analyses"]
+    )
 
 
 def test_get_analyses_by_order_id(client: FlaskClient, analyses: list[Analysis]):
-    # GIVEN analyses with different pipelines
+    # GIVEN analyses with different workflows
 
     # WHEN retrieving all analyses with order_id=0
     response = client.get("/api/v1/analyses?orderId=0")
