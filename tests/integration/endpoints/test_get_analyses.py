@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from flask.testing import FlaskClient
 
-from trailblazer.constants import Pipeline, TrailblazerPriority, TrailblazerStatus
+from trailblazer.constants import TrailblazerPriority, TrailblazerStatus, Workflow
 from trailblazer.store.models import Analysis
 
 
@@ -118,7 +118,7 @@ def test_get_analyses_by_pipeline(client: FlaskClient, analyses: list[Analysis])
     assert response.status_code == HTTPStatus.OK
 
     # THEN it should only return mip analyses
-    assert all(a["data_analysis"] == Pipeline.MIP_DNA.lower() for a in response.json["analyses"])
+    assert all(a["data_analysis"] == Workflow.MIP_DNA.lower() for a in response.json["analyses"])
 
 
 def test_get_analyses_by_order_id(client: FlaskClient, analyses: list[Analysis]):

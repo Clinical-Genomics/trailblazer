@@ -4,10 +4,13 @@ from typing import Type
 from sqlalchemy import asc, desc, func
 from sqlalchemy.orm import Query, Session
 
-from trailblazer.constants import Pipeline
+from trailblazer.constants import Workflow
 from trailblazer.dto import AnalysesRequest
 from trailblazer.store.database import get_session
-from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
+from trailblazer.store.filters.analyses_filters import (
+    AnalysisFilter,
+    apply_analysis_filter,
+)
 from trailblazer.store.models import Analysis, Job, Model
 
 
@@ -42,7 +45,7 @@ class BaseHandler:
         """Return analyses by pipeline."""
         analyses: Query = self.get_query(Analysis)
         # Group existing variants of balsamic
-        balsamic_pipeline: str = Pipeline.BALSAMIC.lower()
+        balsamic_pipeline: str = Workflow.BALSAMIC.lower()
         if pipeline == balsamic_pipeline:
             analyses = analyses.filter(Analysis.data_analysis.startswith(balsamic_pipeline))
         if pipeline:

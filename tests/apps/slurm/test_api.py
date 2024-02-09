@@ -7,7 +7,7 @@ from trailblazer.apps.slurm.api import (
     reformat_squeue_result_job_step,
 )
 from trailblazer.apps.slurm.models import SqueueResult
-from trailblazer.constants import Pipeline, SlurmJobStatus, TrailblazerStatus
+from trailblazer.constants import SlurmJobStatus, TrailblazerStatus, Workflow
 
 
 def test_get_squeue_result(squeue_stream_jobs):
@@ -40,23 +40,21 @@ def test_get_squeue_jobs_flag_input(job_id: dict[str, list[str]], expected_job_i
 
 
 @pytest.mark.parametrize(
-    "data_analysis, raw_job_step, expected_job_step",
+    "workflow, raw_job_step, expected_job_step",
     [
-        (Pipeline.MIP_DNA, "mipdnastep_jobstep", "mipdnastep"),
-        (Pipeline.MIP_RNA, "miprnastep_jobstep", "miprnastep"),
-        (Pipeline.BALSAMIC, "job.step.balsamicstep", "balsamicstep"),
-        (Pipeline.SARS_COV_2, "job_step_mutantstep", "mutantstep"),
+        (Workflow.MIP_DNA, "mipdnastep_jobstep", "mipdnastep"),
+        (Workflow.MIP_RNA, "miprnastep_jobstep", "miprnastep"),
+        (Workflow.BALSAMIC, "job.step.balsamicstep", "balsamicstep"),
+        (Workflow.SARS_COV_2, "job_step_mutantstep", "mutantstep"),
     ],
 )
-def test_reformat_squeue_result_job_step(
-    data_analysis: str, raw_job_step: str, expected_job_step: str
-):
-    """Test reformatting job step name for each pipeline."""
+def test_reformat_squeue_result_job_step(workflow: str, raw_job_step: str, expected_job_step: str):
+    """Test reformatting job step name for each workflow."""
     # GIVEN a data analysis and a job step
 
     # WHEN reformation the job step
     reformatted_job_step: str = reformat_squeue_result_job_step(
-        data_analysis=data_analysis, job_step=raw_job_step
+        workflow=workflow, job_step=raw_job_step
     )
 
     # THEN it should return a reformatted job step
@@ -64,25 +62,25 @@ def test_reformat_squeue_result_job_step(
 
 
 @pytest.mark.parametrize(
-    "data_analysis, raw_job_step, expected_job_step",
+    "workflow, raw_job_step, expected_job_step",
     [
-        (Pipeline.MIP_DNA, "jobstep", "jobstep"),
-        (Pipeline.MIP_RNA, "jobstep", "jobstep"),
-        (Pipeline.BALSAMIC, "job.step", "job.step"),
-        (Pipeline.SARS_COV_2, "jobstep", "jobstep"),
+        (Workflow.MIP_DNA, "jobstep", "jobstep"),
+        (Workflow.MIP_RNA, "jobstep", "jobstep"),
+        (Workflow.BALSAMIC, "job.step", "job.step"),
+        (Workflow.SARS_COV_2, "jobstep", "jobstep"),
     ],
 )
 def test_reformat_squeue_result_job_step_malformed_job_step(
-    caplog, data_analysis: str, raw_job_step: str, expected_job_step: str
+    caplog, workflow: str, raw_job_step: str, expected_job_step: str
 ):
-    """Test reformatting job step name for each pipeline when job step is malformed."""
+    """Test reformatting job step name for each workflow when a job step is malformed."""
 
     caplog.set_level("ERROR")
     # GIVEN a data analysis and a job step
 
     # WHEN reformation the job step
     reformatted_job_step: str = reformat_squeue_result_job_step(
-        data_analysis=data_analysis, job_step=raw_job_step
+        workflow=workflow, job_step=raw_job_step
     )
 
     # THEN it should return the original job step

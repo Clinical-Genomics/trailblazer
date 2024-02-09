@@ -15,10 +15,10 @@ from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.tower.api import TowerAPI, get_tower_api
 from trailblazer.constants import SlurmJobStatus, TrailblazerStatus, WorkflowManager
 from trailblazer.exc import MissingAnalysis, TrailblazerError
+from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis, Job, User
-from trailblazer.services.slurm.dtos import SlurmJobInfo
 
 LOG = logging.getLogger(__name__)
 
@@ -78,7 +78,7 @@ class UpdateHandler(BaseHandler):
         session: Session = get_session()
         for job in squeue_result.jobs:
             job.step = reformat_squeue_result_job_step(
-                data_analysis=analysis.data_analysis, job_step=job.step
+                workflow=analysis.data_analysis, job_step=job.step
             )
             new_job = Job(
                 analysis_id=analysis.id,

@@ -86,9 +86,9 @@ def get_squeue_result(squeue_response: str) -> SqueueResult:
     return SqueueResult(jobs=squeue_response_content)
 
 
-def reformat_squeue_result_job_step(data_analysis: str, job_step: str) -> str:
+def reformat_squeue_result_job_step(workflow: str, job_step: str) -> str:
     """Standardise job step string according to data analysis."""
-    formatter: Callable = formatters.formatter_map.get(data_analysis, formatters.reformat_undefined)
+    formatter: Callable = formatters.formatter_map.get(workflow, formatters.reformat_undefined)
     return formatter(job_step=job_step)
 
 

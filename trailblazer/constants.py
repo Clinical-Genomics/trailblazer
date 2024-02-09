@@ -34,8 +34,8 @@ class WorkflowManager(StrEnum):
         return [task for task in cls]
 
 
-class Pipeline(StrEnum):
-    """Analysis pipeline names."""
+class Workflow(StrEnum):
+    """Analysis workflow names."""
 
     BALSAMIC: str = "BALSAMIC"
     MIP_DNA: str = "MIP-DNA"
@@ -169,7 +169,7 @@ TOWER_TASK_STATUS: dict[str, str] = {
     "UNKNOWN": SlurmJobStatus.FAILED,
 }
 
-PIPELINES = [pipeline.lower() for pipeline in Pipeline]
+PIPELINES = [pipeline.lower() for pipeline in Workflow]
 
 
 class JobType(StrEnum):
