@@ -69,27 +69,26 @@ class Analysis(Model):
         UniqueConstraint("case_id", "started_at", "status", name="_uc_case_id_start_status"),
     )
 
-    id = Column(types.Integer, primary_key=True)
     case_id = Column(types.String(128), nullable=False)
-
-    version = Column(types.String(32))
-    logged_at = Column(types.DateTime, default=datetime.datetime.now)
-    started_at = Column(types.DateTime)
-    completed_at = Column(types.DateTime)
-    status = Column(types.Enum(*TrailblazerStatus.statuses()))
-    priority = Column(types.Enum(*PRIORITY_OPTIONS))
-    out_dir = Column(types.Text)
-    config_path = Column(types.Text)
     comment = Column(types.Text)
+    completed_at = Column(types.DateTime)
+    config_path = Column(types.Text)
+    id = Column(types.Integer, primary_key=True)
     is_visible = Column(types.Boolean, default=True)
-    type = Column(types.Enum(*TYPES))
-    user_id = Column(ForeignKey(User.id))
-    progress = Column(types.Float, default=0.0)
-    data_analysis = Column(types.String(32))
-    ticket_id = Column(types.String(32))
-    uploaded_at = Column(types.DateTime)
-    workflow_manager = Column(types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM)
+    logged_at = Column(types.DateTime, default=datetime.datetime.now)
     order_id = Column(types.Integer, index=True)
+    out_dir = Column(types.Text)
+    priority = Column(types.Enum(*PRIORITY_OPTIONS))
+    progress = Column(types.Float, default=0.0)
+    started_at = Column(types.DateTime)
+    status = Column(types.Enum(*TrailblazerStatus.statuses()))
+    ticket_id = Column(types.String(32))
+    type = Column(types.Enum(*TYPES))
+    uploaded_at = Column(types.DateTime)
+    user_id = Column(ForeignKey(User.id))
+    version = Column(types.String(32))
+    workflow = Column(types.String(32))
+    workflow_manager = Column(types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM)
 
     jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
 
@@ -127,7 +126,7 @@ class Analysis(Model):
             "type": self.type,
             "user_id": self.user_id,
             "progress": self.progress,
-            "data_analysis": self.data_analysis,
+            "workflow": self.workflow,
             "ticket_id": self.ticket_id,
             "uploaded_at": self.uploaded_at,
             "workflow_manager": self.workflow_manager,

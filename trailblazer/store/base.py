@@ -47,9 +47,9 @@ class BaseHandler:
         # Group existing variants of balsamic
         balsamic_workflow: str = Workflow.BALSAMIC.lower()
         if workflow == balsamic_workflow:
-            analyses = analyses.filter(Analysis.data_analysis.startswith(balsamic_workflow))
+            analyses = analyses.filter(Analysis.workflow.startswith(balsamic_workflow))
         if workflow:
-            analyses = analyses.filter(Analysis.data_analysis == workflow)
+            analyses = analyses.filter(Analysis.workflow == workflow)
         return analyses
 
     def get_filtered_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:

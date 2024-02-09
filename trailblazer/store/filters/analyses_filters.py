@@ -40,7 +40,7 @@ def filter_analyses_by_search_term(analyses: Query, search_term: str, **kwargs) 
         sqlalchemy.or_(
             Analysis.case_id.ilike(f"%{search_term}%"),
             Analysis.status.ilike(f"%{search_term}%"),
-            Analysis.data_analysis.ilike(f"%{search_term}%"),
+            Analysis.workflow.ilike(f"%{search_term}%"),
             Analysis.comment.ilike(f"%{search_term}%"),
         )
     )

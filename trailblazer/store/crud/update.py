@@ -78,7 +78,7 @@ class UpdateHandler(BaseHandler):
         session: Session = get_session()
         for job in squeue_result.jobs:
             job.step = reformat_squeue_result_job_step(
-                workflow=analysis.data_analysis, job_step=job.step
+                workflow=analysis.workflow, job_step=job.step
             )
             new_job = Job(
                 analysis_id=analysis.id,

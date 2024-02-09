@@ -119,8 +119,7 @@ def test_get_analyses_by_workflow(client: FlaskClient, analyses: list[Analysis])
 
     # THEN it should only return mip analyses
     assert all(
-        analysis["data_analysis"] == Workflow.MIP_DNA.lower()
-        for analysis in response.json["analyses"]
+        analysis["workflow"] == Workflow.MIP_DNA.lower() for analysis in response.json["analyses"]
     )
 
 
