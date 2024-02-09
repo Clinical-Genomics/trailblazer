@@ -112,7 +112,7 @@ def test_get_analyses_by_pipeline(client: FlaskClient, analyses: list[Analysis])
     # GIVEN analyses with different pipelines
 
     # WHEN retrieving all mip analyses
-    response = client.get("/api/v1/analyses?pipeline=mip-dna")
+    response = client.get("/api/v1/analyses?workflow=mip-dna")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK

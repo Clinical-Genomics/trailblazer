@@ -42,7 +42,7 @@ class BaseHandler:
         return analyses
 
     def get_analyses_query_by_pipeline(self, pipeline: str) -> Query:
-        """Return analyses by pipeline."""
+        """Return analyses by workflow."""
         analyses: Query = self.get_query(Analysis)
         # Group existing variants of balsamic
         balsamic_pipeline: str = Workflow.BALSAMIC.lower()
@@ -99,7 +99,7 @@ class BaseHandler:
     def get_filtered_sorted_paginated_analyses(
         self, query: AnalysesRequest
     ) -> tuple[list[Analysis], int]:
-        analyses: Query = self.get_analyses_query_by_pipeline(query.pipeline)
+        analyses: Query = self.get_analyses_query_by_pipeline(query.workflow)
         analyses = self.get_filtered_analyses(analyses=analyses, query=query)
         analyses = self.get_analyses_query_by_search(analyses=analyses, search_term=query.search)
         analyses = self.sort_analyses(analyses=analyses, query=query)

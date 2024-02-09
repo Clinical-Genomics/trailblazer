@@ -135,7 +135,7 @@ class Analysis(Model):
 
 
 class Job(Model):
-    """Represent a step in the pipeline."""
+    """Represent a step in the workflow."""
 
     __tablename__ = "job"
 

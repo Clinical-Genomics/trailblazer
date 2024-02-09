@@ -8,7 +8,7 @@ from trailblazer.constants import (
 
 
 class AnalysesRequest(BaseModel):
-    pipeline: str | None = ""
+    workflow: str | None = ""
     search: str | None = None
     page_size: int | None = Field(alias="pageSize", default=250)
     page: int | None = 1
