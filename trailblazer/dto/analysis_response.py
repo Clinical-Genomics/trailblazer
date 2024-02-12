@@ -16,9 +16,9 @@ class User(BaseModel):
 class Job(BaseModel):
     analysis_id: int
     context: str | None = None
-    elapsed: int
+    elapsed: int | None = None
     id: int
-    name: str
+    name: str | None = None
     slurm_id: int
     started_at: datetime | None = None
     status: str
