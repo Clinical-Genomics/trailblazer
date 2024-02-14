@@ -45,7 +45,7 @@ class BaseHandler:
         balsamic_pipeline: str = Pipeline.BALSAMIC.lower()
         if pipeline == balsamic_pipeline:
             analyses = analyses.filter(Analysis.data_analysis.startswith(balsamic_pipeline))
-        if pipeline:
+        elif pipeline:
             analyses = analyses.filter(Analysis.data_analysis == pipeline)
         return analyses
 
