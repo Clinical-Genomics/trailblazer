@@ -74,6 +74,7 @@ def get_analyses(analysis_service: AnalysisService = Provide[Container.analysis_
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
+
 @blueprint.route("/analyses", methods=["PATCH"])
 @inject
 def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysis_service]):
@@ -85,6 +86,7 @@ def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysi
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
     except MissingAnalysis as error:
         return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
+
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET"])
 @inject
