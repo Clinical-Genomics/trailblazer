@@ -69,10 +69,12 @@ def before_request():
 def get_analyses(analysis_service: AnalysisService = Provide[Container.analysis_service]):
     try:
         request_data: AnalysesRequest = parse_analyses_request(request)
-        response: AnalysesResponse = analysis_service.get_analyses(request_data)
+        response: UpdateAnalysesResponse = analysis_service.get_analyses(request_data)
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
+    except MissingAnalysis as error:
+        return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
 
 
 @blueprint.route("/analyses", methods=["PATCH"])
