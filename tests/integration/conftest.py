@@ -9,9 +9,9 @@ from flask.testing import FlaskClient
 from sqlalchemy.orm import Session
 
 from trailblazer.constants import (
-    PIPELINES,
     PRIORITY_OPTIONS,
     TYPES,
+    WORKFLOWS,
     JobType,
     TrailblazerStatus,
     WorkflowManager,
@@ -38,7 +38,7 @@ def client(flask_app: Flask) -> Generator[FlaskClient, None, None]:
 def analysis() -> Analysis:
     analysis = Analysis(
         config_path="config_path",
-        data_analysis="data_analysis",
+        workflow="workflow",
         case_id="case_id",
         out_dir="out_dir",
         priority=PRIORITY_OPTIONS[0],
@@ -80,15 +80,15 @@ def analysis() -> Analysis:
 
 @pytest.fixture
 def analyses() -> list[Analysis]:
-    """Analyses with different statuses, priorities, types, and pipelines."""
+    """Analyses with different statuses, priorities, types, and workflows."""
     analyses: list[Analysis] = []
     for priority in PRIORITY_OPTIONS:
         for type in TYPES:
             for status in TrailblazerStatus.statuses():
-                for pipeline in PIPELINES:
+                for workflow in WORKFLOWS:
                     analysis = Analysis(
                         config_path="config_path",
-                        data_analysis=pipeline,
+                        workflow=workflow,
                         case_id="case_id",
                         out_dir="out_dir",
                         priority=priority,
@@ -111,7 +111,7 @@ def analyses() -> list[Analysis]:
 def analysis_with_failed_job() -> Analysis:
     analysis = Analysis(
         config_path="config_path",
-        data_analysis="data_analysis",
+        workflow="workflow",
         case_id="case_id",
         out_dir="out_dir",
         priority=PRIORITY_OPTIONS[0],

@@ -1,7 +1,7 @@
 import logging
 from typing import Callable
 
-from trailblazer.constants import Pipeline
+from trailblazer.constants import Workflow
 
 LOG = logging.getLogger(__name__)
 
@@ -44,8 +44,8 @@ def reformat_undefined(job_step: str) -> str:
 
 
 formatter_map: dict[str, Callable] = {
-    Pipeline.MIP_DNA: reformat_mip_job_step,
-    Pipeline.MIP_RNA: reformat_mip_job_step,
-    Pipeline.BALSAMIC: reformat_balsamic_job_step,
-    Pipeline.SARS_COV_2: reformat_mutant_job_step,
+    Workflow.MIP_DNA: reformat_mip_job_step,
+    Workflow.MIP_RNA: reformat_mip_job_step,
+    Workflow.BALSAMIC: reformat_balsamic_job_step,
+    Workflow.MUTANT: reformat_mutant_job_step,
 }

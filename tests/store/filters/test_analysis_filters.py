@@ -149,15 +149,15 @@ def test_filter_analyses_by_search_term_in_comment(
     assert existing_analysis == analyses.first()
 
 
-def test_filter_analyses_by_search_term_in_data_analysis(analysis_store: MockStore):
-    """Test return analysis when search term matches data analysis."""
+def test_filter_analyses_by_search_term_in_workflow(analysis_store: MockStore):
+    """Test return analysis when search term matches workflow."""
     # GIVEN a store containing analyses
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
     # WHEN retrieving analyses by search term
     analyses: Query = filter_analyses_by_search_term(
         analyses=analysis_store.get_query(table=Analysis),
-        search_term=existing_analysis.data_analysis,
+        search_term=existing_analysis.workflow,
     )
 
     # THEN the analysis is a query

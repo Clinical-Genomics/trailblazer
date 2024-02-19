@@ -186,7 +186,7 @@ class TowerAPI:
 
     @property
     def processes(self) -> list[TowerProcess]:
-        """Returns processes. Processes are steps in a pipeline that might or might not be executed by a given analysis.
+        """Returns processes. Processes are steps in a workflow that might or might not be executed by a given analysis.
         A process can also have more than one corresponding job (task).
         For example, a process could be a 'fastqc' step that could be run multiple times depending on
         how many input files are given."""

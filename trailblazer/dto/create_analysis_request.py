@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from trailblazer.constants import JobType, TrailblazerPriority, TrailblazerTypes, WorkflowManager
+from trailblazer.constants import TrailblazerPriority, TrailblazerTypes, WorkflowManager
 
 
 class CreateAnalysisRequest(BaseModel):
@@ -10,7 +10,7 @@ class CreateAnalysisRequest(BaseModel):
     out_dir: str
     order_id: int | None = None
     priority: TrailblazerPriority
-    data_analysis: str | None = None
+    workflow: str | None = None
     ticket: str | None = None
     type: TrailblazerTypes
     workflow_manager: WorkflowManager | None = None

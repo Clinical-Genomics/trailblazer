@@ -40,7 +40,7 @@ class AnalysisResponse(BaseModel):
     type: str | None = None
     user_id: int | None = None
     progress: float
-    data_analysis: str | None = None
+    workflow: str | None = None
     ticket_id: str | None = None
     uploaded_at: datetime | None = None
     workflow_manager: WorkflowManager

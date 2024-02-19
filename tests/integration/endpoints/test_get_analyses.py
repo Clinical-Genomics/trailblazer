@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from flask.testing import FlaskClient
 
-from trailblazer.constants import Pipeline, TrailblazerPriority, TrailblazerStatus
+from trailblazer.constants import TrailblazerPriority, TrailblazerStatus, Workflow
 from trailblazer.store.models import Analysis
 
 
@@ -108,21 +108,23 @@ def test_get_analyses_without_comments(client: FlaskClient, analyses: list[Analy
     assert len(response.json["analyses"]) == len(analyses_without_comments)
 
 
-def test_get_analyses_by_pipeline(client: FlaskClient, analyses: list[Analysis]):
-    # GIVEN analyses with different pipelines
+def test_get_analyses_by_workflow(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different workflows
 
     # WHEN retrieving all mip analyses
-    response = client.get("/api/v1/analyses?pipeline=mip-dna")
+    response = client.get("/api/v1/analyses?workflow=mip-dna")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
 
     # THEN it should only return mip analyses
-    assert all(a["data_analysis"] == Pipeline.MIP_DNA.lower() for a in response.json["analyses"])
+    assert all(
+        analysis["workflow"] == Workflow.MIP_DNA.lower() for analysis in response.json["analyses"]
+    )
 
 
 def test_get_analyses_by_order_id(client: FlaskClient, analyses: list[Analysis]):
-    # GIVEN analyses with different pipelines
+    # GIVEN analyses with different workflows
 
     # WHEN retrieving all analyses with order_id=0
     response = client.get("/api/v1/analyses?orderId=0")

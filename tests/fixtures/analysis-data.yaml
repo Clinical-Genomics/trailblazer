@@ -15,7 +15,7 @@ analyses:
     config_path: fixtures/runs/cuddlyhen/analysis/cuddlyhen_config.yaml
     type: wts
     user: paul.anderson@magnolia.com
-    data_analysis: RNAFUSION
+    workflow: RNAFUSION
     ticket_id: 123456
     workflow_manager: nf_tower
 
@@ -28,7 +28,7 @@ analyses:
     config_path: fixtures/runs/cuddlyhen/analysis/cuddlyhen_config.yaml
     type: wts
     user: paul.anderson@magnolia.com
-    data_analysis: RNAFUSION
+    workflow: RNAFUSION
     ticket_id: 123456
     workflow_manager: nf_tower
 
@@ -41,7 +41,7 @@ analyses:
     config_path: fixtures/runs/cuddlyhen/analysis/cuddlyhen_config.yaml
     type: wts
     user: paul.anderson@magnolia.com
-    data_analysis: RNAFUSION
+    workflow: RNAFUSION
     ticket_id: 123456
     workflow_manager: nf_tower
 
@@ -55,7 +55,7 @@ analyses:
     type: wgs
     user: paul.anderson@magnolia.com
     progress: .54
-    data_analysis: MIP-DNA
+    workflow: MIP-DNA
     ticket_id: 123456
     workflow_manager: slurm
 
@@ -69,7 +69,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP-RNA
+    workflow: MIP-RNA
 
   - case_id: lateraligator
     version: v4.2.0
@@ -80,7 +80,7 @@ analyses:
     config_path: fixtures/runs/politesnake/analysis/politesnake_config.yaml
     type: wes
     user: tom.cruise@magnolia.com
-    data_analysis: BALSAMIC
+    workflow: BALSAMIC
 
   - case_id: escapedgoat
     version: v3.6.0
@@ -92,7 +92,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP-DNA
+    workflow: MIP-DNA
 
   - case_id: crackpanda
     version: v3.6.0
@@ -104,7 +104,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: FLUFFY
+    workflow: FLUFFY
 
 
   - case_id: fancymole
@@ -117,7 +117,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP-DNA
+    workflow: MIP-DNA
 
 
   - case_id: trueferret
@@ -130,7 +130,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP-DNA
+    workflow: MIP-DNA
 
 
   - case_id: daringpidgeon
@@ -143,7 +143,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP-DNA
+    workflow: MIP-DNA
 
   - case_id: happycow
     version: v3.6.0
@@ -155,7 +155,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP-DNA
+    workflow: MIP-DNA
 
   - case_id: rarekitten
     version: v3.6.0
@@ -167,7 +167,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP-DNA
+    workflow: MIP-DNA
 
   - case_id: liberatedunicorn
     version: v3.6.0
@@ -179,7 +179,7 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP-DNA
+    workflow: MIP-DNA
 
   - case_id: emptydinosaur
     version: v3.6.0
@@ -191,4 +191,4 @@ analyses:
     config_path: fixtures/runs/nicemouse/analysis/nicemouse_config.yaml
     type: wgs
     user: paul.anderson@magnolia.com
-    data_analysis: MIP-DNA
+    workflow: MIP-DNA

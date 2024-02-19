@@ -28,7 +28,7 @@
       "version": "2.2.0",
       "homePage": "https://github.com/nf-core/rnafusion",
       "gitmodules": null,
-      "description": "Nextflow rnafusion analysis pipeline, part of the nf-core community.",
+      "description": "Nextflow rnafusion analysis workflow, part of the nf-core community.",
       "name": "nf-core/rnafusion",
       "mainScript": "main.nf",
       "author": "Martin Proks, Annick Renevey"

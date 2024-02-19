@@ -4,10 +4,13 @@ from typing import Type
 from sqlalchemy import asc, desc, func
 from sqlalchemy.orm import Query, Session
 
-from trailblazer.constants import Pipeline
+from trailblazer.constants import Workflow
 from trailblazer.dto import AnalysesRequest
 from trailblazer.store.database import get_session
-from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
+from trailblazer.store.filters.analyses_filters import (
+    AnalysisFilter,
+    apply_analysis_filter,
+)
 from trailblazer.store.models import Analysis, Job, Model
 
 
@@ -38,15 +41,15 @@ class BaseHandler:
             )
         return analyses
 
-    def get_analyses_query_by_pipeline(self, pipeline: str) -> Query:
-        """Return analyses by pipeline."""
+    def get_analyses_query_by_workflow(self, workflow: str) -> Query:
+        """Return analyses by workflow."""
         analyses: Query = self.get_query(Analysis)
         # Group existing variants of balsamic
-        balsamic_pipeline: str = Pipeline.BALSAMIC.lower()
-        if pipeline == balsamic_pipeline:
-            analyses = analyses.filter(Analysis.data_analysis.startswith(balsamic_pipeline))
-        elif pipeline:
-            analyses = analyses.filter(Analysis.data_analysis == pipeline)
+        balsamic_workflow: str = Workflow.BALSAMIC.lower()
+        if workflow == balsamic_workflow:
+            analyses = analyses.filter(Analysis.workflow.startswith(balsamic_workflow))
+        if workflow:
+            analyses = analyses.filter(Analysis.workflow == workflow)
         return analyses
 
     def get_filtered_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
@@ -96,7 +99,7 @@ class BaseHandler:
     def get_filtered_sorted_paginated_analyses(
         self, query: AnalysesRequest
     ) -> tuple[list[Analysis], int]:
-        analyses: Query = self.get_analyses_query_by_pipeline(query.pipeline)
+        analyses: Query = self.get_analyses_query_by_workflow(query.workflow)
         analyses = self.get_filtered_analyses(analyses=analyses, query=query)
         analyses = self.get_analyses_query_by_search(analyses=analyses, search_term=query.search)
         analyses = self.sort_analyses(analyses=analyses, query=query)
