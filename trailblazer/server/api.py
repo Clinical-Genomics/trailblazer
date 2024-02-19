@@ -69,13 +69,10 @@ def before_request():
 def get_analyses(analysis_service: AnalysisService = Provide[Container.analysis_service]):
     try:
         request_data: AnalysesRequest = parse_analyses_request(request)
-        response: UpdateAnalysesResponse = analysis_service.get_analyses(request_data)
+        response: AnalysesResponse = analysis_service.get_analyses(request_data)
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
-    except MissingAnalysis as error:
-        return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
-
 
 @blueprint.route("/analyses", methods=["PATCH"])
 @inject
@@ -86,7 +83,8 @@ def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysi
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
-
+    except MissingAnalysis as error:
+        return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
 
 @blueprint.route("/analyses/<int:analysis_id>", methods=["GET"])
 @inject
