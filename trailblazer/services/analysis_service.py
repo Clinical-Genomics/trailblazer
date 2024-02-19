@@ -5,8 +5,10 @@ from trailblazer.dto import (
     AnalysisUpdateRequest,
     CreateAnalysisRequest,
 )
+from trailblazer.dto.analyses_response import UpdateAnalysesResponse
+from trailblazer.dto.update_analyses import UpdateAnalyses
 from trailblazer.exc import MissingAnalysis
-from trailblazer.services.utils import create_analysis_response
+from trailblazer.services.utils import create_update_analyses_response, create_analysis_response
 from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 
@@ -34,6 +36,10 @@ class AnalysisService:
             is_visible=update.is_visible,
         )
         return create_analysis_response(analysis)
+
+    def update_analyses(self, data: UpdateAnalyses) -> UpdateAnalysesResponse:
+        analyses: list[Analysis] = self.store.update_analyses(data)
+        return create_update_analyses_response(analyses)
 
     def add_pending_analysis(self, request_data: CreateAnalysisRequest) -> AnalysisResponse:
         analysis: Analysis = self.store.add_pending_analysis(request_data)

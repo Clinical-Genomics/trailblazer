@@ -26,7 +26,9 @@ from trailblazer.dto import (
     FailedJobsRequest,
     FailedJobsResponse,
 )
+from trailblazer.dto.analyses_response import UpdateAnalysesResponse
 from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
+from trailblazer.dto.update_analyses import UpdateAnalyses
 from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
 from trailblazer.server.utils import (
@@ -68,6 +70,17 @@ def get_analyses(analysis_service: AnalysisService = Provide[Container.analysis_
     try:
         request_data: AnalysesRequest = parse_analyses_request(request)
         response: AnalysesResponse = analysis_service.get_analyses(request_data)
+        return jsonify(response.model_dump()), HTTPStatus.OK
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
+
+
+@blueprint.route("/analyses", methods=["PATCH"])
+@inject
+def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysis_service]):
+    try:
+        data = UpdateAnalyses.model_validate(request.json)
+        response: UpdateAnalysesResponse = analysis_service.update_analyses(data)
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
