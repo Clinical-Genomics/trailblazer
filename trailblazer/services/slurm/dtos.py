@@ -8,5 +8,5 @@ class SlurmJobInfo(BaseModel):
     slurm_id: int
     name: str
     status: SlurmJobStatus
-    started_at: datetime
+    started_at: datetime | None
     elapsed: int
