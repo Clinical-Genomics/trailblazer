@@ -263,9 +263,9 @@ class UpdateHandler(BaseHandler):
 
         return analysis
 
-    def update_analyses(self, update_data: UpdateAnalyses) -> list[Analysis]:
+    def update_analyses(self, data: UpdateAnalyses) -> list[Analysis]:
         updated_analyses: list[Analysis] = []
-        for analysis_update in update_data.analyses:
+        for analysis_update in data.analyses:
             analysis: Analysis = self.update_analysis(
                 analysis_id=analysis_update.analysis_id,
                 status=analysis_update.status,
