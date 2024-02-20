@@ -40,3 +40,7 @@ class Analysis(BaseModel):
 class AnalysesResponse(BaseModel):
     analyses: list[Analysis]
     total_count: int
+
+
+class UpdateAnalysesResponse(BaseModel):
+    analyses: list[Analysis]

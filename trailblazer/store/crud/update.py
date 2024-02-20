@@ -14,6 +14,7 @@ from trailblazer.apps.slurm.api import (
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.apps.tower.api import TowerAPI, get_tower_api
 from trailblazer.constants import SlurmJobStatus, TrailblazerStatus, WorkflowManager
+from trailblazer.dto.update_analyses import UpdateAnalyses
 from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.store.base import BaseHandler
@@ -261,6 +262,18 @@ class UpdateHandler(BaseHandler):
         session.commit()
 
         return analysis
+
+    def update_analyses(self, data: UpdateAnalyses) -> list[Analysis]:
+        updated_analyses: list[Analysis] = []
+        for analysis_update in data.analyses:
+            analysis: Analysis = self.update_analysis(
+                analysis_id=analysis_update.analysis_id,
+                status=analysis_update.status,
+                comment=analysis_update.comment,
+                is_visible=analysis_update.is_visible,
+            )
+            updated_analyses.append(analysis)
+        return updated_analyses
 
     def update_job(self, job_id: int, job_info: SlurmJobInfo) -> Job:
         job: Job | None = self.get_job_by_id(job_id)
