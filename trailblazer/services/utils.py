@@ -23,8 +23,8 @@ def create_job_response(job: Job) -> JobResponse:
 
 
 def create_update_analyses_response(analyses: list[Analysis]) -> UpdateAnalysesResponse:
-    data: list[dict] = []
+    response_data: list[dict] = []
     for analysis in analyses:
         analysis_data = analysis.to_dict()
-        data.append(analysis_data)
-    return UpdateAnalysesResponse(analyses=data)
+        response_data.append(analysis_data)
+    return UpdateAnalysesResponse(analyses=response_data)
