@@ -78,7 +78,7 @@ def get_analyses(analysis_service: AnalysisService = Provide[Container.analysis_
 @blueprint.route("/analyses", methods=["PATCH"])
 @inject
 def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysis_service]):
-    """Update data for multiple analyses at once."""
+    """Update data (such as status, visibility, comments etc.) for multiple analyses at once."""
     try:
         request_data = UpdateAnalyses.model_validate(request.json)
         response: UpdateAnalysesResponse = analysis_service.update_analyses(request_data)
