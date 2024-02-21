@@ -1,5 +1,5 @@
 from trailblazer.dto import AnalysisResponse, FailedJobsResponse
-from trailblazer.dto.analyses_response import AnalysesResponse, UpdateAnalysesResponse
+from trailblazer.dto.analyses_response import UpdateAnalysesResponse
 from trailblazer.dto.job_response import JobResponse
 from trailblazer.store.models import Analysis, Job
 
@@ -28,5 +28,3 @@ def create_update_analyses_response(analyses: list[Analysis]) -> UpdateAnalysesR
         analysis_data = analysis.to_dict()
         response_data.append(analysis_data)
     return UpdateAnalysesResponse(analyses=response_data)
-
-

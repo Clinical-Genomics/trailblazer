@@ -8,7 +8,6 @@ def get_status_count(analyses: list[Analysis], status: TrailblazerStatus) -> int
 
 
 def create_summary(analyses: list[Analysis]) -> Summary:
-    """Create a summary of the analyses."""
     total: int = len(analyses)
     delivered: int = get_status_count(analyses=analyses, status=TrailblazerStatus.COMPLETED)
     running: int = get_status_count(analyses=analyses, status=TrailblazerStatus.RUNNING)
