@@ -13,4 +13,3 @@ def test_get_existing_analysis(client: FlaskClient, analysis: Analysis):
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
-
