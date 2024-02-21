@@ -2,9 +2,9 @@ from datetime import datetime
 import logging
 
 from trailblazer.dto import CreateJobRequest, FailedJobsRequest, FailedJobsResponse, JobResponse
+from trailblazer.services.job_service.utils import create_failed_jobs_response, create_job_response
 from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.services.slurm.slurm_service import SlurmService
-from trailblazer.services.utils import create_job_response, create_failed_jobs_response
 from trailblazer.store.models import Job
 from trailblazer.store.store import Store
 from trailblazer.utils.datetime import get_date_number_of_days_ago
