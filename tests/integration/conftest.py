@@ -48,6 +48,7 @@ def analysis() -> Analysis:
         type=TYPES[0],
         workflow_manager=WorkflowManager.SLURM,
         is_visible=True,
+        order_id=1,
     )
     session: Session = get_session()
     session.add(analysis)
