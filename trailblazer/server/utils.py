@@ -4,6 +4,7 @@ from flask import Request
 
 from trailblazer.dto import AnalysesRequest, AnalysisUpdateRequest, FailedJobsRequest
 from trailblazer.dto.create_job_request import CreateJobRequest
+from trailblazer.dto.summaries_request import SummariesRequest
 
 
 def parse_analyses_request(request: Request) -> AnalysesRequest:
@@ -39,3 +40,12 @@ def stringify_timestamps(data: dict) -> dict[str, str]:
 
 def parse_job_create_request(request: Request) -> CreateJobRequest:
     return CreateJobRequest.model_validate(request.json)
+
+
+def parse_summaries_request(request: Request) -> SummariesRequest:
+    query_params = {
+        key[:-2]: request.args.getlist(key)
+        for key in request.args.keys()
+        if key_has_list_of_values(key)
+    }
+    return SummariesRequest.model_validate(query_params)

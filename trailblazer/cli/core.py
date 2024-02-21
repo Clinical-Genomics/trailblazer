@@ -17,7 +17,7 @@ from trailblazer.environ import environ_email
 from trailblazer.io.controller import ReadFile
 from trailblazer.models import Config
 from trailblazer.server.wiring import setup_dependency_injection
-from trailblazer.services.analysis_service import AnalysisService
+from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.job_service import JobService
 from trailblazer.store.database import get_session, initialize_database
 from trailblazer.store.models import Analysis, User

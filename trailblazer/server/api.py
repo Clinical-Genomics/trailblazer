@@ -28,6 +28,8 @@ from trailblazer.dto import (
 )
 from trailblazer.dto.analyses_response import UpdateAnalysesResponse
 from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
+from trailblazer.dto.summaries_request import SummariesRequest
+from trailblazer.dto.summaries_response import SummariesResponse
 from trailblazer.dto.update_analyses import UpdateAnalyses
 from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
@@ -36,9 +38,10 @@ from trailblazer.server.utils import (
     parse_analysis_update_request,
     parse_get_failed_jobs_request,
     parse_job_create_request,
+    parse_summaries_request,
     stringify_timestamps,
 )
-from trailblazer.services.analysis_service import AnalysisService
+from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Info
 
@@ -127,6 +130,17 @@ def update_analysis(
         return jsonify(response.model_dump()), HTTPStatus.OK
     except MissingAnalysis as error:
         return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
+
+
+@blueprint.route("/summary", methods=["GET"])
+@inject
+def get_summaries(analysis_service: AnalysisService = Provide[Container.analysis_service]):
+    try:
+        request_data: SummariesRequest = parse_summaries_request(request)
+        response: SummariesResponse = analysis_service.get_summaries(request_data)
+        return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 

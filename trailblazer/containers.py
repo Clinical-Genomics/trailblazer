@@ -2,7 +2,7 @@ import os
 from dependency_injector import containers, providers
 
 from trailblazer.clients.slurm_cli_client.slurm_cli_client import SlurmCLIClient
-from trailblazer.services.analysis_service import AnalysisService
+from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.job_service import JobService
 from trailblazer.services.slurm.slurm_cli_service.slurm_cli_service import SlurmCLIService
 from trailblazer.store.store import Store
