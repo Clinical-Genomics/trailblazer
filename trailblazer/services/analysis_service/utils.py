@@ -24,6 +24,7 @@ def create_summary(analyses: list[Analysis]) -> Summary:
         failed=failed,
     )
 
+
 def create_analysis_response(analysis: Analysis) -> AnalysisResponse:
     analysis_data: dict = analysis.to_dict()
     analysis_data["jobs"] = [job.to_dict() for job in analysis.analysis_jobs]

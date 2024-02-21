@@ -10,7 +10,11 @@ from trailblazer.dto.summaries_request import SummariesRequest
 from trailblazer.dto.summaries_response import SummariesResponse, Summary
 from trailblazer.dto.update_analyses import UpdateAnalyses
 from trailblazer.exc import MissingAnalysis
-from trailblazer.services.analysis_service.utils import create_analysis_response, create_summary, create_update_analyses_response
+from trailblazer.services.analysis_service.utils import (
+    create_analysis_response,
+    create_summary,
+    create_update_analyses_response,
+)
 from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 
