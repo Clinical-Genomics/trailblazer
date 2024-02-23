@@ -9,7 +9,7 @@ def test_patch_analysis(client: FlaskClient, analysis: Analysis):
     # GIVEN an analysis
 
     # GIVEN a valid request to pach the analysis
-    update = AnalysisUpdate(analysis_id=analysis.id, comment="new_comment")
+    update = AnalysisUpdate(id=analysis.id, comment="new_comment")
     request = UpdateAnalyses(analyses=[update])
     data: str = request.model_dump_json()
 

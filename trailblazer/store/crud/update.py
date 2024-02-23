@@ -267,7 +267,7 @@ class UpdateHandler(BaseHandler):
         updated_analyses: list[Analysis] = []
         for analysis_update in data.analyses:
             analysis: Analysis = self.update_analysis(
-                analysis_id=analysis_update.analysis_id,
+                analysis_id=analysis_update.id,
                 status=analysis_update.status,
                 comment=analysis_update.comment,
                 is_visible=analysis_update.is_visible,
