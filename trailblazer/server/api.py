@@ -38,7 +38,6 @@ from trailblazer.server.utils import (
     parse_analysis_update_request,
     parse_get_failed_jobs_request,
     parse_job_create_request,
-    parse_summaries_request,
     stringify_timestamps,
 )
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
@@ -138,11 +137,13 @@ def update_analysis(
 @inject
 def get_summaries(analysis_service: AnalysisService = Provide[Container.analysis_service]):
     try:
-        request_data: SummariesRequest = parse_summaries_request(request)
+        request_data = SummariesRequest.model_validate(request.args)
         response: SummariesResponse = analysis_service.get_summaries(request_data)
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
+    except Exception as error:
+        return jsonify(error=str(error)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @blueprint.route("/info")
