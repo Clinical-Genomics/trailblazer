@@ -35,9 +35,6 @@ from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
 from trailblazer.server.utils import (
     parse_analyses_request,
-    parse_analysis_update_request,
-    parse_get_failed_jobs_request,
-    parse_job_create_request,
     stringify_timestamps,
 )
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
@@ -107,8 +104,8 @@ def get_analysis(
 @inject
 def add_job(analysis_id: int, job_service: JobService = Provide[Container.job_service]):
     try:
-        job_request: CreateJobRequest = parse_job_create_request(request)
-        response: JobResponse = job_service.add_job(analysis_id=analysis_id, data=job_request)
+        data = CreateJobRequest.model_validate(request.json)
+        response: JobResponse = job_service.add_job(analysis_id=analysis_id, data=data)
         return jsonify(response.model_dump()), HTTPStatus.CREATED
     except MissingAnalysis as error:
         return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
@@ -122,7 +119,7 @@ def update_analysis(
     analysis_id: int, analysis_service: AnalysisService = Provide[Container.analysis_service]
 ):
     try:
-        request_data: AnalysisUpdateRequest = parse_analysis_update_request(request)
+        request_data = AnalysisUpdateRequest.model_validate(request.json)
         response: AnalysisResponse = analysis_service.update_analysis(
             analysis_id=analysis_id, update=request_data
         )
@@ -142,8 +139,6 @@ def get_summaries(analysis_service: AnalysisService = Provide[Container.analysis
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
-    except Exception as error:
-        return jsonify(error=str(error)), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @blueprint.route("/info")
@@ -163,8 +158,8 @@ def me():
 @inject
 def get_failed_jobs(job_service: JobService = Provide[Container.job_service]):
     try:
-        query: FailedJobsRequest = parse_get_failed_jobs_request(request)
-        response: FailedJobsResponse = job_service.get_failed_jobs(query)
+        request_data = FailedJobsRequest.model_validate(request.args)
+        response: FailedJobsResponse = job_service.get_failed_jobs(request_data)
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
