@@ -6,9 +6,15 @@ from trailblazer.dto import (
     CreateAnalysisRequest,
 )
 from trailblazer.dto.analyses_response import UpdateAnalysesResponse
+from trailblazer.dto.summaries_request import SummariesRequest
+from trailblazer.dto.summaries_response import SummariesResponse, Summary
 from trailblazer.dto.update_analyses import UpdateAnalyses
 from trailblazer.exc import MissingAnalysis
-from trailblazer.services.utils import create_update_analyses_response, create_analysis_response
+from trailblazer.services.analysis_service.utils import (
+    create_analysis_response,
+    create_summary,
+    create_update_analyses_response,
+)
 from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 
@@ -58,3 +64,11 @@ class AnalysisService:
 
     def update_ongoing_analyses(self) -> None:
         self.store.update_ongoing_analyses()
+
+    def get_summaries(self, request_data: SummariesRequest) -> SummariesResponse:
+        summaries: list[Summary] = []
+        for order_id in request_data.order_ids:
+            analyses: list[Analysis] = self.store.get_analyses_by_order_id(order_id)
+            summary: Summary = create_summary(analyses=analyses, order_id=order_id)
+            summaries.append(summary)
+        return SummariesResponse(summaries=summaries)

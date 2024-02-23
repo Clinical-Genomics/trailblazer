@@ -189,3 +189,10 @@ class ReadHandler(BaseHandler):
             jobs=self.get_query(Job),
             job_id=job_id,
         ).first()
+
+    def get_analyses_by_order_id(self, order_id: int) -> list[Analysis]:
+        return apply_analysis_filter(
+            analyses=self.get_query(Analysis),
+            filter_functions=[AnalysisFilter.FILTER_BY_ORDER_ID],
+            order_id=order_id,
+        ).all()
