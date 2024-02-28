@@ -13,7 +13,7 @@ def test_add_user(store: MockStore, user_email: str, username: str):
 
     # THEN it should be stored in the database
     user: User = apply_user_filter(
-        filter_functions=[UserFilter.FILTER_BY_EMAIL],
+        filter_functions=[UserFilter.BY_EMAIL],
         users=store.get_query(table=User),
         email=user_email,
     ).first()
