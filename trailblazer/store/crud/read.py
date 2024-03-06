@@ -139,6 +139,13 @@ class ReadHandler(BaseHandler):
             email=email,
         ).first()
 
+    def get_user_by_id(self, user_id: int) -> User | None:
+        return apply_user_filter(
+            filter_functions=[UserFilter.FILTER_BY_ID],
+            users=self.get_query(table=User),
+            user_id=user_id,
+        ).first()
+
     def get_users(
         self,
         name: str = None,

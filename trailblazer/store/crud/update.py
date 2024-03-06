@@ -283,3 +283,9 @@ class UpdateHandler(BaseHandler):
         job.started_at = job_info.started_at
         session: Session = get_session()
         session.commit()
+
+    def update_user_token(self, refresh_token: str, user_id: int) -> None:
+        user: User | None = self.get_user_by_id(user_id)
+        user.refresh_token = refresh_token
+        session: Session = get_session()
+        session.commit()

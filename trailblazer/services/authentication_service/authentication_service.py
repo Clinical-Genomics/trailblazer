@@ -1,28 +1,23 @@
 from trailblazer.clients.authentication_client.dtos.tokens_response import TokensResponse
 from trailblazer.clients.authentication_client.google_oauth_client import GoogleOAuthClient
+from trailblazer.services.encryption_service.encryption_service import EncryptionService
 from trailblazer.store.store import Store
 
 
 class AuthenticationService:
 
-    def __init__(self, client: GoogleOAuthClient, store: Store):
-        self.client = client
+    def __init__(
+        self,
+        oauth_client: GoogleOAuthClient,
+        encryption_service: EncryptionService,
+        store: Store,
+    ):
+        self.client = oauth_client
+        self.encryption_service = encryption_service
         self.store = store
 
-    def authorize(self, authorization_code: str) -> str:
+    def exchange_authorization_code(self, authorization_code: str, user_id: int) -> str:
         tokens: TokensResponse = self.client.get_tokens(authorization_code)
-
-        # 1. Encrypt refresh token
-        # 2. Store encrypted refresh token on user
-        # 3. Return access token
-
+        encrypted_token: str = self.encryption_service.encrypt(tokens.refresh_token)
+        self.store.update_user_token(user_id=user_id, refresh_token=encrypted_token)
         return tokens.access_token
-
-    def refresh_access_token(self, user_id: str):
-        # 1. Get encrypted refresh token from user
-        # 2. Decrypt refresh token
-        # 3. Use refresh token to get new access token
-        # 4. Encrypt new refresh token
-        # 5. Store encrypted refresh token on user
-        # 6. Return new access token
-        pass

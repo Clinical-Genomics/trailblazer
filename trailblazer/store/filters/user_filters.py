@@ -26,10 +26,16 @@ def filter_users_by_is_not_archived(users: Query, **kwargs) -> Query:
     return users.filter(User.is_archived.is_(False))
 
 
+def filter_users_by_id(users: Query, user_id: int, **kwargs) -> Query:
+    """Filter users by id."""
+    return users.filter(User.id == user_id)
+
+
 class UserFilter(Enum):
     """Define User filter functions."""
 
     FILTER_BY_CONTAINS_EMAIL: Callable = filter_users_by_contains_email
+    FILTER_BY_ID: Callable = filter_users_by_id
     FILTER_BY_CONTAINS_NAME: Callable = filter_users_by_contains_name
     FILTER_BY_EMAIL: Callable = filter_users_by_email
     FILTER_BY_IS_NOT_ARCHIVED: Callable = filter_users_by_is_not_archived
@@ -39,6 +45,7 @@ def apply_user_filter(
     users: Query,
     filter_functions: list[Callable],
     email: str | None = None,
+    id: int | None = None,
     name: str | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
@@ -46,6 +53,7 @@ def apply_user_filter(
         users: Query = function(
             users=users,
             email=email,
+            id=id,
             name=name,
         )
     return users
