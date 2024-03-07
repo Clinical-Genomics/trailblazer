@@ -16,6 +16,7 @@ class Container(containers.DeclarativeContainer):
     google_client_id: str = os.environ.get("GOOGLE_CLIENT_ID")
     google_client_secret: str = os.environ.get("GOOGLE_CLIENT_SECRET")
     google_redirect_uri: str = os.environ.get("GOOGLE_REDIRECT_URI")
+    secret_key: str = os.environ.get("SECRET_KEY")
 
     oauth_client = providers.Singleton(GoogleOAuthClient)
 
@@ -26,7 +27,7 @@ class Container(containers.DeclarativeContainer):
     job_service = providers.Factory(JobService, store=store, slurm_service=slurm_service)
     analysis_service = providers.Factory(AnalysisService, store=store)
 
-    encryption_service = providers.Singleton(EncryptionService)
+    encryption_service = providers.Singleton(EncryptionService, secret_key=secret_key)
     authentication_service = providers.Singleton(
         AuthenticationService,
         authentication_client=oauth_client,
