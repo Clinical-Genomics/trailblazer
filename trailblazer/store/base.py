@@ -7,10 +7,7 @@ from sqlalchemy.orm import Query, Session
 from trailblazer.constants import Workflow
 from trailblazer.dto import AnalysesRequest
 from trailblazer.store.database import get_session
-from trailblazer.store.filters.analyses_filters import (
-    AnalysisFilter,
-    apply_analysis_filter,
-)
+from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
 from trailblazer.store.models import Analysis, Job, Model
 
 
@@ -48,7 +45,7 @@ class BaseHandler:
         balsamic_workflow: str = Workflow.BALSAMIC.lower()
         if workflow == balsamic_workflow:
             analyses = analyses.filter(Analysis.workflow.startswith(balsamic_workflow))
-        if workflow:
+        elif workflow:
             analyses = analyses.filter(Analysis.workflow == workflow)
         return analyses
 
