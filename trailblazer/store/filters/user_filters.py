@@ -29,10 +29,10 @@ def filter_users_by_is_not_archived(users: Query, **kwargs) -> Query:
 class UserFilter(Enum):
     """Define User filter functions."""
 
-    FILTER_BY_CONTAINS_EMAIL: Callable = filter_users_by_contains_email
-    FILTER_BY_CONTAINS_NAME: Callable = filter_users_by_contains_name
-    FILTER_BY_EMAIL: Callable = filter_users_by_email
-    FILTER_BY_IS_NOT_ARCHIVED: Callable = filter_users_by_is_not_archived
+    BY_CONTAINS_EMAIL: Callable = filter_users_by_contains_email
+    BY_CONTAINS_NAME: Callable = filter_users_by_contains_name
+    BY_EMAIL: Callable = filter_users_by_email
+    BY_IS_NOT_ARCHIVED: Callable = filter_users_by_is_not_archived
 
 
 def apply_user_filter(

@@ -29,8 +29,8 @@ class ReadHandler(BaseHandler):
     ) -> list[dict[str, str | int]]:
         """Return the number of jobs with status per category (name)."""
         filter_map: dict[Callable, str | bool | None] = {
-            JobFilter.FILTER_BY_STATUS: status,
-            JobFilter.FILTER_BY_SINCE_WHEN: since_when,
+            JobFilter.BY_STATUS: status,
+            JobFilter.BY_SINCE_WHEN: since_when,
         }
         filter_functions: list[Callable] = [
             function for function, supplied_arg in filter_map.items() if supplied_arg
@@ -54,9 +54,9 @@ class ReadHandler(BaseHandler):
         if not before and not comment and not status:
             return
         filter_map: dict[Callable, str | datetime | TrailblazerStatus | None] = {
-            AnalysisFilter.FILTER_BY_COMMENT: comment,
-            AnalysisFilter.FILTER_BY_BEFORE_STARTED_AT: before,
-            AnalysisFilter.FILTER_BY_STATUS: status,
+            AnalysisFilter.BY_COMMENT: comment,
+            AnalysisFilter.BY_BEFORE_STARTED_AT: before,
+            AnalysisFilter.BY_STATUS: status,
         }
         filter_functions: list[Callable] = [
             function for function, supplied_arg in filter_map.items() if supplied_arg
@@ -75,9 +75,9 @@ class ReadHandler(BaseHandler):
         return apply_analysis_filter(
             analyses=self.get_query(table=Analysis),
             filter_functions=[
-                AnalysisFilter.FILTER_BY_CASE_ID,
-                AnalysisFilter.FILTER_BY_STARTED_AT,
-                AnalysisFilter.FILTER_BY_STATUS,
+                AnalysisFilter.BY_CASE_ID,
+                AnalysisFilter.BY_STARTED_AT,
+                AnalysisFilter.BY_STATUS,
             ],
             case_id=case_id,
             started_at=started_at,
@@ -89,7 +89,7 @@ class ReadHandler(BaseHandler):
         return (
             apply_analysis_filter(
                 analyses=self.get_query(table=Analysis),
-                filter_functions=[AnalysisFilter.FILTER_BY_CASE_ID],
+                filter_functions=[AnalysisFilter.BY_CASE_ID],
                 case_id=case_id,
             )
             .order_by(desc(Analysis.started_at))
@@ -100,7 +100,7 @@ class ReadHandler(BaseHandler):
         """Return all analyses for a case."""
         return apply_analysis_filter(
             analyses=self.get_query(table=Analysis),
-            filter_functions=[AnalysisFilter.FILTER_BY_CASE_ID],
+            filter_functions=[AnalysisFilter.BY_CASE_ID],
             case_id=case_id,
         ).all()
 
@@ -108,7 +108,7 @@ class ReadHandler(BaseHandler):
         """Get analyses by statuses."""
         return apply_analysis_filter(
             analyses=self.get_query(table=Analysis),
-            filter_functions=[AnalysisFilter.FILTER_BY_STATUSES],
+            filter_functions=[AnalysisFilter.BY_STATUSES],
             statuses=statuses,
         ).all()
 
@@ -116,7 +116,7 @@ class ReadHandler(BaseHandler):
         """Get a single analysis by id."""
         return apply_analysis_filter(
             analyses=self.get_query(table=Analysis),
-            filter_functions=[AnalysisFilter.FILTER_BY_ENTRY_ID],
+            filter_functions=[AnalysisFilter.BY_ENTRY_ID],
             analysis_id=analysis_id,
         ).first()
 
@@ -127,8 +127,8 @@ class ReadHandler(BaseHandler):
     ) -> User:
         """Return user from the database."""
         filter_map: dict[Callable, str | bool | None] = {
-            UserFilter.FILTER_BY_CONTAINS_EMAIL: email,
-            UserFilter.FILTER_BY_IS_NOT_ARCHIVED: exclude_archived,
+            UserFilter.BY_CONTAINS_EMAIL: email,
+            UserFilter.BY_IS_NOT_ARCHIVED: exclude_archived,
         }
         filter_functions: list[Callable] = [
             function for function, supplied_arg in filter_map.items() if supplied_arg
@@ -147,9 +147,9 @@ class ReadHandler(BaseHandler):
     ) -> list[User]:
         """Return users from the database."""
         filter_map: dict[Callable, str | bool | None] = {
-            UserFilter.FILTER_BY_CONTAINS_EMAIL: email,
-            UserFilter.FILTER_BY_CONTAINS_NAME: name,
-            UserFilter.FILTER_BY_IS_NOT_ARCHIVED: exclude_archived,
+            UserFilter.BY_CONTAINS_EMAIL: email,
+            UserFilter.BY_CONTAINS_NAME: name,
+            UserFilter.BY_IS_NOT_ARCHIVED: exclude_archived,
         }
         filter_functions: list[Callable] = [
             function for function, supplied_arg in filter_map.items() if supplied_arg
@@ -163,8 +163,8 @@ class ReadHandler(BaseHandler):
 
     def get_latest_failed_job_for_analysis(self, analysis_id: str) -> Job | None:
         filters: list[Callable] = [
-            JobFilter.FILTER_BY_ANALYSIS_ID,
-            JobFilter.FILTER_BY_STATUS,
+            JobFilter.BY_ANALYSIS_ID,
+            JobFilter.BY_STATUS,
             JobFilter.SORT_BY_STARTED_AT,
         ]
         return apply_job_filters(
@@ -177,7 +177,7 @@ class ReadHandler(BaseHandler):
     def get_ongoing_upload_jobs(self) -> list[Job]:
         ongoing_statuses: list[str] = list(TrailblazerStatus.ongoing_statuses())
         return apply_job_filters(
-            filters=[JobFilter.FILTER_BY_TYPE, JobFilter.FILTER_BY_STATUSES],
+            filters=[JobFilter.BY_TYPE, JobFilter.BY_STATUSES],
             jobs=self.get_query(Job),
             job_type=JobType.UPLOAD,
             statuses=ongoing_statuses,
@@ -185,7 +185,7 @@ class ReadHandler(BaseHandler):
 
     def get_job_by_id(self, job_id: int) -> Job | None:
         return apply_job_filters(
-            filters=[JobFilter.FILTER_BY_ID],
+            filters=[JobFilter.BY_ID],
             jobs=self.get_query(Job),
             job_id=job_id,
         ).first()
@@ -193,6 +193,6 @@ class ReadHandler(BaseHandler):
     def get_analyses_by_order_id(self, order_id: int) -> list[Analysis]:
         return apply_analysis_filter(
             analyses=self.get_query(Analysis),
-            filter_functions=[AnalysisFilter.FILTER_BY_ORDER_ID],
+            filter_functions=[AnalysisFilter.BY_ORDER_ID],
             order_id=order_id,
         ).all()
