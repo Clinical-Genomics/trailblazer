@@ -83,19 +83,19 @@ def filter_analyses_by_empty_comment(analyses: Query, **kwargs) -> Query:
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
-    FILTER_BY_BEFORE_STARTED_AT: Callable = filter_analyses_by_before_started_at
-    FILTER_BY_CASE_ID: Callable = filter_analyses_by_case_id
-    FILTER_BY_COMMENT: Callable = filter_analyses_by_comment
-    FILTER_BY_EMPTY_COMMENT: Callable = filter_analyses_by_empty_comment
-    FILTER_BY_ENTRY_ID: Callable = filter_analyses_by_entry_id
-    FILTER_BY_SEARCH_TERM: Callable = filter_analyses_by_search_term
-    FILTER_BY_IS_VISIBLE: Callable = filter_analyses_by_is_visible
-    FILTER_BY_ORDER_ID: Callable = filter_analyses_by_order_id
-    FILTER_BY_PRIORITIES: Callable = filter_analyses_by_priorites
-    FILTER_BY_STARTED_AT: Callable = filter_analyses_by_started_at
-    FILTER_BY_STATUS: Callable = filter_analyses_by_status
-    FILTER_BY_STATUSES: Callable = filter_analyses_by_statuses
-    FILTER_BY_TYPES: Callable = filter_analyses_by_types
+    BY_BEFORE_STARTED_AT: Callable = filter_analyses_by_before_started_at
+    BY_CASE_ID: Callable = filter_analyses_by_case_id
+    BY_COMMENT: Callable = filter_analyses_by_comment
+    BY_EMPTY_COMMENT: Callable = filter_analyses_by_empty_comment
+    BY_ENTRY_ID: Callable = filter_analyses_by_entry_id
+    BY_SEARCH_TERM: Callable = filter_analyses_by_search_term
+    BY_IS_VISIBLE: Callable = filter_analyses_by_is_visible
+    BY_ORDER_ID: Callable = filter_analyses_by_order_id
+    BY_PRIORITIES: Callable = filter_analyses_by_priorites
+    BY_STARTED_AT: Callable = filter_analyses_by_started_at
+    BY_STATUS: Callable = filter_analyses_by_status
+    BY_STATUSES: Callable = filter_analyses_by_statuses
+    BY_TYPES: Callable = filter_analyses_by_types
 
 
 def apply_analysis_filter(

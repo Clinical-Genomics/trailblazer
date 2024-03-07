@@ -36,7 +36,7 @@ def test_update_user_is_archived(user_store: MockStore, user_email: str):
     """Test updating user is archived attribute."""
     # GIVE a database and a not archived user
     user: User = apply_user_filter(
-        filter_functions=[UserFilter.FILTER_BY_EMAIL],
+        filter_functions=[UserFilter.BY_EMAIL],
         users=user_store.get_query(table=User),
         email=user_email,
     ).first()
@@ -46,7 +46,7 @@ def test_update_user_is_archived(user_store: MockStore, user_email: str):
     user_store.update_user_is_archived(user=user, archive=True)
 
     archived_user: User = apply_user_filter(
-        filter_functions=[UserFilter.FILTER_BY_EMAIL],
+        filter_functions=[UserFilter.BY_EMAIL],
         users=user_store.get_query(table=User),
         email=user_email,
     ).first()

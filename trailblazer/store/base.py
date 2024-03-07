@@ -7,10 +7,7 @@ from sqlalchemy.orm import Query, Session
 from trailblazer.constants import Workflow
 from trailblazer.dto import AnalysesRequest
 from trailblazer.store.database import get_session
-from trailblazer.store.filters.analyses_filters import (
-    AnalysisFilter,
-    apply_analysis_filter,
-)
+from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
 from trailblazer.store.models import Analysis, Job, Model
 
 
@@ -35,7 +32,7 @@ class BaseHandler:
         """Return analyses by search term."""
         if search_term:
             analyses: Query = apply_analysis_filter(
-                filter_functions=[AnalysisFilter.FILTER_BY_SEARCH_TERM],
+                filter_functions=[AnalysisFilter.BY_SEARCH_TERM],
                 analyses=analyses,
                 search_term=search_term,
             )
@@ -48,24 +45,24 @@ class BaseHandler:
         balsamic_workflow: str = Workflow.BALSAMIC.lower()
         if workflow == balsamic_workflow:
             analyses = analyses.filter(Analysis.workflow.startswith(balsamic_workflow))
-        if workflow:
+        elif workflow:
             analyses = analyses.filter(Analysis.workflow == workflow)
         return analyses
 
     def get_filtered_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
         filters: list[AnalysisFilter] = []
         if query.comment:
-            filters.append(AnalysisFilter.FILTER_BY_EMPTY_COMMENT)
+            filters.append(AnalysisFilter.BY_EMPTY_COMMENT)
         if query.order_id is not None:
-            filters.append(AnalysisFilter.FILTER_BY_ORDER_ID)
+            filters.append(AnalysisFilter.BY_ORDER_ID)
         if query.priority:
-            filters.append(AnalysisFilter.FILTER_BY_PRIORITIES)
+            filters.append(AnalysisFilter.BY_PRIORITIES)
         if query.status:
-            filters.append(AnalysisFilter.FILTER_BY_STATUSES)
+            filters.append(AnalysisFilter.BY_STATUSES)
         if query.type:
-            filters.append(AnalysisFilter.FILTER_BY_TYPES)
+            filters.append(AnalysisFilter.BY_TYPES)
         if query.case_id:
-            filters.append(AnalysisFilter.FILTER_BY_CASE_ID)
+            filters.append(AnalysisFilter.BY_CASE_ID)
 
         return apply_analysis_filter(
             filter_functions=filters,
@@ -80,7 +77,7 @@ class BaseHandler:
 
     def get_visible_analyses(self, analyses: Query) -> Query:
         return apply_analysis_filter(
-            filter_functions=[AnalysisFilter.FILTER_BY_IS_VISIBLE],
+            filter_functions=[AnalysisFilter.BY_IS_VISIBLE],
             analyses=analyses,
         )
 

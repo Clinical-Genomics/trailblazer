@@ -3,7 +3,6 @@ from enum import Enum
 from typing import Callable
 
 from sqlalchemy.orm import Query
-from trailblazer.constants import JobType
 
 from trailblazer.store.models import Job
 
@@ -44,12 +43,12 @@ def filter_by_job_type(jobs: Query, job_type: str, **kwargs):
 class JobFilter(Enum):
     """Define Job filter functions."""
 
-    FILTER_BY_SINCE_WHEN: Callable = filter_jobs_by_since_when
-    FILTER_BY_STATUS: Callable = filter_jobs_by_status
-    FILTER_BY_STATUSES: Callable = filter_jobs_by_statuses
-    FILTER_BY_ANALYSIS_ID: Callable = filter_jobs_by_analysis_id
-    FILTER_BY_ID: Callable = filter_jobs_by_id
-    FILTER_BY_TYPE: Callable = filter_by_job_type
+    BY_SINCE_WHEN: Callable = filter_jobs_by_since_when
+    BY_STATUS: Callable = filter_jobs_by_status
+    BY_STATUSES: Callable = filter_jobs_by_statuses
+    BY_ANALYSIS_ID: Callable = filter_jobs_by_analysis_id
+    BY_ID: Callable = filter_jobs_by_id
+    BY_TYPE: Callable = filter_by_job_type
     SORT_BY_STARTED_AT: Callable = sort_jobs_by_started_at
 
 
