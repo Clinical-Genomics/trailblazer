@@ -22,7 +22,7 @@ class AuthenticationService:
         self.encryption_service = encryption_service
         self.store = store
 
-    def exchange_code(self, authorization_code: str) -> AccessToken:
+    def authenticate(self, authorization_code: str) -> AccessToken:
         """Exchange the authorization code for an access token."""
         tokens: TokensResponse = self.google_oauth_client.get_tokens(authorization_code)
         user_email: str = self.google_api_client.get_user_email(tokens.access_token)
