@@ -25,12 +25,13 @@ class AuthenticationService:
     def exchange_code(self, authorization_code: str) -> AccessToken:
         """Exchange the authorization code for an access token."""
         tokens: TokensResponse = self.google_oauth_client.get_tokens(authorization_code)
-        encrypted_token: str = self.encryption_service.encrypt(tokens.refresh_token)
         user_email: str = self.google_api_client.get_user_email(tokens.access_token)
         user: User | None = self.store.get_user(user_email)
 
         if not user:
             raise UserNotFoundError
 
+        encrypted_token: str = self.encryption_service.encrypt(tokens.refresh_token)
         self.store.update_user_token(user_id=user.id, refresh_token=encrypted_token)
+
         return AccessToken(access_token=tokens.access_token)
