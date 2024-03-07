@@ -141,7 +141,7 @@ class ReadHandler(BaseHandler):
 
     def get_user_by_id(self, user_id: int) -> User | None:
         return apply_user_filter(
-            filter_functions=[UserFilter.FILTER_BY_ID],
+            filter_functions=[UserFilter.BY_ID],
             users=self.get_query(table=User),
             id=user_id,
         ).first()

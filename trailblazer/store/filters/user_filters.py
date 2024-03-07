@@ -33,7 +33,8 @@ def filter_users_by_id(users: Query, user_id: int, **kwargs) -> Query:
 
 class UserFilter(Enum):
     """Define User filter functions."""
-    FILTER_BY_ID: Callable = filter_users_by_id
+
+    BY_ID: Callable = filter_users_by_id
     BY_CONTAINS_EMAIL: Callable = filter_users_by_contains_email
     BY_CONTAINS_NAME: Callable = filter_users_by_contains_name
     BY_EMAIL: Callable = filter_users_by_email
