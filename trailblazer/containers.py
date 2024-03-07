@@ -13,16 +13,18 @@ from trailblazer.store.store import Store
 
 class Container(containers.DeclarativeContainer):
     slurm_host: str | None = os.environ.get("ANALYSIS_HOST")
-    google_client_id: str = os.environ.get("GOOGLE_CLIENT_ID")
-    google_client_secret: str = os.environ.get("GOOGLE_CLIENT_SECRET")
-    google_redirect_uri: str = os.environ.get("GOOGLE_REDIRECT_URI")
-    secret_key: str = os.environ.get("SECRET_KEY")
+    oauth_client_id: str = os.environ.get("GOOGLE_CLIENT_ID")
+    oauth_client_secret: str = os.environ.get("GOOGLE_CLIENT_SECRET")
+    oauth_redirect_uri: str = os.environ.get("GOOGLE_REDIRECT_URI")
+    oauth_token_uri: str = os.environ.get("TOKEN_URI")
+    encryption_key: str = os.environ.get("SECRET_KEY")
 
     oauth_client = providers.Singleton(
         OAuthClient,
-        client_id=google_client_id,
-        client_secret=google_client_secret,
-        redirect_uri=google_redirect_uri,
+        client_id=oauth_client_id,
+        client_secret=oauth_client_secret,
+        redirect_uri=oauth_redirect_uri,
+        token_uri=oauth_token_uri,
     )
 
     store = providers.Singleton(Store)
@@ -32,7 +34,7 @@ class Container(containers.DeclarativeContainer):
     job_service = providers.Factory(JobService, store=store, slurm_service=slurm_service)
     analysis_service = providers.Factory(AnalysisService, store=store)
 
-    encryption_service = providers.Singleton(EncryptionService, secret_key=secret_key)
+    encryption_service = providers.Singleton(EncryptionService, secret_key=encryption_key)
     auth_service = providers.Singleton(
         AuthenticationService,
         oauth_client=oauth_client,

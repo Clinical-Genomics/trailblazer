@@ -7,10 +7,10 @@ from trailblazer.clients.authentication_client.exceptions import GoogleOAuthClie
 
 class OAuthClient:
 
-    def __init__(self, client_id: str, client_secret: str, redirect_uri: str):
+    def __init__(self, client_id: str, client_secret: str, redirect_uri: str, token_uri: str):
         self.client_id = client_id
         self.client_secret = client_secret
-        self.token_uri = "https://oauth2.googleapis.com/token"
+        self.token_uri = token_uri
         self.redirect_uri = redirect_uri
 
     def get_tokens(self, authorization_code: str) -> TokensResponse:
