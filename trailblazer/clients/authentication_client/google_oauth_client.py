@@ -5,7 +5,7 @@ from trailblazer.clients.authentication_client.dtos.tokens_response import Token
 from trailblazer.clients.authentication_client.exceptions import GoogleOAuthClientError
 
 
-class GoogleOAuthClient:
+class OAuthClient:
 
     def __init__(self, client_id: str, client_secret: str, redirect_uri: str):
         self.client_id = client_id

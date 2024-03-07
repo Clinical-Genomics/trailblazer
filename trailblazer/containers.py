@@ -1,7 +1,7 @@
 import os
 from dependency_injector import containers, providers
 
-from trailblazer.clients.authentication_client.google_oauth_client import GoogleOAuthClient
+from trailblazer.clients.authentication_client.google_oauth_client import OAuthClient
 from trailblazer.clients.slurm_cli_client.slurm_cli_client import SlurmCLIClient
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
@@ -12,14 +12,14 @@ from trailblazer.store.store import Store
 
 
 class Container(containers.DeclarativeContainer):
-    slurm_host: str | None = os.environ.get("ANALYSIS_HOST", "host")
-    google_client_id: str = os.environ.get("GOOGLE_CLIENT_ID", "client_id")
-    google_client_secret: str = os.environ.get("GOOGLE_CLIENT_SECRET", "secret")
-    google_redirect_uri: str = os.environ.get("GOOGLE_REDIRECT_URI", "redirect_uri")
-    secret_key: str = os.environ.get("SECRET_KEY", "secret")
+    slurm_host: str | None = os.environ.get("ANALYSIS_HOST")
+    google_client_id: str = os.environ.get("GOOGLE_CLIENT_ID")
+    google_client_secret: str = os.environ.get("GOOGLE_CLIENT_SECRET")
+    google_redirect_uri: str = os.environ.get("GOOGLE_REDIRECT_URI")
+    secret_key: str = os.environ.get("SECRET_KEY")
 
     oauth_client = providers.Singleton(
-        GoogleOAuthClient,
+        OAuthClient,
         client_id=google_client_id,
         client_secret=google_client_secret,
         redirect_uri=google_redirect_uri,
