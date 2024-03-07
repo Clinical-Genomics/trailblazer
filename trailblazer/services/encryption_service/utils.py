@@ -18,11 +18,11 @@ def decrypt_data(data: str, secret_key: str) -> str:
     data: bytes = base64.b64decode(data)
     plain_text: bytes = _decrypt_with_aes(data=data, secret_key=secret_key)
     unpadded_plain_text: bytes = _unpad_data(plain_text)
-    return bytes_to_string(unpadded_plain_text)
+    return unpadded_plain_text.decode()
 
 
 def _encrypt_with_aes(data: bytes, secret_key: str) -> bytes:
-    secret_key = secret_key.encode()
+    secret_key = base64.b64decode(secret_key)
     initialization_vector: bytes = os.urandom(BLOCK_SIZE)
 
     cipher = Cipher(
@@ -37,7 +37,7 @@ def _encrypt_with_aes(data: bytes, secret_key: str) -> bytes:
 
 
 def _decrypt_with_aes(data: bytes, secret_key: str) -> bytes:
-    secret_key: bytes = secret_key.encode()
+    secret_key: bytes = base64.b64decode(secret_key)
     initialization_vector: bytes = data[:BLOCK_SIZE]
 
     cipher = Cipher(
