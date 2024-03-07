@@ -13,7 +13,7 @@ class GoogleOAuthClient:
         self.token_uri = "https://oauth2.googleapis.com/token"
         self.redirect_uri = redirect_uri
 
-    def get_tokens(self, authorization_code: str):
+    def get_tokens(self, authorization_code: str) -> TokensResponse:
         request = GetTokensRequest(
             cliend_id=self.client_id,
             client_secret=self.client_secret,

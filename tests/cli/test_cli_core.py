@@ -21,7 +21,6 @@ from trailblazer.cli.core import (
     unarchive_user,
 )
 from trailblazer.constants import CharacterFormat, SlurmJobStatus, TrailblazerStatus
-from trailblazer.containers import Container
 from trailblazer.store.models import Analysis
 
 FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH: str = "trailblazer.store.crud.update.get_slurm_squeue_output"

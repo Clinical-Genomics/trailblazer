@@ -12,13 +12,18 @@ from trailblazer.store.store import Store
 
 
 class Container(containers.DeclarativeContainer):
-    slurm_host: str | None = os.environ.get("ANALYSIS_HOST")
-    google_client_id: str = os.environ.get("GOOGLE_CLIENT_ID")
-    google_client_secret: str = os.environ.get("GOOGLE_CLIENT_SECRET")
-    google_redirect_uri: str = os.environ.get("GOOGLE_REDIRECT_URI")
-    secret_key: str = os.environ.get("SECRET_KEY")
+    slurm_host: str | None = os.environ.get("ANALYSIS_HOST", "host")
+    google_client_id: str = os.environ.get("GOOGLE_CLIENT_ID", "client_id")
+    google_client_secret: str = os.environ.get("GOOGLE_CLIENT_SECRET", "secret")
+    google_redirect_uri: str = os.environ.get("GOOGLE_REDIRECT_URI", "redirect_uri")
+    secret_key: str = os.environ.get("SECRET_KEY", "secret")
 
-    oauth_client = providers.Singleton(GoogleOAuthClient)
+    oauth_client = providers.Singleton(
+        GoogleOAuthClient,
+        client_id=google_client_id,
+        client_secret=google_client_secret,
+        redirect_uri=google_redirect_uri,
+    )
 
     store = providers.Singleton(Store)
     slurm_client = providers.Singleton(SlurmCLIClient, host=slurm_host)
@@ -30,7 +35,7 @@ class Container(containers.DeclarativeContainer):
     encryption_service = providers.Singleton(EncryptionService, secret_key=secret_key)
     auth_service = providers.Singleton(
         AuthenticationService,
-        authentication_client=oauth_client,
+        oauth_client=oauth_client,
         encryption_service=encryption_service,
         store=store,
     )
