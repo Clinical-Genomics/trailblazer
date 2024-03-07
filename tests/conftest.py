@@ -5,12 +5,7 @@ from typing import Dict, Generator
 import pytest
 from sqlalchemy.orm import Session
 
-from tests.apps.tower.conftest import (
-    TOWER_ID,
-    CaseId,
-    TowerResponseFile,
-    TowerTaskResponseFile,
-)
+from tests.apps.tower.conftest import TOWER_ID, CaseId, TowerResponseFile, TowerTaskResponseFile
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
 from trailblazer.apps.tower.models import TowerTask
@@ -189,6 +184,21 @@ def analysis_store(
         raw_analysis["case_id"] = raw_analysis.pop("case_id")
         session.add(Analysis(**raw_analysis))
     yield store
+
+
+@pytest.fixture
+def balsamic_case_id() -> str:
+    return "lateraligator"
+
+
+@pytest.fixture
+def balsamic_qc_case_id() -> str:
+    return "assumedcrocodile"
+
+
+@pytest.fixture
+def mip_dna_case_id() -> str:
+    return "escapedgoat"
 
 
 @pytest.fixture(scope="session")
