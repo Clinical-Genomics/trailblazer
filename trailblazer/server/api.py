@@ -27,6 +27,8 @@ from trailblazer.dto import (
     FailedJobsResponse,
 )
 from trailblazer.dto.analyses_response import UpdateAnalysesResponse
+from trailblazer.dto.authentication.access_token_response import AccessToken
+from trailblazer.dto.authentication.code_exchange_request import CodeExchangeRequest
 from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.dto.summaries_request import SummariesRequest
 from trailblazer.dto.summaries_response import SummariesResponse
@@ -38,6 +40,7 @@ from trailblazer.server.utils import (
     stringify_timestamps,
 )
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
+from trailblazer.services.authentication_service.authentication_service import AuthenticationService
 from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Info
 
@@ -61,6 +64,17 @@ def before_request():
         g.current_user = user
     else:
         return abort(403, f"{user_data['email']} doesn't have access")
+
+
+@blueprint.route("/auth", methods=["POST"])
+@inject
+def authenticate(auth_service: AuthenticationService = Provide[Container.auth_service]):
+    try:
+        request_data = CodeExchangeRequest.model_validate(request.json)
+        token: AccessToken = auth_service.exchange_code(request_data)
+        return jsonify(token.model_dump()), HTTPStatus.OK
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
 
 
 @blueprint.route("/analyses", methods=["GET"])
