@@ -6,8 +6,8 @@ def test_encryption(encryption_service: EncryptionService):
     plain_text = "my secret"
 
     # WHEN encrypting and decrypting the plain text
-    encrypted_text = encryption_service.encrypt(plain_text)
-    decrypted_text = encryption_service.decrypt(encrypted_text)
+    encrypted_text: str = encryption_service.encrypt(plain_text)
+    decrypted_text: str = encryption_service.decrypt(encrypted_text)
 
     # THEN the decrypted text is the same as the plain text
     assert decrypted_text == plain_text
