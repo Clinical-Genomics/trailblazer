@@ -15,6 +15,7 @@ from trailblazer.constants import (
 from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis, Job
 
+
 @pytest.fixture
 def analysis() -> Analysis:
     analysis = Analysis(

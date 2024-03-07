@@ -5,7 +5,7 @@ from trailblazer.clients.authentication_client.dtos.tokens_response import Token
 from trailblazer.clients.authentication_client.exceptions import GoogleOAuthClientError
 
 
-class OAuthClient:
+class GoogleOAuthClient:
 
     def __init__(self, client_id: str, client_secret: str, redirect_uri: str, token_uri: str):
         self.client_id = client_id
@@ -28,3 +28,16 @@ class OAuthClient:
             raise GoogleOAuthClientError(response.text)
 
         return TokensResponse.model_validate(response.json())
+
+
+    def get_user_email(self, access_token: str) -> str:
+        response = requests.get(
+            "https://www.googleapis.com/oauth2/v1/userinfo",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+        if not response.ok:
+            raise GoogleOAuthClientError(response.text)
+
+        return response.json()["email"]
+    

@@ -1,7 +1,8 @@
 import os
 from dependency_injector import containers, providers
 
-from trailblazer.clients.authentication_client.google_oauth_client import OAuthClient
+from trailblazer.clients.authentication_client.google_oauth_client import GoogleOAuthClient
+from trailblazer.clients.google_api_client.google_api_client import GoogleAPIClient
 from trailblazer.clients.slurm_cli_client.slurm_cli_client import SlurmCLIClient
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
@@ -18,9 +19,13 @@ class Container(containers.DeclarativeContainer):
     oauth_redirect_uri: str = os.environ.get("GOOGLE_REDIRECT_URI")
     oauth_token_uri: str = os.environ.get("TOKEN_URI")
     encryption_key: str = os.environ.get("SECRET_KEY")
+    google_api_base_url: str = os.environ.get("GOOGLE_API_BASE_URL")
 
-    oauth_client = providers.Singleton(
-        OAuthClient,
+
+    google_api_client = GoogleAPIClient(google_api_base_url)
+
+    google_oauth_client = providers.Singleton(
+        GoogleOAuthClient,
         client_id=oauth_client_id,
         client_secret=oauth_client_secret,
         redirect_uri=oauth_redirect_uri,
@@ -35,9 +40,11 @@ class Container(containers.DeclarativeContainer):
     analysis_service = providers.Factory(AnalysisService, store=store)
 
     encryption_service = providers.Singleton(EncryptionService, secret_key=encryption_key)
+
     auth_service = providers.Singleton(
         AuthenticationService,
-        oauth_client=oauth_client,
+        google_oauth_client=google_oauth_client,
+        google_api_client=google_api_client,
         encryption_service=encryption_service,
         store=store,
     )

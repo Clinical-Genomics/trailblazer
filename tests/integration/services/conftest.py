@@ -5,7 +5,7 @@ import pytest
 from requests_mock import Mocker
 
 
-from trailblazer.clients.authentication_client.google_oauth_client import OAuthClient
+from trailblazer.clients.authentication_client.google_oauth_client import GoogleOAuthClient
 from trailblazer.clients.slurm_cli_client.slurm_cli_client import SlurmCLIClient
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
@@ -43,12 +43,12 @@ def encryption_service() -> EncryptionService:
 
 
 @pytest.fixture
-def oauth_client(oauth_response: dict, mock_request: Mocker) -> OAuthClient:
+def oauth_client(oauth_response: dict, mock_request: Mocker) -> GoogleOAuthClient:
 
     token_uri = "https://oauth2.googleapis.com/token"
     mock_request.post(token_uri, json=oauth_response)
 
-    return OAuthClient(
+    return GoogleOAuthClient(
         client_id="client_id",
         client_secret="client_secret",
         redirect_uri="redirect_uri",
@@ -59,13 +59,13 @@ def oauth_client(oauth_response: dict, mock_request: Mocker) -> OAuthClient:
 @pytest.fixture
 def authentication_service(
     encryption_service: EncryptionService,
-    oauth_client: OAuthClient,
+    oauth_client: GoogleOAuthClient,
     store: Store,
 ) -> AuthenticationService:
     return AuthenticationService(
         encryption_service=encryption_service,
         store=store,
-        oauth_client=oauth_client,
+        google_oauth_client=oauth_client,
     )
 
 
