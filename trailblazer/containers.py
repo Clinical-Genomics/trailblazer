@@ -28,7 +28,7 @@ class Container(containers.DeclarativeContainer):
     analysis_service = providers.Factory(AnalysisService, store=store)
 
     encryption_service = providers.Singleton(EncryptionService, secret_key=secret_key)
-    authentication_service = providers.Singleton(
+    auth_service = providers.Singleton(
         AuthenticationService,
         authentication_client=oauth_client,
         encryption_service=encryption_service,
