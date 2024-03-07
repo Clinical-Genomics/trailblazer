@@ -27,7 +27,6 @@ from trailblazer.dto import (
     FailedJobsResponse,
 )
 from trailblazer.dto.analyses_response import UpdateAnalysesResponse
-from trailblazer.dto.authentication.access_token_response import AccessToken
 from trailblazer.dto.authentication.code_exchange_request import CodeExchangeRequest
 from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.dto.summaries_request import SummariesRequest
@@ -71,8 +70,8 @@ def before_request():
 def authenticate(auth_service: AuthenticationService = Provide[Container.auth_service]):
     try:
         request_data = CodeExchangeRequest.model_validate(request.json)
-        token: AccessToken = auth_service.authenticate(request_data.code)
-        return jsonify(token.model_dump()), HTTPStatus.OK
+        token: str = auth_service.authenticate(request_data.code)
+        return jsonify({"access_token": token}), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
     except Exception as error:

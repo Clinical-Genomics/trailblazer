@@ -1,7 +1,6 @@
 from trailblazer.clients.authentication_client.dtos.tokens_response import TokensResponse
 from trailblazer.clients.authentication_client.google_oauth_client import GoogleOAuthClient
 from trailblazer.clients.google_api_client.google_api_client import GoogleAPIClient
-from trailblazer.dto.authentication.access_token_response import AccessToken
 from trailblazer.services.authentication_service.exceptions import UserNotFoundError
 from trailblazer.services.encryption_service.encryption_service import EncryptionService
 from trailblazer.store.models import User
@@ -22,7 +21,7 @@ class AuthenticationService:
         self.encryption_service = encryption_service
         self.store = store
 
-    def authenticate(self, authorization_code: str) -> AccessToken:
+    def authenticate(self, authorization_code: str) -> str:
         """Exchange the authorization code for an access token."""
         tokens: TokensResponse = self.google_oauth_client.get_tokens(authorization_code)
         user_email: str = self.google_api_client.get_user_email(tokens.access_token)
@@ -34,4 +33,4 @@ class AuthenticationService:
         encrypted_token: str = self.encryption_service.encrypt(tokens.refresh_token)
         self.store.update_user_token(user_id=user.id, refresh_token=encrypted_token)
 
-        return AccessToken(access_token=tokens.access_token)
+        return tokens.access_token
