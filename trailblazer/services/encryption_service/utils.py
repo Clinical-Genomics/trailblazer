@@ -17,7 +17,8 @@ def encrypt_data(data: str, secret_key: str) -> str:
 def decrypt_data(data: str, secret_key: str) -> str:
     data: bytes = base64.b64decode(data)
     plain_text: bytes = _decrypt_with_aes(data=data, secret_key=secret_key)
-    return plain_text.decode()
+    unpadded_plain_text: bytes = _unpad_data(plain_text)
+    return bytes_to_string(unpadded_plain_text)
 
 
 def _encrypt_with_aes(data: bytes, secret_key: str) -> bytes:
@@ -48,7 +49,7 @@ def _decrypt_with_aes(data: bytes, secret_key: str) -> bytes:
 
     cipher_text: bytes = data[BLOCK_SIZE:]
     plain_text: bytes = decryptor.update(cipher_text) + decryptor.finalize()
-    return _unpad_data(plain_text)
+    return plain_text
 
 
 def _pad_data(data: str) -> bytes:
