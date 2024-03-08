@@ -9,7 +9,7 @@ from trailblazer.store.store import Store
 TYPE_JSON = "application/json"
 
 
-def test_adding_analysis(client: FlaskClient, user_store: Store):
+def test_adding_analysis(client: FlaskClient, store: Store):
     # GIVEN a valid request to add an analysis
     create_analysis_request = CreateAnalysisRequest(
         case_id="case_id",
@@ -31,4 +31,4 @@ def test_adding_analysis(client: FlaskClient, user_store: Store):
 
     # THEN the analysis was persisted
     analysis_id = int(response.json["id"])
-    assert user_store.get_analysis_with_id(analysis_id)
+    assert store.get_analysis_with_id(analysis_id)

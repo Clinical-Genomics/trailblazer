@@ -8,7 +8,7 @@ from trailblazer.store.store import Store
 TYPE_JSON = "application/json"
 
 
-def test_add_job_to_analysis(client: FlaskClient, analysis: Analysis, user_store: Store):
+def test_add_job_to_analysis(client: FlaskClient, analysis: Analysis, store: Store):
     # GIVEN an analysis
     analysis_id: int = analysis.id
 
@@ -28,4 +28,4 @@ def test_add_job_to_analysis(client: FlaskClient, analysis: Analysis, user_store
     assert response.json["slurm_id"] == create_job_request.slurm_id
 
     # THEN the job was persisted
-    assert user_store.get_analysis_with_id(analysis_id).jobs
+    assert store.get_analysis_with_id(analysis_id).jobs
