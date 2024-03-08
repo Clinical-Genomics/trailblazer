@@ -24,7 +24,7 @@ def test_refresh_access_token(
     encryption_service: EncryptionService,
     user_email: str,
 ):
-    # GIVEN an encrypted access token
+    # GIVEN an encrypted refresh token
     encrypted_refresh_token: str = encryption_service.encrypt("refresh_token")
 
     # GIVEN an existing user with the refresh token
