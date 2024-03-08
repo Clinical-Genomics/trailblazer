@@ -9,7 +9,7 @@ from trailblazer.store.store import Store
 
 
 @pytest.fixture
-def flask_app(store: Store):
+def flask_app(user_store: Store):
     yield app
 
 

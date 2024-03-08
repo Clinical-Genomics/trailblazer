@@ -26,9 +26,9 @@ def filter_users_by_is_not_archived(users: Query, **kwargs) -> Query:
     return users.filter(User.is_archived.is_(False))
 
 
-def filter_users_by_id(users: Query, user_id: int, **kwargs) -> Query:
+def filter_users_by_id(users: Query, id: int, **kwargs) -> Query:
     """Filter users by id."""
-    return users.filter(User.id == user_id)
+    return users.filter(User.id == id)
 
 
 class UserFilter(Enum):

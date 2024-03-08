@@ -6,6 +6,7 @@ from requests_mock import Mocker
 
 
 from trailblazer.clients.authentication_client.google_oauth_client import GoogleOAuthClient
+from trailblazer.clients.google_api_client.google_api_client import GoogleAPIClient
 from trailblazer.clients.slurm_cli_client.slurm_cli_client import SlurmCLIClient
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
@@ -43,7 +44,7 @@ def encryption_service() -> EncryptionService:
 
 
 @pytest.fixture
-def oauth_client(oauth_response: dict, mock_request: Mocker) -> GoogleOAuthClient:
+def google_oauth_client(oauth_response: dict, mock_request: Mocker) -> GoogleOAuthClient:
 
     token_uri = "https://oauth2.googleapis.com/token"
     mock_request.post(token_uri, json=oauth_response)
@@ -57,15 +58,30 @@ def oauth_client(oauth_response: dict, mock_request: Mocker) -> GoogleOAuthClien
 
 
 @pytest.fixture
+def google_user_info_response(user_email: str) -> dict:
+    return {"email": f"{user_email}"}
+
+
+@pytest.fixture
+def google_api_client(mock_request: Mocker, google_user_info_response: dict) -> GoogleAPIClient:
+    base_url = "https://www.googleapis.com"
+    user_info_endpoint = f"{base_url}/oauth2/v1/userinfo"
+    mock_request.get(user_info_endpoint, json=google_user_info_response)
+    return GoogleAPIClient("https://www.googleapis.com")
+
+
+@pytest.fixture
 def authentication_service(
     encryption_service: EncryptionService,
-    oauth_client: GoogleOAuthClient,
-    store: Store,
+    google_oauth_client: GoogleOAuthClient,
+    google_api_client: GoogleAPIClient,
+    user_store: Store,
 ) -> AuthenticationService:
     return AuthenticationService(
         encryption_service=encryption_service,
-        store=store,
-        google_oauth_client=oauth_client,
+        store=user_store,
+        google_oauth_client=google_oauth_client,
+        google_api_client=google_api_client,
     )
 
 
