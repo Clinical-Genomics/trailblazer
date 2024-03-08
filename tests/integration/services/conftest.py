@@ -44,10 +44,10 @@ def encryption_service() -> EncryptionService:
 
 
 @pytest.fixture
-def google_oauth_client(oauth_response: dict, mock_request: Mocker) -> GoogleOAuthClient:
+def google_oauth_client(google_oauth_response: dict, mock_request: Mocker) -> GoogleOAuthClient:
 
     token_uri = "https://oauth2.googleapis.com/token"
-    mock_request.post(token_uri, json=oauth_response)
+    mock_request.post(token_uri, json=google_oauth_response)
 
     return GoogleOAuthClient(
         client_id="client_id",
@@ -86,7 +86,7 @@ def authentication_service(
 
 
 @pytest.fixture
-def oauth_response() -> dict:
+def google_oauth_response() -> dict:
     return {
         "access_token": "access_token",
         "token_type": "token_type",
