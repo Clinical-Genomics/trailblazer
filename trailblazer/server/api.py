@@ -50,6 +50,8 @@ blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 @blueprint.before_request
 def before_request():
     """Authentication that is run before processing requests to the application"""
+    if request.endpoint == 'api.authenticate':
+        return
     if request.method == "OPTIONS":
         return make_response(jsonify(ok=True), 204)
     if os.environ.get("SCOPE") == "DEVELOPMENT":
