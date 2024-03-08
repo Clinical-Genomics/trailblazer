@@ -7,18 +7,18 @@ Create Date: 2024-03-08 10:38:28.151275
 """
 
 # revision identifiers, used by Alembic.
-revision = 'febdb4e78bb5'
-down_revision = 'e907e651fb9e'
+revision = "febdb4e78bb5"
+down_revision = "e907e651fb9e"
 branch_labels = None
 depends_on = None
 
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects import mysql
+
 
 def upgrade():
-    op.add_column('user', sa.Column('refresh_token', sa.String(length=128), nullable=True))
+    op.add_column("user", sa.Column("refresh_token", sa.String(length=128), nullable=True))
 
 
 def downgrade():
-    op.drop_column('user', 'refresh_token')
+    op.drop_column("user", "refresh_token")
