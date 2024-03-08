@@ -38,11 +38,6 @@ class AuthenticationService:
     def refresh_access_token(self, user_id: int) -> str:
         """Refresh the users access token."""
         user: User = self.store.get_user_by_id(user_id)
-
-        if not user:
-            raise UserNotFoundError
-
         refresh_token: str = self.encryption_service.decrypt(user.refresh_token)
         access_token: str = self.google_oauth_client.get_access_token(refresh_token)
-
         return access_token
