@@ -1,5 +1,8 @@
 import requests
 
+from trailblazer.clients.authentication_client.dtos.refresh_token_request import (
+    RefreshAccessTokenRequest,
+)
 from trailblazer.clients.authentication_client.dtos.tokens_request import GetTokensRequest
 from trailblazer.clients.authentication_client.dtos.tokens_response import TokensResponse
 from trailblazer.clients.authentication_client.exceptions import GoogleOAuthClientError
@@ -29,3 +32,19 @@ class GoogleOAuthClient:
             raise GoogleOAuthClientError(response.text)
 
         return TokensResponse.model_validate(response.json())
+
+    def get_access_token(self, refresh_token: str) -> str:
+        """Use refresh token to get a new access token."""
+        request = RefreshAccessTokenRequest(
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            refresh_token=refresh_token,
+        )
+        data: str = request.model_dump_json()
+
+        response = requests.post(self.token_uri, data=data)
+
+        if not response.ok:
+            raise GoogleOAuthClientError(response.text)
+
+        return response.json()["access_token"]

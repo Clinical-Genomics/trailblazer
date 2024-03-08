@@ -42,7 +42,7 @@ from trailblazer.services.analysis_service.analysis_service import AnalysisServi
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
 from trailblazer.services.authentication_service.exceptions import AuthenticationError
 from trailblazer.services.job_service import JobService
-from trailblazer.store.models import Info
+from trailblazer.store.models import Info, User
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
@@ -78,6 +78,18 @@ def authenticate(auth_service: AuthenticationService = Provide[Container.auth_se
         return jsonify({"access_token": token}), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
+    except AuthenticationError:
+        return jsonify("User not allowed"), HTTPStatus.FORBIDDEN
+
+
+@blueprint.route("/auth/refresh", methods=["GET"])
+@inject
+def refresh_token(auth_service: AuthenticationService = Provide[Container.auth_service]):
+    """Refresh access token."""
+    user: User = g.current_user
+    try:
+        token: str = auth_service.refresh_access_token(user.id)
+        return jsonify({"access_token": token}), HTTPStatus.OK
     except AuthenticationError:
         return jsonify("User not allowed"), HTTPStatus.FORBIDDEN
 
