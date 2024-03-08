@@ -8,7 +8,7 @@ NONCE_SIZE = 12
 def encrypt_data(data: str, secret_key: str) -> str:
     data: bytes = data.encode()
     cipher_text: bytes = _encrypt_with_aes(data=data, secret_key=secret_key)
-    return bytes_to_string(cipher_text)
+    return _bytes_to_string(cipher_text)
 
 
 def decrypt_data(data: str, secret_key: str) -> str:
@@ -31,5 +31,5 @@ def _decrypt_with_aes(data: bytes, secret_key: str) -> bytes:
     return cipher.decrypt(nonce=nonce, data=cipher_text, associated_data=None)
 
 
-def bytes_to_string(data: bytes) -> str:
+def _bytes_to_string(data: bytes) -> str:
     return base64.b64encode(data).decode()
