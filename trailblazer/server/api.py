@@ -71,6 +71,7 @@ def before_request():
 @blueprint.route("/auth", methods=["POST"])
 @inject
 def authenticate(auth_service: AuthenticationService = Provide[Container.auth_service]):
+    """Exchange authorization code for an access token."""
     try:
         request_data = CodeExchangeRequest.model_validate(request.json)
         token: str = auth_service.authenticate(request_data.code)
