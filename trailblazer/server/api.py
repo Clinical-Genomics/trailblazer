@@ -40,7 +40,7 @@ from trailblazer.server.utils import (
 )
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
-from trailblazer.services.authentication_service.exceptions import UserNotFoundError
+from trailblazer.services.authentication_service.exceptions import AuthenticationError
 from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Info
 
@@ -75,7 +75,7 @@ def authenticate(auth_service: AuthenticationService = Provide[Container.auth_se
         return jsonify({"access_token": token}), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
-    except UserNotFoundError:
+    except AuthenticationError:
         return jsonify("User not allowed"), HTTPStatus.FORBIDDEN
 
 
