@@ -29,7 +29,6 @@ class GoogleOAuthClient:
 
         return TokensResponse.model_validate(response.json())
 
-
     def get_user_email(self, access_token: str) -> str:
         response = requests.get(
             "https://www.googleapis.com/oauth2/v1/userinfo",
@@ -40,4 +39,3 @@ class GoogleOAuthClient:
             raise GoogleOAuthClientError(response.text)
 
         return response.json()["email"]
-    

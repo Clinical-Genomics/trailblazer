@@ -21,7 +21,6 @@ class Container(containers.DeclarativeContainer):
     encryption_key: str = os.environ.get("SECRET_KEY")
     google_api_base_url: str = os.environ.get("GOOGLE_API_BASE_URL")
 
-
     google_api_client = GoogleAPIClient(google_api_base_url)
 
     google_oauth_client = providers.Singleton(
