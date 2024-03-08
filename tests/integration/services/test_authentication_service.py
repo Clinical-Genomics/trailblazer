@@ -16,3 +16,18 @@ def test_exchange_code(authentication_service: AuthenticationService, user_email
     # THEN the refresh token is stored on the user
     user: User = authentication_service.store.get_user(user_email)
     assert user.refresh_token
+
+
+def test_refresh_access_token(authentication_service: AuthenticationService, user_email: str):
+    # GIVEN an encrypted access token
+    refresh_token: str = authentication_service.encryption_service.encrypt("refresh_token")
+
+    # GIVEN an existing user with the refresh token
+    user: User = authentication_service.store.get_user(user_email)
+    user.refresh_token = refresh_token
+
+    # WHEN refreshing the access token
+    token: str = authentication_service.refresh_access_token(user.id)
+
+    # THEN an access token is returned
+    assert token
