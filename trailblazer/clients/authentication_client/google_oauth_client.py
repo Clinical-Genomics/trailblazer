@@ -10,10 +10,10 @@ from trailblazer.clients.authentication_client.exceptions import GoogleOAuthClie
 
 class GoogleOAuthClient:
 
-    def __init__(self, client_id: str, client_secret: str, redirect_uri: str, token_uri: str):
+    def __init__(self, client_id: str, client_secret: str, redirect_uri: str, oauth_base_url: str):
         self.client_id = client_id
         self.client_secret = client_secret
-        self.token_uri = token_uri
+        self.oauth_base_url = oauth_base_url
         self.redirect_uri = redirect_uri
 
     def get_tokens(self, authorization_code: str) -> TokensResponse:
@@ -26,7 +26,7 @@ class GoogleOAuthClient:
         )
         data: dict = request.model_dump()
 
-        response = requests.post(self.token_uri, data=data)
+        response = requests.post(self.oauth_base_url, data=data)
 
         if not response.ok:
             raise GoogleOAuthClientError(response.text)
@@ -42,7 +42,7 @@ class GoogleOAuthClient:
         )
         data: str = request.model_dump_json()
 
-        response = requests.post(self.token_uri, data=data)
+        response = requests.post(self.oauth_base_url, data=data)
 
         if not response.ok:
             raise GoogleOAuthClientError(response.text)

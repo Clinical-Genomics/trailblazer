@@ -53,7 +53,7 @@ def google_oauth_client(google_oauth_response: dict, mock_request: Mocker) -> Go
         client_id="client_id",
         client_secret="client_secret",
         redirect_uri="redirect_uri",
-        token_uri=token_uri,
+        oauth_base_url=token_uri,
     )
 
 
