@@ -24,7 +24,7 @@ class GoogleOAuthClient:
             code=authorization_code,
             redirect_uri=self.redirect_uri,
         )
-        data: str = request.model_dump_json()
+        data: dict = request.model_dump()
 
         response = requests.post(self.token_uri, data=data)
 
