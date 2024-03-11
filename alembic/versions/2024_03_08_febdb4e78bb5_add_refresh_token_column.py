@@ -17,8 +17,7 @@ import sqlalchemy as sa
 
 
 def upgrade():
-    op.add_column("user", sa.Column("refresh_token", sa.String(length=128), nullable=True))
-
+    op.add_column("user", sa.Column("refresh_token", sa.Text, nullable=True))
 
 def downgrade():
     op.drop_column("user", "refresh_token")
