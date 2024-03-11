@@ -27,6 +27,7 @@ from trailblazer.dto import (
     FailedJobsResponse,
 )
 from trailblazer.dto.analyses_response import UpdateAnalysesResponse
+from trailblazer.dto.authentication.code_exchange_request import CodeExchangeRequest
 from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.dto.summaries_request import SummariesRequest
 from trailblazer.dto.summaries_response import SummariesResponse
@@ -38,6 +39,8 @@ from trailblazer.server.utils import (
     stringify_timestamps,
 )
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
+from trailblazer.services.authentication_service.authentication_service import AuthenticationService
+from trailblazer.services.authentication_service.exceptions import AuthenticationError
 from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Info
 
@@ -47,6 +50,8 @@ blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 @blueprint.before_request
 def before_request():
     """Authentication that is run before processing requests to the application"""
+    if request.endpoint == "api.authenticate":
+        return
     if request.method == "OPTIONS":
         return make_response(jsonify(ok=True), 204)
     if os.environ.get("SCOPE") == "DEVELOPMENT":
@@ -61,6 +66,20 @@ def before_request():
         g.current_user = user
     else:
         return abort(403, f"{user_data['email']} doesn't have access")
+
+
+@blueprint.route("/auth", methods=["POST"])
+@inject
+def authenticate(auth_service: AuthenticationService = Provide[Container.auth_service]):
+    """Exchange authorization code for an access token."""
+    try:
+        request_data = CodeExchangeRequest.model_validate(request.json)
+        token: str = auth_service.authenticate(request_data.code)
+        return jsonify({"access_token": token}), HTTPStatus.OK
+    except ValidationError as error:
+        return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
+    except AuthenticationError:
+        return jsonify("User not allowed"), HTTPStatus.FORBIDDEN
 
 
 @blueprint.route("/analyses", methods=["GET"])

@@ -1,11 +1,7 @@
 import datetime
 import uuid
-from typing import Generator
-from unittest.mock import patch
 
 import pytest
-from flask import Flask
-from flask.testing import FlaskClient
 from sqlalchemy.orm import Session
 
 from trailblazer.constants import (
@@ -16,22 +12,8 @@ from trailblazer.constants import (
     TrailblazerStatus,
     WorkflowManager,
 )
-from trailblazer.server.app import app
 from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis, Job
-from trailblazer.store.store import Store
-
-
-@pytest.fixture
-def flask_app(store: Store):
-    yield app
-
-
-@pytest.fixture
-def client(flask_app: Flask) -> Generator[FlaskClient, None, None]:
-    # Bypass authentication
-    with patch.object(flask_app, "before_request_funcs", new={}):
-        yield flask_app.test_client()
 
 
 @pytest.fixture
