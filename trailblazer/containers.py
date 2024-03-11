@@ -17,7 +17,7 @@ class Container(containers.DeclarativeContainer):
     oauth_client_id: str = os.environ.get("GOOGLE_CLIENT_ID")
     oauth_client_secret: str = os.environ.get("GOOGLE_CLIENT_SECRET")
     oauth_redirect_uri: str = os.environ.get("GOOGLE_REDIRECT_URI")
-    oauth_token_uri: str = os.environ.get("TOKEN_URI")
+    google_oauth_base_url: str = os.environ.get("GOOGLE_OAUTH_BASE_URL")
     encryption_key: str = os.environ.get("SECRET_KEY")
     google_api_base_url: str = os.environ.get("GOOGLE_API_BASE_URL")
 
@@ -28,7 +28,7 @@ class Container(containers.DeclarativeContainer):
         client_id=oauth_client_id,
         client_secret=oauth_client_secret,
         redirect_uri=oauth_redirect_uri,
-        token_uri=oauth_token_uri,
+        oauth_base_url=google_oauth_base_url,
     )
 
     store = providers.Singleton(Store)
