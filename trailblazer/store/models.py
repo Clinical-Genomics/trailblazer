@@ -154,7 +154,7 @@ class Delivery(Model):
     delivered_by = Column(ForeignKey(User.id), nullable=False)
     delivered_date = Column(types.DateTime, nullable=False)
 
-    analysis = orm.relationship("Analysis", backref="delivery")
+    delivery = orm.relationship("Analysis", back_populates="delivery")
     user = orm.relationship("User")
 
 
