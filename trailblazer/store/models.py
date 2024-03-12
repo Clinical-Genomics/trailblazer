@@ -92,7 +92,7 @@ class Analysis(Model):
     workflow_manager = Column(types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM)
 
     jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
-    delivery = orm.relationship("Delivery", backref="analysis")
+    delivery = orm.relationship("Delivery", back_populates="analysis")
 
     @property
     def has_ongoing_status(self) -> bool:
@@ -154,7 +154,7 @@ class Delivery(Model):
     delivered_by = Column(ForeignKey(User.id), nullable=False)
     delivered_date = Column(types.DateTime, nullable=False)
 
-    delivery = orm.relationship("Analysis", back_populates="delivery")
+    analysis = orm.relationship("Analysis", back_populates="delivery")
     user = orm.relationship("User")
 
 
