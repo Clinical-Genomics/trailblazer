@@ -38,7 +38,12 @@ def upgrade():
     op.create_table(
         "delivery",
         sa.Column("id", sa.Uuid, nullable=False),
-        sa.Column("analysis_id", sa.ForeignKey(Analysis.id, ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "analysis_id",
+            sa.ForeignKey(Analysis.id, ondelete="CASCADE"),
+            nullable=False,
+            unique=True,
+        ),
         sa.Column("user_id", sa.ForeignKey(User.id), nullable=False),
         sa.Column("delivered_at", sa.DateTime, nullable=False),
     )

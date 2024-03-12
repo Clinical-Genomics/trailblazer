@@ -92,7 +92,7 @@ class Analysis(Model):
     workflow_manager = Column(types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM)
 
     jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
-
+    delivery = orm.relationship("Delivery", backref="analysis")
     @property
     def has_ongoing_status(self) -> bool:
         """Check if analysis status is ongoing."""
@@ -107,6 +107,14 @@ class Analysis(Model):
     def upload_jobs(self) -> list["Job"]:
         """Return upload jobs."""
         return [job for job in self.jobs if job.job_type == JobType.UPLOAD]
+
+    @property
+    def delivered_by(self) -> User:
+        return self.delivery.user
+
+    @property
+    def delivered_date(self) -> datetime:
+        return self.delivery.delivered_date
 
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object."""
@@ -144,6 +152,9 @@ class Delivery(Model):
     analysis_id = Column(ForeignKey(Analysis.id, ondelete="CASCADE"), nullable=False)
     delivered_by = Column(ForeignKey(User.id), nullable=False)
     delivered_date = Column(types.DateTime, nullable=False)
+
+    analysis = orm.relationship("Analysis", backref="delivery")
+    user = orm.relationship("User")
 
 
 class Job(Model):
