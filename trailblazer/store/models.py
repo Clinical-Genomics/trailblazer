@@ -110,12 +110,12 @@ class Analysis(Model):
         return [job for job in self.jobs if job.job_type == JobType.UPLOAD]
 
     @property
-    def delivered_by(self) -> User:
-        return self.delivery.user
+    def delivered_by(self) -> User | None:
+        return self.delivery.user if self.delivery else None
 
     @property
-    def delivered_date(self) -> datetime:
-        return self.delivery.delivered_date
+    def delivered_date(self) -> datetime.datetime | None:
+        return self.delivery.delivered_date if self.delivery else None
 
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object."""
