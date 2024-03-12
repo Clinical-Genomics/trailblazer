@@ -134,6 +134,18 @@ class Analysis(Model):
         }
 
 
+class Delivery(Model):
+    """Tracks when and by whom an analysis was delivered."""
+
+    __tablename__ = "delivery"
+    __table_args__ = (UniqueConstraint("analysis_id"),)
+
+    id = Column(types.Uuid, primary_key=True)
+    analysis_id = Column(ForeignKey(Analysis.id, ondelete="CASCADE"), nullable=False)
+    delivered_by = Column(ForeignKey(User.id), nullable=False)
+    delivered_date = Column(types.DateTime, nullable=False)
+
+
 class Job(Model):
     """Represent a step in the workflow."""
 
