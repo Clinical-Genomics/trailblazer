@@ -93,6 +93,7 @@ class Analysis(Model):
 
     jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
     delivery = orm.relationship("Delivery", backref="analysis")
+
     @property
     def has_ongoing_status(self) -> bool:
         """Check if analysis status is ongoing."""
