@@ -4,7 +4,6 @@ from trailblazer.clients.google_api_client.exceptions import GoogleAPIClientErro
 
 
 class GoogleAPIClient:
-
     def __init__(self, base_url: str):
         self.base_url = base_url
 

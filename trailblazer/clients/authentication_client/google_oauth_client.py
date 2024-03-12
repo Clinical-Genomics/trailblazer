@@ -9,7 +9,6 @@ from trailblazer.clients.authentication_client.exceptions import GoogleOAuthClie
 
 
 class GoogleOAuthClient:
-
     def __init__(self, client_id: str, client_secret: str, redirect_uri: str, oauth_base_url: str):
         self.client_id = client_id
         self.client_secret = client_secret
