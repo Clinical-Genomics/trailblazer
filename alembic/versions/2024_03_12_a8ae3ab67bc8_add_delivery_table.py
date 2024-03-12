@@ -5,17 +5,16 @@ Revises: febdb4e78bb5
 Create Date: 2024-03-12 13:54:57.421263
 
 """
+import sqlalchemy as sa
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "a8ae3ab67bc8"
 down_revision = "febdb4e78bb5"
 branch_labels = None
 depends_on = None
-
-import sqlalchemy as sa
-
-from alembic import op
 
 
 class Base(DeclarativeBase):
