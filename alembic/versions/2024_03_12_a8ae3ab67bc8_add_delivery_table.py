@@ -5,6 +5,7 @@ Revises: febdb4e78bb5
 Create Date: 2024-03-12 13:54:57.421263
 
 """
+
 import sqlalchemy as sa
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
