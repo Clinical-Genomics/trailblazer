@@ -14,7 +14,7 @@ class GoogleOAuthClient:
         self.client_id = client_id
         self.client_secret = client_secret
         self.oauth_base_url = oauth_base_url
-        self.redirect_uri = redirect_uri
+        self.redirect_uri = "postmessage"
 
     def get_tokens(self, authorization_code: str) -> TokensResponse:
         """Exchange the authorization code for an access token and refresh token."""
