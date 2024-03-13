@@ -239,7 +239,9 @@ class UpdateHandler(BaseHandler):
     ) -> None:
         if delivered:
             analysis.delivery = Delivery(
-                analysis_id=analysis.id, delivered_date=datetime.today(), user_id=user.id
+                analysis_id=analysis.id,
+                delivered_by=user.id,
+                delivered_date=datetime.today(),
             )
         else:
             if delivery := analysis.delivery:

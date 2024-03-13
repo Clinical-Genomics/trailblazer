@@ -1,3 +1,4 @@
+import logging
 import os
 from http import HTTPStatus
 from typing import Mapping
@@ -100,7 +101,7 @@ def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysi
     """Update data (such as status, visibility, comments etc.) for multiple analyses at once."""
     try:
         request_data = UpdateAnalyses.model_validate(request.json)
-        user = g.get("current_user")
+        user: User = g.get("current_user")
         response: UpdateAnalysesResponse = analysis_service.update_analyses(
             data=request_data, user=user
         )
