@@ -1,12 +1,9 @@
 from http import HTTPStatus
-from unittest import mock
 
-from flask import g
 from flask.testing import FlaskClient
 
-import trailblazer.server.api
 from trailblazer.dto.update_analyses import AnalysisUpdate, UpdateAnalyses
-from trailblazer.store.models import Analysis, User
+from trailblazer.store.models import Analysis
 
 
 def test_patch_analysis(client: FlaskClient, analysis: Analysis):
