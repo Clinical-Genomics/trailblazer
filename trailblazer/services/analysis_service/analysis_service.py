@@ -15,7 +15,7 @@ from trailblazer.services.analysis_service.utils import (
     create_summary,
     create_update_analyses_response,
 )
-from trailblazer.store.models import Analysis, Job
+from trailblazer.store.models import Analysis, Job, User
 from trailblazer.store.store import Store
 
 
@@ -43,8 +43,10 @@ class AnalysisService:
         )
         return create_analysis_response(analysis)
 
-    def update_analyses(self, data: UpdateAnalyses) -> UpdateAnalysesResponse:
-        analyses: list[Analysis] = self.store.update_analyses(data)
+    def update_analyses(
+        self, data: UpdateAnalyses, user: User | None = None
+    ) -> UpdateAnalysesResponse:
+        analyses: list[Analysis] = self.store.update_analyses(data=data, user=user)
         return create_update_analyses_response(analyses)
 
     def add_pending_analysis(self, request_data: CreateAnalysisRequest) -> AnalysisResponse:
