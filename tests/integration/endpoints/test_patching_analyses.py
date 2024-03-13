@@ -1,7 +1,11 @@
-from flask.testing import FlaskClient
 from http import HTTPStatus
-from trailblazer.dto.update_analyses import AnalysisUpdate, UpdateAnalyses
+from unittest import mock
 
+from flask import g
+from flask.testing import FlaskClient
+
+import trailblazer.server.api
+from trailblazer.dto.update_analyses import AnalysisUpdate, UpdateAnalyses
 from trailblazer.store.models import Analysis
 
 
@@ -13,11 +17,12 @@ def test_patch_analysis(client: FlaskClient, analysis: Analysis):
     request = UpdateAnalyses(analyses=[update])
     data: str = request.model_dump_json()
 
-    # WHEN patching the analysis
-    response = client.patch("/api/v1/analyses", data=data, content_type="application/json")
+    with mock.patch.object(trailblazer.server.api, "before_request", return_value=None):
+        # WHEN patching the analysis
+        response = client.patch("/api/v1/analyses", data=data, content_type="application/json")
 
-    # THEN it gives a success response
-    assert response.status_code == HTTPStatus.OK
+        # THEN it gives a success response
+        assert response.status_code == HTTPStatus.OK
 
-    # THEN it should return the analysis
-    assert response.json["analyses"]
+        # THEN it should return the analysis
+        assert response.json["analyses"]

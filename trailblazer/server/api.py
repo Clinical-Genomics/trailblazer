@@ -100,8 +100,9 @@ def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysi
     """Update data (such as status, visibility, comments etc.) for multiple analyses at once."""
     try:
         request_data = UpdateAnalyses.model_validate(request.json)
+        user = g.get("current_user")
         response: UpdateAnalysesResponse = analysis_service.update_analyses(
-            data=request_data, user=g.current_user
+            data=request_data, user=user
         )
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
