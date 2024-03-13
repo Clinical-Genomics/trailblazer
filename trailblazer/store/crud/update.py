@@ -287,6 +287,7 @@ class UpdateHandler(BaseHandler):
         for analysis_update in data.analyses:
             analysis: Analysis = self.update_analysis(
                 analysis_id=analysis_update.id,
+                delivered=analysis_update.delivered,
                 comment=analysis_update.comment,
                 is_visible=analysis_update.is_visible,
                 status=analysis_update.status,
