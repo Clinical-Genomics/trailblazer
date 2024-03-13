@@ -7,3 +7,4 @@ class TokensResponse(BaseModel):
     refresh_token: str
     scope: str
     token_type: str
+    id_token: str
