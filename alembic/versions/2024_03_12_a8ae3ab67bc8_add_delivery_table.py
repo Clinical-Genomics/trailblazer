@@ -44,7 +44,7 @@ def upgrade():
             nullable=False,
             unique=True,
         ),
-        sa.Column("user_id", sa.ForeignKey(User.id), nullable=False),
+        sa.Column("delivered_by", sa.ForeignKey(User.id), nullable=False),
         sa.Column("delivered_date", sa.Date, nullable=False),
     )
 

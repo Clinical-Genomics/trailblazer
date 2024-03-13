@@ -13,16 +13,15 @@ def test_patch_analysis(client: FlaskClient, analysis: Analysis):
     # GIVEN an analysis
 
     # GIVEN a valid request to pach the analysis
-    update = AnalysisUpdate(id=analysis.id, comment="new_comment")
+    update = AnalysisUpdate(id=analysis.id, comment="new_comment", delivered=True)
     request = UpdateAnalyses(analyses=[update])
     data: str = request.model_dump_json()
 
-    with mock.patch.object(trailblazer.server.api, "before_request", return_value=None):
-        # WHEN patching the analysis
-        response = client.patch("/api/v1/analyses", data=data, content_type="application/json")
+    # WHEN patching the analysis
+    response = client.patch("/api/v1/analyses", data=data, content_type="application/json")
 
-        # THEN it gives a success response
-        assert response.status_code == HTTPStatus.OK
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
 
-        # THEN it should return the analysis
-        assert response.json["analyses"]
+    # THEN it should return the analysis
+    assert response.json["analyses"]
