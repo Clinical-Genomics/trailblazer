@@ -65,7 +65,7 @@ def authenticate(auth_service: AuthenticationService = Provide[Container.auth_se
     try:
         request_data = CodeExchangeRequest.model_validate(request.json)
         token: str = auth_service.authenticate(request_data.code)
-        return jsonify({"access_token": token}), HTTPStatus.OK
+        return jsonify({"token": token}), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
     except AuthenticationError:
