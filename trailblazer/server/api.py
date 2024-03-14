@@ -144,8 +144,9 @@ def update_analysis(
 ):
     try:
         request_data = AnalysisUpdateRequest.model_validate(request.json)
+        user: User = g.get("current_user")
         response: AnalysisResponse = analysis_service.update_analysis(
-            analysis_id=analysis_id, update=request_data
+            analysis_id=analysis_id, update=request_data, user=user
         )
         return jsonify(response.model_dump()), HTTPStatus.OK
     except MissingAnalysis as error:

@@ -4,6 +4,7 @@ from trailblazer.constants import TrailblazerStatus
 
 
 class AnalysisUpdateRequest(BaseModel):
-    is_visible: bool | None = None
     comment: str | None = None
+    delivered: bool | None = None
+    is_visible: bool | None = None
     status: TrailblazerStatus | None = None
