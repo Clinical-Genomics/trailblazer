@@ -1,7 +1,8 @@
-from flask.testing import FlaskClient
 from http import HTTPStatus
-from trailblazer.dto.update_analyses import AnalysisUpdate, UpdateAnalyses
 
+from flask.testing import FlaskClient
+
+from trailblazer.dto.update_analyses import AnalysisUpdate, UpdateAnalyses
 from trailblazer.store.models import Analysis
 
 

@@ -8,7 +8,6 @@ from trailblazer.store.store import Store
 
 
 class AuthenticationService:
-
     def __init__(
         self,
         google_oauth_client: GoogleOAuthClient,

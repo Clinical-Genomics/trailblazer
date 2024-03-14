@@ -1,19 +1,12 @@
+import logging
 import os
 from http import HTTPStatus
 from typing import Mapping
 
-from flask import (
-    Blueprint,
-    Response,
-    abort,
-    g,
-    jsonify,
-    make_response,
-    request,
-)
+from dependency_injector.wiring import Provide, inject
+from flask import Blueprint, Response, abort, g, jsonify, make_response, request
 from google.auth import jwt
 from pydantic import ValidationError
-from dependency_injector.wiring import inject, Provide
 
 from trailblazer.containers import Container
 from trailblazer.dto import (
@@ -22,9 +15,9 @@ from trailblazer.dto import (
     AnalysisResponse,
     AnalysisUpdateRequest,
     CreateJobRequest,
-    JobResponse,
     FailedJobsRequest,
     FailedJobsResponse,
+    JobResponse,
 )
 from trailblazer.dto.analyses_response import UpdateAnalysesResponse
 from trailblazer.dto.authentication.code_exchange_request import CodeExchangeRequest
@@ -34,10 +27,7 @@ from trailblazer.dto.summaries_response import SummariesResponse
 from trailblazer.dto.update_analyses import UpdateAnalyses
 from trailblazer.exc import MissingAnalysis
 from trailblazer.server.ext import store
-from trailblazer.server.utils import (
-    parse_analyses_request,
-    stringify_timestamps,
-)
+from trailblazer.server.utils import parse_analyses_request, stringify_timestamps
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
 from trailblazer.services.authentication_service.exceptions import AuthenticationError
@@ -111,7 +101,10 @@ def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysi
     """Update data (such as status, visibility, comments etc.) for multiple analyses at once."""
     try:
         request_data = UpdateAnalyses.model_validate(request.json)
-        response: UpdateAnalysesResponse = analysis_service.update_analyses(request_data)
+        user: User = g.get("current_user")
+        response: UpdateAnalysesResponse = analysis_service.update_analyses(
+            data=request_data, user=user
+        )
         return jsonify(response.model_dump()), HTTPStatus.OK
     except ValidationError as error:
         return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
@@ -151,8 +144,9 @@ def update_analysis(
 ):
     try:
         request_data = AnalysisUpdateRequest.model_validate(request.json)
+        user: User = g.get("current_user")
         response: AnalysisResponse = analysis_service.update_analysis(
-            analysis_id=analysis_id, update=request_data
+            analysis_id=analysis_id, update=request_data, user=user
         )
         return jsonify(response.model_dump()), HTTPStatus.OK
     except MissingAnalysis as error:

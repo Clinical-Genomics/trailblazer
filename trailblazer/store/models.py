@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from sqlalchemy import Column, ForeignKey, UniqueConstraint, orm, types
 
@@ -92,6 +93,7 @@ class Analysis(Model):
     workflow_manager = Column(types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM)
 
     jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
+    delivery = orm.relationship("Delivery", uselist=False)
 
     @property
     def has_ongoing_status(self) -> bool:
@@ -108,11 +110,22 @@ class Analysis(Model):
         """Return upload jobs."""
         return [job for job in self.jobs if job.job_type == JobType.UPLOAD]
 
+    @property
+    def delivered_by(self) -> User | None:
+        return self.delivery.delivered_by if self.delivery else None
+
+    @property
+    def delivered_date(self) -> datetime.datetime | None:
+        return self.delivery.delivered_date if self.delivery else None
+
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object."""
         return {
             "id": self.id,
             "case_id": self.case_id,
+            "is_delivered": bool(self.delivery),
+            "delivered_by": self.delivered_by,
+            "delivered_date": self.delivered_date,
             "version": self.version,
             "logged_at": self.logged_at,
             "started_at": self.started_at,
@@ -132,6 +145,21 @@ class Analysis(Model):
             "uploaded_at": self.uploaded_at,
             "workflow_manager": self.workflow_manager,
         }
+
+
+class Delivery(Model):
+    """Tracks when and by whom an analysis was delivered."""
+
+    __tablename__ = "delivery"
+    __table_args__ = (UniqueConstraint("analysis_id"),)
+
+    id = Column(types.Uuid, primary_key=True, default=uuid.uuid4)
+    analysis_id = Column(ForeignKey(Analysis.id, ondelete="CASCADE"), nullable=False)
+    delivered_by = Column(ForeignKey(User.id), nullable=False)
+    delivered_date = Column(types.DateTime, nullable=False)
+
+    analysis = orm.relationship("Analysis", foreign_keys=[analysis_id], back_populates="delivery")
+    user = orm.relationship("User", foreign_keys=[delivered_by])
 
 
 class Job(Model):
