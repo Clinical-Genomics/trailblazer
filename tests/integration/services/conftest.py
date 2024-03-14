@@ -92,6 +92,7 @@ def google_oauth_response() -> dict:
         "expires_in": 3600,
         "refresh_token": "refresh_token",
         "scope": "scope",
+        "id_token": "id_token",
     }
 
 

@@ -21,7 +21,7 @@ class AuthenticationService:
         self.store = store
 
     def authenticate(self, authorization_code: str) -> str:
-        """Exchange the authorization code for an access token."""
+        """Exchange the authorization code for an id token."""
         tokens: TokensResponse = self.google_oauth_client.get_tokens(authorization_code)
         user_email: str = self.google_api_client.get_user_email(tokens.access_token)
         user: User | None = self.store.get_user(user_email)
@@ -32,7 +32,7 @@ class AuthenticationService:
         encrypted_token: str = self.encryption_service.encrypt(tokens.refresh_token)
         self.store.update_user_token(user_id=user.id, refresh_token=encrypted_token)
 
-        return tokens.access_token
+        return tokens.id_token
 
     def refresh_access_token(self, user_id: int) -> str:
         """Refresh the users access token."""
