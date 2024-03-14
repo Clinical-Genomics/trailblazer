@@ -237,15 +237,18 @@ class UpdateHandler(BaseHandler):
     def update_analysis_delivery(
         analysis: Analysis, delivered: bool, user: User | None = None
     ) -> None:
+        session: Session = get_session()
         if delivered:
-            analysis.delivery = Delivery(
+            delivery = Delivery(
                 analysis_id=analysis.id,
                 delivered_by=user.id,
                 delivered_date=datetime.today(),
             )
+            session.add(delivery)
+            session.commit()
+            analysis.delivery = delivery
         else:
             if delivery := analysis.delivery:
-                session: Session = get_session()
                 session.delete(delivery)
 
     def update_analysis(

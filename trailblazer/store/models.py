@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from sqlalchemy import Column, ForeignKey, UniqueConstraint, orm, types
 
@@ -92,6 +93,7 @@ class Analysis(Model):
     workflow_manager = Column(types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM)
 
     jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
+    delivery = orm.relationship("Delivery", uselist=False)
 
     @property
     def has_ongoing_status(self) -> bool:
@@ -151,12 +153,12 @@ class Delivery(Model):
     __tablename__ = "delivery"
     __table_args__ = (UniqueConstraint("analysis_id"),)
 
-    id = Column(types.Uuid, primary_key=True)
+    id = Column(types.Uuid, primary_key=True, default=uuid.uuid4)
     analysis_id = Column(ForeignKey(Analysis.id, ondelete="CASCADE"), nullable=False)
     delivered_by = Column(ForeignKey(User.id), nullable=False)
     delivered_date = Column(types.DateTime, nullable=False)
 
-    analysis = orm.relationship("Analysis", foreign_keys=[analysis_id])
+    analysis = orm.relationship("Analysis", foreign_keys=[analysis_id], back_populates="delivery")
     user = orm.relationship("User", foreign_keys=[delivered_by])
 
 
