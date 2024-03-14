@@ -235,10 +235,10 @@ class UpdateHandler(BaseHandler):
 
     @staticmethod
     def update_analysis_delivery(
-        analysis: Analysis, delivered: bool, user: User | None = None
+        analysis: Analysis, is_delivered: bool, user: User | None = None
     ) -> None:
         session: Session = get_session()
-        if delivered:
+        if is_delivered and not analysis.delivery:
             delivery = Delivery(
                 analysis_id=analysis.id,
                 delivered_by=user.id,
@@ -247,7 +247,7 @@ class UpdateHandler(BaseHandler):
             session.add(delivery)
             session.commit()
             analysis.delivery = delivery
-        else:
+        elif not is_delivered:
             if delivery := analysis.delivery:
                 session.delete(delivery)
 
@@ -255,7 +255,7 @@ class UpdateHandler(BaseHandler):
         self,
         analysis_id: int,
         comment: str | None = None,
-        delivered: bool | None = None,
+        is_delivered: bool | None = None,
         is_visible: bool | None = None,
         status: str | None = None,
         user: User | None = None,
@@ -270,9 +270,9 @@ class UpdateHandler(BaseHandler):
             LOG.info(f"Adding comment {comment} to analysis {analysis.id}")
             analysis.comment = comment
 
-        if delivered is not None:
-            LOG.info(f"Setting analysis delivered status to {delivered}")
-            self.update_analysis_delivery(analysis, delivered, user)
+        if is_delivered is not None:
+            LOG.info(f"Setting analysis delivered status to {is_delivered}")
+            self.update_analysis_delivery(analysis=analysis, is_delivered=is_delivered, user=user)
 
         if is_visible is not None:
             LOG.info(f"Setting visibility to {is_visible} for analysis {analysis.id}")
@@ -292,7 +292,7 @@ class UpdateHandler(BaseHandler):
         for analysis_update in data.analyses:
             analysis: Analysis = self.update_analysis(
                 analysis_id=analysis_update.id,
-                delivered=analysis_update.delivered,
+                is_delivered=analysis_update.is_delivered,
                 comment=analysis_update.comment,
                 is_visible=analysis_update.is_visible,
                 status=analysis_update.status,

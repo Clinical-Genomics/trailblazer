@@ -8,7 +8,7 @@ def test_patch_analyses_delivered(
     analysis_store: Store, analysis_id: int, analysis_service: AnalysisService
 ):
     analysis: Analysis = analysis_store.get_analysis_with_id(analysis_id)
-    analysis_update = AnalysisUpdate(id=analysis_id, delivered=True)
+    analysis_update = AnalysisUpdate(id=analysis_id, is_delivered=True)
     update_analyses = UpdateAnalyses(analyses=[analysis_update])
     user = User(id=1)
 

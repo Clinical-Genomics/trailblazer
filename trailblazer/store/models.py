@@ -123,7 +123,7 @@ class Analysis(Model):
         return {
             "id": self.id,
             "case_id": self.case_id,
-            "delivered": bool(self.delivery),
+            "is_delivered": bool(self.delivery),
             "delivered_by": self.delivered_by,
             "delivered_date": self.delivered_date,
             "version": self.version,

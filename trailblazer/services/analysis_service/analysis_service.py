@@ -40,7 +40,7 @@ class AnalysisService:
         analysis: Analysis = self.store.update_analysis(
             analysis_id=analysis_id,
             comment=update.comment,
-            delivered=update.delivered,
+            is_delivered=update.is_delivered,
             status=update.status,
             is_visible=update.is_visible,
             user=user,
