@@ -31,8 +31,8 @@ def test_refresh_access_token(
     user: User = authentication_service.store.get_user(user_email)
     user.refresh_token = encrypted_refresh_token
 
-    # WHEN refreshing the access token
-    token: str = authentication_service.refresh_access_token(user.id)
+    # WHEN refreshing the token
+    token: str = authentication_service.refresh_token(user.id)
 
-    # THEN an access token is returned
+    # THEN a token is returned
     assert token

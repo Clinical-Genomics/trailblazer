@@ -35,9 +35,9 @@ class AuthenticationService:
 
         return tokens.id_token
 
-    def refresh_access_token(self, user_id: int) -> str:
-        """Refresh the users access token."""
+    def refresh_token(self, user_id: int) -> str:
+        """Retrieve a refreshed id token for the user."""
         user: User = self.store.get_user_by_id(user_id)
         refresh_token: str = self.encryption_service.decrypt(user.refresh_token)
-        access_token: str = self.google_oauth_client.get_access_token(refresh_token)
-        return access_token
+        id_token: str = self.google_oauth_client.get_id_token(refresh_token)
+        return id_token

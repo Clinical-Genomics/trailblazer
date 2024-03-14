@@ -33,8 +33,8 @@ class GoogleOAuthClient:
 
         return TokensResponse.model_validate(response.json())
 
-    def get_access_token(self, refresh_token: str) -> str:
-        """Use refresh token to get a new access token."""
+    def get_id_token(self, refresh_token: str) -> str:
+        """Use refresh token to get a new id token."""
         request = RefreshAccessTokenRequest(
             client_id=self.client_id,
             client_secret=self.client_secret,
@@ -47,4 +47,4 @@ class GoogleOAuthClient:
         if not response.ok:
             raise GoogleOAuthClientError(response.text)
 
-        return response.json()["access_token"]
+        return response.json()["id_token"]
