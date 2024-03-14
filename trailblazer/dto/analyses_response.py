@@ -18,7 +18,7 @@ class Analysis(BaseModel):
     comment: str | None = None
     completed_at: datetime | None = None
     config_path: str | None = None
-    delivered: bool | None = None
+    is_delivered: bool | None = None
     workflow: str | None = None
     failed_job: Job | None = None
     id: int
