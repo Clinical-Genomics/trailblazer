@@ -78,8 +78,8 @@ def refresh_token(auth_service: AuthenticationService = Provide[Container.auth_s
     """Refresh access token."""
     user: User = g.current_user
     try:
-        token: str = auth_service.refresh_access_token(user.id)
-        return jsonify({"access_token": token}), HTTPStatus.OK
+        token: str = auth_service.refresh_token(user.id)
+        return jsonify({"token": token}), HTTPStatus.OK
     except AuthenticationError:
         return jsonify("User not allowed"), HTTPStatus.FORBIDDEN
 
