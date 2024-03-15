@@ -75,6 +75,7 @@ class BaseHandler:
             statuses=query.status,
             types=query.type,
             case_id=query.case_id,
+            delivered=query.delivered,
         )
 
     def get_visible_analyses(self, analyses: Query) -> Query:

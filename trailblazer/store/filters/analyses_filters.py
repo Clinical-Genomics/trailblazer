@@ -80,8 +80,11 @@ def filter_analyses_by_empty_comment(analyses: Query, **kwargs) -> Query:
     return analyses.filter(sqlalchemy.or_(Analysis.comment.is_(None), Analysis.comment == ""))
 
 
-def filter_analyses_by_delivered(analyses: Query, **kwargs) -> Query:
-    return analyses.filter(Analysis.delivery != None)
+def filter_analyses_by_delivered(analyses: Query, delivered: bool | None, **kwargs) -> Query:
+    if delivered == True:
+        return analyses.filter(Analysis.delivery != None)
+    if delivered == False:
+        return analyses.filter(Analysis.delivery is None)
 
 
 class AnalysisFilter(Enum):
@@ -116,6 +119,7 @@ def apply_analysis_filter(
     status: str | None = None,
     statuses: list[str] | None = None,
     types: list[str] | None = None,
+    delivered: bool | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
     if statuses is None:
@@ -133,5 +137,6 @@ def apply_analysis_filter(
             status=status,
             statuses=statuses,
             types=types,
+            delivered=delivered,
         )
     return analyses
