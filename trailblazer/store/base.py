@@ -28,6 +28,7 @@ class BaseHandler:
         )
 
     def filter_analyses_by_request(self, analyses_request: AnalysesRequest) -> Query:
+        """Apply filtering and sorting of analyses based on request."""
         filters: list[AnalysisFilter] = [
             AnalysisFilter.BY_WORKFLOW,
             AnalysisFilter.BY_HAS_COMMENT,
@@ -76,6 +77,6 @@ class BaseHandler:
         if not analyses_request.search:
             analyses = self.get_visible_analyses(analyses)
 
-        total_analyses_count: int = analyses.count()
+        total_count: int = analyses.count()
         query_page: Query = self.paginate_analyses(analyses=analyses, query=analyses_request)
-        return query_page.all(), total_analyses_count
+        return query_page.all(), total_count

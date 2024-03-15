@@ -16,7 +16,9 @@ def filter_analyses_by_comment(analyses: Query, comment: str, **kwargs) -> Query
 
 def filter_analyses_by_case_id(analyses: Query, case_id: str | None, **kwargs) -> Query:
     """Filter analyses by case id."""
-    return analyses.filter(Analysis.case_id == case_id) if case_id else analyses
+    if case_id is None:
+        return analyses
+    return analyses.filter(Analysis.case_id == case_id)
 
 
 def filter_analyses_by_entry_id(analyses: Query, analysis_id: int, **kwargs) -> Query:
@@ -30,7 +32,9 @@ def filter_analyses_by_is_visible(analyses: Query, **kwargs) -> Query:
 
 
 def filter_analyses_by_order_id(analyses: Query, order_id: int | None, **kwargs) -> Query:
-    return analyses.filter(Analysis.order_id == order_id) if order_id else analyses
+    if order_id is None:
+        return analyses
+    return analyses.filter(Analysis.order_id == order_id)
 
 
 def filter_analyses_by_search_term(analyses: Query, search_term: str | None, **kwargs) -> Query:
