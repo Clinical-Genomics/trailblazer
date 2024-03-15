@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Type
 
-from sqlalchemy import asc, desc, func
+from sqlalchemy import func
 from sqlalchemy.orm import Query, Session
 
 from trailblazer.dto import AnalysesRequest
@@ -28,7 +28,6 @@ class BaseHandler:
         )
 
     def filter_analyses_by_request(self, request: AnalysesRequest) -> Query:
-        """Apply filtering and sorting of analyses based on request."""
         filters: list[AnalysisFilter] = [
             AnalysisFilter.BY_WORKFLOW,
             AnalysisFilter.BY_HAS_COMMENT,
@@ -39,6 +38,7 @@ class BaseHandler:
             AnalysisFilter.BY_CASE_ID,
             AnalysisFilter.BY_SEARCH_TERM,
             AnalysisFilter.BY_IS_VISIBLE,
+            AnalysisFilter.SORTING,
         ]
         return apply_analysis_filter(
             filter_functions=filters,
@@ -52,23 +52,20 @@ class BaseHandler:
             workflow=request.workflow,
             search_term=request.search,
             is_visible=not request.search,
+            sort_field=request.sort_field,
+            sort_order=request.sort_order,
         )
 
-    def sort_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
-        if query.sort_field:
-            column = getattr(Analysis, query.sort_field)
-            if query.sort_order == "asc":
-                analyses = analyses.order_by(asc(column))
-            else:
-                analyses = analyses.order_by(desc(column))
-        return analyses
-
     def paginate_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
-        return analyses.limit(query.page_size).offset((query.page - 1) * query.page_size)
+        return apply_analysis_filter(
+            filter_functions=[AnalysisFilter.PAGINATION],
+            analyses=analyses,
+            page=query.page,
+            page_size=query.page_size,
+        )
 
     def get_analyses(self, request: AnalysesRequest) -> tuple[list[Analysis], int]:
-        analyses = self.filter_analyses_by_request(request)
-        analyses = self.sort_analyses(analyses=analyses, query=request)
+        analyses: Query = self.filter_analyses_by_request(request)
         total_count: int = analyses.count()
-        query_page: Query = self.paginate_analyses(analyses=analyses, query=request)
-        return query_page.all(), total_count
+        page: Query = self.paginate_analyses(analyses=analyses, query=request)
+        return page.all(), total_count

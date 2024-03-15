@@ -6,6 +6,8 @@ import sqlalchemy
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import TrailblazerStatus, Workflow
+from trailblazer.dto.analyses_request import AnalysisSortField
+from trailblazer.dto.common import SortOrder
 from trailblazer.store.models import Analysis
 
 
@@ -100,6 +102,27 @@ def filter_analyses_by_workflow(analyses: Query, workflow: Workflow, **kwargs) -
     return analyses
 
 
+def sort_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
+    if query.sort_field:
+        column = getattr(Analysis, query.sort_field)
+        if query.sort_order == "asc":
+            analyses = analyses.order_by(asc(column))
+        else:
+            analyses = analyses.order_by(desc(column))
+    return analyses
+
+
+def sort_analyses(analyses: Query, sort_field: AnalysisSortField, sort_order: SortOrder) -> Query:
+    column = getattr(Analysis, sort_field)
+    if sort_order == SortOrder.ASC:
+        return analyses.order_by(sqlalchemy.asc(column))
+    return analyses.order_by(sqlalchemy.desc(column))
+
+
+def paginate_analyses(analyses: Query, page: int, page_size: int) -> Query:
+    return analyses.limit(page_size).offset((page - 1) * page_size)
+
+
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
@@ -117,6 +140,8 @@ class AnalysisFilter(Enum):
     BY_STATUSES: Callable = filter_analyses_by_statuses
     BY_TYPES: Callable = filter_analyses_by_types
     BY_WORKFLOW: Callable = filter_analyses_by_workflow
+    SORTING: Callable = sort_analyses
+    PAGINATION: Callable = paginate_analyses
 
 
 def apply_analysis_filter(
@@ -135,6 +160,10 @@ def apply_analysis_filter(
     workflow: str | None = None,
     has_comment: bool | None = None,
     is_visible: bool | None = None,
+    page: int = 1,
+    page_size: int = 250,
+    sort_field: AnalysisSortField | None = None,
+    sort_order: SortOrder | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
     if statuses is None:
@@ -155,5 +184,9 @@ def apply_analysis_filter(
             workflow=workflow,
             has_comment=has_comment,
             is_visible=is_visible,
+            page=page,
+            page_size=page_size,
+            sort_field=sort_field,
+            sort_order=sort_order,
         )
     return analyses
