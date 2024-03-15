@@ -70,13 +70,13 @@ class BaseHandler:
     def paginate_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
         return analyses.limit(query.page_size).offset((query.page - 1) * query.page_size)
 
-    def get_analyses(self, analyses_request: AnalysesRequest) -> tuple[list[Analysis], int]:
-        analyses = self.filter_analyses_by_request(analyses_request)
-        analyses = self.sort_analyses(analyses=analyses, query=analyses_request)
+    def get_analyses(self, request: AnalysesRequest) -> tuple[list[Analysis], int]:
+        analyses = self.filter_analyses_by_request(request)
+        analyses = self.sort_analyses(analyses=analyses, query=request)
 
-        if not analyses_request.search:
+        if not request.search:
             analyses = self.get_visible_analyses(analyses)
 
         total_count: int = analyses.count()
-        query_page: Query = self.paginate_analyses(analyses=analyses, query=analyses_request)
+        query_page: Query = self.paginate_analyses(analyses=analyses, query=request)
         return query_page.all(), total_count
