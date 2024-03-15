@@ -157,7 +157,7 @@ def apply_analysis_filter(
     has_comment: bool | None = None,
     is_visible: bool | None = None,
     page: int | None = None,
-    page_size: int| None = None,
+    page_size: int | None = None,
     sort_field: AnalysisSortField | None = None,
     sort_order: SortOrder | None = None,
 ) -> Query:
