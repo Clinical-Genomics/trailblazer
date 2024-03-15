@@ -8,15 +8,15 @@ from trailblazer.constants import (
 
 
 class AnalysesRequest(BaseModel):
-    workflow: str | None = ""
+    workflow: str = ""
     search: str | None = None
-    page_size: int | None = Field(alias="pageSize", default=250)
-    page: int | None = 1
-    sort_field: str | None = Field(alias="sortField", default="started_at")
-    sort_order: str | None = Field(alias="sortOrder", default="desc")
-    status: list[TrailblazerStatus] | None = []
-    priority: list[TrailblazerPriority] | None = []
-    type: list[TrailblazerTypes] | None = []
+    page_size: int = Field(alias="pageSize", default=250)
+    page: int = 1
+    sort_field: str = Field(alias="sortField", default="started_at")
+    sort_order: str = Field(alias="sortOrder", default="desc")
+    status: list[TrailblazerStatus] = []
+    priority: list[TrailblazerPriority] = []
+    type: list[TrailblazerTypes] = []
     has_comment: bool | None = Field(alias="hasComment", default=None)
     order_id: int | None = Field(alias="orderId", default=None)
     case_id: str | None = None
