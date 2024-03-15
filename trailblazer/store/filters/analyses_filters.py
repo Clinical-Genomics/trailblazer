@@ -101,6 +101,7 @@ def filter_analyses_by_workflow(analyses: Query, workflow: Workflow, **kwargs) -
         analyses = analyses.filter(Analysis.workflow == workflow)
     return analyses
 
+
 def sort_analyses(analyses: Query, sort_field: AnalysisSortField, sort_order: SortOrder) -> Query:
     column = getattr(Analysis, sort_field)
     if sort_order == SortOrder.ASC:
