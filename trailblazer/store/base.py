@@ -63,6 +63,8 @@ class BaseHandler:
             filters.append(AnalysisFilter.BY_TYPES)
         if query.case_id:
             filters.append(AnalysisFilter.BY_CASE_ID)
+        if query.delivered is not None:
+            filters.append(AnalysisFilter.BY_DELIVERED)
 
         return apply_analysis_filter(
             filter_functions=filters,

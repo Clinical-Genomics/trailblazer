@@ -80,6 +80,10 @@ def filter_analyses_by_empty_comment(analyses: Query, **kwargs) -> Query:
     return analyses.filter(sqlalchemy.or_(Analysis.comment.is_(None), Analysis.comment == ""))
 
 
+def filter_analyses_by_delivered(analyses: Query, **kwargs) -> Query:
+    return analyses.filter(Analysis.delivery != None)
+
+
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
@@ -96,6 +100,7 @@ class AnalysisFilter(Enum):
     BY_STATUS: Callable = filter_analyses_by_status
     BY_STATUSES: Callable = filter_analyses_by_statuses
     BY_TYPES: Callable = filter_analyses_by_types
+    BY_DELIVERED: Callable = filter_analyses_by_delivered
 
 
 def apply_analysis_filter(
