@@ -27,7 +27,7 @@ class BaseHandler:
             func.count(Job.id).label("count"),
         )
 
-    def get_filtered_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
+    def filter_analyses_by_request(self, analyses_request: AnalysesRequest) -> Query:
         filters: list[AnalysisFilter] = [
             AnalysisFilter.BY_WORKFLOW,
             AnalysisFilter.BY_HAS_COMMENT,
@@ -40,15 +40,15 @@ class BaseHandler:
         ]
         return apply_analysis_filter(
             filter_functions=filters,
-            analyses=analyses,
-            has_comment=query.has_comment,
-            order_id=query.order_id,
-            priorities=query.priority,
-            statuses=query.status,
-            types=query.type,
-            case_id=query.case_id,
-            workflow=query.workflow,
-            search_term=query.search,
+            analyses=self.get_query(Analysis),
+            has_comment=analyses_request.has_comment,
+            order_id=analyses_request.order_id,
+            priorities=analyses_request.priority,
+            statuses=analyses_request.status,
+            types=analyses_request.type,
+            case_id=analyses_request.case_id,
+            workflow=analyses_request.workflow,
+            search_term=analyses_request.search,
         )
 
     def get_visible_analyses(self, analyses: Query) -> Query:
@@ -69,13 +69,13 @@ class BaseHandler:
     def paginate_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
         return analyses.limit(query.page_size).offset((query.page - 1) * query.page_size)
 
-    def get_analyses(self, query: AnalysesRequest) -> tuple[list[Analysis], int]:
-        analyses = self.get_filtered_analyses(analyses=analyses, query=query)
-        analyses = self.sort_analyses(analyses=analyses, query=query)
+    def get_analyses(self, analyses_request: AnalysesRequest) -> tuple[list[Analysis], int]:
+        analyses = self.filter_analyses_by_request(analyses_request)
+        analyses = self.sort_analyses(analyses=analyses, query=analyses_request)
 
-        if not query.search:
+        if not analyses_request.search:
             analyses = self.get_visible_analyses(analyses)
 
         total_analyses_count: int = analyses.count()
-        query_page: Query = self.paginate_analyses(analyses=analyses, query=query)
+        query_page: Query = self.paginate_analyses(analyses=analyses, query=analyses_request)
         return query_page.all(), total_analyses_count
