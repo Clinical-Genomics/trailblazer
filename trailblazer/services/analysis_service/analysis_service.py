@@ -24,10 +24,8 @@ class AnalysisService:
         self.store = store
 
     def get_analyses(self, query: AnalysesRequest) -> AnalysesResponse:
-        analyses, total_analysis_count = self.store.get_filtered_sorted_paginated_analyses(query)
-        return self.create_analyses_response(
-            analyses=analyses, total_analysis_count=total_analysis_count
-        )
+        analyses, total_count = self.store.get_analyses(query)
+        return self.create_analyses_response(analyses=analyses, total_count=total_count)
 
     def get_analysis(self, analysis_id: int) -> AnalysisResponse:
         if not (analysis := self.store.get_analysis_with_id(analysis_id)):
@@ -58,7 +56,7 @@ class AnalysisService:
         return create_analysis_response(analysis)
 
     def create_analyses_response(
-        self, analyses: list[Analysis], total_analysis_count: int
+        self, analyses: list[Analysis], total_count: int
     ) -> AnalysesResponse:
         response_data: list[dict] = []
         for analysis in analyses:
@@ -66,7 +64,7 @@ class AnalysisService:
             failed_job: Job = self.store.get_latest_failed_job_for_analysis(analysis.id)
             analysis_data["failed_job"] = failed_job.to_dict() if failed_job else None
             response_data.append(analysis_data)
-        return AnalysesResponse(analyses=response_data, total_count=total_analysis_count)
+        return AnalysesResponse(analyses=response_data, total_count=total_count)
 
     def update_ongoing_analyses(self) -> None:
         self.store.update_ongoing_analyses()

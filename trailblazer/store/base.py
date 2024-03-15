@@ -93,9 +93,7 @@ class BaseHandler:
     def paginate_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
         return analyses.limit(query.page_size).offset((query.page - 1) * query.page_size)
 
-    def get_filtered_sorted_paginated_analyses(
-        self, query: AnalysesRequest
-    ) -> tuple[list[Analysis], int]:
+    def get_analyses(self, query: AnalysesRequest) -> tuple[list[Analysis], int]:
         analyses: Query = self.get_analyses_query_by_workflow(query.workflow)
         analyses = self.get_filtered_analyses(analyses=analyses, query=query)
         analyses = self.get_analyses_query_by_search(analyses=analyses, search_term=query.search)
