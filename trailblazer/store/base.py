@@ -27,7 +27,7 @@ class BaseHandler:
             func.count(Job.id).label("count"),
         )
 
-    def filter_analyses_by_request(self, analyses_request: AnalysesRequest) -> Query:
+    def filter_analyses_by_request(self, request: AnalysesRequest) -> Query:
         """Apply filtering and sorting of analyses based on request."""
         filters: list[AnalysisFilter] = [
             AnalysisFilter.BY_WORKFLOW,
@@ -43,14 +43,15 @@ class BaseHandler:
         return apply_analysis_filter(
             filter_functions=filters,
             analyses=self.get_query(Analysis),
-            has_comment=analyses_request.has_comment,
-            order_id=analyses_request.order_id,
-            priorities=analyses_request.priority,
-            statuses=analyses_request.status,
-            types=analyses_request.type,
-            case_id=analyses_request.case_id,
-            workflow=analyses_request.workflow,
-            search_term=analyses_request.search,
+            has_comment=request.has_comment,
+            order_id=request.order_id,
+            priorities=request.priority,
+            statuses=request.status,
+            types=request.type,
+            case_id=request.case_id,
+            workflow=request.workflow,
+            search_term=request.search,
+            is_visible=not request.search,
         )
 
     def sort_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
