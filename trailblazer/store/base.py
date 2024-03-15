@@ -38,6 +38,7 @@ class BaseHandler:
             AnalysisFilter.BY_TYPES,
             AnalysisFilter.BY_CASE_ID,
             AnalysisFilter.BY_SEARCH_TERM,
+            AnalysisFilter.BY_IS_VISIBLE,
         ]
         return apply_analysis_filter(
             filter_functions=filters,
@@ -50,12 +51,6 @@ class BaseHandler:
             case_id=analyses_request.case_id,
             workflow=analyses_request.workflow,
             search_term=analyses_request.search,
-        )
-
-    def get_visible_analyses(self, analyses: Query) -> Query:
-        return apply_analysis_filter(
-            filter_functions=[AnalysisFilter.BY_IS_VISIBLE],
-            analyses=analyses,
         )
 
     def sort_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
@@ -73,10 +68,6 @@ class BaseHandler:
     def get_analyses(self, request: AnalysesRequest) -> tuple[list[Analysis], int]:
         analyses = self.filter_analyses_by_request(request)
         analyses = self.sort_analyses(analyses=analyses, query=request)
-
-        if not request.search:
-            analyses = self.get_visible_analyses(analyses)
-
         total_count: int = analyses.count()
         query_page: Query = self.paginate_analyses(analyses=analyses, query=request)
         return query_page.all(), total_count
