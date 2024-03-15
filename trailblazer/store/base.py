@@ -27,6 +27,12 @@ class BaseHandler:
             func.count(Job.id).label("count"),
         )
 
+    def get_analyses(self, request: AnalysesRequest) -> tuple[list[Analysis], int]:
+        analyses: Query = self._filter_analyses_by_request(request)
+        total_count: int = analyses.count()
+        page: Query = self._paginate_analyses(analyses=analyses, query=request)
+        return page.all(), total_count
+
     def _filter_analyses_by_request(self, request: AnalysesRequest) -> Query:
         filters: list[AnalysisFilter] = [
             AnalysisFilter.BY_WORKFLOW,
@@ -63,9 +69,3 @@ class BaseHandler:
             page=query.page,
             page_size=query.page_size,
         )
-
-    def get_analyses(self, request: AnalysesRequest) -> tuple[list[Analysis], int]:
-        analyses: Query = self._filter_analyses_by_request(request)
-        total_count: int = analyses.count()
-        page: Query = self._paginate_analyses(analyses=analyses, query=request)
-        return page.all(), total_count
