@@ -85,7 +85,7 @@ def filter_analyses_by_delivered(analyses: Query, delivered: bool | None, **kwar
         return analyses.filter(Analysis.delivery != None)
     if delivered == False:
         return analyses.filter(Analysis.delivery is None)
-
+    return analyses
 
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
