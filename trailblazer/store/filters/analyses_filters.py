@@ -105,6 +105,8 @@ def filter_analyses_by_workflow(analyses: Query, workflow: Workflow, **kwargs) -
 def sort_analyses(
     analyses: Query, sort_field: AnalysisSortField, sort_order: SortOrder, **kwargs
 ) -> Query:
+    if not sort_field or not sort_order:
+        return analyses
     column = getattr(Analysis, sort_field)
     if sort_order == SortOrder.ASC:
         return analyses.order_by(sqlalchemy.asc(column))
@@ -112,6 +114,8 @@ def sort_analyses(
 
 
 def paginate_analyses(analyses: Query, page: int, page_size: int, **kwargs) -> Query:
+    if not page or not page_size:
+        return analyses
     return analyses.limit(page_size).offset((page - 1) * page_size)
 
 
@@ -152,8 +156,8 @@ def apply_analysis_filter(
     workflow: str | None = None,
     has_comment: bool | None = None,
     is_visible: bool | None = None,
-    page: int = 1,
-    page_size: int = 250,
+    page: int | None = None,
+    page_size: int| None = None,
     sort_field: AnalysisSortField | None = None,
     sort_order: SortOrder | None = None,
 ) -> Query:
