@@ -76,7 +76,13 @@ def filter_analyses_by_types(analyses: Query, types: list[str], **kwargs) -> Que
     return analyses.filter(Analysis.type.in_(types))
 
 
-def filter_analyses_by_empty_comment(analyses: Query, **kwargs) -> Query:
+def filter_analyses_by_has_comment(analyses: Query, has_comment: bool | None, **kwargs) -> Query:
+    if has_comment is None:
+        return analyses
+    if has_comment:
+        return analyses.filter(
+            sqlalchemy.and_(Analysis.comment.isnot(None), Analysis.comment != "")
+        )
     return analyses.filter(sqlalchemy.or_(Analysis.comment.is_(None), Analysis.comment == ""))
 
 
@@ -96,7 +102,7 @@ class AnalysisFilter(Enum):
     BY_BEFORE_STARTED_AT: Callable = filter_analyses_by_before_started_at
     BY_CASE_ID: Callable = filter_analyses_by_case_id
     BY_COMMENT: Callable = filter_analyses_by_comment
-    BY_EMPTY_COMMENT: Callable = filter_analyses_by_empty_comment
+    BY_HAS_COMMENT: Callable = filter_analyses_by_has_comment
     BY_ENTRY_ID: Callable = filter_analyses_by_entry_id
     BY_SEARCH_TERM: Callable = filter_analyses_by_search_term
     BY_IS_VISIBLE: Callable = filter_analyses_by_is_visible
@@ -123,6 +129,7 @@ def apply_analysis_filter(
     statuses: list[str] | None = None,
     types: list[str] | None = None,
     workflow: str | None = None,
+    has_comment: bool | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
     if statuses is None:
@@ -141,5 +148,6 @@ def apply_analysis_filter(
             statuses=statuses,
             types=types,
             workflow=workflow,
+            has_comment=has_comment,
         )
     return analyses

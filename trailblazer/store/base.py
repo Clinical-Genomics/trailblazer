@@ -42,8 +42,8 @@ class BaseHandler:
         filters: list[AnalysisFilter] = []
         if query.workflow:
             filters.append(AnalysisFilter.BY_WORKFLOW)
-        if query.comment:
-            filters.append(AnalysisFilter.BY_EMPTY_COMMENT)
+        if query.has_comment is not None:
+            filters.append(AnalysisFilter.BY_HAS_COMMENT)
         if query.order_id is not None:
             filters.append(AnalysisFilter.BY_ORDER_ID)
         if query.priority:
@@ -58,7 +58,7 @@ class BaseHandler:
         return apply_analysis_filter(
             filter_functions=filters,
             analyses=analyses,
-            comment=query.comment,
+            has_comment=query.has_comment,
             order_id=query.order_id,
             priorities=query.priority,
             statuses=query.status,

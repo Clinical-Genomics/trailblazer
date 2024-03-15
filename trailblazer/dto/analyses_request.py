@@ -17,6 +17,6 @@ class AnalysesRequest(BaseModel):
     status: list[TrailblazerStatus] | None = []
     priority: list[TrailblazerPriority] | None = []
     type: list[TrailblazerTypes] | None = []
-    comment: list[str] | None = []
+    has_comment: bool | None = Field(alias="hasComment", default=None)
     order_id: int | None = Field(alias="orderId", default=None)
     case_id: str | None = None
