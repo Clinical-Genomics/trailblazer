@@ -4,7 +4,6 @@ from typing import Type
 from sqlalchemy import asc, desc, func
 from sqlalchemy.orm import Query, Session
 
-from trailblazer.constants import Workflow
 from trailblazer.dto import AnalysesRequest
 from trailblazer.store.database import get_session
 from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
@@ -28,33 +27,17 @@ class BaseHandler:
             func.count(Job.id).label("count"),
         )
 
-    def get_analyses_query_by_search(self, analyses: Query, search_term: str) -> Query:
-        """Return analyses by search term."""
-        if search_term:
-            analyses: Query = apply_analysis_filter(
-                filter_functions=[AnalysisFilter.BY_SEARCH_TERM],
-                analyses=analyses,
-                search_term=search_term,
-            )
-        return analyses
-
     def get_filtered_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
-        filters: list[AnalysisFilter] = []
-        if query.workflow:
-            filters.append(AnalysisFilter.BY_WORKFLOW)
-        if query.has_comment is not None:
-            filters.append(AnalysisFilter.BY_HAS_COMMENT)
-        if query.order_id is not None:
-            filters.append(AnalysisFilter.BY_ORDER_ID)
-        if query.priority:
-            filters.append(AnalysisFilter.BY_PRIORITIES)
-        if query.status:
-            filters.append(AnalysisFilter.BY_STATUSES)
-        if query.type:
-            filters.append(AnalysisFilter.BY_TYPES)
-        if query.case_id:
-            filters.append(AnalysisFilter.BY_CASE_ID)
-
+        filters: list[AnalysisFilter] = [
+            AnalysisFilter.BY_WORKFLOW,
+            AnalysisFilter.BY_HAS_COMMENT,
+            AnalysisFilter.BY_ORDER_ID,
+            AnalysisFilter.BY_PRIORITIES,
+            AnalysisFilter.BY_STATUSES,
+            AnalysisFilter.BY_TYPES,
+            AnalysisFilter.BY_CASE_ID,
+            AnalysisFilter.BY_SEARCH_TERM,
+        ]
         return apply_analysis_filter(
             filter_functions=filters,
             analyses=analyses,
@@ -65,6 +48,7 @@ class BaseHandler:
             types=query.type,
             case_id=query.case_id,
             workflow=query.workflow,
+            search_term=query.search,
         )
 
     def get_visible_analyses(self, analyses: Query) -> Query:
@@ -87,7 +71,6 @@ class BaseHandler:
 
     def get_analyses(self, query: AnalysesRequest) -> tuple[list[Analysis], int]:
         analyses = self.get_filtered_analyses(analyses=analyses, query=query)
-        analyses = self.get_analyses_query_by_search(analyses=analyses, search_term=query.search)
         analyses = self.sort_analyses(analyses=analyses, query=query)
 
         if not query.search:

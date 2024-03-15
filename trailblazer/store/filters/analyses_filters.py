@@ -14,9 +14,9 @@ def filter_analyses_by_comment(analyses: Query, comment: str, **kwargs) -> Query
     return analyses.filter(Analysis.comment.ilike(f"%{comment}%"))
 
 
-def filter_analyses_by_case_id(analyses: Query, case_id: str, **kwargs) -> Query:
+def filter_analyses_by_case_id(analyses: Query, case_id: str | None, **kwargs) -> Query:
     """Filter analyses by case id."""
-    return analyses.filter(Analysis.case_id == case_id)
+    return analyses.filter(Analysis.case_id == case_id) if case_id else analyses
 
 
 def filter_analyses_by_entry_id(analyses: Query, analysis_id: int, **kwargs) -> Query:
@@ -29,13 +29,14 @@ def filter_analyses_by_is_visible(analyses: Query, **kwargs) -> Query:
     return analyses.filter(Analysis.is_visible.is_(True))
 
 
-def filter_analyses_by_order_id(analyses: Query, order_id: int, **kwargs) -> Query:
-    """Filter analyses by order id."""
-    return analyses.filter(Analysis.order_id == order_id)
+def filter_analyses_by_order_id(analyses: Query, order_id: int | None, **kwargs) -> Query:
+    return analyses.filter(Analysis.order_id == order_id) if order_id else analyses
 
 
-def filter_analyses_by_search_term(analyses: Query, search_term: str, **kwargs) -> Query:
+def filter_analyses_by_search_term(analyses: Query, search_term: str | None, **kwargs) -> Query:
     """Filter analyses by search term using multiple fields."""
+    if not search_term:
+        return analyses
     return analyses.filter(
         sqlalchemy.or_(
             Analysis.case_id.ilike(f"%{search_term}%"),
@@ -61,19 +62,16 @@ def filter_analyses_by_status(analyses: Query, status: TrailblazerStatus, **kwar
     return analyses.filter(Analysis.status == status)
 
 
-def filter_analyses_by_statuses(analyses: Query, statuses: list[str], **kwargs) -> Query:
-    """Filter analyses by statuses."""
-    return analyses.filter(Analysis.status.in_(statuses))
+def filter_analyses_by_statuses(analyses: Query, statuses: list[str] | None, **kwargs) -> Query:
+    return analyses.filter(Analysis.status.in_(statuses)) if statuses else analyses
 
 
-def filter_analyses_by_priorites(analyses: Query, priorities: list[str], **kwargs) -> Query:
-    """Filter analyses by priorities."""
-    return analyses.filter(Analysis.priority.in_(priorities))
+def filter_analyses_by_priorites(analyses: Query, priorities: list[str] | None, **kwargs) -> Query:
+    return analyses.filter(Analysis.priority.in_(priorities)) if priorities else analyses
 
 
-def filter_analyses_by_types(analyses: Query, types: list[str], **kwargs) -> Query:
-    """Filter analyses by types."""
-    return analyses.filter(Analysis.type.in_(types))
+def filter_analyses_by_types(analyses: Query, types: list[str] | None, **kwargs) -> Query:
+    return analyses.filter(Analysis.type.in_(types)) if types else analyses
 
 
 def filter_analyses_by_has_comment(analyses: Query, has_comment: bool | None, **kwargs) -> Query:
