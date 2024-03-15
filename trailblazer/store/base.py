@@ -38,19 +38,10 @@ class BaseHandler:
             )
         return analyses
 
-    def get_analyses_query_by_workflow(self, workflow: str) -> Query:
-        """Return analyses by workflow."""
-        analyses: Query = self.get_query(Analysis)
-        # Group existing variants of balsamic
-        balsamic_workflow: str = Workflow.BALSAMIC.lower()
-        if workflow == balsamic_workflow:
-            analyses = analyses.filter(Analysis.workflow.startswith(balsamic_workflow))
-        elif workflow:
-            analyses = analyses.filter(Analysis.workflow == workflow)
-        return analyses
-
     def get_filtered_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
         filters: list[AnalysisFilter] = []
+        if query.workflow:
+            filters.append(AnalysisFilter.BY_WORKFLOW)
         if query.comment:
             filters.append(AnalysisFilter.BY_EMPTY_COMMENT)
         if query.order_id is not None:
@@ -73,6 +64,7 @@ class BaseHandler:
             statuses=query.status,
             types=query.type,
             case_id=query.case_id,
+            workflow=query.workflow,
         )
 
     def get_visible_analyses(self, analyses: Query) -> Query:
@@ -94,7 +86,6 @@ class BaseHandler:
         return analyses.limit(query.page_size).offset((query.page - 1) * query.page_size)
 
     def get_analyses(self, query: AnalysesRequest) -> tuple[list[Analysis], int]:
-        analyses: Query = self.get_analyses_query_by_workflow(query.workflow)
         analyses = self.get_filtered_analyses(analyses=analyses, query=query)
         analyses = self.get_analyses_query_by_search(analyses=analyses, search_term=query.search)
         analyses = self.sort_analyses(analyses=analyses, query=query)

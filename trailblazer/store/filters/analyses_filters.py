@@ -5,7 +5,7 @@ from typing import Callable
 import sqlalchemy
 from sqlalchemy.orm import Query
 
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.constants import TrailblazerStatus, Workflow
 from trailblazer.store.models import Analysis
 
 
@@ -80,6 +80,16 @@ def filter_analyses_by_empty_comment(analyses: Query, **kwargs) -> Query:
     return analyses.filter(sqlalchemy.or_(Analysis.comment.is_(None), Analysis.comment == ""))
 
 
+def filter_analyses_by_workflow(analyses: Query, workflow: Workflow, **kwargs) -> Query:
+    """Filter analyses by workflow."""
+    balsamic_workflow: str = Workflow.BALSAMIC.lower()
+    if workflow == balsamic_workflow:
+        analyses = analyses.filter(Analysis.workflow.startswith(balsamic_workflow))
+    elif workflow:
+        analyses = analyses.filter(Analysis.workflow == workflow)
+    return analyses
+
+
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
@@ -96,6 +106,7 @@ class AnalysisFilter(Enum):
     BY_STATUS: Callable = filter_analyses_by_status
     BY_STATUSES: Callable = filter_analyses_by_statuses
     BY_TYPES: Callable = filter_analyses_by_types
+    BY_WORKFLOW: Callable = filter_analyses_by_workflow
 
 
 def apply_analysis_filter(
@@ -111,6 +122,7 @@ def apply_analysis_filter(
     status: str | None = None,
     statuses: list[str] | None = None,
     types: list[str] | None = None,
+    workflow: str | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
     if statuses is None:
@@ -128,5 +140,6 @@ def apply_analysis_filter(
             status=status,
             statuses=statuses,
             types=types,
+            workflow=workflow,
         )
     return analyses
