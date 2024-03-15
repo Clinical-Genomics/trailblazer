@@ -102,7 +102,9 @@ def filter_analyses_by_workflow(analyses: Query, workflow: Workflow, **kwargs) -
     return analyses
 
 
-def sort_analyses(analyses: Query, sort_field: AnalysisSortField, sort_order: SortOrder, **kwargs) -> Query:
+def sort_analyses(
+    analyses: Query, sort_field: AnalysisSortField, sort_order: SortOrder, **kwargs
+) -> Query:
     column = getattr(Analysis, sort_field)
     if sort_order == SortOrder.ASC:
         return analyses.order_by(sqlalchemy.asc(column))
