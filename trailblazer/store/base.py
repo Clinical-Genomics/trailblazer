@@ -27,7 +27,7 @@ class BaseHandler:
             func.count(Job.id).label("count"),
         )
 
-    def filter_analyses_by_request(self, request: AnalysesRequest) -> Query:
+    def _filter_analyses_by_request(self, request: AnalysesRequest) -> Query:
         filters: list[AnalysisFilter] = [
             AnalysisFilter.BY_WORKFLOW,
             AnalysisFilter.BY_HAS_COMMENT,
@@ -56,7 +56,7 @@ class BaseHandler:
             sort_order=request.sort_order,
         )
 
-    def paginate_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
+    def _paginate_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
         return apply_analysis_filter(
             filter_functions=[AnalysisFilter.PAGINATION],
             analyses=analyses,
@@ -65,7 +65,7 @@ class BaseHandler:
         )
 
     def get_analyses(self, request: AnalysesRequest) -> tuple[list[Analysis], int]:
-        analyses: Query = self.filter_analyses_by_request(request)
+        analyses: Query = self._filter_analyses_by_request(request)
         total_count: int = analyses.count()
-        page: Query = self.paginate_analyses(analyses=analyses, query=request)
+        page: Query = self._paginate_analyses(analyses=analyses, query=request)
         return page.all(), total_count
