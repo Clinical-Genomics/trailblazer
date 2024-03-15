@@ -101,17 +101,6 @@ def filter_analyses_by_workflow(analyses: Query, workflow: Workflow, **kwargs) -
         analyses = analyses.filter(Analysis.workflow == workflow)
     return analyses
 
-
-def sort_analyses(self, analyses: Query, query: AnalysesRequest) -> Query:
-    if query.sort_field:
-        column = getattr(Analysis, query.sort_field)
-        if query.sort_order == "asc":
-            analyses = analyses.order_by(asc(column))
-        else:
-            analyses = analyses.order_by(desc(column))
-    return analyses
-
-
 def sort_analyses(analyses: Query, sort_field: AnalysisSortField, sort_order: SortOrder) -> Query:
     column = getattr(Analysis, sort_field)
     if sort_order == SortOrder.ASC:
