@@ -206,12 +206,12 @@ class ReadHandler(BaseHandler):
         ).all()
 
     def get_analyses(self, request: AnalysesRequest) -> tuple[list[Analysis], int]:
-        analyses: Query = self._filter_analyses_by_request(request)
+        analyses: Query = self._filter_analyses(request)
         total_count: int = analyses.count()
         page: Query = self._paginate_analyses(analyses=analyses, request=request)
         return page.all(), total_count
 
-    def _filter_analyses_by_request(self, request: AnalysesRequest) -> Query:
+    def _filter_analyses(self, request: AnalysesRequest) -> Query:
         filters: list[AnalysisFilter] = [
             AnalysisFilter.BY_WORKFLOW,
             AnalysisFilter.BY_HAS_COMMENT,
