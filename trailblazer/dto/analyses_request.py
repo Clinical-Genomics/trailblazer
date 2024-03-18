@@ -30,3 +30,4 @@ class AnalysesRequest(BaseModel):
     has_comment: bool | None = Field(alias="hasComment", default=None)
     order_id: int | None = Field(alias="orderId", default=None)
     case_id: str | None = None
+    delivered: bool | None = None

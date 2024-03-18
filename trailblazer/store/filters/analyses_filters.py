@@ -92,6 +92,14 @@ def filter_analyses_by_has_comment(analyses: Query, has_comment: bool | None, **
     return analyses.filter(sqlalchemy.or_(Analysis.comment.is_(None), Analysis.comment == ""))
 
 
+def filter_analyses_by_delivered(analyses: Query, delivered: bool | None, **kwargs) -> Query:
+    if delivered is True:
+        return analyses.filter(Analysis.delivery != None)
+    elif delivered is False:
+        return analyses.filter(Analysis.delivery == None)
+    return analyses
+
+
 def filter_analyses_by_workflow(analyses: Query, workflow: Workflow, **kwargs) -> Query:
     """Filter analyses by workflow."""
     balsamic_workflow: str = Workflow.BALSAMIC.lower()
@@ -135,6 +143,7 @@ class AnalysisFilter(Enum):
     BY_STATUS: Callable = filter_analyses_by_status
     BY_STATUSES: Callable = filter_analyses_by_statuses
     BY_TYPES: Callable = filter_analyses_by_types
+    BY_DELIVERED: Callable = filter_analyses_by_delivered
     BY_WORKFLOW: Callable = filter_analyses_by_workflow
     SORTING: Callable = sort_analyses
     PAGINATION: Callable = paginate_analyses
@@ -153,6 +162,7 @@ def apply_analysis_filter(
     status: str | None = None,
     statuses: list[str] | None = None,
     types: list[str] | None = None,
+    delivered: bool | None = None,
     workflow: str | None = None,
     has_comment: bool | None = None,
     is_visible: bool | None = None,
@@ -177,6 +187,7 @@ def apply_analysis_filter(
             status=status,
             statuses=statuses,
             types=types,
+            delivered=delivered,
             workflow=workflow,
             has_comment=has_comment,
             is_visible=is_visible,
