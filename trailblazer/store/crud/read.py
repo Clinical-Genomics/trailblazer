@@ -205,7 +205,7 @@ class ReadHandler(BaseHandler):
             order_id=order_id,
         ).all()
 
-    def get_analyses(self, request: AnalysesRequest) -> tuple[list[Analysis], int]:
+    def get_paginated_analyses(self, request: AnalysesRequest) -> tuple[list[Analysis], int]:
         analyses: Query = self._filter_analyses(request)
         total_count: int = analyses.count()
         page: Query = self._paginate_analyses(analyses=analyses, request=request)

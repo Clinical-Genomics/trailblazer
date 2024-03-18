@@ -24,7 +24,7 @@ class AnalysisService:
         self.store = store
 
     def get_analyses(self, request: AnalysesRequest) -> AnalysesResponse:
-        analyses, total_count = self.store.get_analyses(request)
+        analyses, total_count = self.store.get_paginated_analyses(request)
         return self.create_analyses_response(analyses=analyses, total_count=total_count)
 
     def get_analysis(self, analysis_id: int) -> AnalysisResponse:
