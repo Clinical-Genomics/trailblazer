@@ -5,7 +5,9 @@ from typing import Callable
 import sqlalchemy
 from sqlalchemy.orm import Query
 
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.constants import TrailblazerStatus, Workflow
+from trailblazer.dto.analyses_request import AnalysisSortField
+from trailblazer.dto.common import SortOrder
 from trailblazer.store.models import Analysis
 
 
@@ -14,8 +16,10 @@ def filter_analyses_by_comment(analyses: Query, comment: str, **kwargs) -> Query
     return analyses.filter(Analysis.comment.ilike(f"%{comment}%"))
 
 
-def filter_analyses_by_case_id(analyses: Query, case_id: str, **kwargs) -> Query:
+def filter_analyses_by_case_id(analyses: Query, case_id: str | None, **kwargs) -> Query:
     """Filter analyses by case id."""
+    if case_id is None:
+        return analyses
     return analyses.filter(Analysis.case_id == case_id)
 
 
@@ -24,18 +28,23 @@ def filter_analyses_by_entry_id(analyses: Query, analysis_id: int, **kwargs) -> 
     return analyses.filter(Analysis.id == analysis_id)
 
 
-def filter_analyses_by_is_visible(analyses: Query, **kwargs) -> Query:
+def filter_analyses_by_is_visible(analyses: Query, is_visible: bool | None, **kwargs) -> Query:
     """Filter analyses by case when is visible is true."""
-    return analyses.filter(Analysis.is_visible.is_(True))
+    if is_visible is None:
+        return analyses
+    return analyses.filter(Analysis.is_visible.is_(is_visible))
 
 
-def filter_analyses_by_order_id(analyses: Query, order_id: int, **kwargs) -> Query:
-    """Filter analyses by order id."""
+def filter_analyses_by_order_id(analyses: Query, order_id: int | None, **kwargs) -> Query:
+    if order_id is None:
+        return analyses
     return analyses.filter(Analysis.order_id == order_id)
 
 
-def filter_analyses_by_search_term(analyses: Query, search_term: str, **kwargs) -> Query:
+def filter_analyses_by_search_term(analyses: Query, search_term: str | None, **kwargs) -> Query:
     """Filter analyses by search term using multiple fields."""
+    if not search_term:
+        return analyses
     return analyses.filter(
         sqlalchemy.or_(
             Analysis.case_id.ilike(f"%{search_term}%"),
@@ -61,22 +70,25 @@ def filter_analyses_by_status(analyses: Query, status: TrailblazerStatus, **kwar
     return analyses.filter(Analysis.status == status)
 
 
-def filter_analyses_by_statuses(analyses: Query, statuses: list[str], **kwargs) -> Query:
-    """Filter analyses by statuses."""
-    return analyses.filter(Analysis.status.in_(statuses))
+def filter_analyses_by_statuses(analyses: Query, statuses: list[str] | None, **kwargs) -> Query:
+    return analyses.filter(Analysis.status.in_(statuses)) if statuses else analyses
 
 
-def filter_analyses_by_priorites(analyses: Query, priorities: list[str], **kwargs) -> Query:
-    """Filter analyses by priorities."""
-    return analyses.filter(Analysis.priority.in_(priorities))
+def filter_analyses_by_priorites(analyses: Query, priorities: list[str] | None, **kwargs) -> Query:
+    return analyses.filter(Analysis.priority.in_(priorities)) if priorities else analyses
 
 
-def filter_analyses_by_types(analyses: Query, types: list[str], **kwargs) -> Query:
-    """Filter analyses by types."""
-    return analyses.filter(Analysis.type.in_(types))
+def filter_analyses_by_types(analyses: Query, types: list[str] | None, **kwargs) -> Query:
+    return analyses.filter(Analysis.type.in_(types)) if types else analyses
 
 
-def filter_analyses_by_empty_comment(analyses: Query, **kwargs) -> Query:
+def filter_analyses_by_has_comment(analyses: Query, has_comment: bool | None, **kwargs) -> Query:
+    if has_comment is None:
+        return analyses
+    if has_comment:
+        return analyses.filter(
+            sqlalchemy.and_(Analysis.comment.isnot(None), Analysis.comment != "")
+        )
     return analyses.filter(sqlalchemy.or_(Analysis.comment.is_(None), Analysis.comment == ""))
 
 
@@ -87,13 +99,40 @@ def filter_analyses_by_delivered(analyses: Query, delivered: bool | None, **kwar
         return analyses.filter(Analysis.delivery is None)
     return analyses
 
+def filter_analyses_by_workflow(analyses: Query, workflow: Workflow, **kwargs) -> Query:
+    """Filter analyses by workflow."""
+    balsamic_workflow: str = Workflow.BALSAMIC.lower()
+    if workflow == balsamic_workflow:
+        analyses = analyses.filter(Analysis.workflow.startswith(balsamic_workflow))
+    elif workflow:
+        analyses = analyses.filter(Analysis.workflow == workflow)
+    return analyses
+
+
+def sort_analyses(
+    analyses: Query, sort_field: AnalysisSortField, sort_order: SortOrder, **kwargs
+) -> Query:
+    if not sort_field or not sort_order:
+        return analyses
+    column = getattr(Analysis, sort_field)
+    if sort_order == SortOrder.ASC:
+        return analyses.order_by(sqlalchemy.asc(column))
+    return analyses.order_by(sqlalchemy.desc(column))
+
+
+def paginate_analyses(analyses: Query, page: int, page_size: int, **kwargs) -> Query:
+    if not page or not page_size:
+        return analyses
+    return analyses.limit(page_size).offset((page - 1) * page_size)
+
+
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
     BY_BEFORE_STARTED_AT: Callable = filter_analyses_by_before_started_at
     BY_CASE_ID: Callable = filter_analyses_by_case_id
     BY_COMMENT: Callable = filter_analyses_by_comment
-    BY_EMPTY_COMMENT: Callable = filter_analyses_by_empty_comment
+    BY_HAS_COMMENT: Callable = filter_analyses_by_has_comment
     BY_ENTRY_ID: Callable = filter_analyses_by_entry_id
     BY_SEARCH_TERM: Callable = filter_analyses_by_search_term
     BY_IS_VISIBLE: Callable = filter_analyses_by_is_visible
@@ -104,6 +143,10 @@ class AnalysisFilter(Enum):
     BY_STATUSES: Callable = filter_analyses_by_statuses
     BY_TYPES: Callable = filter_analyses_by_types
     BY_DELIVERED: Callable = filter_analyses_by_delivered
+    BY_WORKFLOW: Callable = filter_analyses_by_workflow
+    SORTING: Callable = sort_analyses
+    PAGINATION: Callable = paginate_analyses
+
 
 
 def apply_analysis_filter(
@@ -120,6 +163,13 @@ def apply_analysis_filter(
     statuses: list[str] | None = None,
     types: list[str] | None = None,
     delivered: bool | None = None,
+    workflow: str | None = None,
+    has_comment: bool | None = None,
+    is_visible: bool | None = None,
+    page: int | None = None,
+    page_size: int | None = None,
+    sort_field: AnalysisSortField | None = None,
+    sort_order: SortOrder | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
     if statuses is None:
@@ -138,5 +188,12 @@ def apply_analysis_filter(
             statuses=statuses,
             types=types,
             delivered=delivered,
+            workflow=workflow,
+            has_comment=has_comment,
+            is_visible=is_visible,
+            page=page,
+            page_size=page_size,
+            sort_field=sort_field,
+            sort_order=sort_order,
         )
     return analyses

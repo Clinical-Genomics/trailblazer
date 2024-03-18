@@ -5,6 +5,7 @@ from sqlalchemy import desc
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import JobType, TrailblazerStatus
+from trailblazer.dto.analyses_request import AnalysesRequest
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.filters.analyses_filters import (
     AnalysisFilter,
@@ -203,3 +204,46 @@ class ReadHandler(BaseHandler):
             filter_functions=[AnalysisFilter.BY_ORDER_ID],
             order_id=order_id,
         ).all()
+
+    def get_paginated_analyses(self, request: AnalysesRequest) -> tuple[list[Analysis], int]:
+        analyses: Query = self._filter_analyses(request)
+        total_count: int = analyses.count()
+        page: Query = self._paginate_analyses(analyses=analyses, request=request)
+        return page.all(), total_count
+
+    def _filter_analyses(self, request: AnalysesRequest) -> Query:
+        filters: list[AnalysisFilter] = [
+            AnalysisFilter.BY_WORKFLOW,
+            AnalysisFilter.BY_HAS_COMMENT,
+            AnalysisFilter.BY_ORDER_ID,
+            AnalysisFilter.BY_PRIORITIES,
+            AnalysisFilter.BY_STATUSES,
+            AnalysisFilter.BY_TYPES,
+            AnalysisFilter.BY_CASE_ID,
+            AnalysisFilter.BY_SEARCH_TERM,
+            AnalysisFilter.BY_IS_VISIBLE,
+            AnalysisFilter.SORTING,
+        ]
+        return apply_analysis_filter(
+            filter_functions=filters,
+            analyses=self.get_query(Analysis),
+            has_comment=request.has_comment,
+            order_id=request.order_id,
+            priorities=request.priority,
+            statuses=request.status,
+            types=request.type,
+            case_id=request.case_id,
+            workflow=request.workflow,
+            search_term=request.search,
+            is_visible=not request.search,
+            sort_field=request.sort_field,
+            sort_order=request.sort_order,
+        )
+
+    def _paginate_analyses(self, analyses: Query, request: AnalysesRequest) -> Query:
+        return apply_analysis_filter(
+            filter_functions=[AnalysisFilter.PAGINATION],
+            analyses=analyses,
+            page=request.page,
+            page_size=request.page_size,
+        )
