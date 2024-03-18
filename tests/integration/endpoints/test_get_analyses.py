@@ -98,7 +98,7 @@ def test_get_analyses_without_comments(client: FlaskClient, analyses: list[Analy
     # GIVEN analyses with and without comments
 
     # WHEN retrieving all analyses without comments
-    response = client.get(f"/api/v1/analyses?pageSize={len(analyses)}&comment[]=")
+    response = client.get(f"/api/v1/analyses?pageSize={len(analyses)}&hasComment=False")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
