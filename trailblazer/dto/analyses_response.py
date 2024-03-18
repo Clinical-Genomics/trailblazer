@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from pydantic import BaseModel
 
@@ -18,6 +18,8 @@ class Analysis(BaseModel):
     comment: str | None = None
     completed_at: datetime | None = None
     config_path: str | None = None
+    delivered_by: str | None = None
+    delivered_date: date | None = None
     is_delivered: bool | None = None
     workflow: str | None = None
     failed_job: Job | None = None
