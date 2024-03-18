@@ -112,7 +112,7 @@ class Analysis(Model):
 
     @property
     def delivered_by(self) -> User | None:
-        return self.delivery.delivered_by if self.delivery else None
+        return self.delivery.user.name if self.delivery else None
 
     @property
     def delivered_date(self) -> datetime.datetime | None:
@@ -156,7 +156,7 @@ class Delivery(Model):
     id = Column(types.Uuid, primary_key=True, default=uuid.uuid4)
     analysis_id = Column(ForeignKey(Analysis.id, ondelete="CASCADE"), nullable=False)
     delivered_by = Column(ForeignKey(User.id), nullable=False)
-    delivered_date = Column(types.DateTime, nullable=False)
+    delivered_date = Column(types.Date, nullable=False)
 
     analysis = orm.relationship("Analysis", foreign_keys=[analysis_id], back_populates="delivery")
     user = orm.relationship("User", foreign_keys=[delivered_by])
