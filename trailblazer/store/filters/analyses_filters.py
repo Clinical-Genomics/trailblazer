@@ -93,11 +93,12 @@ def filter_analyses_by_has_comment(analyses: Query, has_comment: bool | None, **
 
 
 def filter_analyses_by_delivered(analyses: Query, delivered: bool | None, **kwargs) -> Query:
-    if delivered == True:
+    if delivered is True:
         return analyses.filter(Analysis.delivery != None)
-    if delivered == False:
-        return analyses.filter(Analysis.delivery is None)
+    elif delivered is False:
+        return analyses.filter(Analysis.delivery == None)
     return analyses
+
 
 def filter_analyses_by_workflow(analyses: Query, workflow: Workflow, **kwargs) -> Query:
     """Filter analyses by workflow."""
@@ -146,7 +147,6 @@ class AnalysisFilter(Enum):
     BY_WORKFLOW: Callable = filter_analyses_by_workflow
     SORTING: Callable = sort_analyses
     PAGINATION: Callable = paginate_analyses
-
 
 
 def apply_analysis_filter(
