@@ -222,6 +222,7 @@ class ReadHandler(BaseHandler):
             AnalysisFilter.BY_CASE_ID,
             AnalysisFilter.BY_SEARCH_TERM,
             AnalysisFilter.BY_IS_VISIBLE,
+            AnalysisFilter.BY_DELIVERED,
             AnalysisFilter.SORTING,
         ]
         return apply_analysis_filter(
@@ -238,6 +239,7 @@ class ReadHandler(BaseHandler):
             show_hidden=bool(request.search),
             sort_field=request.sort_field,
             sort_order=request.sort_order,
+            delivered=request.delivered,
         )
 
     def _paginate_analyses(self, analyses: Query, request: AnalysesRequest) -> Query:
