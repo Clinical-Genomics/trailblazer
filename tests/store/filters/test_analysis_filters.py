@@ -98,7 +98,7 @@ def test_filter_analyses_by_is_visible(analysis_store: MockStore):
     analyses: Query = analysis_store.get_query(table=Analysis)
 
     # WHEN retrieving analyses by is visible
-    analyses: Query = filter_analyses_by_is_visible(analyses=analyses, is_visible=True)
+    analyses: Query = filter_analyses_by_is_visible(analyses=analyses, show_hidden=True)
 
     # THEN the analyses is a query
     assert isinstance(analyses, Query)
@@ -119,7 +119,7 @@ def test_filter_analyses_by_is_visible_when_false(analysis_store: MockStore):
     analyses: Query = analysis_store.get_query(table=Analysis)
 
     # WHEN retrieving analyses by is visible
-    analyses: Query = filter_analyses_by_is_visible(analyses=analyses, is_visible=True)
+    analyses: Query = filter_analyses_by_is_visible(analyses=analyses, show_hidden=False)
 
     # THEN the analyses is a query
     assert isinstance(analyses, Query)

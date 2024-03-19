@@ -235,7 +235,7 @@ class ReadHandler(BaseHandler):
             case_id=request.case_id,
             workflow=request.workflow,
             search_term=request.search,
-            is_visible=not request.search,
+            show_hidden=bool(request.search),
             sort_field=request.sort_field,
             sort_order=request.sort_order,
         )
