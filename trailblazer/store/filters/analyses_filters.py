@@ -28,11 +28,8 @@ def filter_analyses_by_entry_id(analyses: Query, analysis_id: int, **kwargs) -> 
     return analyses.filter(Analysis.id == analysis_id)
 
 
-def filter_analyses_by_is_visible(analyses: Query, is_visible: bool | None, **kwargs) -> Query:
-    """Filter analyses by case when is visible is true."""
-    if is_visible is None:
-        return analyses
-    return analyses.filter(Analysis.is_visible.is_(is_visible))
+def filter_analyses_by_is_visible(analyses: Query, show_hidden: bool | None, **kwargs) -> Query:
+    return analyses if show_hidden else analyses.filter(Analysis.is_visible.is_(True))
 
 
 def filter_analyses_by_order_id(analyses: Query, order_id: int | None, **kwargs) -> Query:
@@ -165,7 +162,7 @@ def apply_analysis_filter(
     delivered: bool | None = None,
     workflow: str | None = None,
     has_comment: bool | None = None,
-    is_visible: bool | None = None,
+    show_hidden: bool | None = None,
     page: int | None = None,
     page_size: int | None = None,
     sort_field: AnalysisSortField | None = None,
@@ -190,7 +187,7 @@ def apply_analysis_filter(
             delivered=delivered,
             workflow=workflow,
             has_comment=has_comment,
-            is_visible=is_visible,
+            show_hidden=show_hidden,
             page=page,
             page_size=page_size,
             sort_field=sort_field,
