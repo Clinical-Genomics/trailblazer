@@ -134,7 +134,6 @@ def filter_analyses_by_latest_per_case(analyses: Query, **kwargs) -> Query:
             provided_analyses.columns.case_id,
             func.max(provided_analyses.columns.started_at).label("max_started_at"),
         )
-        .select_from(provided_analyses)
         .group_by(provided_analyses.columns.case_id)
         .subquery()
     )
