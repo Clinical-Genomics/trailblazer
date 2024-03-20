@@ -130,12 +130,15 @@ def filter_analyses_by_latest_per_case(analyses: Query, **kwargs) -> Query:
     provided_analyses = analyses.subquery()
     session = get_session()
     latest_date_per_case: Subquery = (
-        session.query(Analysis.case_id, func.max(Analysis.started_at).label("max_started_at"))
+        session.query(
+            provided_analyses.columns.case_id,
+            func.max(provided_analyses.columns.started_at).label("max_started_at"),
+        )
         .select_from(provided_analyses)
-        .group_by(Analysis.case_id)
+        .group_by(provided_analyses.columns.case_id)
         .subquery()
     )
-    latest_analysis_per_case: Query = session.query(Analysis).join(
+    latest_analysis_per_case: Query = analyses.join(
         latest_date_per_case,
         (Analysis.case_id == latest_date_per_case.c.case_id)
         & (Analysis.started_at == latest_date_per_case.c.max_started_at),
