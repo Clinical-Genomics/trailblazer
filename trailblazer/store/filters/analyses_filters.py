@@ -128,7 +128,6 @@ def filter_analyses_by_latest_per_case(analyses: Query, **kwargs) -> Query:
     """
 
     provided_analyses = analyses.subquery()
-    select(Analysis)
     session = get_session()
     latest_date_per_case: Subquery = (
         session.query(Analysis.case_id, func.max(Analysis.started_at).label("max_started_at"))
