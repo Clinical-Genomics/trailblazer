@@ -7,10 +7,7 @@ from sqlalchemy.orm import Query
 from trailblazer.constants import JobType, TrailblazerStatus
 from trailblazer.dto.analyses_request import AnalysesRequest
 from trailblazer.store.base import BaseHandler
-from trailblazer.store.filters.analyses_filters import (
-    AnalysisFilter,
-    apply_analysis_filter,
-)
+from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
 from trailblazer.store.filters.job_filters import JobFilter, apply_job_filters
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, Job, User
@@ -198,10 +195,11 @@ class ReadHandler(BaseHandler):
             job_id=job_id,
         ).first()
 
-    def get_analyses_by_order_id(self, order_id: int) -> list[Analysis]:
+    def get_latest_analyses_in_an_order(self, order_id: int) -> list[Analysis]:
+        """Returns the latest analysis per case in the given order."""
         return apply_analysis_filter(
             analyses=self.get_query(Analysis),
-            filter_functions=[AnalysisFilter.BY_ORDER_ID],
+            filter_functions=[AnalysisFilter.BY_ORDER_ID, AnalysisFilter.BY_LATEST_PER_CASE],
             order_id=order_id,
         ).all()
 
