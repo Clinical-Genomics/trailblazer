@@ -72,7 +72,7 @@ class AnalysisService:
     def get_summaries(self, request_data: SummariesRequest) -> SummariesResponse:
         summaries: list[Summary] = []
         for order_id in request_data.order_ids:
-            analyses: list[Analysis] = self.store.get_latest_analyses_in_an_order(order_id)
+            analyses: list[Analysis] = self.store.get_latest_analyses_for_order(order_id)
             summary: Summary = create_summary(analyses=analyses, order_id=order_id)
             summaries.append(summary)
         return SummariesResponse(summaries=summaries)

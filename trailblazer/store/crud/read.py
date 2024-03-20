@@ -195,7 +195,7 @@ class ReadHandler(BaseHandler):
             job_id=job_id,
         ).first()
 
-    def get_latest_analyses_in_an_order(self, order_id: int) -> list[Analysis]:
+    def get_latest_analyses_for_order(self, order_id: int) -> list[Analysis]:
         """Returns the latest analysis per case in the given order."""
         return apply_analysis_filter(
             analyses=self.get_query(Analysis),
