@@ -3,11 +3,13 @@ from enum import Enum
 from typing import Callable
 
 import sqlalchemy
+from sqlalchemy import Subquery, func, select
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import TrailblazerStatus, Workflow
 from trailblazer.dto.analyses_request import AnalysisSortField
 from trailblazer.dto.common import SortOrder
+from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis
 
 
@@ -107,6 +109,43 @@ def filter_analyses_by_workflow(analyses: Query, workflow: Workflow, **kwargs) -
     return analyses
 
 
+def filter_analyses_by_latest_per_case(analyses: Query, **kwargs) -> Query:
+    """Return only the latest analyses per case.
+
+    Constructs a query which reads as:
+        SELECT
+            *
+        FROM
+            Analysis
+        JOIN
+            (SELECT
+                case_id, MAX(started_at) started_at
+            FROM
+                analyses
+            GROUP BY
+                case_id) latest_started_analyses
+        USING (case_id, started_at)
+    """
+
+    provided_analyses = analyses.subquery()
+    session = get_session()
+    latest_date_per_case: Subquery = (
+        session.query(
+            provided_analyses.columns.case_id,
+            func.max(provided_analyses.columns.started_at).label("max_started_at"),
+        )
+        .group_by(provided_analyses.columns.case_id)
+        .subquery()
+    )
+    latest_analysis_per_case: Query = analyses.join(
+        latest_date_per_case,
+        (Analysis.case_id == latest_date_per_case.c.case_id)
+        & (Analysis.started_at == latest_date_per_case.c.max_started_at),
+    )
+
+    return latest_analysis_per_case
+
+
 def sort_analyses(
     analyses: Query, sort_field: AnalysisSortField, sort_order: SortOrder, **kwargs
 ) -> Query:
@@ -142,6 +181,7 @@ class AnalysisFilter(Enum):
     BY_TYPES: Callable = filter_analyses_by_types
     BY_DELIVERED: Callable = filter_analyses_by_delivered
     BY_WORKFLOW: Callable = filter_analyses_by_workflow
+    BY_LATEST_PER_CASE: Callable = filter_analyses_by_latest_per_case
     SORTING: Callable = sort_analyses
     PAGINATION: Callable = paginate_analyses
 
