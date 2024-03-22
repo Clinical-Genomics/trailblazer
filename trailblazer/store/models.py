@@ -155,11 +155,11 @@ class Delivery(Model):
 
     id = Column(types.Uuid, primary_key=True, default=uuid.uuid4)
     analysis_id = Column(ForeignKey(Analysis.id, ondelete="CASCADE"), nullable=False)
-    delivered_by = Column(ForeignKey(User.id), nullable=False)
+    user_id = Column(ForeignKey(User.id), nullable=False)
     delivered_date = Column(types.Date, nullable=False)
 
     analysis = orm.relationship("Analysis", foreign_keys=[analysis_id], back_populates="delivery")
-    user = orm.relationship("User", foreign_keys=[delivered_by])
+    user = orm.relationship("User", foreign_keys=[user_id])
 
 
 class Job(Model):
