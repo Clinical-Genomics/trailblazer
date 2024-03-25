@@ -125,7 +125,7 @@ class Analysis(Model):
             "case_id": self.case_id,
             "is_delivered": bool(self.delivery),
             "delivered_by": self.delivered_by,
-            "delivered_date": self.delivered_date,
+            "delivered_at": self.delivered_at,
             "version": self.version,
             "logged_at": self.logged_at,
             "started_at": self.started_at,
@@ -156,7 +156,7 @@ class Delivery(Model):
     id = Column(types.Uuid, primary_key=True, default=uuid.uuid4)
     analysis_id = Column(ForeignKey(Analysis.id, ondelete="CASCADE"), nullable=False)
     delivered_by = Column(ForeignKey(User.id))
-    delivered_date = Column(types.Date)
+    delivered_at = Column(types.Date)
 
     analysis = orm.relationship("Analysis", foreign_keys=[analysis_id], back_populates="delivery")
     user = orm.relationship("User", foreign_keys=[delivered_by])

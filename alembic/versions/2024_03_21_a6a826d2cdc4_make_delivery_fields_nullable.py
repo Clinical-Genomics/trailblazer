@@ -19,9 +19,21 @@ from alembic import op
 
 def upgrade():
     op.alter_column("delivery", "delivered_by", existing_type=sa.Integer, nullable=True)
-    op.alter_column("delivery", "delivered_date", existing_type=sa.Date, nullable=True)
+    op.alter_column(
+        "delivery",
+        "delivered_date",
+        existing_type=sa.Date,
+        new_column_name="delivered_at",
+        nullable=True,
+    )
 
 
 def downgrade():
-    op.alter_column("delivery", "delivered_date", existing_type=sa.Date, nullable=False)
+    op.alter_column(
+        "delivery",
+        "delivered_at",
+        existing_type=sa.Date,
+        new_column_name="delivered_date",
+        nullable=False,
+    )
     op.alter_column("delivery", "delivered_by", existing_type=sa.Integer, nullable=False)
