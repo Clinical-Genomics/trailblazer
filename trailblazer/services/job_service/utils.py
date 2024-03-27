@@ -1,13 +1,13 @@
-from trailblazer.dto.failed_jobs_response import FailedJobsResponse
-from trailblazer.dto.job_response import JobResponse
-from trailblazer.store.models import Job
+from pathlib import Path
+from trailblazer.constants import FileFormat
+from trailblazer.io.controller import ReadFile
 
 
-def create_job_response(job: Job) -> JobResponse:
-    return JobResponse(
-        slurm_id=job.slurm_id, analysis_id=job.analysis_id, status=job.status, id=job.id
+def get_slurm_job_ids(job_id_file: Path) -> list[int]:
+    content: dict = ReadFile.get_content_from_file(
+        file_format=FileFormat.YAML, file_path=job_id_file
     )
-
-
-def create_failed_jobs_response(failed_job_statistics: list[dict]) -> FailedJobsResponse:
-    return FailedJobsResponse(jobs=failed_job_statistics)
+    job_ids: list[int] = []
+    for row in content.values():
+        [job_ids.append(job_id) for job_id in row]
+    return job_ids
