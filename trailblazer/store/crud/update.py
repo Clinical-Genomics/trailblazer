@@ -74,7 +74,7 @@ class UpdateHandler(BaseHandler):
         """Update analysis jobs from supplied squeue results."""
         if len(squeue_result.jobs) == 0:
             return
-        self.delete_analysis_jobs(analysis)
+        self.delete_analysis_jobs(analysis.id)
 
         session: Session = get_session()
         for job in squeue_result.jobs:
@@ -137,7 +137,7 @@ class UpdateHandler(BaseHandler):
         analysis.status = tower_api.status
         analysis.progress = tower_api.progress
         analysis.logged_at = datetime.now()
-        self.delete_analysis_jobs(analysis)
+        self.delete_analysis_jobs(analysis.id)
         jobs: list[dict] = tower_api.get_jobs(analysis.id)
         self.update_jobs(jobs)
         session: Session = get_session()
