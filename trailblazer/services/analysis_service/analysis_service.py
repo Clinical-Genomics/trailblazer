@@ -1,3 +1,4 @@
+from trailblazer.constants import Workflow
 from trailblazer.dto import (
     AnalysesRequest,
     AnalysesResponse,
@@ -73,6 +74,9 @@ class AnalysisService:
         summaries: list[Summary] = []
         for order_id in request_data.order_ids:
             analyses: list[Analysis] = self.store.get_latest_analyses_for_order(order_id)
-            summary: Summary = create_summary(analyses=analyses, order_id=order_id)
+            analyses_without_rsync: list[Analysis] = [
+                analysis for analysis in analyses if analysis.workflow != Workflow.RSYNC
+            ]
+            summary: Summary = create_summary(analyses=analyses_without_rsync, order_id=order_id)
             summaries.append(summary)
         return SummariesResponse(summaries=summaries)
