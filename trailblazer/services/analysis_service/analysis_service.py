@@ -1,3 +1,4 @@
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.dto import (
     AnalysesRequest,
     AnalysesResponse,
@@ -69,10 +70,16 @@ class AnalysisService:
         return AnalysesResponse(analyses=response_data, total_count=total_count)
 
     def update_ongoing_analyses(self) -> None:
+        self.store.update_ongoing_analyses()
+
+    def update_analysis_status(self) -> None:
         analyses: list[Analysis] = self.store.get_ongoing_analyses()
         for analysis in analyses:
             self.job_service.update_analysis_jobs(analysis.id)
-        self.store.update_ongoing_analyses()
+            status: TrailblazerStatus = self.job_service.get_analysis_status(analysis.id)
+            self.store.update_analysis_status(analysis_id=analysis.id, status=status)
+            progression: float = self.job_service.get_analysis_progression(analysis.id)
+            self.store.update_analysis_progress(analysis_id=analysis.id, progression=progression)
 
     def get_summaries(self, request_data: SummariesRequest) -> SummariesResponse:
         summaries: list[Summary] = []

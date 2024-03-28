@@ -291,7 +291,7 @@ def test_update_analysis_status_with_failed(analysis_store: MockStore, case_id: 
     assert analysis.status != TrailblazerStatus.FAILED
 
     # WHEN setting analysis to failed
-    analysis_store.update_analysis_status(case_id=analysis.case_id, status=TrailblazerStatus.FAILED)
+    analysis_store.update_analysis_status_by_case_id(case_id=analysis.case_id, status=TrailblazerStatus.FAILED)
 
     # THEN the analysis status should be updated to failed
     assert analysis.status == TrailblazerStatus.FAILED
