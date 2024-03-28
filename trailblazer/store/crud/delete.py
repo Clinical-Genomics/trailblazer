@@ -14,10 +14,9 @@ LOG = logging.getLogger(__name__)
 class DeleteHandler(BaseHandler):
     """Class for deleting items in the database."""
 
-    def delete_analysis_jobs(self, analysis_id: int) -> None:
+    def delete_analysis_jobs(self, analysis: Analysis) -> None:
         """Delete all jobs linked to the given analysis."""
         session: Session = get_session()
-        analysis: Analysis | None = self.get_analysis_with_id(analysis_id)
         for job in analysis.jobs:
             if job.job_type == JobType.ANALYSIS:
                 session.delete(job)
