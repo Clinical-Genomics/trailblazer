@@ -324,8 +324,8 @@ class UpdateHandler(BaseHandler):
         session: Session = get_session()
         session.commit()
 
-    def update_analysis_progress(self, analysis_id: int, progression: float) -> None:
+    def update_analysis_progress(self, analysis_id: int, progress: float) -> None:
         analysis: Analysis | None = self.get_analysis_with_id(analysis_id)
-        analysis.progress = progression
+        analysis.progress = progress
         session: Session = get_session()
         session.commit()

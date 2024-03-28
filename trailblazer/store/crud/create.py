@@ -59,8 +59,8 @@ class CreateHandler(BaseHandler):
         session.commit()
         return job
 
-    def add_jobs(self, analysis_id: int, jobs: list[Job]):
-        """Add a list of jobs to the database."""
+    def replace_jobs(self, analysis_id: int, jobs: list[Job]):
+        self.delete_analysis_jobs(analysis_id)
         analysis: Analysis = self.get_analysis_with_id(analysis_id)
         for job in jobs:
             analysis.jobs.append(job)

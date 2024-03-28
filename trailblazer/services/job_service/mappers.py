@@ -18,4 +18,7 @@ def slurm_info_to_job(slurm_job_info: SlurmJobInfo) -> Job:
     return Job(
         slurm_id=slurm_job_info.slurm_id,
         name=slurm_job_info.name,
+        status=slurm_job_info.status,
+        elapsed=slurm_job_info.elapsed,
+        started_at=slurm_job_info.started_at,
     )

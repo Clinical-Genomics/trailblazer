@@ -8,7 +8,7 @@ from trailblazer.services.job_service.mappers import (
     create_job_response,
     slurm_info_to_job,
 )
-from trailblazer.services.job_service.utils import get_progression, get_slurm_job_ids, get_status
+from trailblazer.services.job_service.utils import get_progress, get_slurm_job_ids, get_status
 from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.services.slurm.slurm_service import SlurmService
 from trailblazer.store.models import Analysis, Job
@@ -41,14 +41,13 @@ class JobService:
 
     def update_analysis_jobs(self, analysis_id: int) -> None:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
-        self.store.delete_analysis_jobs(analysis_id)
         slurm_ids: list[int] = get_slurm_job_ids(analysis.config_path)
         jobs: list[Job] = []
         for slurm_id in slurm_ids:
             job_info: SlurmJobInfo = self.slurm_service.get_job_info(slurm_id)
             job: Job = slurm_info_to_job(job_info)
             jobs.append(job)
-        self.store.add_jobs(analysis_id=analysis_id, jobs=jobs)
+        self.store.replace_jobs(analysis_id=analysis_id, jobs=jobs)
 
     def get_analysis_status(self, analysis_id: int) -> TrailblazerStatus:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
@@ -56,4 +55,4 @@ class JobService:
 
     def get_analysis_progression(self, analysis_id: int) -> float:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
-        return get_progression(analysis.jobs)
+        return get_progress(analysis.jobs)
