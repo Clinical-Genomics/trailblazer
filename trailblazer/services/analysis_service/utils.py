@@ -9,9 +9,15 @@ def get_status_count(analyses: list[Analysis], status: TrailblazerStatus) -> int
     return len([a for a in analyses if a.status == status])
 
 
+def get_delivered_count(analyses: list[Analysis]) -> int:
+    return len([analysis for analysis in analyses if analysis.delivery])
+
+
 def create_summary(analyses: list[Analysis], order_id: int) -> Summary:
     total: int = len(analyses)
-    delivered: int = get_status_count(analyses=analyses, status=TrailblazerStatus.COMPLETED)
+    completed: int = get_status_count(analyses=analyses, status=TrailblazerStatus.COMPLETED)
+    delivered: int = get_delivered_count(analyses)
+    completed -= delivered
     running: int = get_status_count(analyses=analyses, status=TrailblazerStatus.RUNNING)
     cancelled: int = get_status_count(analyses=analyses, status=TrailblazerStatus.CANCELLED)
     failed = get_status_count(analyses=analyses, status=TrailblazerStatus.FAILED)
@@ -22,6 +28,7 @@ def create_summary(analyses: list[Analysis], order_id: int) -> Summary:
         running=running,
         cancelled=cancelled,
         failed=failed,
+        completed=completed,
     )
 
 
