@@ -163,6 +163,9 @@ def paginate_analyses(analyses: Query, page: int, page_size: int, **kwargs) -> Q
     return analyses.limit(page_size).offset((page - 1) * page_size)
 
 
+def exclude_rsync_analyses(analyses: Query, **kwargs) -> Query:
+    return analyses.filter(Analysis.workflow != Workflow.RSYNC)
+
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
@@ -182,6 +185,7 @@ class AnalysisFilter(Enum):
     BY_DELIVERED: Callable = filter_analyses_by_delivered
     BY_WORKFLOW: Callable = filter_analyses_by_workflow
     BY_LATEST_PER_CASE: Callable = filter_analyses_by_latest_per_case
+    EXCLUDE_RSYNC: Callable = exclude_rsync_analyses
     SORTING: Callable = sort_analyses
     PAGINATION: Callable = paginate_analyses
 
