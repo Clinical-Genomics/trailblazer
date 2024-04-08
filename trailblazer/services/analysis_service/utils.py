@@ -8,17 +8,11 @@ from trailblazer.store.models import Analysis
 def get_status_counts(analyses: list[Analysis]) -> dict[TrailblazerStatus, int]:
     """Returns the amount of analyses with each status."""
     delivered: int = 0
-    status_counts: dict = {
-        TrailblazerStatus.CANCELLED: 0,
-        TrailblazerStatus.COMPLETED: 0,
-        TrailblazerStatus.FAILED: 0,
-        TrailblazerStatus.RUNNING: 0,
-    }
+    status_counts: dict = {status: 0 for status in TrailblazerStatus}
     for analysis in analyses:
         if analysis.delivery:
             delivered += 1
-            continue
-        if analysis.status in status_counts.keys():
+        else:
             status_counts[analysis.status] += 1
     status_counts["delivered"] = delivered
     return status_counts
