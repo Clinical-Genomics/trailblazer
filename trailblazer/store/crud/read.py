@@ -199,7 +199,11 @@ class ReadHandler(BaseHandler):
         """Returns the latest analysis per case in the given order."""
         return apply_analysis_filter(
             analyses=self.get_query(Analysis),
-            filter_functions=[AnalysisFilter.BY_ORDER_ID, AnalysisFilter.BY_LATEST_PER_CASE],
+            filter_functions=[
+                AnalysisFilter.BY_ORDER_ID,
+                AnalysisFilter.BY_LATEST_PER_CASE,
+                AnalysisFilter.EXCLUDE_RSYNC,
+            ],
             order_id=order_id,
         ).all()
 
