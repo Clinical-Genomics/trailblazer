@@ -166,6 +166,7 @@ def paginate_analyses(analyses: Query, page: int, page_size: int, **kwargs) -> Q
 def exclude_rsync_analyses(analyses: Query, **kwargs) -> Query:
     return analyses.filter(Analysis.workflow != Workflow.RSYNC)
 
+
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
