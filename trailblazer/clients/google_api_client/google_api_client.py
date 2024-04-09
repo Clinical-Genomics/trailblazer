@@ -12,7 +12,7 @@ class GoogleAPIClient:
 
     def get_user_email(self, access_token: str) -> str:
         """Get the user email for the given access token."""
-        endpoint: str = f"{self.base_url}/oauth2/v1/userinfo"
+        endpoint = f"{self.base_url}/oauth2/v1/userinfo"
         headers: dict = self._get_headers(access_token)
         response = requests.get(endpoint, headers=headers)
 
