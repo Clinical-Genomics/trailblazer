@@ -1,7 +1,7 @@
 from datetime import datetime
 import logging
 
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.constants import TrailblazerStatus, WorkflowManager
 from trailblazer.dto import CreateJobRequest, FailedJobsRequest, FailedJobsResponse, JobResponse
 from trailblazer.services.job_service.mappers import (
     create_failed_jobs_response,
@@ -39,7 +39,14 @@ class JobService:
             updated_job: SlurmJobInfo = self.slurm_service.get_job_info(job.slurm_id)
             self.store.update_job(job_id=job.id, job_info=updated_job)
 
-    def update_analysis_jobs(self, analysis_id: int) -> None:
+    def update_jobs(self, analysis_id: int) -> None:
+        analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
+        if analysis.workflow_manager == WorkflowManager.SLURM:
+            self._update_slurm_jobs(analysis_id)
+        if analysis.workflow_manager == WorkflowManager.TOWER:
+            self.store._update_analysis_from_tower_output(analysis_id)
+
+    def _update_slurm_jobs(self, analysis_id: int) -> None:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
         slurm_ids: list[int] = get_slurm_job_ids(analysis.config_path)
         jobs: list[Job] = []
