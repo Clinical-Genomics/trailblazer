@@ -323,6 +323,7 @@ class UpdateHandler(BaseHandler):
         analysis.status = status
         session: Session = get_session()
         session.commit()
+        LOG.info(f"Updated status {analysis.case_id} - {analysis.id}: {analysis.status} ")
 
     def update_analysis_progress(self, analysis_id: int, progress: float) -> None:
         analysis: Analysis | None = self.get_analysis_with_id(analysis_id)

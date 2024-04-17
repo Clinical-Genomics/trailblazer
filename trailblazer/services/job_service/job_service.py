@@ -44,7 +44,7 @@ class JobService:
         if analysis.workflow_manager == WorkflowManager.SLURM:
             self._update_slurm_jobs(analysis_id)
         if analysis.workflow_manager == WorkflowManager.TOWER:
-            self.store._update_analysis_from_tower_output(analysis_id)
+            self.store.update_tower_run_status(analysis_id)
 
     def _update_slurm_jobs(self, analysis_id: int) -> None:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
