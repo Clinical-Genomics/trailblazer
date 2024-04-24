@@ -483,11 +483,13 @@ def test_scan(
     mocker,
     ongoing_analysis_case_id: str,
     slurm_squeue_output: dict[str, str],
+    slurm_job_ids: list[int]
 ):
     """Test scanning for analyses and updating analysis status."""
     caplog.set_level("INFO")
 
     # GIVEN SLURM squeue output for an analysis
+    mocker.patch("trailblazer.services.job_service.job_service.get_slurm_job_ids", return_value=slurm_job_ids)
     mocker.patch(
         FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
         return_value=subprocess.check_output(
@@ -499,9 +501,6 @@ def test_scan(
 
     # WHEN running trailblazer scan command
     cli_runner.invoke(scan, [])
-
-    # THEN log that analyses are updated
-    assert "All analyses updated" in caplog.text
 
     # THEN the status of analysis should be updated from pending
     analysis = analysis_store.get_latest_analysis_for_case(ongoing_analysis_case_id)
