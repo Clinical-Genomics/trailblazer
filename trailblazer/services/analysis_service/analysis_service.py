@@ -1,4 +1,5 @@
 from trailblazer.constants import TrailblazerStatus
+from trailblazer.constants import Workflow
 from trailblazer.dto import (
     AnalysesRequest,
     AnalysesResponse,
