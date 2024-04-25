@@ -36,7 +36,7 @@ class JobService:
         jobs: list[Job] = self.store.get_ongoing_upload_jobs()
         for job in jobs:
             LOG.info(f"Updating upload job {job.id}")
-            updated_job: SlurmJobInfo = self.slurm_service.get_job_info(job.slurm_id)
+            updated_job: SlurmJobInfo = self.slurm_service.get_job(job.slurm_id)
             self.store.update_job(job_id=job.id, job_info=updated_job)
 
     def update_jobs(self, analysis_id: int) -> None:
@@ -52,11 +52,8 @@ class JobService:
     def _update_slurm_jobs(self, analysis_id: int) -> None:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
         slurm_ids: list[int] = get_slurm_job_ids(analysis.config_path)
-        jobs: list[Job] = []
-        for slurm_id in slurm_ids:
-            job_info: SlurmJobInfo = self.slurm_service.get_job_info(slurm_id)
-            job: Job = slurm_info_to_job(job_info)
-            jobs.append(job)
+        slurm_jobs: list[SlurmJobInfo] = self.slurm_service.get_jobs(slurm_ids)
+        jobs: list[Job] = [slurm_info_to_job(job_info) for job_info in slurm_jobs]
         self.store.replace_jobs(analysis_id=analysis_id, jobs=jobs)
 
     def get_analysis_status(self, analysis_id: int) -> TrailblazerStatus:
