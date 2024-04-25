@@ -12,7 +12,7 @@ def test_update_upload_jobs(
 
     # GIVEN that slurm says the upload job is completed
     slurm_service_mock = mock.Mock()
-    slurm_service_mock.get_job_info.return_value = upload_job_info
+    slurm_service_mock.get_job.return_value = upload_job_info
     job_service.slurm_service = slurm_service_mock
 
     # WHEN updating the upload jobs
