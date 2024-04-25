@@ -338,7 +338,9 @@ def slurm_job_ids() -> list[int]:
 
 
 @pytest.fixture(scope="session")
-def slurm_queue() -> SQueue
+def slurm_queue():
+    pass
+
 
 @pytest.fixture(scope="session")
 def tower_case_config() -> dict[str, dict]:
