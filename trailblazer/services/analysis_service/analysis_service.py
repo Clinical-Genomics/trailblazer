@@ -1,3 +1,4 @@
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.constants import Workflow
 from trailblazer.dto import (
     AnalysesRequest,
@@ -16,13 +17,15 @@ from trailblazer.services.analysis_service.utils import (
     create_summary,
     create_update_analyses_response,
 )
+from trailblazer.services.job_service.job_service import JobService
 from trailblazer.store.models import Analysis, Job, User
 from trailblazer.store.store import Store
 
 
 class AnalysisService:
-    def __init__(self, store: Store):
+    def __init__(self, store: Store, job_service: JobService):
         self.store = store
+        self.job_service = job_service
 
     def get_analyses(self, request: AnalysesRequest) -> AnalysesResponse:
         analyses, total_count = self.store.get_paginated_analyses(request)
@@ -68,7 +71,13 @@ class AnalysisService:
         return AnalysesResponse(analyses=response_data, total_count=total_count)
 
     def update_ongoing_analyses(self) -> None:
-        self.store.update_ongoing_analyses()
+        analyses: list[Analysis] = self.store.get_ongoing_analyses()
+        for analysis in analyses:
+            self.job_service.update_jobs(analysis.id)
+            status: TrailblazerStatus = self.job_service.get_analysis_status(analysis.id)
+            progress: float = self.job_service.get_analysis_progression(analysis.id)
+            self.store.update_analysis_progress(analysis_id=analysis.id, progress=progress)
+            self.store.update_analysis_status(analysis_id=analysis.id, status=status)
 
     def get_summaries(self, request_data: SummariesRequest) -> SummariesResponse:
         summaries: list[Summary] = []

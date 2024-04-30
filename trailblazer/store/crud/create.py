@@ -58,3 +58,11 @@ class CreateHandler(BaseHandler):
         session: Session = get_session()
         session.commit()
         return job
+
+    def replace_jobs(self, analysis_id: int, jobs: list[Job]):
+        analysis: Analysis = self.get_analysis_with_id(analysis_id)
+        self.delete_analysis_jobs(analysis)
+        for job in jobs:
+            analysis.jobs.append(job)
+        session: Session = get_session()
+        session.commit()

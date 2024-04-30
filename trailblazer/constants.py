@@ -74,6 +74,10 @@ class SlurmJobStatus(StrEnum):
     def ongoing_statuses(cls) -> tuple:
         return cls.PENDING, cls.RUNNING, cls.COMPLETING
 
+    @classmethod
+    def fail_statuses(cls) -> tuple:
+        return cls.FAILED, cls.TIME_OUT
+
 
 class CharacterFormat(StrEnum):
     """Define character encoding/decoding to use."""

@@ -201,7 +201,7 @@ class UpdateHandler(BaseHandler):
         )
         tower_api.cancel()
 
-    def update_analysis_status(self, case_id: str, status: str):
+    def update_analysis_status_by_case_id(self, case_id: str, status: str):
         """Setting analysis status."""
         status: str = status.lower()
         if status not in set(TrailblazerStatus.statuses()):
@@ -215,7 +215,9 @@ class UpdateHandler(BaseHandler):
     def update_analysis_status_to_completed(self, analysis_id: int) -> None:
         """Set an analysis status to 'completed'."""
         analysis: Analysis | None = self.get_analysis_with_id(analysis_id)
-        self.update_analysis_status(case_id=analysis.case_id, status=TrailblazerStatus.COMPLETED)
+        self.update_analysis_status_by_case_id(
+            case_id=analysis.case_id, status=TrailblazerStatus.COMPLETED
+        )
 
     def update_analysis_uploaded_at(self, case_id: str, uploaded_at: datetime) -> None:
         """Set analysis uploaded at for an analysis."""
@@ -313,5 +315,18 @@ class UpdateHandler(BaseHandler):
     def update_user_token(self, refresh_token: str, user_id: int) -> None:
         user: User | None = self.get_user_by_id(user_id)
         user.refresh_token = refresh_token
+        session: Session = get_session()
+        session.commit()
+
+    def update_analysis_status(self, analysis_id: int, status: TrailblazerStatus) -> None:
+        analysis: Analysis | None = self.get_analysis_with_id(analysis_id)
+        analysis.status = status
+        session: Session = get_session()
+        session.commit()
+        LOG.info(f"Updated status {analysis.case_id} - {analysis.id}: {analysis.status} ")
+
+    def update_analysis_progress(self, analysis_id: int, progress: float) -> None:
+        analysis: Analysis | None = self.get_analysis_with_id(analysis_id)
+        analysis.progress = progress
         session: Session = get_session()
         session.commit()

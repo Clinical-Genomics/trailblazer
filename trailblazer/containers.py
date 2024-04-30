@@ -36,7 +36,7 @@ class Container(containers.DeclarativeContainer):
     slurm_service = providers.Singleton(SlurmCLIService, client=slurm_client)
 
     job_service = providers.Factory(JobService, store=store, slurm_service=slurm_service)
-    analysis_service = providers.Factory(AnalysisService, store=store)
+    analysis_service = providers.Factory(AnalysisService, store=store, job_service=job_service)
 
     encryption_service = providers.Singleton(EncryptionService, secret_key=encryption_key)
 
