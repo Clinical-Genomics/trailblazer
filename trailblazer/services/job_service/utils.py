@@ -16,15 +16,29 @@ def get_slurm_job_ids(job_id_file: str) -> list[int]:
 
 
 def get_status(jobs: list[Job]) -> TrailblazerStatus:
+    if has_same_status(jobs):
+        return get_single_status(jobs)
     is_running: bool = has_running_jobs(jobs)
     is_failed: bool = has_failed_jobs(jobs)
-    if is_failed and is_running:
-        return TrailblazerStatus.ERROR
     if is_failed:
-        return TrailblazerStatus.FAILED
-    if is_running:
-        return TrailblazerStatus.RUNNING
-    return TrailblazerStatus.CANCELLED
+        return TrailblazerStatus.ERROR if is_running else TrailblazerStatus.FAILED
+    return TrailblazerStatus.RUNNING if is_running else TrailblazerStatus.CANCELLED
+
+
+def has_same_status(jobs: list[Job]) -> bool:
+    if not jobs:
+        return False
+    first_status = jobs[0].status
+    return all(job.status == first_status for job in jobs)
+
+
+def get_single_status(jobs: list[Job]) -> SlurmJobStatus:
+    single_status = jobs[0].status
+    return (
+        TrailblazerStatus.FAILED
+        if single_status == SlurmJobStatus.TIME_OUT
+        else TrailblazerStatus[single_status.upper()]
+    )
 
 
 def has_running_jobs(jobs: list[Job]) -> bool:
