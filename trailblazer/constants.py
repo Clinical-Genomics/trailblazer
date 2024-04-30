@@ -126,10 +126,6 @@ class TrailblazerStatus(StrEnum):
     def ongoing_statuses(cls) -> tuple[str, str, str, str]:
         return cls.PENDING, cls.RUNNING, cls.COMPLETING, cls.ERROR
 
-    @classmethod
-    def fail_statuses(cls) -> tuple[str, str, str, str]:
-        return cls.ERROR, cls.FAILED
-
 
 class TrailblazerStatusColor(StrEnum):
     """Trailblazer status colors."""
