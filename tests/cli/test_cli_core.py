@@ -15,6 +15,7 @@ from trailblazer.cli.core import (
     get_user_from_db,
     get_users_from_db,
     ls_cmd,
+    scan,
     set_analysis_completed,
     set_analysis_status,
     unarchive_user,
@@ -473,6 +474,38 @@ def test_unarchive_user(
 
     # THEN log shows users as not archived
     assert f"User unarchived: {archived_user_email}" in caplog.text
+
+
+def test_scan(
+    cli_runner: CliRunner,
+    analysis_store: MockStore,
+    caplog,
+    mocker,
+    ongoing_analysis_case_id: str,
+    slurm_squeue_output: dict[str, str],
+):
+    """Test scanning for analyses and updating analysis status."""
+    caplog.set_level("INFO")
+
+    # GIVEN SLURM squeue output for an analysis
+    mocker.patch(
+        FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH,
+        return_value=subprocess.check_output(
+            ["cat", slurm_squeue_output.get(ongoing_analysis_case_id)]
+        ).decode(CharacterFormat.UNICODE_TRANSFORMATION_FORMAT_8),
+    )
+
+    # GIVEN populated Trailblazer database with pending analyses
+
+    # WHEN running trailblazer scan command
+    cli_runner.invoke(scan, [])
+
+    # THEN log that analyses are updated
+    assert "All analyses updated" in caplog.text
+
+    # THEN the status of analysis should be updated from pending
+    analysis = analysis_store.get_latest_analysis_for_case(ongoing_analysis_case_id)
+    assert analysis.status == TrailblazerStatus.RUNNING
 
 
 @pytest.mark.parametrize(

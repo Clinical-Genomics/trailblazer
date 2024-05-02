@@ -232,7 +232,7 @@ def set_analysis_status(
     """Set the status of the latest analysis for a given case id."""
     trailblazer_db: Store = context.obj["trailblazer_db"]
     try:
-        trailblazer_db.update_analysis_status_by_case_id(case_id=case_id, status=status)
+        trailblazer_db.update_analysis_status(case_id=case_id, status=status)
     except ValueError as error:
         LOG.error(error)
         raise click.Abort from error

@@ -29,9 +29,7 @@ def test_delete_analysis(analysis_store: MockStore, case_id: str):
     """Test analysis is successfully deleted."""
 
     # GIVEN a not ongoing analysis
-    analysis_store.update_analysis_status_by_case_id(
-        case_id=case_id, status=TrailblazerStatus.CANCELLED
-    )
+    analysis_store.update_analysis_status(case_id=case_id, status=TrailblazerStatus.CANCELLED)
     analysis: Analysis | None = analysis_store.get_latest_analysis_for_case(case_id=case_id)
 
     # WHEN deleting analysis

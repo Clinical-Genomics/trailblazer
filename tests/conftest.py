@@ -332,11 +332,6 @@ def slurm_squeue_output(squeue_dir: Path) -> dict[str, str]:
     }
 
 
-@pytest.fixture
-def slurm_job_ids() -> list[int]:
-    return [690993, 690994, 690992, 690988, 690989, 690990]
-
-
 @pytest.fixture(scope="session")
 def tower_case_config() -> dict[str, dict]:
     """Return a Tower case configs."""

@@ -30,7 +30,7 @@ def cancel_slurm_job(slurm_id: int, analysis_host: str | None = None) -> None:
     subprocess.Popen(scancel_commands)
 
 
-def get_slurm_queue(job_ids: str, analysis_host: str | None = None) -> SqueueResult:
+def _get_slurm_queue(job_ids: str, analysis_host: str | None = None) -> SqueueResult:
     """Return squeue output from ongoing analyses in SLURM."""
     queue_output: str = get_slurm_queue_output(job_ids=job_ids, analysis_host=analysis_host)
     return get_squeue_result(queue_output)

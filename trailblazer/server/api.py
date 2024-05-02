@@ -239,7 +239,7 @@ def set_analysis_status():
     try:
         case_id: str = put_request.get("case_id")
         status: str = put_request.get("status")
-        store.update_analysis_status_by_case_id(case_id=case_id, status=status)
+        store.update_analysis_status(case_id=case_id, status=status)
         return (
             jsonify(f"Success! Analysis set to {put_request.get('status')} request sent"),
             HTTPStatus.CREATED,
