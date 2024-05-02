@@ -6,5 +6,5 @@ class SlurmCLIClient:
     def __init__(self, host: str):
         self.host = host
 
-    def get_slurm_queue(self, job_ids: str) -> SqueueResult:
+    def get_slurm_queue(self, job_ids: list[int]) -> SqueueResult:
         return get_slurm_queue(job_ids=job_ids, analysis_host=self.host)

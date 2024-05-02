@@ -11,7 +11,7 @@ def get_slurm_job_ids(job_id_file: str) -> list[int]:
     )
     job_ids: list[int] = []
     for row in content.values():
-        [job_ids.append(job_id) for job_id in row]
+        [job_ids.append(int(job_id)) for job_id in row]
     return job_ids
 
 
