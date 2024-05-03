@@ -40,6 +40,7 @@ the title if not.
             1. Make sure that installation was successful
             1. `down`
         1. Deploy master to production
+            1. Ensure the publish action to PyPi is finished.
             1. `up`
             1. ```Shell
                bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-tool-prod.sh -e P_trailblazer -t trailblazer -b master -a
