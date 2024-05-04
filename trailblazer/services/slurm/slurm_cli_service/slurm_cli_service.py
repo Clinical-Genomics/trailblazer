@@ -10,7 +10,7 @@ class SlurmCLIService(SlurmService):
         self.client = client
 
     def get_job(self, job_id: int) -> SlurmJobInfo:
-        queue: SqueueResult = self.client.get_slurm_queue(str(job_id))
+        queue: SqueueResult = self.client.get_slurm_queue([job_id])
         job: SqueueJob = queue.jobs[0]
         return create_job_info_dto(job)
 
