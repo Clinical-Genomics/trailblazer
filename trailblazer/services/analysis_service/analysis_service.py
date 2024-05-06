@@ -1,4 +1,4 @@
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.constants import TrailblazerStatus, WorkflowManager
 from trailblazer.constants import Workflow
 from trailblazer.dto import (
     AnalysesRequest,
@@ -74,6 +74,10 @@ class AnalysisService:
         analyses: list[Analysis] = self.store.get_ongoing_analyses()
         for analysis in analyses:
             self.job_service.update_jobs(analysis.id)
+
+            if analysis.workflow == WorkflowManager.TOWER:
+                continue
+
             status: TrailblazerStatus = self.job_service.get_analysis_status(analysis.id)
             progress: float = self.job_service.get_analysis_progression(analysis.id)
             self.store.update_analysis_progress(analysis_id=analysis.id, progress=progress)
