@@ -75,7 +75,7 @@ class AnalysisService:
         for analysis in analyses:
             self.job_service.update_jobs(analysis.id)
 
-            if analysis.workflow == WorkflowManager.TOWER:
+            if analysis.workflow_manager == WorkflowManager.TOWER:
                 continue
 
             status: TrailblazerStatus = self.job_service.get_analysis_status(analysis.id)
