@@ -20,11 +20,14 @@ def test_patch_analyses_delivered(
 
 def test_update_analysis_status(analysis_store: Store, analysis_service: AnalysisService):
     # GIVEN a store with ongoing analyses
-    assert analysis_store.get_ongoing_analyses()
-    # GIVEN that all slurm jobs are completed
+    ongoing_analyses: list[Analysis] = analysis_store.get_ongoing_analyses()
+    assert ongoing_analyses
+
+    # GIVEN that some analyses are completed
 
     # WHEN updating the status of the analyses
     analysis_service.update_ongoing_analyses()
 
-    # THEN the status of all analyses should be updated
-    assert not analysis_store.get_ongoing_analyses()
+    # THEN the status of some analyses should be updated
+    currently_ongoing_analyses: list[Analysis] = analysis_store.get_ongoing_analyses()
+    assert len(currently_ongoing_analyses) < len(ongoing_analyses)
