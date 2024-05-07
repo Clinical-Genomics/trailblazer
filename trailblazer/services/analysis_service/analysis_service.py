@@ -76,12 +76,12 @@ class AnalysisService:
         analyses: list[Analysis] = self.store.get_ongoing_analyses()
         for analysis in analyses:
             try:
-                self.update_analyis_meta_data(analysis)
+                self.update_analysis_meta_data(analysis)
             except Exception as error:
                 self.store.update_analysis_status(analysis.id, TrailblazerStatus.ERROR)
                 LOG.error(f"Failed to update analysis {analysis.id}: {error}")
 
-    def update_analyis_meta_data(self, analysis: Analysis):
+    def update_analysis_meta_data(self, analysis: Analysis):
         """Update the jobs, progress and status of an analysis."""
         self.job_service.update_jobs(analysis.id)
 
