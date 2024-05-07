@@ -1,3 +1,4 @@
+import logging
 from trailblazer.constants import TrailblazerStatus, WorkflowManager
 from trailblazer.dto import (
     AnalysesRequest,
@@ -19,6 +20,8 @@ from trailblazer.services.analysis_service.utils import (
 from trailblazer.services.job_service.job_service import JobService
 from trailblazer.store.models import Analysis, Job, User
 from trailblazer.store.store import Store
+
+LOG = logging.getLogger(__name__)
 
 
 class AnalysisService:
@@ -72,15 +75,23 @@ class AnalysisService:
     def update_ongoing_analyses(self) -> None:
         analyses: list[Analysis] = self.store.get_ongoing_analyses()
         for analysis in analyses:
-            self.job_service.update_jobs(analysis.id)
+            try:
+                self.update_analysis_meta_data(analysis)
+            except Exception as error:
+                self.store.update_analysis_status(analysis.id, TrailblazerStatus.ERROR)
+                LOG.error(f"Failed to update analysis {analysis.id}: {error}")
 
-            if analysis.workflow_manager == WorkflowManager.TOWER:
-                continue
+    def update_analysis_meta_data(self, analysis: Analysis):
+        """Update the jobs, progress and status of an analysis."""
+        self.job_service.update_jobs(analysis.id)
 
-            status: TrailblazerStatus = self.job_service.get_analysis_status(analysis.id)
-            progress: float = self.job_service.get_analysis_progression(analysis.id)
-            self.store.update_analysis_progress(analysis_id=analysis.id, progress=progress)
-            self.store.update_analysis_status(analysis_id=analysis.id, status=status)
+        if analysis.workflow_manager == WorkflowManager.TOWER:
+            return
+
+        status: TrailblazerStatus = self.job_service.get_analysis_status(analysis.id)
+        progress: float = self.job_service.get_analysis_progression(analysis.id)
+        self.store.update_analysis_progress(analysis_id=analysis.id, progress=progress)
+        self.store.update_analysis_status(analysis_id=analysis.id, status=status)
 
     def get_summaries(self, request_data: SummariesRequest) -> SummariesResponse:
         summaries: list[Summary] = []
