@@ -4,3 +4,7 @@ class TrailblazerError(Exception):
 
 class JobServiceError(TrailblazerError):
     pass
+
+
+class NoJobsError(JobServiceError):
+    pass

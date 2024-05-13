@@ -3,7 +3,7 @@ import logging
 
 from trailblazer.constants import TrailblazerStatus, WorkflowManager
 from trailblazer.dto import CreateJobRequest, FailedJobsRequest, FailedJobsResponse, JobResponse
-from trailblazer.exceptions import JobServiceError
+from trailblazer.exceptions import JobServiceError, NoJobsError
 from trailblazer.services.job_service.mappers import (
     create_failed_jobs_response,
     create_job_response,
@@ -60,6 +60,10 @@ class JobService:
 
     def get_analysis_status(self, analysis_id: int) -> TrailblazerStatus:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
+
+        if not analysis.jobs:
+            raise NoJobsError(f"No jobs found for analysis {analysis_id}")
+
         return get_status(analysis.jobs)
 
     def get_analysis_progression(self, analysis_id: int) -> float:
