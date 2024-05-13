@@ -48,6 +48,7 @@ class JobService:
                 self.store.update_tower_run_status(analysis_id)
         except Exception as error:
             LOG.error(f"Failed to update jobs {analysis.case_id} - {analysis.id}: {error}")
+            raise error
 
     def _update_slurm_jobs(self, analysis_id: int) -> None:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
