@@ -3,6 +3,7 @@ import logging
 
 from trailblazer.constants import TrailblazerStatus, WorkflowManager
 from trailblazer.dto import CreateJobRequest, FailedJobsRequest, FailedJobsResponse, JobResponse
+from trailblazer.exceptions import JobServiceError
 from trailblazer.services.job_service.mappers import (
     create_failed_jobs_response,
     create_job_response,
@@ -48,6 +49,7 @@ class JobService:
                 self.store.update_tower_run_status(analysis_id)
         except Exception as error:
             LOG.error(f"Failed to update jobs {analysis.case_id} - {analysis.id}: {error}")
+            raise JobServiceError from error
 
     def _update_slurm_jobs(self, analysis_id: int) -> None:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
