@@ -38,4 +38,5 @@ jobs:
          context: ./
          file: ./Dockerfile-cli
          push: true
+         platforms: linux/amd64
          tags: "clinicalgenomics/trailblazer-cli:${{steps.get_branch_name.outputs.branch}}"
