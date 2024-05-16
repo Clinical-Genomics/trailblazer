@@ -23,7 +23,7 @@ Alembic revisions need to be applied from your local machine.
 
 
 # Steps when merging to master
-When all tests done and successful and PR is approved, follow these steps.
+When all the tests are done and successful and the PR is approved, follow these steps.
 
 1. Select "Squash and merge" to merge branch into default branch (master/main).
 2. A prompt for writing merge commit message will pop up.
