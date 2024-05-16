@@ -1,5 +1,5 @@
 # Deployment for testing
-Comment on the PR with the deploy output, it should include environment and that it succeeded.
+Comment on the PR with the deploy output, including the environment and that it succeeded.
 Alembic revisions need to be applied from your local machine.
 
 ## Deploy CLI feature branch
