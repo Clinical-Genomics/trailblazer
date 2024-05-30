@@ -179,7 +179,7 @@ class UpdateHandler(BaseHandler):
         LOG.info(f"Case {analysis.case_id} - Analysis {analysis.id}: cancelled successfully!")
         self.update_run_status(analysis_id=analysis_id, analysis_host=analysis_host)
         analysis.status = TrailblazerStatus.CANCELLED
-        analysis.comment = (
+        analysis.comment += (
             f"Analysis cancelled manually by user:"
             f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
         )
