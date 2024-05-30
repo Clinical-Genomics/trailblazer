@@ -180,7 +180,7 @@ class UpdateHandler(BaseHandler):
         self.update_run_status(analysis_id=analysis_id, analysis_host=analysis_host)
         analysis.status = TrailblazerStatus.CANCELLED
         new_comment: str = (
-            f"\n Analysis cancelled manually by user:"
+            f"Analysis cancelled manually by user:"
             f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
         )
         self.update_analysis_comment(analysis=analysis, comment=new_comment)
