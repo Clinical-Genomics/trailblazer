@@ -14,7 +14,7 @@ def test_get_analyses_by_status_started_at_and_comment(
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
     # GIVEN a comment
-    analysis_store.update_analysis_comment(
+    analysis_store.update_latest_analysis_comment(
         case_id=existing_analysis.case_id, comment="a new comment"
     )
 
@@ -35,7 +35,7 @@ def test_get_analyses_by_status_started_at_and_comment_with_comment(analysis_sto
     existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
 
     # GIVEN a comment
-    analysis_store.update_analysis_comment(
+    analysis_store.update_latest_analysis_comment(
         case_id=existing_analysis.case_id, comment="a new comment"
     )
 

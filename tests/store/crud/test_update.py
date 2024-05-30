@@ -335,7 +335,7 @@ def test_update_analysis_comment(analysis_store: MockStore, case_id: str):
     comment: str = "test comment"
 
     # WHEN adding a comment
-    analysis_store.update_analysis_comment(case_id=analysis.case_id, comment=comment)
+    analysis_store.update_latest_analysis_comment(case_id=analysis.case_id, comment=comment)
 
     # THEN a comment should have been added
     assert analysis.comment == comment
@@ -350,8 +350,8 @@ def test_update_analysis_comment_when_existing(analysis_store: MockStore, case_i
     second_comment: str = "Second"
 
     # WHEN adding a comment
-    analysis_store.update_analysis_comment(case_id=analysis.case_id, comment=first_comment)
-    analysis_store.update_analysis_comment(case_id=analysis.case_id, comment=second_comment)
+    analysis_store.update_latest_analysis_comment(case_id=analysis.case_id, comment=first_comment)
+    analysis_store.update_latest_analysis_comment(case_id=analysis.case_id, comment=second_comment)
 
     # THEN comments should have been added
     assert analysis.comment == f"{first_comment} {second_comment}"

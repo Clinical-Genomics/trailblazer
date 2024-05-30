@@ -183,7 +183,7 @@ class UpdateHandler(BaseHandler):
             f"Analysis cancelled manually by user:"
             f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
         )
-        analysis.comment = analysis.comment + new_comment if analysis.comment else new_comment
+        self.update_analysis_comment(analysis=analysis, comment=new_comment)
         session: Session = get_session()
         session.commit()
 
@@ -227,8 +227,12 @@ class UpdateHandler(BaseHandler):
         session: Session = get_session()
         session.commit()
 
-    def update_analysis_comment(self, case_id: str, comment: str) -> None:
+    def update_latest_analysis_comment(self, case_id: str, comment: str) -> None:
         analysis: Analysis | None = self.get_latest_analysis_for_case(case_id)
+        self.update_analysis_comment(analysis=analysis, comment=comment)
+
+    @staticmethod
+    def update_analysis_comment(analysis: Analysis, comment: str):
         analysis.comment: str = (
             " ".join([analysis.comment, comment]) if analysis.comment else comment
         )

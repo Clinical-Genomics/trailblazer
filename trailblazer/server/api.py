@@ -255,7 +255,7 @@ def add_comment():
     try:
         case_id: str = put_request.get("case_id")
         comment: str = put_request.get("comment")
-        store.update_analysis_comment(case_id=case_id, comment=comment)
+        store.update_latest_analysis_comment(case_id=case_id, comment=comment)
         return jsonify("Success! Adding comment request sent"), HTTPStatus.CREATED
     except Exception as error:
         return jsonify(f"Exception: {error}"), HTTPStatus.CONFLICT
