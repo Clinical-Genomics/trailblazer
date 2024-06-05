@@ -1,4 +1,4 @@
-FROM docker.io/library/python:3.11-slim-bullseye
+FROM registry.access.redhat.com/ubi9/python-311
 
 RUN addgroup --system nonroot \
     && adduser --system --ingroup nonroot nonroot
