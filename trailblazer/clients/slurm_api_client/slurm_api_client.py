@@ -17,3 +17,9 @@ class SlurmAPIClient:
         response = requests.get(endpoint, headers=self.headers)
         response.raise_for_status()
         return SlurmJobResponse.model_validate(response.json())
+
+    def get_jobs(self) -> SlurmJobsResponse:
+        endpoint: str = f"{self.base_url}/slurm/v0.0.40/jobs"
+        response = requests.get(endpoint, headers=self.headers)
+        response.raise_for_status()
+        return SlurmJobsResponse.model_validate(response.json())
