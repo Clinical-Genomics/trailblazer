@@ -9,7 +9,7 @@ class SlurmAPIService(SlurmService):
     def __init__(self, client: SlurmAPIClient):
         self.client = client
 
-    def get_job(self, job_id: int) -> SlurmJobInfo:
+    def get_job(self, job_id: int) -> SlurmJobInfo | None:
         job_response: SlurmJobResponse = self.client.get_job(job_id)
         if not job_response.jobs or job_response.errors:
             return None
@@ -18,6 +18,7 @@ class SlurmAPIService(SlurmService):
     def get_jobs(self, job_ids: list[int]) -> list[SlurmJobInfo]:
         jobs: list[SlurmJobInfo] = []
         for job_id in job_ids:
-            job: SlurmJobInfo = self.get_job(job_id)
-            jobs.append(job)
+            job: SlurmJobInfo | None = self.get_job(job_id)
+            if job:
+                jobs.append(job)
         return jobs
