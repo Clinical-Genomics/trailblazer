@@ -31,4 +31,4 @@ def get_job_start_time(job: SlurmAPIJobInfo) -> datetime | None:
 
 
 def get_job_state(job: SlurmAPIJobInfo) -> TrailblazerStatus | None:
-    return TrailblazerStatus(job.state) if job.state else None
+    return TrailblazerStatus(job.job_state) if job.job_state else None
