@@ -1,6 +1,10 @@
 from pydantic import BaseModel
 
-from trailblazer.clients.slurm_api_client.dto.common import SlurmError, SlurmAPIJobInfo, SlurmWarning
+from trailblazer.clients.slurm_api_client.dto.common import (
+    SlurmError,
+    SlurmAPIJobInfo,
+    SlurmWarning,
+)
 
 
 class SlurmJobResponse(BaseModel):
