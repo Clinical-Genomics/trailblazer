@@ -38,7 +38,7 @@ class ExitCode(BaseModel):
     signal: ExitCodeSignal | None = None
 
 
-class SlurmJobInfo(BaseModel):
+class SlurmAPIJobInfo(BaseModel):
     account: str | None = None
     accrue_time: NumberWithFlags | None = None
     admin_comment: str | None = None
