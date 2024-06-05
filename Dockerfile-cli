@@ -1,11 +1,6 @@
 FROM registry.access.redhat.com/ubi9/python-311
 
-RUN groupadd --system nonroot \
-    && adduser --system --ingroup nonroot nonroot
-
 WORKDIR /app
 COPY . /app/
 
 RUN pip install --no-cache-dir .
-
-USER nonroot
