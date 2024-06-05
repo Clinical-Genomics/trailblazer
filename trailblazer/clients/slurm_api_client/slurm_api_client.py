@@ -22,7 +22,7 @@ class SlurmAPIClient:
             response = requests.get(endpoint, headers=self.headers)
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:
-            LOG.error(f"Error getting job {job_id}: {e}")
+            LOG.error(f"Error getting job {job_id}: {e.response.text}")
             raise SlurmAPIClientError(e)
         LOG.debug(f"Response: {response.json()}")
         return SlurmJobResponse.model_validate(response.json())
