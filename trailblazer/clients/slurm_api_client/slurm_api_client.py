@@ -10,6 +10,7 @@ from trailblazer.exc import SlurmAPIClientError
 
 LOG = logging.getLogger(__name__)
 
+
 class SlurmAPIClient:
     def __init__(self, base_url: str, access_token: str, user_name: str) -> None:
         self.base_url = base_url
