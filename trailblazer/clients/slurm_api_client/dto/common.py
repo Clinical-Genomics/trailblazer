@@ -19,14 +19,6 @@ class NumberWithFlags(BaseModel):
     number: int | None = None
 
 
-class JobResources(BaseModel):
-    nodes: str | None = None
-    allocated_cores: int | None = None
-    allocated_cpus: int | None = None
-    allocated_hosts: int | None = None
-    allocated_nodes: list[str] | None = None
-
-
 class ExitCodeSignal(BaseModel):
     id: NumberWithFlags | None = None
     name: str | None = None
@@ -92,7 +84,6 @@ class SlurmAPIJobInfo(BaseModel):
     het_job_id_set: str | None = None
     het_job_offset: NumberWithFlags | None = None
     job_id: int | None = None
-    job_resources: JobResources | None = None
     job_size_str: list[str] | None = None
     job_state: list[str] | None = None
     last_sched_evaluation: NumberWithFlags | None = None
@@ -121,7 +112,6 @@ class SlurmAPIJobInfo(BaseModel):
     memory_per_node: NumberWithFlags | None = None
     minimum_cpus_per_node: NumberWithFlags | None = None
     minimum_tmp_disk_per_node: NumberWithFlags | None = None
-    power: list[str] | None = None
     preempt_time: NumberWithFlags | None = None
     preemptable_time: NumberWithFlags | None = None
     pre_sus_time: NumberWithFlags | None = None
