@@ -18,7 +18,10 @@ class SlurmAPIClient:
 
     def get_job(self, job_id: str) -> SlurmJobResponse:
         LOG.info(f"Getting job {job_id}")
+        LOG.info(f"Headers: {self.headers}")
+        LOG.info(f"Base URL: {self.base_url}")
         endpoint: str = f"{self.base_url}/slurm/v0.0.40/job/{job_id}"
+        LOG.info(f"Endpoint: {endpoint}")
         try:
             response = requests.get(endpoint, headers=self.headers)
             response.raise_for_status()
