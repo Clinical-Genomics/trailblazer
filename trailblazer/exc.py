@@ -42,3 +42,8 @@ class ValidationError(TrailblazerError):
     """
     Exception related to validations.
     """
+
+class SlurmAPIClientError(TrailblazerError):
+    """
+    Exception related to Slurm API client.
+    """
