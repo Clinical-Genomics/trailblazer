@@ -45,9 +45,10 @@ class Container(containers.DeclarativeContainer):
             access_token=slurm_jwt_token,
             user_name=slurm_user_name,
         )
+        slurm_service = providers.Singleton(SlurmAPIService, client=slurm_client)
     else:
         slurm_client = providers.Singleton(SlurmCLIClient, host=slurm_host)
-    slurm_service = providers.Singleton(SlurmAPIService, client=slurm_client)
+        slurm_service = providers.Singleton(SlurmCLIService, client=slurm_client)
 
     job_service = providers.Factory(JobService, store=store, slurm_service=slurm_service)
     analysis_service = providers.Factory(AnalysisService, store=store, job_service=job_service)
