@@ -9,7 +9,7 @@ class SlurmAPIService(SlurmService):
     def __init__(self, client: SlurmAPIClient):
         self.client = client
 
-    def get_job(self, job_id: int) -> SlurmJobInfo | None:
+    def get_job(self, job_id: int) -> SlurmJobInfo:
         job_response: SlurmJobResponse = self.client.get_job(job_id)
         return create_job_info_dto(job_response)
 
