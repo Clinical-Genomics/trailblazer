@@ -49,6 +49,7 @@ class SlurmAPIClientError(TrailblazerError):
     Exception related to Slurm API client.
     """
 
+
 class ResponseDeserializationError(SlurmAPIClientError):
     """
     Exception related to the data in a  Slurm API client response.

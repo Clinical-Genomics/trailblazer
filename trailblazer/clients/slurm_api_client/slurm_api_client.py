@@ -25,7 +25,7 @@ class SlurmAPIClient:
         except requests.exceptions.HTTPError as e:
             LOG.error(f"Error getting job {job_id}: {e.response.content}")
             raise SlurmAPIClientError(e)
-        
+
         try:
             return SlurmJobResponse.model_validate(response.json())
         except ValidationError as e:
