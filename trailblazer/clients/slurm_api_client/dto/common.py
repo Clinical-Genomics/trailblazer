@@ -19,17 +19,6 @@ class NumberWithFlags(BaseModel):
     number: int | None = None
 
 
-class ExitCodeSignal(BaseModel):
-    id: NumberWithFlags | None = None
-    name: str | None = None
-
-
-class ExitCode(BaseModel):
-    status: list[str] | None = None
-    return_code: NumberWithFlags | None = None
-    signal: ExitCodeSignal | None = None
-
-
 class SlurmAPIJobInfo(BaseModel):
     accrue_time: NumberWithFlags | None = None
     job_id: int | None = None
