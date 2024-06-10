@@ -11,8 +11,6 @@ class SlurmAPIService(SlurmService):
 
     def get_job(self, job_id: int) -> SlurmJobInfo | None:
         job_response: SlurmJobResponse = self.client.get_job(job_id)
-        if not job_response.jobs or job_response.errors:
-            return None
         return create_job_info_dto(job_response)
 
     def get_jobs(self, job_ids: list[int]) -> list[SlurmJobInfo]:

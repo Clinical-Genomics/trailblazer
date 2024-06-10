@@ -1,11 +1,12 @@
 import logging
+from pydantic import ValidationError
 import requests
 
 from trailblazer.clients.slurm_api_client.dto import (
     SlurmJobResponse,
     SlurmJobsResponse,
 )
-from trailblazer.exc import SlurmAPIClientError
+from trailblazer.exc import ResponseDeserializationError, SlurmAPIClientError
 
 
 LOG = logging.getLogger(__name__)
@@ -24,4 +25,9 @@ class SlurmAPIClient:
         except requests.exceptions.HTTPError as e:
             LOG.error(f"Error getting job {job_id}: {e.response.content}")
             raise SlurmAPIClientError(e)
-        return SlurmJobResponse.model_validate(response.json())
+        
+        try:
+            return SlurmJobResponse.model_validate(response.json())
+        except ValidationError as e:
+            LOG.error(f"Error deserializing job response: {e}")
+            raise ResponseDeserializationError(e)
