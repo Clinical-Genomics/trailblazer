@@ -16,15 +16,15 @@ from trailblazer.store.store import Store
 
 class Container(containers.DeclarativeContainer):
     slurm_host: str | None = os.environ.get("ANALYSIS_HOST")
-    oauth_client_id: str = os.environ.get("GOOGLE_CLIENT_ID")
-    oauth_client_secret: str = os.environ.get("GOOGLE_CLIENT_SECRET")
-    oauth_redirect_uri: str = os.environ.get("GOOGLE_REDIRECT_URI")
-    google_oauth_base_url: str = os.environ.get("GOOGLE_OAUTH_BASE_URL")
-    encryption_key: str = os.environ.get("ENCRYPTION_KEY")
-    google_api_base_url: str = os.environ.get("GOOGLE_API_BASE_URL")
-    slurm_jwt_token: str = os.environ.get("SLURM_JWT")
-    slurm_user_name: str = os.environ.get("SLURM_USER_NAME")
-    slurm_base_url: str = os.environ.get("SLURM_BASE_URL")
+    oauth_client_id: str | None = os.environ.get("GOOGLE_CLIENT_ID")
+    oauth_client_secret: str | None = os.environ.get("GOOGLE_CLIENT_SECRET")
+    oauth_redirect_uri: str | None = os.environ.get("GOOGLE_REDIRECT_URI")
+    google_oauth_base_url: str | None = os.environ.get("GOOGLE_OAUTH_BASE_URL")
+    encryption_key: str | None = os.environ.get("ENCRYPTION_KEY")
+    google_api_base_url: str | None = os.environ.get("GOOGLE_API_BASE_URL")
+    slurm_jwt_token: str | None = os.environ.get("SLURM_JWT")
+    slurm_user_name: str | None = os.environ.get("SLURM_USER_NAME")
+    slurm_base_url: str | None = os.environ.get("SLURM_BASE_URL")
 
     google_api_client = GoogleAPIClient(google_api_base_url)
 
