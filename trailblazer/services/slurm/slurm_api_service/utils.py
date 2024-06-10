@@ -25,7 +25,7 @@ def get_job_elapsed_time(job: SlurmAPIJobInfo) -> int:
 
 
 def get_job_start_time(job: SlurmAPIJobInfo) -> datetime | None:
-    if job.start_time is None or job.start_time.set is None:
+    if job.start_time is None:
         return None
     return datetime.fromtimestamp(job.start_time.number)
 
