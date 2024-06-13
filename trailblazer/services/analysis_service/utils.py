@@ -6,7 +6,7 @@ from trailblazer.store.models import Analysis
 
 
 def get_status_counts(analyses: list[Analysis]) -> dict[TrailblazerStatus, StatusSummary]:
-    """Returns the amount of analyses with each status."""
+    """Returns the number of analyses with each status."""
     delivered: int = 0
     delivered_cases: list[str] = []
     status_counts: dict = {status: StatusSummary() for status in TrailblazerStatus}
