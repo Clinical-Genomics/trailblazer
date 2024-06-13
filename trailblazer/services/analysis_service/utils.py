@@ -13,7 +13,7 @@ def get_status_counts(analyses: list[Analysis]) -> dict[TrailblazerStatus, Statu
     for analysis in analyses:
         if analysis.delivery:
             delivered += 1
-            delivered_cases += analysis.case_id
+            delivered_cases.append(analysis.case_id)
         else:
             status_counts[analysis.status].count += 1
             status_counts[analysis.status].case_ids.append(analysis.case_id)
