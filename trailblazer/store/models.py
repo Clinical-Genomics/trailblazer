@@ -42,6 +42,7 @@ class User(Model):
     is_archived = Column(types.Boolean, default=False)
     name = Column(types.String(128))
     refresh_token = Column(types.Text)
+    abbreviation = Column(types.String(16), unique=True)
 
     runs = orm.relationship("Analysis", backref="user")
 
