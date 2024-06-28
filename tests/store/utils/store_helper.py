@@ -1,11 +1,12 @@
 """Utility functions to simply add test data in a Trailblazer store."""
 
 from datetime import date, datetime
+
 from sqlalchemy.orm import Session
 
-from trailblazer.store.store import Store
 from trailblazer.store.database import get_session
 from trailblazer.store.models import Info, Job, User
+from trailblazer.store.store import Store
 
 
 class StoreHelpers:
@@ -40,9 +41,11 @@ class StoreHelpers:
         return job
 
     @staticmethod
-    def add_user(email: str, name: str, is_archived: bool = False) -> User:
+    def add_user(
+        email: str, name: str, is_archived: bool = False, abbreviation: str = None
+    ) -> User:
         """Add a user object to the store."""
         session: Session = get_session()
-        user = User(email=email, name=name, is_archived=is_archived)
+        user = User(email=email, name=name, is_archived=is_archived, abbreviation=abbreviation)
         session.add(user)
         return user

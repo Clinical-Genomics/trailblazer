@@ -2,8 +2,10 @@
 users:
   - name: Paul Anderson
     email: paul.anderson@magnolia.com
+    abbreviation: PA
   - name: Tom Cruise
     email: tom.cruise@magnolia.com
+    abbreviation: TC
 
 analyses:
   - case_id: cuddlyhen

@@ -38,10 +38,10 @@ class CreateHandler(BaseHandler):
         session.commit()
         return new_analysis
 
-    def add_user(self, name: str, email: str) -> User:
+    def add_user(self, name: str, email: str, abbreviation: str = "") -> User:
         """Add a new user to the database."""
         session: Session = get_session()
-        new_user = User(email=email, name=name)
+        new_user = User(email=email, name=name, abbreviation=abbreviation)
         session.add(new_user)
         session.commit()
         return new_user
