@@ -62,6 +62,12 @@ def archived_user_email() -> str:
     return "archived.user@magnolia.com"
 
 
+@pytest.fixture
+def archived_user_abbreviation() -> str:
+    """Return an archived user abbreviation."""
+    return "AU"
+
+
 @pytest.fixture(scope="session")
 def user_email() -> str:
     """Return an user email."""
@@ -171,14 +177,22 @@ def analysis_store(
     analysis_data: dict[str, list],
     archived_user_email: str,
     archived_username: str,
+    archived_user_abbreviation: str,
     raw_analyses: list[dict],
     store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A sample Trailblazer database populated with pending analyses."""
     session: Session = get_session()
-    StoreHelpers.add_user(email=archived_user_email, name=archived_username, is_archived=True)
+    StoreHelpers.add_user(
+        email=archived_user_email,
+        name=archived_username,
+        is_archived=True,
+        abbreviation=archived_user_abbreviation,
+    )
     for user_data in analysis_data["users"]:
-        store.add_user(name=user_data["name"], email=user_data["email"])
+        store.add_user(
+            name=user_data["name"], email=user_data["email"], abbreviation=user_data["abbreviation"]
+        )
     for raw_analysis in raw_analyses:
         raw_analysis["user"] = store.get_user(email=raw_analysis["user"])
         raw_analysis["case_id"] = raw_analysis.pop("case_id")
