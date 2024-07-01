@@ -1,26 +1,29 @@
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.dto.analyses_response import UpdateAnalysesResponse
 from trailblazer.dto.analysis_response import AnalysisResponse
-from trailblazer.dto.summaries_response import Summary
+from trailblazer.dto.summaries_response import StatusSummary, Summary
 from trailblazer.store.models import Analysis
 
 
-def get_status_counts(analyses: list[Analysis]) -> dict[TrailblazerStatus, int]:
-    """Returns the amount of analyses with each status."""
+def get_status_counts(analyses: list[Analysis]) -> dict[TrailblazerStatus, StatusSummary]:
+    """Returns the number of analyses with each status."""
     delivered: int = 0
-    status_counts: dict = {status: 0 for status in TrailblazerStatus}
+    delivered_cases: list[str] = []
+    status_counts: dict = {status: StatusSummary() for status in TrailblazerStatus}
     for analysis in analyses:
         if analysis.delivery:
             delivered += 1
+            delivered_cases.append(analysis.case_id)
         else:
-            status_counts[analysis.status] += 1
-    status_counts["delivered"] = delivered
+            status_counts[analysis.status].count += 1
+            status_counts[analysis.status].case_ids.append(analysis.case_id)
+    status_counts["delivered"] = StatusSummary(count=delivered, case_ids=delivered_cases)
     return status_counts
 
 
 def create_summary(analyses: list[Analysis], order_id: int) -> Summary:
     total: int = len(analyses)
-    status_counts: dict[TrailblazerStatus, int] = get_status_counts(analyses)
+    status_counts: dict[TrailblazerStatus, StatusSummary] = get_status_counts(analyses)
     return Summary(order_id=order_id, total=total, **status_counts)
 
 
