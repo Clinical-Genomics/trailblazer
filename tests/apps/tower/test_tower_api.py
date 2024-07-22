@@ -20,7 +20,7 @@ from trailblazer.io.controller import ReadFile
     ],
 )
 def test_tower_api_status(tower_id: str, response_file: Path, expected_status: str) -> None:
-    """Assess that TowerAPI returns the correct status given a response."""
+    """Assess that TowerAPIService returns the correct status given a response."""
 
     # GIVEN a Tower API with a mock query response
     tower_api = MockTowerAPIService(workflow_id=tower_id)
@@ -39,7 +39,7 @@ def test_tower_api_status(tower_id: str, response_file: Path, expected_status: s
     ],
 )
 def test_tower_api_is_pending(tower_id: str, response_file: Path, expected_bool: bool) -> None:
-    """Assess that TowerAPI returns the state for is_pending given a response."""
+    """Assess that TowerAPIService returns the state for is_pending given a response."""
 
     # GIVEN a Tower API with a mock query response
     tower_api = MockTowerAPIService(workflow_id=tower_id)
@@ -60,7 +60,7 @@ def test_tower_api_is_pending(tower_id: str, response_file: Path, expected_bool:
 def test_tower_api_total_jobs(
     tower_id: str, response_file: Path, expected_nr_total_jobs: int
 ) -> None:
-    """Assess that TowerAPI correctly returns the total number of potential jobs given a response."""
+    """Assess that TowerAPIService correctly returns the total number of potential jobs given a response."""
 
     # GIVEN a Tower API with a mock query response
     tower_api = MockTowerAPIService(workflow_id=tower_id)
@@ -81,7 +81,7 @@ def test_tower_api_total_jobs(
 def test_tower_api_succeeded_jobs(
     tower_id: str, response_file: Path, expected_succeeded_jobs: int
 ) -> None:
-    """Assess that TowerAPI correctly returns the number of succeeded jobs given a response."""
+    """Assess that TowerAPIService correctly returns the number of succeeded jobs given a response."""
 
     # GIVEN a Tower API with a mock query response
     tower_api = MockTowerAPIService(workflow_id=tower_id)
@@ -97,7 +97,7 @@ def test_tower_api_tasks(
     tower_jobs: list[dict],
     caplog,
 ) -> None:
-    """Assess that TowerAPI returns a list of tasks given a response."""
+    """Assess that TowerAPIService returns a list of tasks given a response."""
 
     # GIVEN a Tower API with a mock query response
     tower_api = MockTowerAPIService(workflow_id=tower_id)
@@ -123,7 +123,7 @@ def test_tower_api_tasks(
     ],
 )
 def test_tower_api_progress(tower_id: str, response_file: Path, expected_progress: float) -> None:
-    """Assess that TowerAPI returns the progress percentage given a response."""
+    """Assess that TowerAPIService returns the progress percentage given a response."""
 
     # GIVEN a Tower API with a mock query response
     tower_api = MockTowerAPIService(workflow_id=tower_id)
@@ -138,7 +138,7 @@ def test_tower_api_tasks_empty(
     analysis_id: int,
     tower_task_response_pending: Path,
 ) -> None:
-    """Assess that TowerAPI returns an empty list of tasks given a response for a pending case."""
+    """Assess that TowerAPIService returns an empty list of tasks given a response for a pending case."""
 
     # GIVEN a Tower API with a mock query response for a pending case
     tower_api = MockTowerAPIService(workflow_id=tower_id)
@@ -188,10 +188,10 @@ def test_get_tower_api(case_id: str, mocker, tower_id: str):
     )
 
     # WHEN getting Tower API
-    tower_api: TowerAPI = get_tower_api(config_file_path="a_config", case_id=case_id)
+    tower_api: TowerAPIService = get_tower_api(config_file_path="a_config", case_id=case_id)
 
     # THEN return a Tower API
-    assert isinstance(tower_api, TowerAPI)
+    assert isinstance(tower_api, TowerAPIService)
 
 
 def test_get_tower_api_with_missing_requirements(case_id: str, mocker, tower_id: str):
