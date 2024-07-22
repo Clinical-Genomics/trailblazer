@@ -128,7 +128,7 @@ class TowerApiClient:
             self.post_request(url=url)
 
 
-class TowerAPI:
+class TowerAPIService:
     """Class communicating with NF tower regarding a given analysis (workflow)."""
 
     def __init__(self, workflow_id: str, dry_run: bool = False):
@@ -240,7 +240,7 @@ class TowerAPI:
         self.tower_client.send_cancel_request()
 
 
-def _validate_tower_api_client_requirements(tower_api: TowerAPI) -> bool:
+def _validate_tower_api_client_requirements(tower_api: TowerAPIService) -> bool:
     """Raises:
     TowerRequirementsError when failing meeting Tower mandatory requirement"""
     if not tower_api.tower_client.meets_requirements:
@@ -248,11 +248,11 @@ def _validate_tower_api_client_requirements(tower_api: TowerAPI) -> bool:
     return True
 
 
-def get_tower_api(config_file_path: str, case_id: str) -> TowerAPI | None:
+def get_tower_api(config_file_path: str, case_id: str) -> TowerAPIService | None:
     """Return Tower API. Currently only one tower ID is supported."""
     workflow_id: int = ReadFile.get_content_from_file(
         file_format=FileFormat.YAML, file_path=Path(config_file_path)
     ).get(case_id)[-1]
-    tower_api = TowerAPI(workflow_id=str(workflow_id))
+    tower_api = TowerAPIService(workflow_id=str(workflow_id))
     if _validate_tower_api_client_requirements(tower_api=tower_api):
         return tower_api
