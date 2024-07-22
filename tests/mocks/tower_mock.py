@@ -2,7 +2,7 @@ from json import JSONDecodeError
 from pathlib import Path
 
 from trailblazer.apps.tower.api import TowerAPI
-from trailblazer.apps.tower.models import TowerTaskResponse, TowerWorkflowResponse
+from trailblazer.clients.tower.models import TowerTaskResponse, TowerWorkflowResponse
 from trailblazer.constants import FileFormat
 from trailblazer.io.controller import ReadFile
 

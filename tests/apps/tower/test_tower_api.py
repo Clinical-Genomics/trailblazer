@@ -5,7 +5,7 @@ import pytest
 from tests.apps.tower.conftest import TowerResponseFile, TowerTaskResponseFile
 from tests.mocks.tower_mock import MockTowerAPI
 from trailblazer.apps.tower.api import TowerAPI, get_tower_api
-from trailblazer.apps.tower.models import TowerTask
+from trailblazer.clients.tower.models import TowerTask
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.exc import TowerRequirementsError
 from trailblazer.io.controller import ReadFile
