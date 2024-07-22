@@ -8,7 +8,7 @@ import requests
 from requests import ConnectionError, HTTPError
 from requests.exceptions import MissingSchema
 
-from trailblazer.apps.tower.models import (
+from trailblazer.clients.tower.models import (
     TowerProcess,
     TowerTask,
     TowerTaskResponse,
