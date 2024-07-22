@@ -1,14 +1,14 @@
 from json import JSONDecodeError
 from pathlib import Path
 
-from trailblazer.apps.tower.api import TowerAPI
+from trailblazer.services.tower.tower_api_service import TowerAPIService
 from trailblazer.clients.tower.models import TowerTaskResponse, TowerWorkflowResponse
 from trailblazer.constants import FileFormat
 from trailblazer.io.controller import ReadFile
 
 
-class MockTowerAPI(TowerAPI):
-    """Instance of TowerAPI that mimics expected Tower output."""
+class MockTowerAPIService(TowerAPIService):
+    """Instance of TowerAPIService that mimics expected Tower output."""
 
     @property
     def response(self) -> dict | None:

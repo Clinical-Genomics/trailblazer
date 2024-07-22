@@ -5,10 +5,10 @@ import pytest
 
 from tests.apps.tower.conftest import CaseId
 from tests.mocks.store_mock import MockStore
-from tests.mocks.tower_mock import MockTowerAPI
+from tests.mocks.tower_mock import MockTowerAPIService
 from trailblazer.apps.slurm.api import get_squeue_result
 from trailblazer.apps.slurm.models import SqueueResult
-from trailblazer.apps.tower.api import TowerAPI
+from trailblazer.services.tower.tower_api_service import TowerAPIService
 from trailblazer.constants import CharacterFormat, TrailblazerStatus, WorkflowManager
 from trailblazer.exc import MissingAnalysis, TrailblazerError
 from trailblazer.io.controller import ReadFile
@@ -216,7 +216,7 @@ def test_cancel_ongoing_tower_analysis(
     analysis_store: MockStore, caplog, mocker, case_id: str, tower_id: str
 ):
     # GIVEN TOWER cancel output
-    mocker.patch.object(TowerAPI, "cancel", return_value=None)
+    mocker.patch.object(TowerAPIService, "cancel", return_value=None)
 
     # GIVEN a workflow id
     mocker.patch.object(ReadFile, "get_content_from_file")
@@ -224,7 +224,8 @@ def test_cancel_ongoing_tower_analysis(
 
     # GIVEN Tower requirements are meet
     mocker.patch(
-        "trailblazer.apps.tower.api._validate_tower_api_client_requirements", return_value=True
+        "trailblazer.services.tower.tower_api_service._validate_tower_api_client_requirements",
+        return_value=True,
     )
 
     caplog.set_level("INFO")
@@ -427,7 +428,7 @@ def test_update_run_status_using_tower(
 
     # GIVEN Tower API response for an analysis
     raw_case: dict = tower_case_config.get(case_id)
-    tower_api = MockTowerAPI(workflow_id=raw_case.get("tower_id"))
+    tower_api = MockTowerAPIService(workflow_id=raw_case.get("tower_id"))
     tower_api.mock_query(response_file=raw_case.get("workflow_response_file"))
     tower_api.mock_tasks_query(response_file=raw_case.get("tasks_response_file"))
     mocker.patch("trailblazer.store.crud.update.get_tower_api", return_value=tower_api)

@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from tests.apps.tower.conftest import TowerResponseFile, TowerTaskResponseFile
-from tests.mocks.tower_mock import MockTowerAPI
+from tests.mocks.tower_mock import MockTowerAPIService
 from trailblazer.apps.tower.api import TowerAPI, get_tower_api
 from trailblazer.clients.tower.models import TowerTask
 from trailblazer.constants import TrailblazerStatus
@@ -23,7 +23,7 @@ def test_tower_api_status(tower_id: str, response_file: Path, expected_status: s
     """Assess that TowerAPI returns the correct status given a response."""
 
     # GIVEN a Tower API with a mock query response
-    tower_api = MockTowerAPI(workflow_id=tower_id)
+    tower_api = MockTowerAPIService(workflow_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
     # THEN a trailblazer status is returned
@@ -42,7 +42,7 @@ def test_tower_api_is_pending(tower_id: str, response_file: Path, expected_bool:
     """Assess that TowerAPI returns the state for is_pending given a response."""
 
     # GIVEN a Tower API with a mock query response
-    tower_api = MockTowerAPI(workflow_id=tower_id)
+    tower_api = MockTowerAPIService(workflow_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
     # THEN is_pending should be returned
@@ -63,7 +63,7 @@ def test_tower_api_total_jobs(
     """Assess that TowerAPI correctly returns the total number of potential jobs given a response."""
 
     # GIVEN a Tower API with a mock query response
-    tower_api = MockTowerAPI(workflow_id=tower_id)
+    tower_api = MockTowerAPIService(workflow_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
     # THEN the total number of potential jobs is returned
@@ -84,7 +84,7 @@ def test_tower_api_succeeded_jobs(
     """Assess that TowerAPI correctly returns the number of succeeded jobs given a response."""
 
     # GIVEN a Tower API with a mock query response
-    tower_api = MockTowerAPI(workflow_id=tower_id)
+    tower_api = MockTowerAPIService(workflow_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
     # THEN the total number of succeeded jobs is returned
@@ -100,7 +100,7 @@ def test_tower_api_tasks(
     """Assess that TowerAPI returns a list of tasks given a response."""
 
     # GIVEN a Tower API with a mock query response
-    tower_api = MockTowerAPI(workflow_id=tower_id)
+    tower_api = MockTowerAPIService(workflow_id=tower_id)
     tower_api.mock_tasks_query(response_file=TowerTaskResponseFile.RUNNING)
 
     # WHEN asking for jobs
@@ -126,7 +126,7 @@ def test_tower_api_progress(tower_id: str, response_file: Path, expected_progres
     """Assess that TowerAPI returns the progress percentage given a response."""
 
     # GIVEN a Tower API with a mock query response
-    tower_api = MockTowerAPI(workflow_id=tower_id)
+    tower_api = MockTowerAPIService(workflow_id=tower_id)
     tower_api.mock_query(response_file=response_file)
 
     # THEN progress should be returned
@@ -141,7 +141,7 @@ def test_tower_api_tasks_empty(
     """Assess that TowerAPI returns an empty list of tasks given a response for a pending case."""
 
     # GIVEN a Tower API with a mock query response for a pending case
-    tower_api = MockTowerAPI(workflow_id=tower_id)
+    tower_api = MockTowerAPIService(workflow_id=tower_id)
     tower_api.mock_tasks_query(response_file=tower_task_response_pending)
 
     # WHEN asking for jobs
@@ -183,7 +183,8 @@ def test_get_tower_api(case_id: str, mocker, tower_id: str):
 
     # GIVEN Tower requirements are meet
     mocker.patch(
-        "trailblazer.apps.tower.api._validate_tower_api_client_requirements", return_value=True
+        "trailblazer.services.tower.tower_api_service._validate_tower_api_client_requirements",
+        return_value=True,
     )
 
     # WHEN getting Tower API
