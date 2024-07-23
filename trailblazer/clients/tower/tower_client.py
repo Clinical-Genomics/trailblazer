@@ -27,6 +27,7 @@ class TowerApiClient:
     def get_tasks(self, workflow_id: str) -> TowerTaskResponse:
         url = f"{self.base_url}/workflow/{workflow_id}/tasks"
         response = requests.get(url=url, headers=self.headers, params=self.request_params)
+        response.raise_for_status()
         return TowerTaskResponse.model_validate(response.json())
 
     @handle_client_errors
