@@ -31,9 +31,6 @@ class TowerApiClient:
     def request_params(self) -> list[tuple]:
         return [("workspaceId", self.workspace_id)]
 
-    def build_url(self, endpoint: str) -> str:
-        return self.base_url + endpoint
-
     def send_request(self, url: str) -> dict:
         try:
             response = requests.get(
@@ -64,19 +61,16 @@ class TowerApiClient:
             LOG.error(f"Request failed for url {url}: Error: {error}\n")
             raise TrailblazerError
 
-    @property
-    def tasks(self) -> TowerTaskResponse:
-        """Return a tasks response with information about submitted jobs."""
-        url = self.build_url(endpoint=self.tasks_endpoint)
-        return TowerTaskResponse(**self.send_request(url=url))
+    def get_tasks(self, workflow_id: str) -> TowerTaskResponse:
+        url = f"{self.base_url}/workflow/{workflow_id}/tasks"
+        response = self.send_request(url)
+        return TowerTaskResponse(**response)
 
-    @property
-    def workflow(self) -> TowerWorkflowResponse:
-        """Return a workflow response with general information about the analysis."""
-        url = self.build_url(endpoint=self.workflow_endpoint)
-        return TowerWorkflowResponse(**self.send_request(url=url))
+    def get_workflow(self, workflow_id: str) -> TowerWorkflowResponse:
+        url = f"{self.base_url}/workflow/{workflow_id}"
+        response: dict = self.send_request(url)
+        return TowerWorkflowResponse(**response)
 
-    def send_cancel_request(self) -> None:
-        """Send a POST request to cancel a workflow."""
-        url: str = self.build_url(endpoint=self.cancel_endpoint)
-        self.post_request(url=url)
+    def cancel_workflow(self, workflow_id: str) -> None:
+        url = f"{self.base_url}/workflow/{workflow_id}/cancel"
+        self.post_request(url)

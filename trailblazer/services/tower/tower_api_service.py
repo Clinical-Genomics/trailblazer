@@ -39,7 +39,7 @@ class TowerAPIService:
     def response(self) -> TowerWorkflowResponse:
         """Returns a workflow response containing general information about an analysis."""
         if not self._response:
-            self._response = self.tower_client.workflow
+            self._response = self.tower_client.get_workflow
         return self._response
 
     @property
@@ -49,7 +49,7 @@ class TowerAPIService:
         It only includes jobs that have been submitted a at given time that could be either
         pending, running, completed or failed."""
         if not self._tasks_response:
-            self._tasks_response = self.tower_client.tasks
+            self._tasks_response = self.tower_client.get_tasks
         return self._tasks_response
 
     @property
@@ -127,7 +127,7 @@ class TowerAPIService:
 
     def cancel(self) -> None:
         """Cancel a workflow."""
-        self.tower_client.send_cancel_request()
+        self.tower_client.cancel_workflow()
 
 
 def _validate_tower_api_client_requirements(tower_api: TowerAPIService) -> bool:
