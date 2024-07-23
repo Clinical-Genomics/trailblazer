@@ -65,23 +65,6 @@ class TowerApiClient:
             raise TrailblazerError
 
     @property
-    def meets_requirements(self) -> bool:
-        """Return True if required variables are not empty."""
-        requirement_map: list[tuple[str, str]] = [
-            (self.tower_api_endpoint, "Error: no endpoint specified for Tower Open API request."),
-            (
-                self.tower_access_token,
-                "Error: no access token specified for Tower Open API request.",
-            ),
-            (self.workspace_id, "Error: no workspace specified for Tower Open API request."),
-        ]
-        for requirement, error_msg in requirement_map:
-            if not requirement:
-                LOG.info(error_msg)
-                return False
-        return True
-
-    @property
     def tasks(self) -> TowerTaskResponse:
         """Return a tasks response with information about submitted jobs."""
         url = self.build_url(endpoint=self.tasks_endpoint)
