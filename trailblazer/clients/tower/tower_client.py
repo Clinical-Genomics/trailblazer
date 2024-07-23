@@ -1,22 +1,13 @@
-"""Module for Tower Open API."""
-
 import logging
-import os
-from pathlib import Path
-
 import requests
 from requests import ConnectionError, HTTPError
 from requests.exceptions import MissingSchema
 
 from trailblazer.clients.tower.models import (
-    TowerProcess,
-    TowerTask,
     TowerTaskResponse,
     TowerWorkflowResponse,
 )
-from trailblazer.constants import TOWER_WORKFLOW_STATUS, FileFormat, TrailblazerStatus
-from trailblazer.exc import TowerRequirementsError, TrailblazerError
-from trailblazer.io.controller import ReadFile
+from trailblazer.exc import TrailblazerError
 
 LOG = logging.getLogger(__name__)
 
@@ -38,9 +29,7 @@ class TowerApiClient:
 
     @property
     def request_params(self) -> list[tuple]:
-        return [
-            ("workspaceId", self.workspace_id),
-        ]
+        return [("workspaceId", self.workspace_id)]
 
     def build_url(self, endpoint: str) -> str:
         return self.base_url + endpoint
