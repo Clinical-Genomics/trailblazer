@@ -1,18 +1,14 @@
-"""Module for Tower Open API."""
-
 import logging
-from pathlib import Path
 
 from trailblazer.clients.tower.models import (
     TowerProcess,
     TowerTask,
     TowerTaskResponse,
+    TowerWorkflow,
     TowerWorkflowResponse,
 )
 from trailblazer.clients.tower.tower_client import TowerApiClient
-from trailblazer.constants import TOWER_WORKFLOW_STATUS, FileFormat, TrailblazerStatus
-from trailblazer.exc import TowerRequirementsError
-from trailblazer.io.controller import ReadFile
+from trailblazer.constants import TOWER_WORKFLOW_STATUS, TrailblazerStatus
 
 
 LOG = logging.getLogger(__name__)
@@ -24,69 +20,51 @@ class TowerAPIService:
     def __init__(self, tower_client: TowerApiClient, dry_run: bool = False) -> None:
         self.dry_run: bool = dry_run
         self.tower_client = tower_client
- 
-    @property
-    def response(self) -> TowerWorkflowResponse:
-        """Returns a workflow response containing general information about an analysis."""
-        if not self._response:
-            self._response = self.tower_client.get_workflow
-        return self._response
 
-    @property
-    def tasks_response(self) -> TowerTaskResponse:
-        """Returns a tasks response containing information about jobs submitted as part of an analysis.
-        A task response does not include all jobs that will be run as part of an analysis.
-        It only includes jobs that have been submitted a at given time that could be either
-        pending, running, completed or failed."""
-        if not self._tasks_response:
-            self._tasks_response = self.tower_client.get_tasks
-        return self._tasks_response
+    def get_workflow(self, workflow_id: str) -> TowerWorkflowResponse:
+        return self.tower_client.get_workflow(workflow_id)
 
-    @property
-    def status(self) -> str:
-        """Returns the status of an analysis (also called workflow in NF Tower)."""
-        status: str = TOWER_WORKFLOW_STATUS.get(
-            self.response.workflow.status, TrailblazerStatus.ERROR
-        )
+    def get_tasks(self, workflow_id: str) -> TowerTaskResponse:
+        return self.tower_client.get_tasks(workflow_id)
+
+    def get_status(self, response: TowerWorkflowResponse) -> str:
+        workflow: TowerWorkflow = response.workflow
+        status: str = TOWER_WORKFLOW_STATUS.get(workflow.status, TrailblazerStatus.ERROR)
 
         # If the whole workflow (analysis) is completed set it as QC instead of COMPLETE
         if status == TrailblazerStatus.COMPLETED:
             return TrailblazerStatus.QC
         return status
 
-    @property
-    def is_pending(self) -> bool:
-        """Returns True if workflow has not started running. Otherwise returns False."""
-        return self.status == TrailblazerStatus.PENDING
+    def is_pending(self, response: TowerWorkflowResponse) -> bool:
+        return response.workflow.status == TrailblazerStatus.PENDING
 
-    @property
-    def is_complete(self) -> bool:
-        """Returns True if workflow has completed. Otherwise returns False."""
-        return self.status == TrailblazerStatus.QC
+    def is_complete(self, response: TowerWorkflowResponse) -> bool:
+        return response.workflow.status == TrailblazerStatus.QC
 
-    @property
-    def processes(self) -> list[TowerProcess]:
+    def get_processes(self, workflow_id: str) -> list[TowerProcess]:
         """Returns processes. Processes are steps in a workflow that might or might not be executed by a given analysis.
         A process can also have more than one corresponding job (task).
         For example, a process could be a 'fastqc' step that could be run multiple times depending on
         how many input files are given."""
-        return [TowerProcess(**process) for process in self.response.progress.processesProgress]
+        response: TowerWorkflowResponse = self.get_workflow(workflow_id)
+        return [TowerProcess(**process) for process in response.progress.processes_progress]
 
     @property
     def tasks(self) -> list[TowerTask]:
         """Returns tasks. Tasks correspond to jobs that have been submitted at a given point regardless of their
         status."""
-        return [task["task"] for task in self.tasks_response.tasks]
+        return [task["task"] for task in self.get_tasks.tasks]
 
     @property
     def total_jobs(self) -> int:
         """Returns the total number of jobs for a workflow."""
-        return len(self.processes)
+        return len(self.get_processes)
 
     @property
     def succeeded_jobs(self) -> int:
         """Returns the number of succeeded jobs for a workflow."""
-        return sum(process.is_complete for process in self.processes)
+        return sum(process.is_complete for process in self.get_processes)
 
     @property
     def progress(self) -> float:

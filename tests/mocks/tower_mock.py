@@ -11,11 +11,11 @@ class MockTowerAPIService(TowerAPIService):
     """Instance of TowerAPIService that mimics expected Tower output."""
 
     @property
-    def response(self) -> dict | None:
+    def get_workflow(self) -> dict | None:
         return self.mock_response or None
 
     @property
-    def tasks_response(self) -> dict | None:
+    def get_tasks(self) -> dict | None:
         return self.mock_tasks_response or None
 
     def mock_query(self, response_file: Path) -> TowerWorkflowResponse:

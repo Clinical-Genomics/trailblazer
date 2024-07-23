@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from trailblazer.constants import (
     TOWER_PROCESS_STATUS,
@@ -147,8 +147,8 @@ class TowerWorkflow(BaseModel):
 class TowerProgress(BaseModel):
     """NF Tower progress model."""
 
-    workflowProgress: dict
-    processesProgress: list
+    workflow_progress: dict = Field(alias="workflowProgress")
+    processes_progress: list = Field(alias="processesProgress")
 
 
 class TowerTaskResponse(BaseModel):
