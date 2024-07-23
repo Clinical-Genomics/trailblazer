@@ -43,10 +43,10 @@ class TowerApiClient:
                 verify=True,
             )
             if response.status_code == 404:
-                LOG.error(f"Request failed for url {url}\n")
+                LOG.error(f"Request failed for url {url}")
                 response.raise_for_status()
         except (MissingSchema, HTTPError, ConnectionError) as error:
-            LOG.info(f"Request failed for url {url}: Error: {error}\n")
+            LOG.error(f"Request failed for url {url}: Error: {error}")
             return {}
 
         return response.json()
@@ -58,7 +58,7 @@ class TowerApiClient:
                 url, headers=self.headers, params=self.request_params, json=data
             )
             if response.status_code in {404, 400}:
-                LOG.info(f"POST request failed for url {url}\n with message {str(response)}")
+                LOG.error(f"POST request failed for url {url}\n with message {str(response)}")
                 response.raise_for_status()
         except (MissingSchema, HTTPError, ConnectionError) as error:
             LOG.error(f"Request failed for url {url}: Error: {error}\n")
