@@ -72,4 +72,3 @@ class TowerRequestFailed(TowerAPIClientError):
     """
     Exception raised when the Tower API request fails.
     """
- 

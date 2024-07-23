@@ -12,7 +12,7 @@ from trailblazer.apps.slurm.api import (
     reformat_squeue_result_job_step,
 )
 from trailblazer.apps.slurm.models import SqueueResult
-from trailblazer.services.tower.tower_api_service import TowerAPIService, get_tower_api
+from trailblazer.services.tower.tower_api_service import TowerAPIService
 from trailblazer.constants import SlurmJobStatus, TrailblazerStatus, WorkflowManager
 from trailblazer.dto.update_analyses import UpdateAnalyses
 from trailblazer.exc import MissingAnalysis, TrailblazerError
