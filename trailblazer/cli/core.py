@@ -117,15 +117,16 @@ def update_analysis(context, analysis_id: int):
 
 @base.command("add-user")
 @click.option("--name", help="Name of new user to add")
+@click.option("--abbreviation", help="Abbreviation of new user to add")
 @click.argument("email", default=environ_email())
 @click.pass_context
-def add_user_to_db(context, email: str, name: str) -> None:
+def add_user_to_db(context, email: str, name: str, abbreviation: str) -> None:
     """Add a new user to the database."""
     trailblazer_db: Store = context.obj["trailblazer_db"]
     existing_user = trailblazer_db.get_user(email=email, exclude_archived=False)
     if is_existing_user(user=existing_user, email=email):
         return
-    new_user = trailblazer_db.add_user(email=email, name=name)
+    new_user = trailblazer_db.add_user(email=email, name=name, abbreviation=abbreviation)
     LOG.info(f"New user added: {new_user.email} ({new_user.id})")
 
 
