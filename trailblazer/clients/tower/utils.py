@@ -5,7 +5,7 @@ from requests.exceptions import MissingSchema
 from trailblazer.exc import TowerAPIClientError
 
 
-def handle_errors(func):
+def handle_client_errors(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:

@@ -1,14 +1,11 @@
 import logging
 import requests
-from requests import ConnectionError, HTTPError
-from requests.exceptions import MissingSchema
 
 from trailblazer.clients.tower.models import (
     TowerTaskResponse,
     TowerWorkflowResponse,
 )
-from trailblazer.clients.tower.utils import handle_errors
-from trailblazer.exc import TrailblazerError
+from trailblazer.clients.tower.utils import handle_client_errors
 
 LOG = logging.getLogger(__name__)
 
@@ -26,7 +23,7 @@ class TowerApiClient:
             "Authorization": f"Bearer {self.access_token}",
         }
 
-    @handle_errors
+    @handle_client_errors
     def get_tasks(self, workflow_id: str) -> TowerTaskResponse:
         url = f"{self.base_url}/workflow/{workflow_id}/tasks"
         response = requests.get(
@@ -37,7 +34,7 @@ class TowerApiClient:
         )
         return TowerTaskResponse(**response)
 
-    @handle_errors
+    @handle_client_errors
     def get_workflow(self, workflow_id: str) -> TowerWorkflowResponse:
         url = f"{self.base_url}/workflow/{workflow_id}"
         response = requests.get(
@@ -49,7 +46,7 @@ class TowerApiClient:
         response.raise_for_status()
         return TowerWorkflowResponse(**response)
 
-    @handle_errors
+    @handle_client_errors
     def cancel_workflow(self, workflow_id: str) -> None:
         url = f"{self.base_url}/workflow/{workflow_id}/cancel"
         response = requests.post(url=url, headers=self.headers, params=self.request_params, json={})
