@@ -120,7 +120,7 @@ def update_analysis(context, analysis_id: int):
 @click.option("--abbreviation", help="Abbreviation of new user to add")
 @click.argument("email", default=environ_email())
 @click.pass_context
-def add_user_to_db(context, email: str, name: str, abbreviation: str) -> None:
+def add_user(context, email: str, name: str, abbreviation: str) -> None:
     """Add a new user to the database."""
     trailblazer_db: Store = context.obj["trailblazer_db"]
     existing_user = trailblazer_db.get_user(email=email, exclude_archived=False)
