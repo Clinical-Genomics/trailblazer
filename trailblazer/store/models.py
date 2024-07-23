@@ -113,7 +113,7 @@ class Analysis(Model):
 
     @property
     def delivered_by(self) -> User | None:
-        return self.delivery.user.abbreviation if self.delivery else None
+        return self.delivery.user.name if self.delivery else None
 
     @property
     def delivered_date(self) -> datetime.datetime | None:
