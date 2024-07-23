@@ -22,45 +22,30 @@ LOG = logging.getLogger(__name__)
 
 
 class TowerApiClient:
-    """A class handling requests and responses to and from the Tower Open APIs.
-    Endpoints are defined in https://tower.nf/openapi/."""
+    """A client consuming the Tower API. Endpoints are defined in https://tower.nf/openapi/."""
 
-    def __init__(self, workflow_id: str):
-        self.workflow_id: str = workflow_id
-        self.workspace_id: str = os.environ.get("TOWER_WORKSPACE_ID", None)
-        self.tower_access_token: str = os.environ.get("TOWER_ACCESS_TOKEN", None)
-        self.tower_api_endpoint: str = os.environ.get("TOWER_API_ENDPOINT", None)
-        self.workflow_endpoint: str = f"workflow/{self.workflow_id}"
-        self.tasks_endpoint: str = f"{self.workflow_endpoint}/tasks"
-        self.cancel_endpoint: str = f"{self.workflow_endpoint}/cancel"
+    def __init__(self, base_url: str, access_token: str, workspace_id: str):
+        self.base_url = base_url
+        self.access_token = access_token
+        self.workspace_id = workspace_id
 
     @property
     def headers(self) -> dict:
-        """Return headers required for an NF Tower API call.
-        Accept and Authorization fields are mandatory."""
         return {
             "Accept": "application/json",
-            "Authorization": f"Bearer {self.tower_access_token}",
+            "Authorization": f"Bearer {self.access_token}",
         }
 
     @property
     def request_params(self) -> list[tuple]:
-        """Return required parameters for an NF Tower API call.
-        Workspace ID is mandatory."""
         return [
             ("workspaceId", self.workspace_id),
         ]
 
     def build_url(self, endpoint: str) -> str:
-        """Build an url to query tower."""
-        return self.tower_api_endpoint + endpoint
+        return self.base_url + endpoint
 
     def send_request(self, url: str) -> dict:
-        """Sends a request to the server and returns the response. NF Tower API calls follow the next schema:
-        curl -X GET "<URL>?workspaceId=<WORKSPACE_ID>" \
-        -H "Accept: application/json"  \
-        -H "Authorization: Bearer <TOWER_ACCESS_TOKEN>
-        """
         try:
             response = requests.get(
                 url,
@@ -69,10 +54,10 @@ class TowerApiClient:
                 verify=True,
             )
             if response.status_code == 404:
-                LOG.info("Request failed for url %s\n", url)
+                LOG.error(f"Request failed for url {url}\n")
                 response.raise_for_status()
         except (MissingSchema, HTTPError, ConnectionError) as error:
-            LOG.info("Request failed for url %s: Error: %s\n", url, error)
+            LOG.info(f"Request failed for url {url}: Error: {error}\n")
             return {}
 
         return response.json()
