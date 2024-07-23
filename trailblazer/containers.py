@@ -12,6 +12,7 @@ from trailblazer.services.encryption_service.encryption_service import Encryptio
 from trailblazer.services.job_service import JobService
 from trailblazer.services.slurm.slurm_api_service.slurm_api_service import SlurmAPIService
 from trailblazer.services.slurm.slurm_cli_service.slurm_cli_service import SlurmCLIService
+from trailblazer.services.tower.tower_api_service import TowerAPIService
 from trailblazer.store.store import Store
 
 
@@ -67,8 +68,14 @@ class Container(containers.DeclarativeContainer):
         store=store,
     )
 
-    tower_client = TowerAPIClient(
+    tower_client = providers.Singleton(
+        TowerAPIClient,
         base_url=tower_base_url,
         access_token=tower_access_token,
         workspace_id=tower_workspace_id,
+    )
+
+    tower_api_service = providers.Singleton(
+        TowerAPIService,
+        client=tower_client,
     )
