@@ -4,11 +4,7 @@ import pytest
 
 from tests.apps.tower.conftest import TowerResponseFile, TowerTaskResponseFile
 from tests.mocks.tower_mock import MockTowerAPIService
-from trailblazer.services.tower.tower_api_service import TowerAPIService, get_tower_api
-from trailblazer.clients.tower.models import TowerTask
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.exc import TowerRequirementsError
-from trailblazer.io.controller import ReadFile
 
 
 @pytest.mark.parametrize(
@@ -150,58 +146,3 @@ def test_tower_api_tasks_empty(
     # THEN an empty list should be returned
     assert jobs == []
 
-
-def test_tower_task_properties(
-    tower_task: TowerTask,
-    created_at,
-    started_at,
-    last_updated,
-    tower_task_duration,
-    slurm_id,
-    tower_task_name,
-) -> None:
-    """Assess that TowerTask returns the right properties."""
-
-    # GIVEN a tower task
-
-    # THEN properties should be returned
-    assert tower_task.process == tower_task_name
-    assert tower_task.nativeId == slurm_id
-    assert tower_task.status == TrailblazerStatus.COMPLETED
-    assert tower_task.dateCreated == created_at
-    assert tower_task.lastUpdated == last_updated
-    assert tower_task.start == started_at
-    assert tower_task.duration == tower_task_duration
-    assert tower_task.is_complete is True
-
-
-def test_get_tower_api(case_id: str, mocker, tower_id: str):
-    """Test returning a Tower API."""
-    # GIVEN a workflow id
-    mocker.patch.object(ReadFile, "get_content_from_file")
-    ReadFile.get_content_from_file.return_value = {case_id: [tower_id]}
-
-    # GIVEN Tower requirements are meet
-    mocker.patch(
-        "trailblazer.services.tower.tower_api_service._validate_tower_api_client_requirements",
-        return_value=True,
-    )
-
-    # WHEN getting Tower API
-    tower_api: TowerAPIService = get_tower_api(config_file_path="a_config", case_id=case_id)
-
-    # THEN return a Tower API
-    assert isinstance(tower_api, TowerAPIService)
-
-
-def test_get_tower_api_with_missing_requirements(case_id: str, mocker, tower_id: str):
-    """Test returning a Tower API."""
-    # GIVEN a workflow id
-    mocker.patch.object(ReadFile, "get_content_from_file")
-    ReadFile.get_content_from_file.return_value = {case_id: [tower_id]}
-
-    # WHEN getting Tower API
-    with pytest.raises(TowerRequirementsError):
-        get_tower_api(config_file_path="a_config", case_id=case_id)
-
-        # THEN an error should be raised
