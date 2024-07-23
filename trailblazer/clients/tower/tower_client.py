@@ -84,19 +84,16 @@ class TowerApiClient:
     @property
     def tasks(self) -> TowerTaskResponse:
         """Return a tasks response with information about submitted jobs."""
-        if self.meets_requirements:
-            url = self.build_url(endpoint=self.tasks_endpoint)
-            return TowerTaskResponse(**self.send_request(url=url))
+        url = self.build_url(endpoint=self.tasks_endpoint)
+        return TowerTaskResponse(**self.send_request(url=url))
 
     @property
     def workflow(self) -> TowerWorkflowResponse:
         """Return a workflow response with general information about the analysis."""
-        if self.meets_requirements:
-            url = self.build_url(endpoint=self.workflow_endpoint)
-            return TowerWorkflowResponse(**self.send_request(url=url))
+        url = self.build_url(endpoint=self.workflow_endpoint)
+        return TowerWorkflowResponse(**self.send_request(url=url))
 
     def send_cancel_request(self) -> None:
         """Send a POST request to cancel a workflow."""
-        if self.meets_requirements:
-            url: str = self.build_url(endpoint=self.cancel_endpoint)
-            self.post_request(url=url)
+        url: str = self.build_url(endpoint=self.cancel_endpoint)
+        self.post_request(url=url)
