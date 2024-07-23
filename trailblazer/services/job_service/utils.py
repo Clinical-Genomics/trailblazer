@@ -1,7 +1,7 @@
 from pathlib import Path
 from trailblazer.constants import FileFormat, SlurmJobStatus, TrailblazerStatus
 from trailblazer.io.controller import ReadFile
-from trailblazer.store.models import Job
+from trailblazer.store.models import Analysis, Job
 
 
 def get_slurm_job_ids(job_id_file: str) -> list[int]:
@@ -13,6 +13,12 @@ def get_slurm_job_ids(job_id_file: str) -> list[int]:
     for row in content.values():
         [job_ids.append(int(job_id)) for job_id in row]
     return job_ids
+
+
+def get_tower_workflow_id(analysis: Analysis) -> str:
+    file = Path(analysis.config_path)
+    content: dict = ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=file)
+    return content.get(analysis.case_id)[-1]
 
 
 def get_status(jobs: list[Job]) -> TrailblazerStatus:
