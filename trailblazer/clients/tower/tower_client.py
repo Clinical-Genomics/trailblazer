@@ -10,7 +10,7 @@ from trailblazer.clients.tower.utils import handle_client_errors
 LOG = logging.getLogger(__name__)
 
 
-class TowerApiClient:
+class TowerAPIClient:
     """A client consuming the Tower API. Endpoints are defined in https://tower.nf/openapi/."""
 
     def __init__(self, base_url: str, access_token: str, workspace_id: str):
