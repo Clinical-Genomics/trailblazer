@@ -26,23 +26,13 @@ class TowerApiClient:
     @handle_client_errors
     def get_tasks(self, workflow_id: str) -> TowerTaskResponse:
         url = f"{self.base_url}/workflow/{workflow_id}/tasks"
-        response = requests.get(
-            url=url,
-            headers=self.headers,
-            params=self.request_params,
-            verify=True,
-        )
+        response = requests.get(url=url, headers=self.headers, params=self.request_params)
         return TowerTaskResponse(**response)
 
     @handle_client_errors
     def get_workflow(self, workflow_id: str) -> TowerWorkflowResponse:
         url = f"{self.base_url}/workflow/{workflow_id}"
-        response = requests.get(
-            url=url,
-            headers=self.headers,
-            params=self.request_params,
-            verify=True,
-        )
+        response = requests.get(url=url, headers=self.headers, params=self.request_params)
         response.raise_for_status()
         return TowerWorkflowResponse(**response)
 
