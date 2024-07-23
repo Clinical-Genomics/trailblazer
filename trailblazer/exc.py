@@ -61,12 +61,15 @@ class TowerAPIClientError(TrailblazerError):
     Exception related to Tower API client.
     """
 
+
 class InvalidTowerAPIResponse(TowerAPIClientError):
     """
     Exception raised when the Tower API response is not formatted as expected.
     """
 
+
 class TowerRequestFailed(TowerAPIClientError):
     """
     Exception raised when the Tower API request fails.
     """
+ 

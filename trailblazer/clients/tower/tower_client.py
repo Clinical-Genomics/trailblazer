@@ -28,14 +28,16 @@ class TowerAPIClient:
         url = f"{self.base_url}/workflow/{workflow_id}/tasks"
         response = requests.get(url=url, headers=self.headers, params=self.request_params)
         response.raise_for_status()
-        return TowerTaskResponse.model_validate(response.json())
+        json = response.json()
+        return TowerTaskResponse.model_validate(json)
 
     @handle_client_errors
     def get_workflow(self, workflow_id: str) -> TowerWorkflowResponse:
         url = f"{self.base_url}/workflow/{workflow_id}"
         response = requests.get(url=url, headers=self.headers, params=self.request_params)
         response.raise_for_status()
-        return TowerWorkflowResponse.model_validate(response.json())
+        json = response.json()
+        return TowerWorkflowResponse.model_validate(json)
 
     @handle_client_errors
     def cancel_workflow(self, workflow_id: str) -> None:
