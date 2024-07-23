@@ -54,3 +54,9 @@ class ResponseDeserializationError(SlurmAPIClientError):
     """
     Exception related to the data in a  Slurm API client response.
     """
+
+
+class TowerAPIClientError(TrailblazerError):
+    """
+    Exception related to Tower API client.
+    """
