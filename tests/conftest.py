@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from tests.apps.tower.conftest import TOWER_ID, CaseId, TowerResponseFile, TowerTaskResponseFile
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
-from trailblazer.apps.tower.models import TowerTask
+from trailblazer.clients.tower.models import TowerTask
 from trailblazer.constants import (
     TOWER_TIMESTAMP_FORMAT,
     FileExtension,
