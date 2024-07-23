@@ -14,7 +14,6 @@ class TowerAPIService:
 
     def __init__(self, tower_client: TowerAPIClient) -> None:
         self.tower_client = tower_client
-        self.dry_run: bool = False
 
     def get_jobs(self, workflow_id: str) -> list[TowerJobInfo]:
         response: TowerTaskResponse = self.tower_client.get_tasks(workflow_id)
