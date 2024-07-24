@@ -181,7 +181,9 @@ def analysis_store(
 ) -> Generator[MockStore, None, None]:
     """A sample Trailblazer database populated with pending analyses."""
     session: Session = get_session()
-    StoreHelpers.add_user(email=archived_user_email, name=archived_username, is_archived=True, abbreviation="abbrev")
+    StoreHelpers.add_user(
+        email=archived_user_email, name=archived_username, is_archived=True, abbreviation="abbrev"
+    )
     for user_data in analysis_data["users"]:
         store.add_user(
             name=user_data["name"],
