@@ -10,11 +10,9 @@ from trailblazer.io.controller import ReadFile
 class MockTowerAPIService(TowerAPIService):
     """Instance of TowerAPIService that mimics expected Tower output."""
 
-    @property
     def get_workflow(self) -> dict | None:
         return self.mock_response or None
 
-    @property
     def get_tasks(self) -> dict | None:
         return self.mock_tasks_response or None
 
