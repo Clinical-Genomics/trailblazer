@@ -1,4 +1,3 @@
-import logging
 import requests
 
 from trailblazer.clients.tower.models import (
@@ -6,9 +5,6 @@ from trailblazer.clients.tower.models import (
     TowerWorkflowResponse,
 )
 from trailblazer.clients.tower.utils import handle_client_errors
-
-LOG = logging.getLogger(__name__)
-
 
 class TowerAPIClient:
     """A client consuming the Tower API. Endpoints are defined in https://tower.nf/openapi/."""
