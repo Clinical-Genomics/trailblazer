@@ -12,12 +12,12 @@ LOG = logging.getLogger(__name__)
 class TowerAPIService:
     """Class communicating with NF tower regarding a given analysis (workflow)."""
 
-    def __init__(self, tower_client: TowerAPIClient) -> None:
-        self.tower_client = tower_client
+    def __init__(self, client: TowerAPIClient) -> None:
+        self.client = client
 
     def get_jobs(self, workflow_id: str) -> list[TowerJobInfo]:
-        response: TowerTaskResponse = self.tower_client.get_tasks(workflow_id)
+        response: TowerTaskResponse = self.client.get_tasks(workflow_id)
         return [create_job_dto(task) for task in response.tasks]
 
     def cancel_workflow(self, workflow_id: str) -> None:
-        self.tower_client.cancel_workflow(workflow_id)
+        self.client.cancel_workflow(workflow_id)
