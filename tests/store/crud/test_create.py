@@ -9,7 +9,7 @@ def test_add_user(store: MockStore, user_email: str, username: str):
     assert not store.get_query(table=User).first()
 
     # WHEN adding a new user
-    new_user: User = store.add_user(name=username, email=user_email)
+    new_user: User = store.add_user(name=username, email=user_email, abbreviation="abb")
 
     # THEN it should be stored in the database
     user: User = apply_user_filter(

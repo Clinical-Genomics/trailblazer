@@ -7,7 +7,7 @@ from click.testing import CliRunner
 import trailblazer
 from tests.mocks.store_mock import MockStore
 from trailblazer.cli.core import (
-    add_user_to_db,
+    add_user,
     archive_user,
     base,
     cancel,
@@ -345,7 +345,9 @@ def test_add_user(cli_runner: CliRunner, trailblazer_context: dict[str, MockStor
 
     # WHEN adding new user
     cli_runner.invoke(
-        add_user_to_db, ["harriers@disco.com", "--name", "Harry DuBois"], obj=trailblazer_context
+        add_user,
+        ["harriers@disco.com", "--name", "Harry DuBois", "--abbreviation", "HD"],
+        obj=trailblazer_context,
     )
 
     # THEN log should inform that user is added
@@ -365,7 +367,7 @@ def test_add_user_when_already_exists(
     caplog.set_level("INFO")
 
     # WHEN adding new user
-    cli_runner.invoke(add_user_to_db, [user_email, "--name", username], obj=trailblazer_context)
+    cli_runner.invoke(add_user, [user_email, "--name", username], obj=trailblazer_context)
 
     # THEN log should inform that user is added
     assert f"User with email {user_email} found" in caplog.text

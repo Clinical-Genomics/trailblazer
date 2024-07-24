@@ -152,8 +152,13 @@ def user_store(
     store: MockStore,
 ) -> Generator[MockStore, None, None]:
     """A Trailblazer database wih a populated user table."""
-    StoreHelpers.add_user(email=user_email, name=username)
-    StoreHelpers.add_user(email=archived_user_email, name=archived_username, is_archived=True)
+    StoreHelpers.add_user(email=user_email, name=username, abbreviation="SUS")
+    StoreHelpers.add_user(
+        email=archived_user_email,
+        name=archived_username,
+        abbreviation="SUSUS",
+        is_archived=True,
+    )
     yield store
 
 
@@ -176,9 +181,15 @@ def analysis_store(
 ) -> Generator[MockStore, None, None]:
     """A sample Trailblazer database populated with pending analyses."""
     session: Session = get_session()
-    StoreHelpers.add_user(email=archived_user_email, name=archived_username, is_archived=True)
+    StoreHelpers.add_user(
+        email=archived_user_email, name=archived_username, is_archived=True, abbreviation="abbrev"
+    )
     for user_data in analysis_data["users"]:
-        store.add_user(name=user_data["name"], email=user_data["email"])
+        store.add_user(
+            name=user_data["name"],
+            email=user_data["email"],
+            abbreviation=user_data["abbreviation"],
+        )
     for raw_analysis in raw_analyses:
         raw_analysis["user"] = store.get_user(email=raw_analysis["user"])
         raw_analysis["case_id"] = raw_analysis.pop("case_id")

@@ -40,9 +40,9 @@ class StoreHelpers:
         return job
 
     @staticmethod
-    def add_user(email: str, name: str, is_archived: bool = False) -> User:
+    def add_user(email: str, name: str, abbreviation: str, is_archived: bool = False) -> User:
         """Add a user object to the store."""
         session: Session = get_session()
-        user = User(email=email, name=name, is_archived=is_archived)
+        user = User(email=email, name=name, abbreviation=abbreviation, is_archived=is_archived)
         session.add(user)
         return user
