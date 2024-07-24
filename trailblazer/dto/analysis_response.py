@@ -11,6 +11,7 @@ class User(BaseModel):
     id: int
     is_archived: bool | None = False
     name: str | None = None
+    abbreviation: str | None = None
 
 
 class Job(BaseModel):
