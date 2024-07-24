@@ -112,8 +112,8 @@ class Analysis(Model):
         return [job for job in self.jobs if job.job_type == JobType.UPLOAD]
 
     @property
-    def delivered_by(self) -> User | None:
-        return self.delivery.user.name if self.delivery else None
+    def delivered_by(self) -> str | None:
+        return self.delivery.user.abbreviation if self.delivery else None
 
     @property
     def delivered_date(self) -> datetime.datetime | None:
