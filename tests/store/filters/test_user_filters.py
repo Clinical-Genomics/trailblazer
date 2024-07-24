@@ -60,7 +60,12 @@ def test_filter_users_by_contains_name(user_store: MockStore, username: str):
 def test_filter_users_by_not_archived(user_store: MockStore, username: str):
     """Test return user which contains name and is not archived."""
     # GIVEN a store containing a not archived user and an archived user
-    StoreHelpers.add_user(name="New User", email="new.user@magnolia.com", is_archived=True)
+    StoreHelpers.add_user(
+        name="New User",
+        email="new.user@magnolia.com",
+        is_archived=True,
+        abbreviation="NU",
+    )
 
     # WHEN retrieving a not archived user by name
     users: Query = filter_users_by_is_not_archived(
