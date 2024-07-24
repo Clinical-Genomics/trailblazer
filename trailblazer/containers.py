@@ -55,19 +55,6 @@ class Container(containers.DeclarativeContainer):
         slurm_client = providers.Singleton(SlurmCLIClient, host=slurm_host)
         slurm_service = providers.Singleton(SlurmCLIService, client=slurm_client)
 
-    job_service = providers.Factory(JobService, store=store, slurm_service=slurm_service)
-    analysis_service = providers.Factory(AnalysisService, store=store, job_service=job_service)
-
-    encryption_service = providers.Singleton(EncryptionService, secret_key=encryption_key)
-
-    auth_service = providers.Singleton(
-        AuthenticationService,
-        google_oauth_client=google_oauth_client,
-        google_api_client=google_api_client,
-        encryption_service=encryption_service,
-        store=store,
-    )
-
     tower_client = providers.Singleton(
         TowerAPIClient,
         base_url=tower_base_url,
@@ -78,4 +65,22 @@ class Container(containers.DeclarativeContainer):
     tower_api_service = providers.Singleton(
         TowerAPIService,
         client=tower_client,
+    )
+
+    job_service = providers.Factory(
+        JobService,
+        store=store,
+        slurm_service=slurm_service,
+        tower_service=tower_api_service,
+    )
+    analysis_service = providers.Factory(AnalysisService, store=store, job_service=job_service)
+
+    encryption_service = providers.Singleton(EncryptionService, secret_key=encryption_key)
+
+    auth_service = providers.Singleton(
+        AuthenticationService,
+        google_oauth_client=google_oauth_client,
+        google_api_client=google_api_client,
+        encryption_service=encryption_service,
+        store=store,
     )
