@@ -91,7 +91,7 @@ class AnalysisService:
 
         self._update_progress(analysis.id)
         self._update_status(analysis.id)
-        self._update_upload_date(analysis.id)
+        self._update_upload_date(analysis)
 
     def _update_status(self, analysis_id: int) -> None:
         status: TrailblazerStatus = self.job_service.get_analysis_status(analysis_id)
