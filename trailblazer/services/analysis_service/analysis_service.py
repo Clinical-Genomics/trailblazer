@@ -88,10 +88,20 @@ class AnalysisService:
         if analysis.workflow_manager == WorkflowManager.TOWER:
             return
 
-        status: TrailblazerStatus = self.job_service.get_analysis_status(analysis.id)
-        progress: float = self.job_service.get_analysis_progression(analysis.id)
-        self.store.update_analysis_progress(analysis_id=analysis.id, progress=progress)
-        self.store.update_analysis_status(analysis_id=analysis.id, status=status)
+        self._update_progress(analysis.id)
+        self._update_status(analysis.id)
+        self._update_upload_date(analysis.id)
+
+    def _update_status(self, analysis_id: int) -> None:
+        status: TrailblazerStatus = self.job_service.get_analysis_status(analysis_id)
+        self.store.update_analysis_status(analysis_id=analysis_id, status=status)
+
+    def _update_progress(self, analysis_id: int) -> None:
+        progress: float = self.job_service.get_analysis_progression(analysis_id)
+        self.store.update_analysis_progress(analysis_id=analysis_id, progress=progress)
+
+    def _update_upload_date(self, analysis_id: int) -> None:
+        pass
 
     def get_summaries(self, request_data: SummariesRequest) -> SummariesResponse:
         summaries: list[Summary] = []
