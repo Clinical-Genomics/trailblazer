@@ -227,6 +227,7 @@ class ReadHandler(BaseHandler):
             AnalysisFilter.BY_DELIVERED,
             AnalysisFilter.SORTING,
         ]
+        show_hidden = bool(request.search) or request.includeHidden
         return apply_analysis_filter(
             filter_functions=filters,
             analyses=self.get_query(Analysis),
@@ -238,7 +239,7 @@ class ReadHandler(BaseHandler):
             case_id=request.case_id,
             workflow=request.workflow,
             search_term=request.search,
-            show_hidden=bool(request.search),
+            show_hidden=show_hidden,
             sort_field=request.sort_field,
             sort_order=request.sort_order,
             delivered=request.delivered,
