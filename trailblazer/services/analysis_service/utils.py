@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from trailblazer.constants import SlurmJobStatus, TrailblazerStatus
+from trailblazer.constants import SlurmJobStatus, TrailblazerStatus, Workflow
 from trailblazer.dto.analyses_response import UpdateAnalysesResponse
 from trailblazer.dto.analysis_response import AnalysisResponse
 from trailblazer.dto.summaries_response import StatusSummary, Summary
@@ -45,9 +45,9 @@ def create_update_analyses_response(analyses: list[Analysis]) -> UpdateAnalysesR
     return UpdateAnalysesResponse(analyses=response_data)
 
 
-def get_upload_date(upload_jobs: list[DbJob]) -> datetime | None:
-    completed_job: DbJob | None = _get_completed_job(upload_jobs)
-    if not completed_job:
+def get_upload_date(analysis: Analysis) -> datetime | None:
+    completed_job: DbJob | None = _get_completed_job(analysis.upload_jobs)
+    if analysis.workflow != Workflow.FASTQ or not completed_job:
         return
     return _get_completed_at_date(completed_job)
 
