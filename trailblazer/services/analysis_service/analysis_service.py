@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 from trailblazer.constants import TrailblazerStatus, WorkflowManager
 from trailblazer.dto import (
@@ -16,6 +17,7 @@ from trailblazer.services.analysis_service.utils import (
     create_analysis_response,
     create_summary,
     create_update_analyses_response,
+    get_upload_date,
 )
 from trailblazer.services.job_service.job_service import JobService
 from trailblazer.store.models import Analysis, Job, User
@@ -100,8 +102,8 @@ class AnalysisService:
         progress: float = self.job_service.get_analysis_progression(analysis_id)
         self.store.update_analysis_progress(analysis_id=analysis_id, progress=progress)
 
-    def _update_upload_date(self, analysis_id: int) -> None:
-        pass
+    def _update_upload_date(self, analysis: Analysis) -> None:
+        upload_date: datetime | None = get_upload_date(analysis.upload_jobs)
 
     def get_summaries(self, request_data: SummariesRequest) -> SummariesResponse:
         summaries: list[Summary] = []
