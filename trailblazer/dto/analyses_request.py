@@ -31,4 +31,4 @@ class AnalysesRequest(BaseModel):
     order_id: int | None = Field(alias="orderId", default=None)
     case_id: str | None = None
     delivered: bool | None = None
-    includeHidden: bool | None = None
+    include_hidden: bool | None = Field(alias="includeHidden", default=None)
