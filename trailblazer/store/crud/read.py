@@ -252,3 +252,9 @@ class ReadHandler(BaseHandler):
             page=request.page,
             page_size=request.page_size,
         )
+
+    def get_analyses_being_uploaded(self) -> list[Analysis]:
+        return apply_analysis_filter(
+            filter_functions=[AnalysisFilter.BY_NOT_UPLOADED, AnalysisFilter.BY_COMPLETED],
+            analyses=self.get_query(Analysis),
+        ).all()
