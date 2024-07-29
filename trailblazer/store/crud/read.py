@@ -4,7 +4,7 @@ from typing import Callable
 from sqlalchemy import desc
 from sqlalchemy.orm import Query
 
-from trailblazer.constants import JobType, TrailblazerStatus
+from trailblazer.constants import JobType, TrailblazerStatus, Workflow
 from trailblazer.dto.analyses_request import AnalysesRequest
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
@@ -253,8 +253,13 @@ class ReadHandler(BaseHandler):
             page_size=request.page_size,
         )
 
-    def get_analyses_being_uploaded(self) -> list[Analysis]:
+    def get_analyses_being_uploaded(self, workflow: Workflow) -> list[Analysis]:
         return apply_analysis_filter(
-            filter_functions=[AnalysisFilter.BY_NOT_UPLOADED, AnalysisFilter.BY_COMPLETED],
+            filter_functions=[
+                AnalysisFilter.BY_NOT_UPLOADED,
+                AnalysisFilter.BY_COMPLETED,
+                AnalysisFilter.BY_WORKFLOW,
+            ],
             analyses=self.get_query(Analysis),
+            workflow=workflow,
         ).all()
