@@ -75,7 +75,7 @@ class AnalysisService:
 
     def update_uploading_analyses(self):
         self.job_service.update_upload_jobs()
-        analyses: list[Analysis] = self.store.get_analyses_being_uploaded()
+        analyses: list[Analysis] = self.store.get_fastq_analyses_being_uploaded()
         for analysis in analyses:
             if upload_date := get_upload_date(analysis):
                 self.store.update_analysis_upload_date(

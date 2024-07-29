@@ -47,7 +47,7 @@ def create_update_analyses_response(analyses: list[Analysis]) -> UpdateAnalysesR
 
 def get_upload_date(analysis: Analysis) -> datetime | None:
     completed_job: Job | None = _get_completed_job(analysis.upload_jobs)
-    if analysis.workflow != Workflow.FASTQ or not completed_job:
+    if not completed_job:
         return
     return _get_completed_at_date(completed_job)
 
