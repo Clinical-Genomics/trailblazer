@@ -73,6 +73,15 @@ class AnalysisService:
             response_data.append(analysis_data)
         return AnalysesResponse(analyses=response_data, total_count=total_count)
 
+    def update_uploads(self):
+        self.job_service.update_upload_jobs()
+        analyses: list[Analysis] = self.store.get_analyses_being_uploaded()
+        for analysis in analyses:
+            if upload_date := get_upload_date(analysis):
+                self.store.update_analysis_upload_date(
+                    analysis_id=analysis.id, uploaded_at=upload_date
+                )
+
     def update_ongoing_analyses(self) -> None:
         analyses: list[Analysis] = self.store.get_ongoing_analyses()
         for analysis in analyses:
@@ -91,7 +100,6 @@ class AnalysisService:
 
         self._update_progress(analysis.id)
         self._update_status(analysis.id)
-        self._update_upload_date(analysis)
 
     def _update_status(self, analysis_id: int) -> None:
         status: TrailblazerStatus = self.job_service.get_analysis_status(analysis_id)
@@ -100,10 +108,6 @@ class AnalysisService:
     def _update_progress(self, analysis_id: int) -> None:
         progress: float = self.job_service.get_analysis_progression(analysis_id)
         self.store.update_analysis_progress(analysis_id=analysis_id, progress=progress)
-
-    def _update_upload_date(self, analysis: Analysis) -> None:
-        if upload_date := get_upload_date(analysis):
-            self.store.update_analysis_upload_date(analysis_id=analysis.id, uploaded_at=upload_date)
 
     def get_summaries(self, request_data: SummariesRequest) -> SummariesResponse:
         summaries: list[Summary] = []

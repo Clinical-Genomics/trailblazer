@@ -96,13 +96,10 @@ def init(context, reset, force):
 
 @base.command()
 @inject
-def scan(
-    job_service: JobService = Provide[Container.job_service],
-    analysis_service: AnalysisService = Provide[Container.analysis_service],
-):
+def scan(analysis_service: AnalysisService = Provide[Container.analysis_service]):
     """Scan ongoing analyses in SLURM"""
     analysis_service.update_ongoing_analyses()
-    job_service.update_upload_jobs()
+    analysis_service.update_uploads()
     LOG.info("All analyses updated!")
 
 

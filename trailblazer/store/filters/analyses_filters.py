@@ -167,6 +167,14 @@ def exclude_rsync_analyses(analyses: Query, **kwargs) -> Query:
     return analyses.filter(Analysis.workflow != Workflow.RSYNC)
 
 
+def get_not_uploaded_analyses(analyses: Query, **kwargs) -> Query:
+    return analyses.filter(Analysis.uploaded_at == None)
+
+
+def get_completed_analyses(analyses: Query, **kwargs) -> Query:
+    return analyses.filter(Analysis.status == TrailblazerStatus.COMPLETED)
+
+
 class AnalysisFilter(Enum):
     """Define Analysis filter functions."""
 
@@ -184,6 +192,8 @@ class AnalysisFilter(Enum):
     BY_STATUSES: Callable = filter_analyses_by_statuses
     BY_TYPES: Callable = filter_analyses_by_types
     BY_DELIVERED: Callable = filter_analyses_by_delivered
+    BY_NOT_UPLOADED: Callable = get_not_uploaded_analyses
+    BY_COMPLETED: Callable = get_completed_analyses
     BY_WORKFLOW: Callable = filter_analyses_by_workflow
     BY_LATEST_PER_CASE: Callable = filter_analyses_by_latest_per_case
     EXCLUDE_RSYNC: Callable = exclude_rsync_analyses
