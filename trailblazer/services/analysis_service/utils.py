@@ -4,7 +4,7 @@ from trailblazer.dto.analyses_response import UpdateAnalysesResponse
 from trailblazer.dto.analysis_response import AnalysisResponse
 from trailblazer.dto.summaries_response import StatusSummary, Summary
 from trailblazer.store.models import Analysis
-from trailblazer.store.models import Job as DbJob
+from trailblazer.store.models import Job
 
 
 def get_status_counts(analyses: list[Analysis]) -> dict[TrailblazerStatus, StatusSummary]:
@@ -46,21 +46,21 @@ def create_update_analyses_response(analyses: list[Analysis]) -> UpdateAnalysesR
 
 
 def get_upload_date(analysis: Analysis) -> datetime | None:
-    completed_job: DbJob | None = _get_completed_job(analysis.upload_jobs)
+    completed_job: Job | None = _get_completed_job(analysis.upload_jobs)
     if analysis.workflow != Workflow.FASTQ or not completed_job:
         return
     return _get_completed_at_date(completed_job)
 
 
-def _get_completed_job(jobs: list[DbJob]) -> DbJob | None:
+def _get_completed_job(jobs: list[Job]) -> Job | None:
     for job in jobs:
         if _is_completed_job(job):
             return job
 
 
-def _is_completed_job(job: DbJob):
+def _is_completed_job(job: Job):
     return job.status == SlurmJobStatus.COMPLETED and job.started_at and job.elapsed
 
 
-def _get_completed_at_date(job: DbJob) -> datetime:
+def _get_completed_at_date(job: Job) -> datetime:
     return job.started_at + timedelta(seconds=job.elapsed)
