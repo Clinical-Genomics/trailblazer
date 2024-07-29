@@ -99,7 +99,7 @@ def init(context, reset, force):
 def scan(analysis_service: AnalysisService = Provide[Container.analysis_service]):
     """Scan ongoing analyses in SLURM"""
     analysis_service.update_ongoing_analyses()
-    analysis_service.update_uploads()
+    analysis_service.update_uploading_analyses()
     LOG.info("All analyses updated!")
 
 

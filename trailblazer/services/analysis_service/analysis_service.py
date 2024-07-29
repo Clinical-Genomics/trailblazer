@@ -73,7 +73,7 @@ class AnalysisService:
             response_data.append(analysis_data)
         return AnalysesResponse(analyses=response_data, total_count=total_count)
 
-    def update_uploads(self):
+    def update_uploading_analyses(self):
         self.job_service.update_upload_jobs()
         analyses: list[Analysis] = self.store.get_analyses_being_uploaded()
         for analysis in analyses:
