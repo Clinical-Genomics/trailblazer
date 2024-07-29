@@ -59,7 +59,7 @@ def _get_completed_job(jobs: list[Job]) -> Job | None:
 
 
 def _is_completed_job(job: Job):
-    return job.status == SlurmJobStatus.COMPLETED and job.started_at and job.elapsed
+    return job.status == SlurmJobStatus.COMPLETED and job.started_at and job.elapsed is not None
 
 
 def _get_completed_at_date(job: Job) -> datetime:
