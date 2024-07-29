@@ -253,7 +253,7 @@ class ReadHandler(BaseHandler):
             page_size=request.page_size,
         )
 
-    def get_fastq_analyses_being_uploaded(self) -> list[Analysis]:
+    def get_analyses_being_uploaded(self, workflow: Workflow) -> list[Analysis]:
         return apply_analysis_filter(
             filter_functions=[
                 AnalysisFilter.BY_NOT_UPLOADED,
@@ -261,5 +261,5 @@ class ReadHandler(BaseHandler):
                 AnalysisFilter.BY_WORKFLOW,
             ],
             analyses=self.get_query(Analysis),
-            workflow=Workflow.FASTQ,
+            workflow=workflow,
         ).all()
