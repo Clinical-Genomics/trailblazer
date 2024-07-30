@@ -335,3 +335,9 @@ class UpdateHandler(BaseHandler):
         analysis.progress = progress
         session: Session = get_session()
         session.commit()
+
+    def update_analysis_upload_date(self, analysis_id: int, uploaded_at: datetime) -> None:
+        analysis: Analysis | None = self.get_analysis_with_id(analysis_id)
+        analysis.uploaded_at = uploaded_at
+        session: Session = get_session()
+        session.commit()
