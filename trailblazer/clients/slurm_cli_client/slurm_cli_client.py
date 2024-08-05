@@ -10,4 +10,4 @@ class SlurmCLIClient:
         return get_slurm_queue(job_ids=job_ids, analysis_host=self.host)
 
     def cancel_job(self, job_id: int) -> None:
-        cancel_slurm_job(job_id=job_id, analysis_host=self.host)
+        cancel_slurm_job(slurm_id=job_id, analysis_host=self.host)
