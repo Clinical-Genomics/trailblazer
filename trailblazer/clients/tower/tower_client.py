@@ -6,6 +6,7 @@ from trailblazer.clients.tower.models import (
 )
 from trailblazer.clients.tower.utils import handle_client_errors
 
+
 class TowerAPIClient:
     """A client consuming the Tower API. Endpoints are defined in https://tower.nf/openapi/."""
 
