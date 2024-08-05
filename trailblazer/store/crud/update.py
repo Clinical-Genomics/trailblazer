@@ -1,20 +1,10 @@
 import logging
 from datetime import datetime
-from pathlib import Path
-
 from sqlalchemy.orm import Session
 
-from trailblazer.apps.slurm.api import (
-    cancel_slurm_job,
-    get_current_analysis_status,
-    get_slurm_squeue_output,
-    get_squeue_result,
-    reformat_squeue_result_job_step,
-)
-from trailblazer.apps.slurm.models import SqueueResult
-from trailblazer.constants import SlurmJobStatus, TrailblazerStatus, WorkflowManager
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.dto.update_analyses import UpdateAnalyses
-from trailblazer.exc import MissingAnalysis, TrailblazerError
+from trailblazer.exc import MissingAnalysis
 from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.database import get_session
@@ -40,128 +30,10 @@ class UpdateHandler(BaseHandler):
         session: Session = get_session()
         session.commit()
 
-    def update_run_status(self, analysis_id: int, analysis_host: str | None = None) -> None:
-        """Query entries related to given analysis, and update the Trailblazer database."""
-        analysis: Analysis | None = self.get_analysis_with_id(analysis_id=analysis_id)
-        if not analysis:
-            LOG.warning(f"Analysis {analysis_id} not found!")
-            return
-        if analysis.workflow_manager == WorkflowManager.TOWER:
-            self.update_tower_run_status(analysis_id)
-        elif analysis.workflow_manager == WorkflowManager.SLURM:
-            self.update_analysis_from_slurm_output(
-                analysis_id=analysis_id, analysis_host=analysis_host
-            )
-
-    def update_ongoing_analyses(self, analysis_host: str | None = None) -> None:
-        """Iterate over all analysis with ongoing status and query SLURM for current progress."""
-        ongoing_analyses: list[Analysis] = self.get_ongoing_analyses()
-        for analysis in ongoing_analyses:
-            try:
-                self.update_run_status(analysis_id=analysis.id, analysis_host=analysis_host)
-            except Exception as error:
-                LOG.error(f"Failed to update {analysis.case_id} - {analysis.id}: {error}")
-
     def get_ongoing_analyses(self) -> list[Analysis]:
         """Return all analyses with ongoing status."""
         ongoing_statuses: list[str] = list(TrailblazerStatus.ongoing_statuses())
         return self.get_analyses_with_statuses(ongoing_statuses)
-
-    def update_analysis_jobs_from_slurm_jobs(
-        self, analysis: Analysis, squeue_result: SqueueResult
-    ) -> None:
-        """Update analysis jobs from supplied squeue results."""
-        if len(squeue_result.jobs) == 0:
-            return
-        self.delete_analysis_jobs(analysis)
-
-        session: Session = get_session()
-        for job in squeue_result.jobs:
-            job.step = reformat_squeue_result_job_step(
-                workflow=analysis.workflow, job_step=job.step
-            )
-            new_job = Job(
-                analysis_id=analysis.id,
-                slurm_id=job.id,
-                name=job.step,
-                status=job.status,
-                started_at=job.started_at,
-                elapsed=job.time_elapsed,
-            )
-            session.add(new_job)
-        session.commit()
-
-    def _update_analysis_from_slurm_squeue_output(
-        self, analysis: Analysis, analysis_host: str | None = False
-    ) -> None:
-        """Update analysis status based on current SLURM jobs status."""
-        slurm_job_id_file = Path(analysis.config_path)
-        queue_output = get_slurm_squeue_output(
-            analysis_host=analysis_host, slurm_job_id_file=slurm_job_id_file
-        )
-        squeue_result: SqueueResult = get_squeue_result(queue_output)
-        self.update_analysis_jobs_from_slurm_jobs(analysis=analysis, squeue_result=squeue_result)
-        LOG.debug(f"Status in SLURM: {analysis.case_id} - {analysis.id}")
-        LOG.debug(squeue_result.jobs)
-        analysis.progress = squeue_result.jobs_status_distribution.get(
-            SlurmJobStatus.COMPLETED, 0.0
-        )
-        analysis.status = get_current_analysis_status(squeue_result.jobs_status_distribution)
-        LOG.info(f"Updated status {analysis.case_id} - {analysis.id}: {analysis.status} ")
-        analysis.logged_at = datetime.now()
-        session: Session = get_session()
-        session.commit()
-
-
-    def update_analysis_from_slurm_output(
-        self, analysis_id: int, analysis_host: str | None = False
-    ) -> None:
-        """Query SLURM for entries related to given analysis, and update the analysis in the database."""
-        analysis: Analysis | None = self.get_analysis_with_id(analysis_id)
-        try:
-            self._update_analysis_from_slurm_squeue_output(
-                analysis=analysis, analysis_host=analysis_host
-            )
-        except Exception as exception:
-            LOG.error(f"Error updating analysis for: case - {analysis.case_id} : {exception}")
-            analysis.status = TrailblazerStatus.ERROR
-            session: Session = get_session()
-            session.commit()
-
-    def cancel_ongoing_analysis(
-        self, analysis_id: int, analysis_host: str | None = None, email: str | None = None
-    ) -> None:
-        """Cancel all ongoing slurm jobs associated with the analysis, and set analysis status to 'cancelled'.
-        Raises:
-            MissingAnalysis when no analysis.
-            TrailblazerError for no ongoing analysis for analysis id.
-        """
-        analysis: Analysis | None = self.get_analysis_with_id(analysis_id)
-        if not analysis:
-            raise MissingAnalysis(f"Analysis {analysis_id} does not exist")
-        if analysis.status not in TrailblazerStatus.ongoing_statuses():
-            raise TrailblazerError(f"Analysis {analysis_id} is not running")
-        if analysis.workflow_manager == WorkflowManager.TOWER:
-            self.cancel_tower_analysis(analysis)
-        else:
-            self.cancel_slurm_analysis(analysis=analysis, analysis_host=analysis_host)
-        LOG.info(f"Case {analysis.case_id} - Analysis {analysis.id}: cancelled successfully!")
-        self.update_run_status(analysis_id=analysis_id, analysis_host=analysis_host)
-        analysis.status = TrailblazerStatus.CANCELLED
-        new_comment: str = (
-            f"Analysis cancelled manually by user:"
-            f" {(self.get_user(email=email).name if self.get_user(email=email) else (email or 'Unknown'))}!"
-        )
-        self.update_analysis_comment(analysis=analysis, comment=new_comment)
-        session: Session = get_session()
-        session.commit()
-
-    def cancel_slurm_analysis(self, analysis: Analysis, analysis_host: str | None = None) -> None:
-        """Cancel SLURM analysis by cancelling all associated SLURM jobs."""
-        for job in analysis.jobs:
-            if job.status in SlurmJobStatus.ongoing_statuses():
-                LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
-                cancel_slurm_job(analysis_host=analysis_host, slurm_id=job.slurm_id)
 
     def update_analysis_status_by_case_id(self, case_id: str, status: str):
         """Setting analysis status."""
