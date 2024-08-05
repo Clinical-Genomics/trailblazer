@@ -6,6 +6,7 @@ from trailblazer.apps.slurm.api import (
 )
 from trailblazer.apps.slurm.models import SqueueResult
 
+
 def test_get_squeue_result(squeue_stream_jobs):
     # GIVEN a squeue stream
 
