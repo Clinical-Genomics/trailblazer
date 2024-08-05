@@ -194,11 +194,14 @@ def unarchive_user(context, email: str) -> None:
 @base.command()
 @click.argument("analysis_id", type=int)
 @click.pass_context
-def cancel(context, analysis_id):
+def cancel(
+    context,
+    analysis_id: int,
+    analysis_service: AnalysisService = Provide[Container.analysis_service],
+):
     """Cancel all jobs in an analysis."""
-    trailblazer_db: Store = context.obj["trailblazer_db"]
     try:
-        trailblazer_db.cancel_ongoing_analysis(analysis_id=analysis_id, email=environ_email())
+        analysis_service.cancel_analysis(analysis_id)
     except Exception as error:
         LOG.error(error)
 

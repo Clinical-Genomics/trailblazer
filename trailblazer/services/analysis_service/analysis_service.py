@@ -30,6 +30,9 @@ class AnalysisService:
         self.store = store
         self.job_service = job_service
 
+    def cancel_analysis(self, analysis_id: int) -> None:
+        pass
+
     def get_analyses(self, request: AnalysesRequest) -> AnalysesResponse:
         analyses, total_count = self.store.get_paginated_analyses(request)
         return self.create_analyses_response(analyses=analyses, total_count=total_count)

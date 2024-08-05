@@ -6,6 +6,7 @@ from sqlalchemy.orm import Query
 
 from trailblazer.constants import JobType, TrailblazerStatus, Workflow
 from trailblazer.dto.analyses_request import AnalysesRequest
+from trailblazer.exc import MissingAnalysis
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
 from trailblazer.store.filters.job_filters import JobFilter, apply_job_filters
@@ -110,13 +111,16 @@ class ReadHandler(BaseHandler):
             statuses=statuses,
         ).all()
 
-    def get_analysis_with_id(self, analysis_id: int) -> Analysis | None:
+    def get_analysis_with_id(self, analysis_id: int) -> Analysis:
         """Get a single analysis by id."""
-        return apply_analysis_filter(
+        analysis: Analysis | None = apply_analysis_filter(
             analyses=self.get_query(table=Analysis),
             filter_functions=[AnalysisFilter.BY_ENTRY_ID],
             analysis_id=analysis_id,
         ).first()
+        if not analysis:
+            raise MissingAnalysis(f"Analysis {analysis_id} does not exist")
+        return analysis
 
     def get_user(
         self,
