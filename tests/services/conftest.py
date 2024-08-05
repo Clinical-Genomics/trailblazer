@@ -1,11 +1,13 @@
 from unittest.mock import Mock
 import pytest
 
+from trailblazer.clients.tower.tower_client import TowerAPIClient
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.job_service.job_service import JobService
 from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.services.slurm.slurm_cli_service.slurm_cli_service import SlurmCLIService
 from trailblazer.services.slurm.slurm_service import SlurmService
+from trailblazer.services.tower.tower_api_service import TowerAPIService
 from trailblazer.store.store import Store
 
 
@@ -21,6 +23,16 @@ def slurm_completed_job_info() -> SlurmJobInfo:
 
 
 @pytest.fixture
+def tower_service() -> TowerAPIService:
+    tower_client = TowerAPIClient(
+        base_url="https://tower",
+        access_token="token",
+        workspace_id="workspace_id",
+    )
+    return TowerAPIService(tower_client)
+
+
+@pytest.fixture
 def slurm_service(slurm_completed_job_info) -> SlurmService:
     """Slurm service reporting all jobs as completed."""
     service = SlurmCLIService(client=Mock())
@@ -30,11 +42,17 @@ def slurm_service(slurm_completed_job_info) -> SlurmService:
 
 
 @pytest.fixture
-def job_service(store: Store, slurm_service: SlurmService, slurm_job_ids, mocker) -> JobService:
+def job_service(
+    store: Store,
+    slurm_service: SlurmService,
+    tower_service: TowerAPIService,
+    slurm_job_ids,
+    mocker,
+) -> JobService:
     mocker.patch(
         "trailblazer.services.job_service.job_service.get_slurm_job_ids", return_value=slurm_job_ids
     )
-    return JobService(store=store, slurm_service=slurm_service)
+    return JobService(store=store, slurm_service=slurm_service, tower_service=tower_service)
 
 
 @pytest.fixture

@@ -8,6 +8,7 @@ from requests_mock import Mocker
 from trailblazer.clients.authentication_client.google_oauth_client import GoogleOAuthClient
 from trailblazer.clients.google_api_client.google_api_client import GoogleAPIClient
 from trailblazer.clients.slurm_cli_client.slurm_cli_client import SlurmCLIClient
+from trailblazer.clients.tower.tower_client import TowerAPIClient
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
 from trailblazer.services.encryption_service.encryption_service import EncryptionService
@@ -15,6 +16,7 @@ from trailblazer.services.job_service import JobService
 from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.services.slurm.slurm_cli_service.slurm_cli_service import SlurmCLIService
 
+from trailblazer.services.tower.tower_api_service import TowerAPIService
 from trailblazer.store.store import Store
 
 
@@ -30,10 +32,32 @@ def upload_job_info() -> SlurmJobInfo:
 
 
 @pytest.fixture
-def job_service(analysis_store: Store):
+def tower_service() -> TowerAPIService:
+    tower_client = TowerAPIClient(
+        base_url="https://tower",
+        access_token="token",
+        workspace_id="workspace_id",
+    )
+    return TowerAPIService(tower_client)
+
+
+@pytest.fixture
+def slurm_service() -> SlurmCLIService:
     slurm_client = SlurmCLIClient("host")
-    slurm_service = SlurmCLIService(slurm_client)
-    return JobService(slurm_service=slurm_service, store=analysis_store)
+    return SlurmCLIService(slurm_client)
+
+
+@pytest.fixture
+def job_service(
+    analysis_store: Store,
+    slurm_service: SlurmCLIService,
+    tower_service: TowerAPIService,
+) -> JobService:
+    return JobService(
+        slurm_service=slurm_service,
+        tower_service=tower_service,
+        store=analysis_store,
+    )
 
 
 @pytest.fixture

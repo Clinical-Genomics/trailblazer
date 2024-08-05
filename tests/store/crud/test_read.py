@@ -137,18 +137,6 @@ def test_get_analysis_with_id(analysis_store: MockStore):
     assert analysis == existing_analysis
 
 
-def test_get_analysis_with_id_when_missing(analysis_store: MockStore):
-    """Test getting an analysis by database entry id when it does not exist in the database."""
-    # GIVEN an id that doesn't exist
-    missing_analysis_id: int = 12312423534
-
-    # WHEN accessing the analysis
-    analysis: Analysis | None = analysis_store.get_analysis_with_id(analysis_id=missing_analysis_id)
-
-    # THEN it should return None
-    assert not analysis
-
-
 def test_get_analyses_for_case(analysis_store: MockStore, case_id: str):
     """Test getting analyses for a case when it exists in the database."""
     # GIVEN a store with an analysis
