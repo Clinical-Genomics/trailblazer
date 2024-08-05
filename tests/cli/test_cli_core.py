@@ -116,6 +116,7 @@ def test_set_analysis_status_error(
     assert result.exit_code != 0
     assert "Invalid status" in caplog.text
 
+
 def test_get_user_not_in_database(
     cli_runner: CliRunner, trailblazer_context: dict[str, MockStore], caplog
 ):
