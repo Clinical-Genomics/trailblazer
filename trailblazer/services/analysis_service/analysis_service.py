@@ -31,7 +31,17 @@ class AnalysisService:
         self.job_service = job_service
 
     def cancel_analysis(self, analysis_id: int) -> None:
-        pass
+        analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
+        for job in analysis.jobs:
+            self.job_service.cancel_jobs(job.id)
+        self.store.update_analysis_status(
+            analysis_id=analysis_id,
+            status=TrailblazerStatus.CANCELLED,
+        )
+        self.store.update_analysis_comment(
+            analysis_id=analysis_id,
+            comment="Analysis cancelled manually",
+        )
 
     def get_analyses(self, request: AnalysesRequest) -> AnalysesResponse:
         analyses, total_count = self.store.get_paginated_analyses(request)

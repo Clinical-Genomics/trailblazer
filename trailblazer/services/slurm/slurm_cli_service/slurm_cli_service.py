@@ -17,3 +17,7 @@ class SlurmCLIService(SlurmService):
     def get_jobs(self, job_ids: list[int]) -> list[SlurmJobInfo]:
         queue: SqueueResult = self.client.get_slurm_queue(job_ids)
         return [create_job_info_dto(job) for job in queue.jobs]
+
+    def cancel_jobs(self, job_ids: list[int]) -> None:
+        for job_id in job_ids:
+            self.client.cancel_job(job_id)

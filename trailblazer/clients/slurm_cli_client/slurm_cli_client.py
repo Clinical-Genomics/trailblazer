@@ -1,4 +1,4 @@
-from trailblazer.apps.slurm.api import get_slurm_queue
+from trailblazer.apps.slurm.api import cancel_slurm_job, get_slurm_queue
 from trailblazer.apps.slurm.models import SqueueResult
 
 
@@ -8,3 +8,6 @@ class SlurmCLIClient:
 
     def get_slurm_queue(self, job_ids: list[int]) -> SqueueResult:
         return get_slurm_queue(job_ids=job_ids, analysis_host=self.host)
+
+    def cancel_job(self, job_id: int) -> None:
+        cancel_slurm_job(job_id=job_id, analysis_host=self.host)

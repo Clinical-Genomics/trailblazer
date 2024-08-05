@@ -6,7 +6,7 @@ from sqlalchemy.orm import Query
 
 from trailblazer.constants import JobType, TrailblazerStatus, Workflow
 from trailblazer.dto.analyses_request import AnalysesRequest
-from trailblazer.exc import MissingAnalysis
+from trailblazer.exc import MissingAnalysis, MissingJob
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
 from trailblazer.store.filters.job_filters import JobFilter, apply_job_filters
@@ -193,11 +193,14 @@ class ReadHandler(BaseHandler):
         ).all()
 
     def get_job_by_id(self, job_id: int) -> Job | None:
-        return apply_job_filters(
+        job: Job | None = apply_job_filters(
             filters=[JobFilter.BY_ID],
             jobs=self.get_query(Job),
             job_id=job_id,
         ).first()
+        if not job:
+            raise MissingJob(f"Job {job_id} does not exist")
+        return job
 
     def get_latest_analyses_for_order(self, order_id: int) -> list[Analysis]:
         """Returns the latest analysis per case in the given order."""

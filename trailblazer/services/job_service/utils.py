@@ -71,3 +71,7 @@ def get_progress(jobs: list[Job]) -> float:
         return 0.0
     completed_jobs: int = len([job for job in jobs if job.status == SlurmJobStatus.COMPLETED])
     return completed_jobs / total_jobs
+
+
+def get_ongoing_jobs(jobs: list[Job]) -> list[Job]:
+    return [job for job in jobs if job.status in SlurmJobStatus.ongoing_statuses()]

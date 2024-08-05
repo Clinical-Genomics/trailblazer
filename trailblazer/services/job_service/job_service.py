@@ -11,6 +11,7 @@ from trailblazer.services.job_service.mappers import (
     tower_info_to_job,
 )
 from trailblazer.services.job_service.utils import (
+    get_ongoing_jobs,
     get_progress,
     get_slurm_job_ids,
     get_status,
@@ -91,3 +92,15 @@ class JobService:
     def get_analysis_progression(self, analysis_id: int) -> float:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
         return get_progress(analysis.jobs)
+
+    def cancel_jobs(self, analysis_id: int) -> None:
+        analysis: int = self.store.get_analysis_with_id(analysis_id)
+        workflow_manager: WorkflowManager = analysis.workflow_manager
+
+        if workflow_manager == WorkflowManager.SLURM:
+            ongoing_jobs = get_ongoing_jobs(analysis.jobs)
+            job_ids = [job.slurm_id for job in ongoing_jobs]
+            self.slurm_service.cancel_jobs(job_ids)
+        if workflow_manager == WorkflowManager.TOWER:
+            workflow_id: str = get_tower_workflow_id(analysis)
+            self.tower_service.cancel_workflow(workflow_id)
