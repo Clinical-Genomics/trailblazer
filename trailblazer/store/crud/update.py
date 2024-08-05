@@ -12,7 +12,6 @@ from trailblazer.apps.slurm.api import (
     reformat_squeue_result_job_step,
 )
 from trailblazer.apps.slurm.models import SqueueResult
-from trailblazer.services.tower.tower_api_service import TowerAPIService
 from trailblazer.constants import SlurmJobStatus, TrailblazerStatus, WorkflowManager
 from trailblazer.dto.update_analyses import UpdateAnalyses
 from trailblazer.exc import MissingAnalysis, TrailblazerError
@@ -113,36 +112,6 @@ class UpdateHandler(BaseHandler):
         session: Session = get_session()
         session.commit()
 
-    def update_tower_run_status(self, analysis_id: int) -> None:
-        """Query tower for entries related to given analysis, and update the Trailblazer database."""
-        analysis: Analysis | None = self.get_analysis_with_id(analysis_id)
-        tower_api: TowerAPIService | None = get_tower_api(
-            config_file_path=analysis.config_path, case_id=analysis.case_id
-        )
-
-        try:
-            self._update_analysis_from_tower_output(
-                analysis=analysis, analysis_id=analysis_id, tower_api=tower_api
-            )
-        except Exception as error:
-            LOG.error(f"Error logging case - {analysis.case_id} :  {type(error).__name__}")
-            analysis.status = TrailblazerStatus.ERROR
-            session: Session = get_session()
-            session.commit()
-
-    def _update_analysis_from_tower_output(
-        self, analysis: Analysis, analysis_id: int, tower_api: TowerAPIService
-    ):
-        LOG.info(f"Status in Tower: {analysis.case_id} - {analysis_id} - {tower_api.workflow_id}")
-        analysis.status = tower_api.status
-        analysis.progress = tower_api.progress
-        analysis.logged_at = datetime.now()
-        self.delete_analysis_jobs(analysis)
-        jobs: list[dict] = tower_api.get_jobs(analysis.id)
-        self.update_jobs(jobs)
-        session: Session = get_session()
-        session.commit()
-        LOG.debug(f"Updated status {analysis.case_id} - {analysis.id}: {analysis.status} ")
 
     def update_analysis_from_slurm_output(
         self, analysis_id: int, analysis_host: str | None = False
@@ -193,14 +162,6 @@ class UpdateHandler(BaseHandler):
             if job.status in SlurmJobStatus.ongoing_statuses():
                 LOG.info(f"Cancelling job {job.slurm_id} - {job.name}")
                 cancel_slurm_job(analysis_host=analysis_host, slurm_id=job.slurm_id)
-
-    def cancel_tower_analysis(self, analysis: Analysis) -> None:
-        """Cancel a NF-Tower analysis. Associated jobs are cancelled by Tower."""
-        LOG.info(f"Cancelling Tower workflow for {analysis.case_id}")
-        tower_api: TowerAPIService = get_tower_api(
-            config_file_path=analysis.config_path, case_id=analysis.case_id
-        )
-        tower_api.cancel()
 
     def update_analysis_status_by_case_id(self, case_id: str, status: str):
         """Setting analysis status."""
