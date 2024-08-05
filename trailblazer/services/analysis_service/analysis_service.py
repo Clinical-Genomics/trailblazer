@@ -86,20 +86,16 @@ class AnalysisService:
         analyses: list[Analysis] = self.store.get_ongoing_analyses()
         for analysis in analyses:
             try:
-                self.update_analysis_meta_data(analysis)
+                self.update_analysis_meta_data(analysis.id)
             except Exception as error:
                 self.store.update_analysis_status(analysis.id, TrailblazerStatus.ERROR)
                 LOG.error(f"Failed to update analysis {analysis.id}: {error}")
 
-    def update_analysis_meta_data(self, analysis: Analysis):
+    def update_analysis_meta_data(self, analysis_id: int) -> None:
         """Update the jobs, progress and status of an analysis."""
-        self.job_service.update_jobs(analysis.id)
-
-        if analysis.workflow_manager == WorkflowManager.TOWER:
-            return
-
-        self._update_progress(analysis.id)
-        self._update_status(analysis.id)
+        self.job_service.update_jobs(analysis_id)
+        self._update_progress(analysis_id)
+        self._update_status(analysis_id)
 
     def _update_status(self, analysis_id: int) -> None:
         status: TrailblazerStatus = self.job_service.get_analysis_status(analysis_id)
@@ -108,7 +104,6 @@ class AnalysisService:
     def _update_progress(self, analysis_id: int) -> None:
         progress: float = self.job_service.get_analysis_progression(analysis_id)
         self.store.update_analysis_progress(analysis_id=analysis_id, progress=progress)
-
 
     def get_summaries(self, request_data: SummariesRequest) -> SummariesResponse:
         summaries: list[Summary] = []

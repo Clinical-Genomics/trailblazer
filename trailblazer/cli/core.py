@@ -106,10 +106,12 @@ def scan(analysis_service: AnalysisService = Provide[Container.analysis_service]
 @base.command("update-analysis")
 @click.argument("analysis_id")
 @click.pass_context
-def update_analysis(context, analysis_id: int):
+def update_analysis(
+    analysis_id: int,
+    analysis_service: AnalysisService = Provide[Container.analysis_service],
+):
     """Update status of a single analysis."""
-    trailblazer_db: Store = context.obj["trailblazer_db"]
-    trailblazer_db.update_run_status(analysis_id=analysis_id)
+    analysis_service.update_analysis_meta_data(analysis_id)
 
 
 @base.command("add-user")
