@@ -1,3 +1,4 @@
+import json
 import pytest
 import requests_mock
 
@@ -36,19 +37,21 @@ def jobs_response() -> dict:
 
 @pytest.fixture
 def tower_empty_task_response() -> dict:
-    pass
+    return {}
 
 
 @pytest.fixture
 def tower_pending_tasks_response() -> dict:
-    pass
+    return {"tasks": [], "total": 0}
 
 
 @pytest.fixture
 def tower_running_tasks_response() -> dict:
-    pass
+    with open("tests/fixtures/tower/tower_tasks_running.json") as file:
+        return json.load(file)
 
 
 @pytest.fixture
 def tower_completed_tasks_response() -> dict:
-    pass
+    with open("tests/fixtures/tower/tower_tasks_completed.json") as file:
+        return json.load(file)
