@@ -41,11 +41,6 @@ def tower_empty_task_response() -> dict:
 
 
 @pytest.fixture
-def tower_pending_tasks_response() -> dict:
-    return {"tasks": [], "total": 0}
-
-
-@pytest.fixture
 def tower_running_tasks_response() -> dict:
     with open("tests/fixtures/tower/tower_tasks_running.json") as file:
         return json.load(file)
