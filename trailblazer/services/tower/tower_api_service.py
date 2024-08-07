@@ -17,7 +17,7 @@ class TowerAPIService:
 
     def get_jobs(self, workflow_id: str) -> list[TowerJobInfo]:
         response: TowerTaskResponse = self.client.get_tasks(workflow_id)
-        return [create_job_dto(task) for task in response.tasks]
+        return [create_job_dto(task) for task in response.get_tasks()]
 
     def cancel_workflow(self, workflow_id: str) -> None:
         self.client.cancel_workflow(workflow_id)

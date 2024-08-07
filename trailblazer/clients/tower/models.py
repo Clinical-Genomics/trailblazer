@@ -94,6 +94,10 @@ class TowerTask(BaseModel):
         return cls.status == SlurmJobStatus.COMPLETED
 
 
+class TaskWrapper(BaseModel):
+    task: TowerTask
+
+
 class TowerProcess(BaseModel):
     """NF Tower task model."""
 
@@ -154,8 +158,11 @@ class TowerProgress(BaseModel):
 class TowerTaskResponse(BaseModel):
     """NF Tower task response model."""
 
-    tasks: list[dict[str, TowerTask]] | None
+    tasks: list[TaskWrapper] | None = None
     total: int
+
+    def get_tasks(self) -> list[TowerTask]:
+        return [task.task for task in self.tasks] if self.tasks else []
 
 
 class TowerWorkflowResponse(BaseModel):
