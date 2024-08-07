@@ -2,10 +2,7 @@ import logging
 from pydantic import ValidationError
 import requests
 
-from trailblazer.clients.slurm_api_client.dto import (
-    SlurmJobResponse,
-    SlurmJobsResponse,
-)
+from trailblazer.clients.slurm_api_client.dto import SlurmJobResponse
 from trailblazer.exc import ResponseDeserializationError, SlurmAPIClientError
 
 

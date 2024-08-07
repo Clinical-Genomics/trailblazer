@@ -69,10 +69,7 @@ class JobService:
         self.store.replace_jobs(analysis_id=analysis_id, jobs=jobs)
 
     def _update_tower_jobs(self, analysis_id: int) -> None:
-        analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
-        workflow_id: str = get_tower_workflow_id(analysis)
-        tower_jobs: list[TowerJobInfo] = self.tower_service.get_jobs(workflow_id)
-        jobs: list[Job] = [tower_info_to_job(job_info) for job_info in tower_jobs]
+        jobs: list[Job] = self.tower_service.get_jobs(analysis_id)
         self.store.replace_jobs(analysis_id=analysis_id, jobs=jobs)
 
     def get_analysis_status(self, analysis_id: int) -> TrailblazerStatus:
