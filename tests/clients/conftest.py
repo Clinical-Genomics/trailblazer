@@ -37,7 +37,7 @@ def jobs_response() -> dict:
 
 @pytest.fixture
 def tower_empty_task_response() -> dict:
-    return {}
+    return {"tasks": [], "total": 0}
 
 
 @pytest.fixture
