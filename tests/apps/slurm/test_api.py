@@ -3,8 +3,10 @@ import pytest
 from trailblazer.apps.slurm.api import (
     _get_squeue_jobs_flag_input,
     get_squeue_result,
+    reformat_squeue_result_job_step,
 )
 from trailblazer.apps.slurm.models import SqueueResult
+from trailblazer.constants import SlurmJobStatus, TrailblazerStatus, Workflow
 
 
 def test_get_squeue_result(squeue_stream_jobs):
@@ -34,3 +36,52 @@ def test_get_squeue_jobs_flag_input(job_id: dict[str, list[str]], expected_job_i
 
     # THEN it should return job ids as comma joined string
     assert squeue_job_input == expected_job_id
+
+
+@pytest.mark.parametrize(
+    "workflow, raw_job_step, expected_job_step",
+    [
+        (Workflow.MIP_DNA, "mipdnastep_jobstep", "mipdnastep"),
+        (Workflow.MIP_RNA, "miprnastep_jobstep", "miprnastep"),
+        (Workflow.BALSAMIC, "job.step.balsamicstep", "balsamicstep"),
+        (Workflow.MUTANT, "job_step_mutantstep", "mutantstep"),
+    ],
+)
+def test_reformat_squeue_result_job_step(workflow: str, raw_job_step: str, expected_job_step: str):
+    """Test reformatting job step name for each workflow."""
+    # GIVEN a data analysis and a job step
+
+    # WHEN reformation the job step
+    reformatted_job_step: str = reformat_squeue_result_job_step(
+        workflow=workflow, job_step=raw_job_step
+    )
+
+    # THEN it should return a reformatted job step
+    assert reformatted_job_step == expected_job_step
+
+
+@pytest.mark.parametrize(
+    "workflow, raw_job_step, expected_job_step",
+    [
+        (Workflow.MIP_DNA, "jobstep", "jobstep"),
+        (Workflow.MIP_RNA, "jobstep", "jobstep"),
+        (Workflow.BALSAMIC, "job.step", "job.step"),
+        (Workflow.MUTANT, "jobstep", "jobstep"),
+    ],
+)
+def test_reformat_squeue_result_job_step_malformed_job_step(
+    caplog, workflow: str, raw_job_step: str, expected_job_step: str
+):
+    """Test reformatting job step name for each workflow when a job step is malformed."""
+
+    caplog.set_level("ERROR")
+    # GIVEN a data analysis and a job step
+
+    # WHEN reformation the job step
+    reformatted_job_step: str = reformat_squeue_result_job_step(
+        workflow=workflow, job_step=raw_job_step
+    )
+
+    # THEN it should return the original job step
+    assert reformatted_job_step == expected_job_step
+    assert f"Job step - {raw_job_step}: is malformed" in caplog.text
