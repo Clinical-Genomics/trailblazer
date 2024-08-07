@@ -1,9 +1,7 @@
 import subprocess
 from pathlib import Path
-from typing import Callable
 
 from trailblazer.apps.slurm.models import SqueueResult
-from trailblazer.apps.slurm.utils import formatters
 from trailblazer.constants import (
     CharacterFormat,
     FileFormat,
