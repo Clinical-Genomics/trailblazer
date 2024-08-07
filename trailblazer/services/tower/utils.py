@@ -11,7 +11,7 @@ def get_tower_workflow_id(analysis: Analysis) -> str:
     return content.get(analysis.case_id)[-1]
 
 
-def create_job_dto(task: TowerTask) -> Job:
+def create_job_from_dto(task: TowerTask) -> Job:
     return Job(
         slurm_id=task.nativeId,
         name=task.process,

@@ -65,6 +65,7 @@ class Container(containers.DeclarativeContainer):
     tower_api_service = providers.Singleton(
         TowerAPIService,
         client=tower_client,
+        store=store,
     )
 
     job_service = providers.Factory(

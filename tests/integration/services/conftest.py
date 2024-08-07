@@ -32,13 +32,13 @@ def upload_job_info() -> SlurmJobInfo:
 
 
 @pytest.fixture
-def tower_service() -> TowerAPIService:
+def tower_service(analysis_store: Store) -> TowerAPIService:
     tower_client = TowerAPIClient(
         base_url="https://tower",
         access_token="token",
         workspace_id="workspace_id",
     )
-    return TowerAPIService(tower_client)
+    return TowerAPIService(client=tower_client, store=analysis_store)
 
 
 @pytest.fixture
