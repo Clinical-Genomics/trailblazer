@@ -87,12 +87,6 @@ def get_squeue_result(squeue_response: str) -> SqueueResult:
     return SqueueResult(jobs=squeue_response_content)
 
 
-def reformat_squeue_result_job_step(workflow: str, job_step: str) -> str:
-    """Standardise job step string according to data analysis."""
-    formatter: Callable = formatters.formatter_map.get(workflow, formatters.reformat_undefined)
-    return formatter(job_step=job_step)
-
-
 def _get_analysis_single_status(jobs_status_distribution: dict[str, float]) -> str:
     """Return true if only one status in jobs statuses."""
     if len(jobs_status_distribution) == 1:

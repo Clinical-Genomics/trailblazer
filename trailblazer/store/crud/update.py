@@ -9,7 +9,6 @@ from trailblazer.apps.slurm.api import (
     get_current_analysis_status,
     get_slurm_squeue_output,
     get_squeue_result,
-    reformat_squeue_result_job_step,
 )
 from trailblazer.apps.slurm.models import SqueueResult
 from trailblazer.services.tower.tower_api_service import TowerAPIService, get_tower_api
@@ -78,9 +77,6 @@ class UpdateHandler(BaseHandler):
 
         session: Session = get_session()
         for job in squeue_result.jobs:
-            job.step = reformat_squeue_result_job_step(
-                workflow=analysis.workflow, job_step=job.step
-            )
             new_job = Job(
                 analysis_id=analysis.id,
                 slurm_id=job.id,
