@@ -27,7 +27,7 @@ class Container(containers.DeclarativeContainer):
     slurm_jwt_token: str | None = os.environ.get("SLURM_JWT")
     slurm_user_name: str | None = os.environ.get("SLURM_USER_NAME")
     slurm_base_url: str | None = os.environ.get("SLURM_BASE_URL")
-    tower_base_url: str | None = os.environ.get("TOWER_BASE_URL")
+    tower_base_url: str | None = os.environ.get("TOWER_API_ENDPOINT")
     tower_access_token: str | None = os.environ.get("TOWER_ACCESS_TOKEN")
     tower_workspace_id: str | None = os.environ.get("TOWER_WORKSPACE_ID")
 
