@@ -1,7 +1,6 @@
 from trailblazer.dto.failed_jobs_response import FailedJobsResponse
 from trailblazer.dto.job_response import JobResponse
 from trailblazer.services.slurm.dtos import SlurmJobInfo
-from trailblazer.services.tower.dtos import TowerJobInfo
 from trailblazer.store.models import Job
 
 

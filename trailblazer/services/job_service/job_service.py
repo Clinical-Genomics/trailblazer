@@ -19,7 +19,6 @@ from trailblazer.services.job_service.utils import (
 )
 from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.services.slurm.slurm_service import SlurmService
-from trailblazer.services.tower.dtos import TowerJobInfo
 from trailblazer.services.tower.tower_api_service import TowerAPIService
 from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
