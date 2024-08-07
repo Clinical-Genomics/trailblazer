@@ -1,10 +1,14 @@
 import subprocess
 from pathlib import Path
+from typing import Callable
 
 from trailblazer.apps.slurm.models import SqueueResult
+from trailblazer.apps.slurm.utils import formatters
 from trailblazer.constants import (
     CharacterFormat,
     FileFormat,
+    SlurmJobStatus,
+    TrailblazerStatus,
 )
 from trailblazer.exc import EmptySqueueError
 from trailblazer.io.controller import ReadFile, ReadStream
@@ -81,3 +85,55 @@ def get_squeue_result(squeue_response: str) -> SqueueResult:
         read_to_dict=True,
     )
     return SqueueResult(jobs=squeue_response_content)
+
+
+def reformat_squeue_result_job_step(workflow: str, job_step: str) -> str:
+    """Standardise job step string according to data analysis."""
+    formatter: Callable = formatters.formatter_map.get(workflow, formatters.reformat_undefined)
+    return formatter(job_step=job_step)
+
+
+def reformat_squeue_result_job_step(workflow: str, job_step: str) -> str:
+    """Standardise job step string according to data analysis."""
+    formatter: Callable = formatters.formatter_map.get(workflow, formatters.reformat_undefined)
+    return formatter(job_step=job_step)
+
+
+def _get_analysis_single_status(jobs_status_distribution: dict[str, float]) -> str:
+    """Return true if only one status in jobs statuses."""
+    if len(jobs_status_distribution) == 1:
+        single_status: str = jobs_status_distribution.popitem()[0]
+        return (
+            TrailblazerStatus.FAILED
+            if single_status == SlurmJobStatus.TIME_OUT
+            else TrailblazerStatus[single_status.upper()]
+        )
+
+
+def _is_analysis_failed(jobs_status_distribution: dict[str, float]) -> bool:
+    """Return true if any job was broken."""
+    return any(
+        broken_status in jobs_status_distribution
+        for broken_status in [SlurmJobStatus.FAILED, SlurmJobStatus.TIME_OUT]
+    )
+
+
+def _is_analysis_ongoing(jobs_status_distribution: dict[str, float]) -> bool:
+    """Return True if analysis is still ongoing."""
+    return any(
+        ongoing_status in jobs_status_distribution
+        for ongoing_status in TrailblazerStatus.ongoing_statuses()
+    )
+
+
+def get_current_analysis_status(jobs_status_distribution: dict[str, float]) -> str:
+    """Return current analysis status based on jobs status distribution."""
+    if single_analysis_status := _get_analysis_single_status(jobs_status_distribution):
+        return single_analysis_status
+    is_analysis_ongoing: bool = _is_analysis_ongoing(jobs_status_distribution)
+    is_analysis_failed: bool = _is_analysis_failed(jobs_status_distribution)
+    if is_analysis_failed:
+        return TrailblazerStatus.ERROR if is_analysis_ongoing else TrailblazerStatus.FAILED
+    if is_analysis_ongoing:
+        return TrailblazerStatus.RUNNING
+    return TrailblazerStatus.CANCELLED

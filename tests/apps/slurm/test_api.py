@@ -2,6 +2,7 @@ import pytest
 
 from trailblazer.apps.slurm.api import (
     _get_squeue_jobs_flag_input,
+    get_current_analysis_status,
     get_squeue_result,
     reformat_squeue_result_job_step,
 )
@@ -85,3 +86,54 @@ def test_reformat_squeue_result_job_step_malformed_job_step(
     # THEN it should return the original job step
     assert reformatted_job_step == expected_job_step
     assert f"Job step - {raw_job_step}: is malformed" in caplog.text
+
+
+
+@pytest.mark.parametrize(
+    "analysis_status, job_status_distribution, expected_analysis_status",
+    [
+        ("failed", {SlurmJobStatus.FAILED: 0.01}, TrailblazerStatus.FAILED),
+        (
+            "failed_ongoing",
+            {SlurmJobStatus.FAILED: 0.01, SlurmJobStatus.RUNNING: 0.1},
+            TrailblazerStatus.ERROR,
+        ),
+        ("error", {SlurmJobStatus.TIME_OUT: 0.01}, TrailblazerStatus.FAILED),
+        (
+            "error_ongoing",
+            {SlurmJobStatus.TIME_OUT: 0.01, SlurmJobStatus.PENDING: 0.1},
+            TrailblazerStatus.ERROR,
+        ),
+        ("completed", {SlurmJobStatus.COMPLETED: 1.0}, TrailblazerStatus.COMPLETED),
+        ("pending", {SlurmJobStatus.PENDING: 1.0}, TrailblazerStatus.PENDING),
+        (
+            "running",
+            {SlurmJobStatus.RUNNING: 0.01, SlurmJobStatus.PENDING: 0.1},
+            TrailblazerStatus.RUNNING,
+        ),
+        ("canceled", {SlurmJobStatus.CANCELLED: 0.01}, TrailblazerStatus.CANCELLED),
+        (
+            "canceled_ongoing",
+            {SlurmJobStatus.CANCELLED: 0.01, SlurmJobStatus.RUNNING: 0.1},
+            TrailblazerStatus.RUNNING,
+        ),
+        (
+            "canceled_ongoing_round_to_zero",
+            {SlurmJobStatus.CANCELLED: 0.01, SlurmJobStatus.RUNNING: 0.00},
+            TrailblazerStatus.RUNNING,
+        ),
+    ],
+)
+def test_get_current_analysis_status(
+    analysis_status: str, job_status_distribution: dict[str, float], expected_analysis_status: str
+):
+    """Test return current analysis status from jobs status distribution."""
+    # GIVEN a data analysis and a job status distribution
+
+    # WHEN reformation the job step
+    current_analysis_status: str | None = get_current_analysis_status(
+        jobs_status_distribution=job_status_distribution
+    )
+
+    # THEN it should return the current job status distribution
+    assert current_analysis_status == expected_analysis_status
