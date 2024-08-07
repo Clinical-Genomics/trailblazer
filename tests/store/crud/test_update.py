@@ -1,5 +1,6 @@
 from datetime import datetime
 from tests.mocks.store_mock import MockStore
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, User
 
