@@ -88,7 +88,6 @@ def test_reformat_squeue_result_job_step_malformed_job_step(
     assert f"Job step - {raw_job_step}: is malformed" in caplog.text
 
 
-
 @pytest.mark.parametrize(
     "analysis_status, job_status_distribution, expected_analysis_status",
     [
