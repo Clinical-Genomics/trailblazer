@@ -155,7 +155,7 @@ class TowerProgress(BaseModel):
     processes_progress: list = Field(alias="processesProgress")
 
 
-class TowerTaskResponse(BaseModel):
+class TowerTasksResponse(BaseModel):
     """NF Tower task response model."""
 
     tasks: list[TaskWrapper] | None = None
