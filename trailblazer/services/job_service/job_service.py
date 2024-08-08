@@ -14,7 +14,6 @@ from trailblazer.services.job_service.utils import (
     get_progress,
     get_slurm_job_ids,
     get_status,
-    get_tower_workflow_id,
 )
 from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.services.slurm.slurm_service import SlurmService
@@ -86,12 +85,10 @@ class JobService:
 
     def cancel_jobs(self, analysis_id: int) -> None:
         analysis: int = self.store.get_analysis_with_id(analysis_id)
-        workflow_manager: WorkflowManager = analysis.workflow_manager
 
-        if workflow_manager == WorkflowManager.SLURM:
+        if analysis.workflow_manager == WorkflowManager.SLURM:
             ongoing_jobs = get_ongoing_jobs(analysis.jobs)
             job_ids = [job.slurm_id for job in ongoing_jobs]
             self.slurm_service.cancel_jobs(job_ids)
-        if workflow_manager == WorkflowManager.TOWER:
-            workflow_id: str = get_tower_workflow_id(analysis)
-            self.tower_service.cancel_workflow(workflow_id)
+        if analysis.workflow_manager == WorkflowManager.TOWER:
+            self.tower_service.cancel_jobs(analysis_id)

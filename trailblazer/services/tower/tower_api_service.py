@@ -19,5 +19,7 @@ class TowerAPIService:
         jobs: list[Job] = [create_job_from_dto(task) for task in response.get_tasks()]
         self.store.replace_jobs(analysis_id=analysis_id, jobs=jobs)
 
-    def cancel_workflow(self, workflow_id: str) -> None:
+    def cancel_jobs(self, analysis_id: int) -> None:
+        analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
+        workflow_id: str = get_tower_workflow_id(analysis)
         self.client.cancel_workflow(workflow_id)
