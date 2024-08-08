@@ -30,6 +30,19 @@ class AnalysisService:
         self.store = store
         self.job_service = job_service
 
+    def cancel_analysis(self, analysis_id: int) -> None:
+        analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
+        for job in analysis.jobs:
+            self.job_service.cancel_jobs(job.id)
+        self.store.update_analysis_status(
+            analysis_id=analysis_id,
+            status=TrailblazerStatus.CANCELLED,
+        )
+        self.store.update_analysis_comment(
+            analysis_id=analysis_id,
+            comment="Analysis cancelled manually",
+        )
+
     def get_analyses(self, request: AnalysesRequest) -> AnalysesResponse:
         analyses, total_count = self.store.get_paginated_analyses(request)
         return self.create_analyses_response(analyses=analyses, total_count=total_count)
@@ -86,20 +99,16 @@ class AnalysisService:
         analyses: list[Analysis] = self.store.get_ongoing_analyses()
         for analysis in analyses:
             try:
-                self.update_analysis_meta_data(analysis)
+                self.update_analysis_meta_data(analysis.id)
             except Exception as error:
                 self.store.update_analysis_status(analysis.id, TrailblazerStatus.ERROR)
                 LOG.error(f"Failed to update analysis {analysis.id}: {error}")
 
-    def update_analysis_meta_data(self, analysis: Analysis):
+    def update_analysis_meta_data(self, analysis_id: int) -> None:
         """Update the jobs, progress and status of an analysis."""
-        self.job_service.update_jobs(analysis.id)
-
-        if analysis.workflow_manager == WorkflowManager.TOWER:
-            return
-
-        self._update_progress(analysis.id)
-        self._update_status(analysis.id)
+        self.job_service.update_jobs(analysis_id)
+        self._update_progress(analysis_id)
+        self._update_status(analysis_id)
 
     def _update_status(self, analysis_id: int) -> None:
         status: TrailblazerStatus = self.job_service.get_analysis_status(analysis_id)

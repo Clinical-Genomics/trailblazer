@@ -20,3 +20,7 @@ class SlurmAPIService(SlurmService):
             if job:
                 jobs.append(job)
         return jobs
+
+    def cancel_jobs(self, job_ids: list[int]) -> None:
+        for job_id in job_ids:
+            self.client.cancel_job(job_id)

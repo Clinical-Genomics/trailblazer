@@ -1,4 +1,3 @@
-from trailblazer.constants import TrailblazerStatus
 from trailblazer.dto.update_analyses import AnalysisUpdate, UpdateAnalyses
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.store.models import Analysis, User

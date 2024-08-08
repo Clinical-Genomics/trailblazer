@@ -11,3 +11,7 @@ class SlurmService(ABC):
     @abstractmethod
     def get_jobs(self, job_ids: list[int]) -> list[SlurmJobInfo]:
         pass
+
+    @abstractmethod
+    def cancel_jobs(self, job_id: int) -> None:
+        pass

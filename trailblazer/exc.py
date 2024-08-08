@@ -10,6 +10,10 @@ class MissingAnalysis(TrailblazerError):
     """Error for missing analysis"""
 
 
+class MissingJob(TrailblazerError):
+    """Error for missing job"""
+
+
 class MissingFileError(TrailblazerError):
     pass
 
@@ -53,4 +57,22 @@ class SlurmAPIClientError(TrailblazerError):
 class ResponseDeserializationError(SlurmAPIClientError):
     """
     Exception related to the data in a  Slurm API client response.
+    """
+
+
+class TowerAPIClientError(TrailblazerError):
+    """
+    Exception related to Tower API client.
+    """
+
+
+class InvalidTowerAPIResponse(TowerAPIClientError):
+    """
+    Exception raised when the Tower API response is not formatted as expected.
+    """
+
+
+class TowerRequestFailed(TowerAPIClientError):
+    """
+    Exception raised when the Tower API request fails.
     """

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from trailblazer.constants import (
     TOWER_PROCESS_STATUS,
@@ -94,6 +94,10 @@ class TowerTask(BaseModel):
         return cls.status == SlurmJobStatus.COMPLETED
 
 
+class TaskWrapper(BaseModel):
+    task: TowerTask
+
+
 class TowerProcess(BaseModel):
     """NF Tower task model."""
 
@@ -147,15 +151,18 @@ class TowerWorkflow(BaseModel):
 class TowerProgress(BaseModel):
     """NF Tower progress model."""
 
-    workflowProgress: dict
-    processesProgress: list
+    workflow_progress: dict = Field(alias="workflowProgress")
+    processes_progress: list = Field(alias="processesProgress")
 
 
-class TowerTaskResponse(BaseModel):
+class TowerTasksResponse(BaseModel):
     """NF Tower task response model."""
 
-    tasks: list[dict[str, TowerTask]] | None
+    tasks: list[TaskWrapper] | None = None
     total: int
+
+    def get_tasks(self) -> list[TowerTask]:
+        return [task.task for task in self.tasks] if self.tasks else []
 
 
 class TowerWorkflowResponse(BaseModel):
