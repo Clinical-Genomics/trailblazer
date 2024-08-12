@@ -62,13 +62,11 @@ class UpdateHandler(BaseHandler):
 
     def update_latest_analysis_comment(self, case_id: str, comment: str) -> None:
         analysis: Analysis | None = self.get_latest_analysis_for_case(case_id)
-        self.update_analysis_comment(analysis=analysis, comment=comment)
+        self.update_analysis_comment(analysis_id=analysis.id, comment=comment)
 
-    @staticmethod
-    def update_analysis_comment(analysis: Analysis, comment: str):
-        analysis.comment: str = (
-            " ".join([analysis.comment, comment]) if analysis.comment else comment
-        )
+    def update_analysis_comment(self, analysis_id: int, comment: str):
+        analysis: Analysis | None = self.get_analysis_with_id(analysis_id)
+        analysis.comment = " ".join([analysis.comment, comment]) if analysis.comment else comment
         session: Session = get_session()
         session.commit()
         LOG.info(f"Adding comment {comment} to analysis {analysis.case_id}")

@@ -1,13 +1,19 @@
-from unittest.mock import Mock
+from datetime import datetime
+from unittest.mock import MagicMock, Mock
 import pytest
+from sqlalchemy.orm import Session
+
 
 from trailblazer.clients.tower.tower_client import TowerAPIClient
+from trailblazer.constants import JobType, TrailblazerPriority, TrailblazerStatus, TrailblazerTypes, Workflow, WorkflowManager
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.job_service.job_service import JobService
 from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.services.slurm.slurm_cli_service.slurm_cli_service import SlurmCLIService
 from trailblazer.services.slurm.slurm_service import SlurmService
 from trailblazer.services.tower.tower_api_service import TowerAPIService
+from trailblazer.store.database import get_session
+from trailblazer.store.models import Analysis
 from trailblazer.store.store import Store
 
 
@@ -56,5 +62,31 @@ def job_service(
 
 
 @pytest.fixture
-def analysis_service(analysis_store: Store, job_service: JobService) -> AnalysisService:
-    return AnalysisService(store=analysis_store, job_service=job_service)
+def job_service_mock():
+    return MagicMock(spec=JobService)
+
+
+@pytest.fixture
+def running_analysis(analysis_store: Store) -> Analysis:
+    analysis = Analysis(
+        config_path="config_path",
+        workflow=Workflow.BALSAMIC,
+        case_id="case_id",
+        out_dir="out_dir",
+        order_id=1,
+        priority=TrailblazerPriority.NORMAL,
+        started_at=datetime.now(),
+        status=TrailblazerStatus.RUNNING,
+        ticket_id="ticket",
+        type=TrailblazerTypes.WGS,
+        workflow_manager=WorkflowManager.SLURM,
+    )
+    session: Session = get_session()
+    session.add(analysis)
+    session.commit()
+    return analysis
+
+
+@pytest.fixture
+def analysis_service(analysis_store: Store, job_service_mock: JobService) -> AnalysisService:
+    return AnalysisService(store=analysis_store, job_service=job_service_mock)
