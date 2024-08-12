@@ -10,6 +10,13 @@ LOG = logging.getLogger(__name__)
 
 
 def handle_client_errors(func):
+    """Handle errors that may occur when interacting with the Tower API.
+
+    Raises:
+        TowerRequestFailed: when the request to the Tower API fails.
+        InvalidTowerAPIResponse: when the returned data from the Tower API is invalid.
+        TowerAPIClientError: when an unexpected error occurs in the Tower API client.
+    """
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
