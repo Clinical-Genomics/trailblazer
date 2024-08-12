@@ -17,6 +17,7 @@ def handle_client_errors(func):
         InvalidTowerAPIResponse: when the returned data from the Tower API is invalid.
         TowerAPIClientError: when an unexpected error occurs in the Tower API client.
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
