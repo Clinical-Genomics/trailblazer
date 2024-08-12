@@ -30,3 +30,19 @@ def test_update_analysis_status(analysis_store: Store, analysis_service: Analysi
     # THEN the status of some analyses should be updated
     currently_ongoing_analyses: list[Analysis] = analysis_store.get_ongoing_analyses()
     assert len(currently_ongoing_analyses) < len(ongoing_analyses)
+
+
+def test_cancel_tower_analysis(analysis_service: AnalysisService):
+    pass
+
+
+def test_cancel_slurm_analysis(analysis_service: AnalysisService):
+    pass
+
+
+def test_updating_slurm_analysis_status(analysis_service: AnalysisService):
+    pass
+
+
+def test_updating_tower_analysis_status(analysis_service: AnalysisService):
+    pass
