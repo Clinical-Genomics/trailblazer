@@ -78,8 +78,6 @@ class JobService:
         analysis: int = self.store.get_analysis_with_id(analysis_id)
 
         if analysis.workflow_manager == WorkflowManager.SLURM:
-            ongoing_jobs = get_ongoing_jobs(analysis.jobs)
-            job_ids = [job.slurm_id for job in ongoing_jobs]
-            self.slurm_service.cancel_jobs(job_ids)
+            self.slurm_service.cancel_jobs(analysis_id)
         if analysis.workflow_manager == WorkflowManager.TOWER:
             self.tower_service.cancel_jobs(analysis_id)

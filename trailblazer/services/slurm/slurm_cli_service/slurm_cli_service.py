@@ -24,7 +24,6 @@ class SlurmCLIService(SlurmService):
 
     def cancel_jobs(self, analysis_id: int) -> None:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
-        analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
         job_ids: list[int] = get_slurm_job_ids(analysis.config_path)
         for job_id in job_ids:
             self.client.cancel_job(job_id)
