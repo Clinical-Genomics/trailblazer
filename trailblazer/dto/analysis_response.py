@@ -38,6 +38,7 @@ class AnalysisResponse(BaseModel):
     jobs: list[Job] = []
     latest_failed_job: Job | None = None
     logged_at: datetime | None = None
+    order_id: int | None = None
     out_dir: str | None = None
     priority: str
     progress: float
