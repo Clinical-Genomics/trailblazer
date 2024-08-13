@@ -7,12 +7,10 @@ from trailblazer.exceptions import JobServiceError, NoJobsError
 from trailblazer.services.job_service.mappers import (
     create_failed_jobs_response,
     create_job_response,
-    slurm_info_to_job,
 )
 from trailblazer.services.job_service.utils import (
     get_ongoing_jobs,
     get_progress,
-    get_slurm_job_ids,
     get_status,
 )
 from trailblazer.services.slurm.dtos import SlurmJobInfo
@@ -51,19 +49,12 @@ class JobService:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
         try:
             if analysis.workflow_manager == WorkflowManager.SLURM:
-                self._update_slurm_jobs(analysis_id)
+                self.slurm_service.update_jobs(analysis_id)
             if analysis.workflow_manager == WorkflowManager.TOWER:
                 self.tower_service.update_jobs(analysis_id)
         except Exception as error:
             LOG.error(f"Failed to update jobs {analysis.case_id} - {analysis.id}: {error}")
             raise JobServiceError from error
-
-    def _update_slurm_jobs(self, analysis_id: int) -> None:
-        analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
-        slurm_ids: list[int] = get_slurm_job_ids(analysis.config_path)
-        slurm_jobs: list[SlurmJobInfo] = self.slurm_service.get_jobs(slurm_ids)
-        jobs: list[Job] = [slurm_info_to_job(job_info) for job_info in slurm_jobs]
-        self.store.replace_jobs(analysis_id=analysis_id, jobs=jobs)
 
     def get_analysis_status(self, analysis_id: int) -> TrailblazerStatus:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)

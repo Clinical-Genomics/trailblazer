@@ -49,7 +49,7 @@ def slurm_service(slurm_completed_job_info) -> SlurmService:
     """Slurm service reporting all jobs as completed."""
     service = SlurmCLIService(client=Mock())
     service.get_job = Mock(return_value=slurm_completed_job_info)
-    service.get_jobs = Mock(return_value=[slurm_completed_job_info])
+    service.update_jobs = Mock(return_value=[slurm_completed_job_info])
     return service
 
 

@@ -53,7 +53,7 @@ class Container(containers.DeclarativeContainer):
         slurm_service = providers.Singleton(SlurmAPIService, client=slurm_client)
     else:
         slurm_client = providers.Singleton(SlurmCLIClient, host=slurm_host)
-        slurm_service = providers.Singleton(SlurmCLIService, client=slurm_client)
+        slurm_service = providers.Singleton(SlurmCLIService, client=slurm_client, store=store)
 
     tower_client = providers.Singleton(
         TowerAPIClient,
@@ -62,7 +62,7 @@ class Container(containers.DeclarativeContainer):
         workspace_id=tower_workspace_id,
     )
 
-    tower_api_service = providers.Singleton(
+    tower_service = providers.Singleton(
         TowerAPIService,
         client=tower_client,
         store=store,
@@ -72,7 +72,7 @@ class Container(containers.DeclarativeContainer):
         JobService,
         store=store,
         slurm_service=slurm_service,
-        tower_service=tower_api_service,
+        tower_service=tower_service,
     )
     analysis_service = providers.Factory(AnalysisService, store=store, job_service=job_service)
 

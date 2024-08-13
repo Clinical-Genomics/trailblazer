@@ -42,9 +42,9 @@ def tower_service(analysis_store: Store) -> TowerAPIService:
 
 
 @pytest.fixture
-def slurm_service() -> SlurmCLIService:
+def slurm_service(analysis_store: Store) -> SlurmCLIService:
     slurm_client = SlurmCLIClient("host")
-    return SlurmCLIService(slurm_client)
+    return SlurmCLIService(client=slurm_client, store=analysis_store)
 
 
 @pytest.fixture
