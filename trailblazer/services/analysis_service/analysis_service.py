@@ -51,7 +51,7 @@ class AnalysisService:
         return create_analysis_response(analysis)
 
     def update_analysis(
-        self, analysis_id: int, update: AnalysisUpdateRequest, user: User | None = None
+        self, analysis_id: int, update: AnalysisUpdateRequest, user: User
     ) -> AnalysisResponse:
         analysis: Analysis = self.store.update_analysis(
             analysis_id=analysis_id,
@@ -63,9 +63,7 @@ class AnalysisService:
         )
         return create_analysis_response(analysis)
 
-    def update_analyses(
-        self, data: UpdateAnalyses, user: User | None = None
-    ) -> UpdateAnalysesResponse:
+    def update_analyses(self, data: UpdateAnalyses, user: User) -> UpdateAnalysesResponse:
         analyses: list[Analysis] = self.store.update_analyses(data=data, user=user)
         return create_update_analyses_response(analyses)
 

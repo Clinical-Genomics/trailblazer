@@ -5,7 +5,13 @@ from sqlalchemy.orm import Session
 
 
 from trailblazer.clients.tower.tower_client import TowerAPIClient
-from trailblazer.constants import JobType, TrailblazerPriority, TrailblazerStatus, TrailblazerTypes, Workflow, WorkflowManager
+from trailblazer.constants import (
+    TrailblazerPriority,
+    TrailblazerStatus,
+    TrailblazerTypes,
+    Workflow,
+    WorkflowManager,
+)
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.job_service.job_service import JobService
 from trailblazer.services.slurm.dtos import SlurmJobInfo
