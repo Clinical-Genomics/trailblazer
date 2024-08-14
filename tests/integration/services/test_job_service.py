@@ -2,7 +2,7 @@ from unittest import mock
 from trailblazer.constants import SlurmJobStatus
 from trailblazer.services.job_service import JobService
 from trailblazer.services.slurm.dtos import SlurmJobInfo
-from trailblazer.store.models import Analysis, Job
+from trailblazer.store.models import Analysis
 
 
 def test_update_upload_jobs(
@@ -22,23 +22,3 @@ def test_update_upload_jobs(
     running_analysis: Analysis = job_service.store.get_analysis_with_id(running_analysis.id)
     assert running_analysis.upload_jobs
     assert running_analysis.upload_jobs[0].status == SlurmJobStatus.COMPLETED
-
-
-def test_job_progression_completed(job_service: JobService, running_analysis: Analysis):
-    # GIVEN an analysis with completed jobs
-
-    # WHEN getting the analysis progression
-    progression = job_service.get_analysis_progression(running_analysis.id)
-
-    # THEN the progression is 100%
-    assert progression == 1.0
-
-
-def test_job_progression_ongoing(job_service: JobService, running_analysis: Analysis):
-    # GIVEN an analysis with ongoing jobs
-    
-    # WHEN getting the analysis progression
-    progression = job_service.get_analysis_progression(running_analysis.id)
-    
-    # THEN the progression is less than 100%
-    assert progression < 1.0

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from unittest.mock import MagicMock, Mock
 import pytest
 from sqlalchemy.orm import Session
@@ -6,6 +6,9 @@ from sqlalchemy.orm import Session
 
 from trailblazer.clients.tower.tower_client import TowerAPIClient
 from trailblazer.constants import (
+    PRIORITY_OPTIONS,
+    TYPES,
+    JobType,
     TrailblazerPriority,
     TrailblazerStatus,
     TrailblazerTypes,
@@ -19,7 +22,7 @@ from trailblazer.services.slurm.slurm_cli_service.slurm_cli_service import Slurm
 from trailblazer.services.slurm.slurm_service import SlurmService
 from trailblazer.services.tower.tower_api_service import TowerAPIService
 from trailblazer.store.database import get_session
-from trailblazer.store.models import Analysis
+from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 
 
@@ -47,7 +50,7 @@ def tower_service(store: Store) -> TowerAPIService:
 @pytest.fixture
 def slurm_service(slurm_completed_job_info) -> SlurmService:
     """Slurm service reporting all jobs as completed."""
-    service = SlurmCLIService(client=Mock())
+    service = SlurmCLIService(client=Mock(), store=Mock())
     service.get_job = Mock(return_value=slurm_completed_job_info)
     service.update_jobs = Mock(return_value=[slurm_completed_job_info])
     return service
@@ -55,16 +58,15 @@ def slurm_service(slurm_completed_job_info) -> SlurmService:
 
 @pytest.fixture
 def job_service(
-    store: Store,
+    analysis_store: Store,
     slurm_service: SlurmService,
     tower_service: TowerAPIService,
-    slurm_job_ids,
-    mocker,
 ) -> JobService:
-    mocker.patch(
-        "trailblazer.services.job_service.job_service.get_slurm_job_ids", return_value=slurm_job_ids
+    return JobService(
+        store=analysis_store,
+        slurm_service=slurm_service,
+        tower_service=tower_service,
     )
-    return JobService(store=store, slurm_service=slurm_service, tower_service=tower_service)
 
 
 @pytest.fixture
@@ -73,22 +75,87 @@ def job_service_mock():
 
 
 @pytest.fixture
-def running_analysis(analysis_store: Store) -> Analysis:
+def analysis_with_running_jobs(analysis_store: Store) -> Analysis:
     analysis = Analysis(
         config_path="config_path",
-        workflow=Workflow.BALSAMIC,
+        workflow="workflow",
         case_id="case_id",
         out_dir="out_dir",
-        order_id=1,
-        priority=TrailblazerPriority.NORMAL,
-        started_at=datetime.now(),
+        priority=PRIORITY_OPTIONS[0],
+        started_at=datetime.now() - timedelta(weeks=1),
         status=TrailblazerStatus.RUNNING,
-        ticket_id="ticket",
-        type=TrailblazerTypes.WGS,
+        ticket_id="ticket_id",
+        type=TYPES[0],
         workflow_manager=WorkflowManager.SLURM,
+        is_visible=True,
+        order_id=1,
     )
     session: Session = get_session()
     session.add(analysis)
+    session.commit()
+
+    analysis_job_1 = Job(
+        analysis_id=analysis.id,
+        name="name",
+        slurm_id=1,
+        status=TrailblazerStatus.RUNNING,
+        started_at=datetime.now(),
+        elapsed=100,
+        job_type=JobType.ANALYSIS,
+    )
+    analysis_job_2 = Job(
+        analysis_id=analysis.id,
+        name="name",
+        slurm_id=2,
+        status=TrailblazerStatus.COMPLETED,
+        started_at=datetime.now(),
+        elapsed=1,
+        job_type=JobType.ANALYSIS,
+    )
+    session.add_all([analysis_job_1, analysis_job_2])
+    session.commit()
+    return analysis
+
+
+@pytest.fixture
+def analysis_with_completed_jobs(analysis_store: Store) -> Analysis:
+    analysis = Analysis(
+        config_path="config_path",
+        workflow="workflow",
+        case_id="case_id",
+        out_dir="out_dir",
+        priority=PRIORITY_OPTIONS[0],
+        started_at=datetime.now() - timedelta(weeks=1),
+        status=TrailblazerStatus.RUNNING,
+        ticket_id="ticket_id",
+        type=TYPES[0],
+        workflow_manager=WorkflowManager.SLURM,
+        is_visible=True,
+        order_id=1,
+    )
+    session: Session = get_session()
+    session.add(analysis)
+    session.commit()
+
+    analysis_job_1 = Job(
+        analysis_id=analysis.id,
+        name="name",
+        slurm_id=1,
+        status=TrailblazerStatus.COMPLETED,
+        started_at=datetime.now(),
+        elapsed=100,
+        job_type=JobType.ANALYSIS,
+    )
+    analysis_job_2 = Job(
+        analysis_id=analysis.id,
+        name="name",
+        slurm_id=2,
+        status=TrailblazerStatus.COMPLETED,
+        started_at=datetime.now(),
+        elapsed=1,
+        job_type=JobType.ANALYSIS,
+    )
+    session.add_all([analysis_job_1, analysis_job_2])
     session.commit()
     return analysis
 
