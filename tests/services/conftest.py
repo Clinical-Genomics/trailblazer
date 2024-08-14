@@ -75,7 +75,7 @@ def job_service_mock():
 
 
 @pytest.fixture
-def analysis_with_running_jobs(analysis_store: Store) -> Analysis:
+def analysis(analysis_store: Store) -> Analysis:
     analysis = Analysis(
         config_path="config_path",
         workflow="workflow",
@@ -93,7 +93,11 @@ def analysis_with_running_jobs(analysis_store: Store) -> Analysis:
     session: Session = get_session()
     session.add(analysis)
     session.commit()
+    return analysis
 
+
+@pytest.fixture
+def analysis_with_running_jobs(analysis_store: Store, analysis: Analysis) -> Analysis:
     analysis_job_1 = Job(
         analysis_id=analysis.id,
         name="name",
@@ -112,31 +116,14 @@ def analysis_with_running_jobs(analysis_store: Store) -> Analysis:
         elapsed=1,
         job_type=JobType.ANALYSIS,
     )
+    session: Session = get_session()
     session.add_all([analysis_job_1, analysis_job_2])
     session.commit()
     return analysis
 
 
 @pytest.fixture
-def analysis_with_completed_jobs(analysis_store: Store) -> Analysis:
-    analysis = Analysis(
-        config_path="config_path",
-        workflow="workflow",
-        case_id="case_id",
-        out_dir="out_dir",
-        priority=PRIORITY_OPTIONS[0],
-        started_at=datetime.now() - timedelta(weeks=1),
-        status=TrailblazerStatus.RUNNING,
-        ticket_id="ticket_id",
-        type=TYPES[0],
-        workflow_manager=WorkflowManager.SLURM,
-        is_visible=True,
-        order_id=1,
-    )
-    session: Session = get_session()
-    session.add(analysis)
-    session.commit()
-
+def analysis_with_completed_jobs(analysis_store: Store, analysis: Analysis) -> Analysis:
     analysis_job_1 = Job(
         analysis_id=analysis.id,
         name="name",
@@ -155,6 +142,7 @@ def analysis_with_completed_jobs(analysis_store: Store) -> Analysis:
         elapsed=1,
         job_type=JobType.ANALYSIS,
     )
+    session: Session = get_session()
     session.add_all([analysis_job_1, analysis_job_2])
     session.commit()
     return analysis
