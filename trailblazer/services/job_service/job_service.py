@@ -9,7 +9,6 @@ from trailblazer.services.job_service.mappers import (
     create_job_response,
 )
 from trailblazer.services.job_service.utils import (
-    get_ongoing_jobs,
     get_progress,
     get_status,
 )

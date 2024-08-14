@@ -1,5 +1,5 @@
 from pathlib import Path
-from trailblazer.constants import FileFormat, SlurmJobStatus, TrailblazerStatus
+from trailblazer.constants import FileFormat, JobType, SlurmJobStatus, TrailblazerStatus
 from trailblazer.io.controller import ReadFile
 from trailblazer.store.models import Analysis, Job
 
@@ -55,12 +55,18 @@ def is_analysis_failed(jobs: list[Job]) -> bool:
 
 
 def get_progress(jobs: list[Job]) -> float:
-    total_jobs: int = len(jobs)
-    if total_jobs == 0:
-        return 0.0
-    completed_jobs: int = len([job for job in jobs if job.status == SlurmJobStatus.COMPLETED])
-    return completed_jobs / total_jobs
+    analysis_jobs: list[Job] = _get_analysis_jobs(jobs)
+    completed_jobs: list[Job] = _get_completed_jobs(analysis_jobs)
+
+    total_count: int = len(analysis_jobs)
+    completed_count: int = len(completed_jobs)
+
+    return 0.0 if total_count == 0 else completed_count / total_count
 
 
-def get_ongoing_jobs(jobs: list[Job]) -> list[Job]:
-    return [job for job in jobs if job.status in SlurmJobStatus.ongoing_statuses()]
+def _get_analysis_jobs(jobs: list[Job]) -> list[Job]:
+    return [job for job in jobs if job.job_type == JobType.ANALYSIS]
+
+
+def _get_completed_jobs(jobs: list[Job]) -> list[Job]:
+    return [job for job in jobs if job.status == SlurmJobStatus.COMPLETED]
