@@ -20,3 +20,13 @@ def test_job_progression_ongoing(job_service: JobService, analysis_with_running_
 
     # THEN the progression is less than 100%
     assert progression < 1.0
+
+
+def test_job_progression_without_jobs(job_service: JobService, analysis_without_jobs: Analysis):
+    # GIVEN an analysis without jobs
+
+    # WHEN getting the analysis progression
+    progression = job_service.get_analysis_progression(analysis_without_jobs.id)
+
+    # THEN the progression is 0%
+    assert progression == 0.0
