@@ -24,30 +24,30 @@ def test_patch_analyses_delivered(
     assert analysis.delivered_by
 
 
-def test_cancel_analysis(analysis_service: AnalysisService, running_analysis: Analysis):
+def test_cancel_analysis(analysis_service: AnalysisService, analysis_with_running_jobs: Analysis):
     # GIVEN a running analysis
 
     # WHEN cancelling the analysis
-    analysis_service.cancel_analysis(running_analysis.id)
+    analysis_service.cancel_analysis(analysis_with_running_jobs.id)
 
     # THEN the analysis should be cancelled
-    assert running_analysis.status == TrailblazerStatus.CANCELLED
+    assert analysis_with_running_jobs.status == TrailblazerStatus.CANCELLED
 
     # THEN a comment should be added to the analysis
-    assert running_analysis.comment
+    assert analysis_with_running_jobs.comment
 
 
 def test_update_analysis_meta_data(
     analysis_service: AnalysisService,
-    running_analysis: Analysis,
+    analysis_with_running_jobs: Analysis,
 ):
     # GIVEN that the associated jobs are completed
     analysis_service.job_service.get_analysis_status.return_value = TrailblazerStatus.COMPLETED
     analysis_service.job_service.get_analysis_progression.return_value = 100
 
     # WHEN updating the analysis
-    analysis_service.update_analysis_meta_data(running_analysis.id)
+    analysis_service.update_analysis_meta_data(analysis_with_running_jobs.id)
 
     # THEN the analysis should be completed
-    assert running_analysis.status == TrailblazerStatus.COMPLETED
-    assert running_analysis.progress == 100
+    assert analysis_with_running_jobs.status == TrailblazerStatus.COMPLETED
+    assert analysis_with_running_jobs.progress == 100

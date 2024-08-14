@@ -181,6 +181,7 @@ def analysis_without_jobs(analysis_store: Store):
     session.commit()
     return analysis
 
+
 @pytest.fixture
 def analysis_service(analysis_store: Store, job_service_mock: JobService) -> AnalysisService:
     return AnalysisService(store=analysis_store, job_service=job_service_mock)
