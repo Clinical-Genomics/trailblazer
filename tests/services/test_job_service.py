@@ -1,3 +1,4 @@
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Analysis
 
@@ -30,3 +31,29 @@ def test_job_progression_without_jobs(job_service: JobService, analysis_without_
 
     # THEN the progression is 0%
     assert progression == 0.0
+
+
+def test_analysis_status_when_completed_jobs(
+    job_service: JobService,
+    analysis_with_completed_jobs: Analysis,
+):
+    # GIVEN an analysis with completed jobs
+
+    # WHEN getting the analysis status
+    status = job_service.get_analysis_status(analysis_with_completed_jobs.id)
+
+    # THEN the status is completed
+    assert status == TrailblazerStatus.COMPLETED
+
+
+def test_analysis_status_when_running_jobs(
+    job_service: JobService,
+    analysis_with_running_jobs: Analysis,
+):
+    # GIVEN an analysis with running jobs
+
+    # WHEN getting the analysis status
+    status = job_service.get_analysis_status(analysis_with_running_jobs.id)
+
+    # THEN the status is running
+    assert status == TrailblazerStatus.RUNNING
