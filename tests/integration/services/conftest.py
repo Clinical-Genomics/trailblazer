@@ -1,15 +1,22 @@
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import pytest
 from requests_mock import Mocker
+from sqlalchemy.orm import Session
 
 
 from trailblazer.clients.authentication_client.google_oauth_client import GoogleOAuthClient
 from trailblazer.clients.google_api_client.google_api_client import GoogleAPIClient
 from trailblazer.clients.slurm_cli_client.slurm_cli_client import SlurmCLIClient
 from trailblazer.clients.tower.tower_client import TowerAPIClient
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.constants import (
+    PRIORITY_OPTIONS,
+    TYPES,
+    JobType,
+    TrailblazerStatus,
+    WorkflowManager,
+)
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
 from trailblazer.services.encryption_service.encryption_service import EncryptionService
 from trailblazer.services.job_service import JobService
@@ -17,6 +24,8 @@ from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.services.slurm.slurm_cli_service.slurm_cli_service import SlurmCLIService
 
 from trailblazer.services.tower.tower_api_service import TowerAPIService
+from trailblazer.store.database import get_session
+from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 
 
@@ -124,3 +133,46 @@ def google_oauth_response() -> dict:
 def mock_request():
     with Mocker() as mock:
         yield mock
+
+
+@pytest.fixture
+def running_analysis(analysis_store: Store) -> Analysis:
+    analysis = Analysis(
+        config_path="config_path",
+        workflow="workflow",
+        case_id="case_id",
+        out_dir="out_dir",
+        priority=PRIORITY_OPTIONS[0],
+        started_at=datetime.now() - timedelta(weeks=1),
+        status=TrailblazerStatus.RUNNING,
+        ticket_id="ticket_id",
+        type=TYPES[0],
+        workflow_manager=WorkflowManager.SLURM,
+        is_visible=True,
+        order_id=1,
+    )
+    session: Session = get_session()
+    session.add(analysis)
+    session.commit()
+
+    analysis_job_1 = Job(
+        analysis_id=analysis.id,
+        name="name",
+        slurm_id=1,
+        status=TrailblazerStatus.RUNNING,
+        started_at=datetime.now(),
+        elapsed=100,
+        job_type=JobType.ANALYSIS,
+    )
+    analysis_job_2 = Job(
+        analysis_id=analysis.id,
+        name="name",
+        slurm_id=2,
+        status=TrailblazerStatus.COMPLETED,
+        started_at=datetime.now(),
+        elapsed=1,
+        job_type=JobType.ANALYSIS,
+    )
+    session.add_all([analysis_job_1, analysis_job_2])
+    session.commit()
+    return analysis

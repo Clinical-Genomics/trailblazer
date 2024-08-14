@@ -6,7 +6,7 @@ from trailblazer.store.models import Analysis, Job
 
 
 def test_update_upload_jobs(
-    job_service: JobService, upload_job_info: SlurmJobInfo, analysis: Analysis
+    job_service: JobService, upload_job_info: SlurmJobInfo, running_analysis: Analysis
 ):
     # GIVEN a store with an analysis with an ongoing upload job
 
@@ -19,16 +19,26 @@ def test_update_upload_jobs(
     job_service.update_upload_jobs()
 
     # THEN the upload job is marked as completed
-    analysis: Analysis = job_service.store.get_analysis_with_id(analysis.id)
-    assert analysis.upload_jobs
-    assert analysis.upload_jobs[0].status == SlurmJobStatus.COMPLETED
+    running_analysis: Analysis = job_service.store.get_analysis_with_id(running_analysis.id)
+    assert running_analysis.upload_jobs
+    assert running_analysis.upload_jobs[0].status == SlurmJobStatus.COMPLETED
 
 
-def test_job_progression_completed(job_service: JobService, analysis: Analysis):
+def test_job_progression_completed(job_service: JobService, running_analysis: Analysis):
     # GIVEN an analysis with completed jobs
 
     # WHEN getting the analysis progression
-    progression = job_service.get_analysis_progression(analysis.id)
+    progression = job_service.get_analysis_progression(running_analysis.id)
 
     # THEN the progression is 100%
     assert progression == 1.0
+
+
+def test_job_progression_ongoing(job_service: JobService, running_analysis: Analysis):
+    # GIVEN an analysis with ongoing jobs
+    
+    # WHEN getting the analysis progression
+    progression = job_service.get_analysis_progression(running_analysis.id)
+    
+    # THEN the progression is less than 100%
+    assert progression < 1.0
