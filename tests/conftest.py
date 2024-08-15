@@ -5,7 +5,6 @@ from typing import Dict, Generator
 import pytest
 from sqlalchemy.orm import Session
 
-from tests.apps.tower.conftest import CaseId
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
 from trailblazer.constants import (
@@ -23,6 +22,12 @@ from trailblazer.store.database import (
 )
 from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
+
+
+class CaseId:
+    PENDING: str = "cuddlyhen_pending"
+    RUNNING: str = "cuddlyhen"
+    COMPLETED: str = "cuddlyhen_completed"
 
 
 @pytest.fixture(scope="session")
