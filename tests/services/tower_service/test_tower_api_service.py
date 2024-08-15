@@ -9,7 +9,7 @@ def test_update_jobs(
     tower_tasks_response: TowerTasksResponse,
 ):
     # GIVEN an analysis started in tower without any jobs
-  
+
     # GIVEN that some tasks for it have started running
     tower_service.client.get_tasks.return_value = tower_tasks_response
 

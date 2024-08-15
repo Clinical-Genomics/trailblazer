@@ -5,13 +5,11 @@ from typing import Dict, Generator
 import pytest
 from sqlalchemy.orm import Session
 
-from tests.apps.tower.conftest import TOWER_ID, CaseId, TowerResponseFile, TowerTaskResponseFile
+from tests.apps.tower.conftest import CaseId
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
-from trailblazer.clients.tower.models import TowerTask
 from trailblazer.constants import (
     TOWER_TIMESTAMP_FORMAT,
-    FileExtension,
     FileFormat,
     JobType,
     TrailblazerStatus,
@@ -36,12 +34,6 @@ def analysis_id_does_not_exist() -> int:
 def analysis_comment() -> str:
     """Return a comment."""
     return "a comment"
-
-
-@pytest.fixture(scope="session")
-def tower_id() -> str:
-    """Return a NF Tower id."""
-    return TOWER_ID
 
 
 @pytest.fixture(scope="session")
@@ -75,12 +67,6 @@ def fixtures_dir() -> Path:
 
 
 @pytest.fixture(scope="session")
-def squeue_dir(fixtures_dir: Path) -> Path:
-    """Return the path to the squeue fixture directory."""
-    return Path(fixtures_dir, "squeue")
-
-
-@pytest.fixture(scope="session")
 def analysis_data_path(fixtures_dir: Path) -> Path:
     """Return the path to an analysis data file."""
     return Path(fixtures_dir, "analysis-data.yaml")
@@ -101,12 +87,6 @@ def squeue_stream_jobs() -> str:
 690992,gatk_genotypegvcfs3,COMPLETED,10:00:00,5:54,2020-10-22T11:43:02
 690988,gatk_genotypegvcfs4,RUNNING,10:00:00,0:19,N/A
 690989,gatk_genotypegvcfs5,PENDING,10:00:00,0:00,N/A"""
-
-
-@pytest.fixture
-def trailblazer_tmp_dir(tmpdir_factory) -> Path:
-    """Return a temporary directory for Trailblazer testing."""
-    return tmpdir_factory.mktemp("trailblazer_tmp")
 
 
 @pytest.fixture
@@ -195,21 +175,6 @@ def analysis_store(
         raw_analysis["case_id"] = raw_analysis.pop("case_id")
         session.add(Analysis(**raw_analysis))
     yield store
-
-
-@pytest.fixture
-def balsamic_case_id() -> str:
-    return "lateraligator"
-
-
-@pytest.fixture
-def balsamic_qc_case_id() -> str:
-    return "assumedcrocodile"
-
-
-@pytest.fixture
-def mip_dna_case_id() -> str:
-    return "escapedgoat"
 
 
 @pytest.fixture(scope="session")
@@ -303,74 +268,6 @@ def case_id_not_in_db() -> str:
 def failed_analysis_case_id() -> str:
     """Return a case id for a failed analysis."""
     return "crackpanda"
-
-
-@pytest.fixture(scope="session")
-def ongoing_analysis_case_id() -> str:
-    """Return a case id for an ongoing analysis."""
-    return "blazinginsect"
-
-
-@pytest.fixture(scope="session")
-def tower_task() -> TowerTask:
-    """Return a Tower task."""
-    tower_task_running_content: dict = ReadFile.get_content_from_file(
-        file_format=FileFormat.JSON, file_path=TowerTaskResponseFile.RUNNING
-    )
-    return TowerTask(**tower_task_running_content["tasks"][0]["task"])
-
-
-@pytest.fixture(scope="session")
-def slurm_squeue_output(squeue_dir: Path) -> dict[str, str]:
-    """Return SLURM squeue output for analysis started via SLURM."""
-    file_postfix: str = f"squeue{FileExtension.CSV}"
-    case_ids: list[str] = [
-        "blazinginsect",
-        "crackpanda",
-        "cuddlyhen",
-        "daringpidgeon",
-        "escapedgoat",
-        "fancymole",
-        "happycow",
-        "lateraligator",
-        "liberatedunicorn",
-        "nicemice",
-        "rarekitten",
-        "trueferret",
-    ]
-    return {
-        case_id: Path(squeue_dir, f"{case_id}_{file_postfix}").as_posix() for case_id in case_ids
-    }
-
-
-@pytest.fixture
-def slurm_job_ids() -> list[int]:
-    return [690993, 690994, 690992, 690988, 690989, 690990]
-
-
-@pytest.fixture(scope="session")
-def tower_case_config() -> dict[str, dict]:
-    """Return a Tower case configs."""
-    return {
-        CaseId.RUNNING: {
-            "workflow_response_file": TowerResponseFile.RUNNING,
-            "tasks_response_file": TowerTaskResponseFile.RUNNING,
-            "tower_id": TOWER_ID,
-            "analysis_id": 1,
-        },
-        CaseId.PENDING: {
-            "workflow_response_file": TowerResponseFile.PENDING,
-            "tasks_response_file": TowerTaskResponseFile.PENDING,
-            "tower_id": TOWER_ID,
-            "analysis_id": 1,
-        },
-        CaseId.COMPLETED: {
-            "workflow_response_file": TowerResponseFile.COMPLETED,
-            "tasks_response_file": TowerTaskResponseFile.COMPLETED,
-            "tower_id": TOWER_ID,
-            "analysis_id": 1,
-        },
-    }
 
 
 @pytest.fixture
