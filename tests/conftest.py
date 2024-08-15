@@ -7,6 +7,8 @@ from sqlalchemy.orm import Session
 
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
+from trailblazer.clients.slurm_api_client.dto.common import SlurmAPIJobInfo
+from trailblazer.clients.slurm_api_client.dto.job_response import SlurmJobResponse
 from trailblazer.clients.tower.models import TaskWrapper, TowerTask, TowerTasksResponse
 from trailblazer.constants import (
     PRIORITY_OPTIONS,
@@ -349,3 +351,42 @@ def tower_tasks_response():
     task_wrapper_1 = TaskWrapper(task=task_1)
     task_wrapper_2 = TaskWrapper(task=task_2)
     return TowerTasksResponse(tasks=[task_wrapper_1, task_wrapper_2], total=2)
+
+
+@pytest.fixture
+def slurm_analysis(tmp_path) -> Analysis:
+    config_path: Path = tmp_path / "slurm.yaml"
+    content = """---
+    case_id:
+    - '6123780'
+    """
+    config_path.write_text(content)
+
+    analysis = Analysis(
+        config_path=str(config_path),
+        workflow="workflow",
+        case_id="case_id",
+        out_dir="out_dir",
+        priority=PRIORITY_OPTIONS[0],
+        started_at=datetime.now() - timedelta(weeks=1),
+        status=TrailblazerStatus.PENDING,
+        ticket_id="ticket_id",
+        type=TYPES[0],
+        workflow_manager=WorkflowManager.SLURM,
+        is_visible=True,
+        order_id=1,
+    )
+    session: Session = get_session()
+    session.add(analysis)
+    session.commit()
+    return analysis
+
+
+@pytest.fixture
+def slurm_job_response() -> SlurmJobResponse:
+    job_info = SlurmAPIJobInfo(
+        job_id=12345,
+        job_state=["COMPLETED"],
+        name="Test Job",
+    )
+    return SlurmJobResponse(jobs=[job_info], errors=None, warnings=None)
