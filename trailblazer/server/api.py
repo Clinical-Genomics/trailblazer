@@ -1,4 +1,3 @@
-import logging
 import os
 from http import HTTPStatus
 from typing import Mapping

@@ -9,10 +9,7 @@ from trailblazer.constants import (
     PRIORITY_OPTIONS,
     TYPES,
     JobType,
-    TrailblazerPriority,
     TrailblazerStatus,
-    TrailblazerTypes,
-    Workflow,
     WorkflowManager,
 )
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
@@ -39,11 +36,7 @@ def slurm_completed_job_info() -> SlurmJobInfo:
 
 @pytest.fixture
 def tower_service(store: Store) -> TowerAPIService:
-    tower_client = TowerAPIClient(
-        base_url="https://tower",
-        access_token="token",
-        workspace_id="workspace_id",
-    )
+    tower_client = MagicMock(spec=TowerAPIClient)
     return TowerAPIService(client=tower_client, store=store)
 
 
