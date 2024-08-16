@@ -11,12 +11,11 @@ from trailblazer.store.store import Store
 
 
 @pytest.fixture
-def analysis_service(analysis_store: Store, tower_tasks_response) -> AnalysisService:
+def analysis_service(analysis_store: Store) -> AnalysisService:
     slurm_client = MagicMock(spec=SlurmAPIClient)
-    slurm_service = SlurmAPIService(store=analysis_store, client=slurm_client)
-
     tower_client = MagicMock(spec=TowerAPIClient)
-    tower_client.get_tasks.return_value = tower_tasks_response
+
+    slurm_service = SlurmAPIService(store=analysis_store, client=slurm_client)
     tower_service = TowerAPIService(store=analysis_store, client=tower_client)
 
     job_service = JobService(
