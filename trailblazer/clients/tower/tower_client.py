@@ -12,12 +12,10 @@ class TowerAPIClient:
 
     def __init__(self, base_url: str, access_token: str, workspace_id: str):
         self.base_url = base_url
-        self.access_token = access_token
-        self.workspace_id = workspace_id
-        self.request_params = [("workspaceId", self.workspace_id)]
+        self.request_params = [("workspaceId", workspace_id)]
         self.headers = {
             "Accept": "application/json",
-            "Authorization": f"Bearer {self.access_token}",
+            "Authorization": f"Bearer {access_token}",
         }
 
     @handle_client_errors
