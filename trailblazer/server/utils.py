@@ -32,15 +32,8 @@ def stringify_timestamps(data: dict) -> dict[str, str]:
 import logging
 from functools import wraps
 from pydantic import ValidationError
-from requests import ConnectionError, HTTPError
-from requests.exceptions import MissingSchema
 
-from trailblazer.exc import (
-    InvalidTowerAPIResponse,
-    MissingAnalysis,
-    TowerAPIClientError,
-    TowerRequestFailed,
-)
+from trailblazer.exc import MissingAnalysis
 
 LOG = logging.getLogger(__name__)
 
