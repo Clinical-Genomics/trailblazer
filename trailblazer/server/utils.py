@@ -1,10 +1,15 @@
 import datetime
 from http import HTTPStatus
 from flask import Request, jsonify
+import logging
+from functools import wraps
+from pydantic import ValidationError
 
+from trailblazer.exc import MissingAnalysis
 from trailblazer.dto import AnalysesRequest
 from trailblazer.services.authentication_service.exceptions import AuthenticationError
 
+LOG = logging.getLogger(__name__)
 
 def parse_analyses_request(request: Request) -> AnalysesRequest:
     """Parse a request for retrieving analyses."""
@@ -27,15 +32,6 @@ def stringify_timestamps(data: dict) -> dict[str, str]:
         if isinstance(val, datetime.datetime):
             data[key] = str(val)
     return data
-
-
-import logging
-from functools import wraps
-from pydantic import ValidationError
-
-from trailblazer.exc import MissingAnalysis
-
-LOG = logging.getLogger(__name__)
 
 
 def handle_endpoint_errors(func):
