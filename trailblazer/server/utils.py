@@ -11,6 +11,7 @@ from trailblazer.services.authentication_service.exceptions import Authenticatio
 
 LOG = logging.getLogger(__name__)
 
+
 def parse_analyses_request(request: Request) -> AnalysesRequest:
     """Parse a request for retrieving analyses."""
     query_params = {}
