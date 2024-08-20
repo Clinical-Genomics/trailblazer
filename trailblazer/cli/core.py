@@ -103,8 +103,8 @@ def scan(analysis_service: AnalysisService = Provide[Container.analysis_service]
 
 
 @base.command("update-analysis")
+@inject
 @click.argument("analysis_id")
-@click.pass_context
 def update_analysis(
     analysis_id: int,
     analysis_service: AnalysisService = Provide[Container.analysis_service],

@@ -36,3 +36,4 @@ class SlurmAPIService(SlurmService):
 
         for job in jobs:
             self.client.cancel_job(job.slurm_id)
+        self.update_jobs(analysis_id)

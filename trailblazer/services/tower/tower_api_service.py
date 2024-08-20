@@ -23,3 +23,4 @@ class TowerAPIService:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
         workflow_id: str = get_tower_workflow_id(analysis)
         self.client.cancel_workflow(workflow_id)
+        self.update_jobs(analysis_id)

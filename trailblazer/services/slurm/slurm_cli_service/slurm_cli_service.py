@@ -32,3 +32,4 @@ class SlurmCLIService(SlurmService):
         job_ids: list[int] = get_slurm_job_ids(analysis.config_path)
         for job_id in job_ids:
             self.client.cancel_job(job_id)
+        self.update_jobs(analysis_id)
