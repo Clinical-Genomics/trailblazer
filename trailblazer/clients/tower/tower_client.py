@@ -20,7 +20,7 @@ class TowerAPIClient:
 
     @handle_client_errors
     def get_tasks(self, workflow_id: str) -> TowerTasksResponse:
-        url = f"{self.base_url}/workflow/{workflow_id}/tasks"
+        url = f"{self.base_url}workflow/{workflow_id}/tasks"
         response = requests.get(url=url, headers=self.headers, params=self.request_params)
         response.raise_for_status()
         json = response.json()
@@ -28,7 +28,7 @@ class TowerAPIClient:
 
     @handle_client_errors
     def get_workflow(self, workflow_id: str) -> TowerWorkflowResponse:
-        url = f"{self.base_url}/workflow/{workflow_id}"
+        url = f"{self.base_url}workflow/{workflow_id}"
         response = requests.get(url=url, headers=self.headers, params=self.request_params)
         response.raise_for_status()
         json = response.json()
@@ -36,6 +36,6 @@ class TowerAPIClient:
 
     @handle_client_errors
     def cancel_workflow(self, workflow_id: str) -> None:
-        url = f"{self.base_url}/workflow/{workflow_id}/cancel"
+        url = f"{self.base_url}workflow/{workflow_id}/cancel"
         response = requests.post(url=url, headers=self.headers, params=self.request_params, json={})
         response.raise_for_status()
