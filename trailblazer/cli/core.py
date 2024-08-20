@@ -192,7 +192,6 @@ def unarchive_user(context, email: str) -> None:
 
 @base.command()
 @click.argument("analysis_id", type=int)
-@click.pass_context
 def cancel(
     analysis_id: int,
     analysis_service: AnalysisService = Provide[Container.analysis_service],
