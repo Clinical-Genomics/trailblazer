@@ -191,6 +191,7 @@ def unarchive_user(context, email: str) -> None:
 
 
 @base.command()
+@inject
 @click.argument("analysis_id", type=int)
 def cancel(
     analysis_id: int,
