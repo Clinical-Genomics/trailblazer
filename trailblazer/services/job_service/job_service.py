@@ -58,6 +58,9 @@ class JobService:
     def get_analysis_status(self, analysis_id: int) -> TrailblazerStatus:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
 
+        if analysis.status == TrailblazerStatus.CANCELLED:
+            return TrailblazerStatus.CANCELLED
+
         if not analysis.jobs:
             raise NoJobsError(f"No jobs found for analysis {analysis_id}")
 
