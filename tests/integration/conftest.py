@@ -43,10 +43,19 @@ def analysis(order_id_with_multiple_analyses) -> Analysis:
     session.add(analysis)
     session.commit()
 
-    analysis_job = Job(
+    analysis_job_1 = Job(
         analysis_id=analysis.id,
         name="name",
         slurm_id=1,
+        status=TrailblazerStatus.COMPLETED,
+        started_at=datetime.datetime.now(),
+        elapsed=1,
+        job_type=JobType.ANALYSIS,
+    )
+    analysis_job_2 = Job(
+        analysis_id=analysis.id,
+        name="name",
+        slurm_id=2,
         status=TrailblazerStatus.COMPLETED,
         started_at=datetime.datetime.now(),
         elapsed=1,
@@ -61,7 +70,7 @@ def analysis(order_id_with_multiple_analyses) -> Analysis:
         elapsed=1,
         job_type=JobType.UPLOAD,
     )
-    session.add_all([analysis_job, upload_job])
+    session.add_all([analysis_job_1, analysis_job_2, upload_job])
     session.commit()
     return analysis
 

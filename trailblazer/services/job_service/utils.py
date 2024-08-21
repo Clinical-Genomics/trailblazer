@@ -1,18 +1,13 @@
 from pathlib import Path
-from trailblazer.constants import FileFormat, SlurmJobStatus, TrailblazerStatus
+from trailblazer.constants import FileFormat, JobType, SlurmJobStatus, TrailblazerStatus
 from trailblazer.io.controller import ReadFile
-from trailblazer.store.models import Job
+from trailblazer.store.models import Analysis, Job
 
 
-def get_slurm_job_ids(job_id_file: str) -> list[int]:
-    job_id_file_path = Path(job_id_file)
-    content: dict = ReadFile.get_content_from_file(
-        file_format=FileFormat.YAML, file_path=job_id_file_path
-    )
-    job_ids: list[int] = []
-    for row in content.values():
-        [job_ids.append(int(job_id)) for job_id in row]
-    return job_ids
+def get_tower_workflow_id(analysis: Analysis) -> str:
+    file = Path(analysis.config_path)
+    content: dict = ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=file)
+    return content.get(analysis.case_id)[-1]
 
 
 def get_status(jobs: list[Job]) -> TrailblazerStatus:
@@ -60,8 +55,18 @@ def is_analysis_failed(jobs: list[Job]) -> bool:
 
 
 def get_progress(jobs: list[Job]) -> float:
-    total_jobs: int = len(jobs)
-    if total_jobs == 0:
-        return 0.0
-    completed_jobs: int = len([job for job in jobs if job.status == SlurmJobStatus.COMPLETED])
-    return completed_jobs / total_jobs
+    analysis_jobs: list[Job] = _get_analysis_jobs(jobs)
+    completed_jobs: list[Job] = _get_completed_jobs(analysis_jobs)
+
+    total_count: int = len(analysis_jobs)
+    completed_count: int = len(completed_jobs)
+
+    return 0.0 if total_count == 0 else completed_count / total_count
+
+
+def _get_analysis_jobs(jobs: list[Job]) -> list[Job]:
+    return [job for job in jobs if job.job_type == JobType.ANALYSIS]
+
+
+def _get_completed_jobs(jobs: list[Job]) -> list[Job]:
+    return [job for job in jobs if job.status == SlurmJobStatus.COMPLETED]

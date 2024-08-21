@@ -1,20 +1,31 @@
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import pytest
 from requests_mock import Mocker
+from sqlalchemy.orm import Session
 
 
 from trailblazer.clients.authentication_client.google_oauth_client import GoogleOAuthClient
 from trailblazer.clients.google_api_client.google_api_client import GoogleAPIClient
 from trailblazer.clients.slurm_cli_client.slurm_cli_client import SlurmCLIClient
-from trailblazer.constants import TrailblazerStatus
+from trailblazer.clients.tower.tower_client import TowerAPIClient
+from trailblazer.constants import (
+    PRIORITY_OPTIONS,
+    TYPES,
+    JobType,
+    TrailblazerStatus,
+    WorkflowManager,
+)
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
 from trailblazer.services.encryption_service.encryption_service import EncryptionService
 from trailblazer.services.job_service import JobService
 from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.services.slurm.slurm_cli_service.slurm_cli_service import SlurmCLIService
 
+from trailblazer.services.tower.tower_api_service import TowerAPIService
+from trailblazer.store.database import get_session
+from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 
 
@@ -30,10 +41,32 @@ def upload_job_info() -> SlurmJobInfo:
 
 
 @pytest.fixture
-def job_service(analysis_store: Store):
+def tower_service(analysis_store: Store) -> TowerAPIService:
+    tower_client = TowerAPIClient(
+        base_url="https://tower",
+        access_token="token",
+        workspace_id="workspace_id",
+    )
+    return TowerAPIService(client=tower_client, store=analysis_store)
+
+
+@pytest.fixture
+def slurm_service(analysis_store: Store) -> SlurmCLIService:
     slurm_client = SlurmCLIClient("host")
-    slurm_service = SlurmCLIService(slurm_client)
-    return JobService(slurm_service=slurm_service, store=analysis_store)
+    return SlurmCLIService(client=slurm_client, store=analysis_store)
+
+
+@pytest.fixture
+def job_service(
+    analysis_store: Store,
+    slurm_service: SlurmCLIService,
+    tower_service: TowerAPIService,
+) -> JobService:
+    return JobService(
+        slurm_service=slurm_service,
+        tower_service=tower_service,
+        store=analysis_store,
+    )
 
 
 @pytest.fixture
