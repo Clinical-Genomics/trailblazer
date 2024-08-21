@@ -18,7 +18,7 @@ def slurm_client() -> SlurmAPIClient:
 @pytest.fixture
 def tower_client():
     return TowerAPIClient(
-        base_url="https://tower",
+        base_url="https://tower/",
         access_token="token",
         workspace_id="workspace_id",
     )
