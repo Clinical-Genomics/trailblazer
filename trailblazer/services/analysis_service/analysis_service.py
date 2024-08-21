@@ -45,7 +45,7 @@ class AnalysisService:
     def cancel_analysis_from_web(self, analysis_id: int) -> CancelAnalysisResponse:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
 
-        if analysis.workflow_manager == WorkflowManager.TOWER:
+        if analysis.workflow_manager == WorkflowManager.SLURM:
             raise CancelSlurmAnalysisNotSupported
 
         self.cancel_analysis(analysis_id)
