@@ -15,8 +15,8 @@ class MissingJob(TrailblazerError):
 
 
 class CancelSlurmAnalysisNotSupported(TrailblazerError):
-    def __init__(self, message="Cancelling SLURM analysis via the web app is not supported"):
-        super().__init__(message)
+    def __init__(self):
+        self.message = "Cancelling SLURM analysis via the web app is not supported"
 
 
 class MissingFileError(TrailblazerError):
