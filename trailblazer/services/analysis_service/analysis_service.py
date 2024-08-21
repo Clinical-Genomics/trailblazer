@@ -41,7 +41,7 @@ class AnalysisService:
             analysis_id=analysis_id,
             comment="Analysis cancelled manually",
         )
-        message = f"Analysis {analysis_id} has been canceled."
+        message = f"Analysis {analysis_id} has been cancelled."
         return CancelAnalysisResponse(message=message)
 
     def get_analyses(self, request: AnalysesRequest) -> AnalysesResponse:
