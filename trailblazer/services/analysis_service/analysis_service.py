@@ -12,7 +12,7 @@ from trailblazer.dto.cancel_analysis_response import CancelAnalysisResponse
 from trailblazer.dto.summaries_request import SummariesRequest
 from trailblazer.dto.summaries_response import SummariesResponse, Summary
 from trailblazer.dto.update_analyses import UpdateAnalyses
-from trailblazer.exc import MissingAnalysis
+from trailblazer.exc import CancelSlurmAnalysisNotSupported, MissingAnalysis
 from trailblazer.services.analysis_service.utils import (
     create_analysis_response,
     create_summary,
@@ -31,7 +31,7 @@ class AnalysisService:
         self.store = store
         self.job_service = job_service
 
-    def cancel_analysis(self, analysis_id: int) -> CancelAnalysisResponse:
+    def cancel_analysis(self, analysis_id: int) -> None:
         self.job_service.cancel_jobs(analysis_id)
         self.store.update_analysis_status(
             analysis_id=analysis_id,
@@ -41,7 +41,14 @@ class AnalysisService:
             analysis_id=analysis_id,
             comment="Analysis cancelled manually",
         )
-        return CancelAnalysisResponse()
+
+    def cancel_analysis_from_web(self, analysis_id: int) -> CancelAnalysisResponse:
+        analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
+
+        if analysis.workflow_manager == WorkflowManager.TOWER:
+            raise CancelSlurmAnalysisNotSupported
+
+        self.cancel_analysis(analysis_id)
 
     def get_analyses(self, request: AnalysesRequest) -> AnalysesResponse:
         analyses, total_count = self.store.get_paginated_analyses(request)

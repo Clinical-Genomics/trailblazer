@@ -14,6 +14,11 @@ class MissingJob(TrailblazerError):
     """Error for missing job"""
 
 
+class CancelSlurmAnalysisNotSupported(TrailblazerError):
+    def __init__(self, message="Cancelling SLURM analysis via the web app is not supported"):
+        super().__init__(message)
+
+
 class MissingFileError(TrailblazerError):
     pass
 

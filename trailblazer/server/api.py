@@ -119,7 +119,7 @@ def cancel_analysis(
     analysis_id: int,
     analysis_service: AnalysisService = Provide[Container.analysis_service],
 ):
-    response: CancelAnalysisResponse = analysis_service.cancel_analysis(analysis_id)
+    response: CancelAnalysisResponse = analysis_service.cancel_analysis_from_web(analysis_id)
     return jsonify(response.model_dump()), HTTPStatus.OK
 
 

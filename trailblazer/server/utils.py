@@ -5,7 +5,7 @@ import logging
 from functools import wraps
 from pydantic import ValidationError
 
-from trailblazer.exc import MissingAnalysis
+from trailblazer.exc import CancelSlurmAnalysisNotSupported, MissingAnalysis
 from trailblazer.dto import AnalysesRequest
 from trailblazer.services.authentication_service.exceptions import AuthenticationError
 
@@ -45,6 +45,8 @@ def handle_endpoint_errors(func):
             return jsonify("User not allowed"), HTTPStatus.FORBIDDEN
         except MissingAnalysis as error:
             return jsonify(error=str(error)), HTTPStatus.NOT_FOUND
+        except CancelSlurmAnalysisNotSupported as error:
+            return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
         except ValidationError as error:
             LOG.error(f"Validation error in analysis endpoint: {error}")
             return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
