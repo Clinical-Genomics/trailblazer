@@ -19,6 +19,7 @@ from trailblazer.dto import (
 )
 from trailblazer.dto.analyses_response import UpdateAnalysesResponse
 from trailblazer.dto.authentication.code_exchange_request import CodeExchangeRequest
+from trailblazer.dto.cancel_analysis_response import CancelAnalysisResponse
 from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.dto.summaries_request import SummariesRequest
 from trailblazer.dto.summaries_response import SummariesResponse
@@ -118,9 +119,8 @@ def cancel_analysis(
     analysis_id: int,
     analysis_service: AnalysisService = Provide[Container.analysis_service],
 ):
-    analysis_service.cancel_analysis(analysis_id)
-    response = {"message": f"Analysis {analysis_id} has been canceled."}
-    return jsonify(response), HTTPStatus.OK
+    response: CancelAnalysisResponse = analysis_service.cancel_analysis(analysis_id)
+    return jsonify(response.model_dump()), HTTPStatus.OK
 
 
 @blueprint.route("/analysis/<int:analysis_id>/jobs", methods=["POST"])

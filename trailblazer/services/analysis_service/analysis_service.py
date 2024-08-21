@@ -8,6 +8,7 @@ from trailblazer.dto import (
     CreateAnalysisRequest,
 )
 from trailblazer.dto.analyses_response import UpdateAnalysesResponse
+from trailblazer.dto.cancel_analysis_response import CancelAnalysisResponse
 from trailblazer.dto.summaries_request import SummariesRequest
 from trailblazer.dto.summaries_response import SummariesResponse, Summary
 from trailblazer.dto.update_analyses import UpdateAnalyses
@@ -30,7 +31,7 @@ class AnalysisService:
         self.store = store
         self.job_service = job_service
 
-    def cancel_analysis(self, analysis_id: int) -> None:
+    def cancel_analysis(self, analysis_id: int) -> CancelAnalysisResponse:
         self.job_service.cancel_jobs(analysis_id)
         self.store.update_analysis_status(
             analysis_id=analysis_id,
@@ -40,6 +41,8 @@ class AnalysisService:
             analysis_id=analysis_id,
             comment="Analysis cancelled manually",
         )
+        message = f"Analysis {analysis_id} has been canceled."
+        return CancelAnalysisResponse(message=message)
 
     def get_analyses(self, request: AnalysesRequest) -> AnalysesResponse:
         analyses, total_count = self.store.get_paginated_analyses(request)
