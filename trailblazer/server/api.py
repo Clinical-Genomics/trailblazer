@@ -112,7 +112,7 @@ def get_analysis(
     return jsonify(response.model_dump()), HTTPStatus.OK
 
 
-@blueprint.route("/analyses/<int:analysis_id>/cancel", methods=["DELETE"])
+@blueprint.route("/analyses/<int:analysis_id>/cancel", methods=["POST"])
 @handle_endpoint_errors
 @inject
 def cancel_analysis(

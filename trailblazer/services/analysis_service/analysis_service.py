@@ -12,7 +12,7 @@ from trailblazer.dto.cancel_analysis_response import CancelAnalysisResponse
 from trailblazer.dto.summaries_request import SummariesRequest
 from trailblazer.dto.summaries_response import SummariesResponse, Summary
 from trailblazer.dto.update_analyses import UpdateAnalyses
-from trailblazer.exc import CancelSlurmAnalysisNotSupported, MissingAnalysis
+from trailblazer.exc import CancelSlurmAnalysisNotSupportedError, MissingAnalysis
 from trailblazer.services.analysis_service.utils import (
     create_analysis_response,
     create_summary,
@@ -46,7 +46,7 @@ class AnalysisService:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
 
         if analysis.workflow_manager == WorkflowManager.SLURM:
-            raise CancelSlurmAnalysisNotSupported
+            raise CancelSlurmAnalysisNotSupportedError()
 
         self.cancel_analysis(analysis_id)
 
