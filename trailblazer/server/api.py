@@ -111,6 +111,18 @@ def get_analysis(
     return jsonify(response.model_dump()), HTTPStatus.OK
 
 
+@blueprint.route("/analyses/<int:analysis_id>/cancel", methods=["DELETE"])
+@handle_endpoint_errors
+@inject
+def cancel_analysis(
+    analysis_id: int,
+    analysis_service: AnalysisService = Provide[Container.analysis_service],
+):
+    analysis_service.cancel_analysis(analysis_id)
+    response = {"message": f"Analysis {analysis_id} has been canceled."}
+    return jsonify(response), HTTPStatus.OK
+
+
 @blueprint.route("/analysis/<int:analysis_id>/jobs", methods=["POST"])
 @handle_endpoint_errors
 @inject
