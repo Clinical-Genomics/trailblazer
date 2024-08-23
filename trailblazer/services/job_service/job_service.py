@@ -41,6 +41,26 @@ class JobService:
         return create_job_response(job)
 
     @handle_job_service_errors
+    def update_upload_jobs(self) -> None:
+        jobs: list[Job] = self.store.get_ongoing_upload_jobs()
+        for job in jobs:
+            LOG.info(f"Updating upload job {job.id}")
+            updated_job: SlurmJobInfo = self.slurm_service.get_job(job.slurm_id)
+            self.store.update_job(job_id=job.id, job_info=updated_job)
+
+    @handle_job_service_errors
+    def update_jobs(self, analysis_id: int) -> None:
+        analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
+        try:
+            if analysis.workflow_manager == WorkflowManager.SLURM:
+                self.slurm_service.update_jobs(analysis_id)
+            if analysis.workflow_manager == WorkflowManager.TOWER:
+                self.tower_service.update_jobs(analysis_id)
+        except Exception as error:
+            LOG.error(f"Failed to update jobs {analysis.case_id} - {analysis.id}: {error}")
+            raise JobServiceError from error
+
+    @handle_job_service_errors
     def get_analysis_status(self, analysis_id: int) -> TrailblazerStatus:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
 
@@ -71,23 +91,3 @@ class JobService:
             self.slurm_service.cancel_jobs(analysis_id)
         if analysis.workflow_manager == WorkflowManager.TOWER:
             self.tower_service.cancel_jobs(analysis_id)
-
-    @handle_job_service_errors
-    def update_upload_jobs(self) -> None:
-        jobs: list[Job] = self.store.get_ongoing_upload_jobs()
-        for job in jobs:
-            LOG.info(f"Updating upload job {job.id}")
-            updated_job: SlurmJobInfo = self.slurm_service.get_job(job.slurm_id)
-            self.store.update_job(job_id=job.id, job_info=updated_job)
-
-    @handle_job_service_errors
-    def update_jobs(self, analysis_id: int) -> None:
-        analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
-        try:
-            if analysis.workflow_manager == WorkflowManager.SLURM:
-                self.slurm_service.update_jobs(analysis_id)
-            if analysis.workflow_manager == WorkflowManager.TOWER:
-                self.tower_service.update_jobs(analysis_id)
-        except Exception as error:
-            LOG.error(f"Failed to update jobs {analysis.case_id} - {analysis.id}: {error}")
-            raise JobServiceError from error
