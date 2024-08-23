@@ -64,13 +64,10 @@ class JobService:
         if not analysis.jobs:
             raise NoJobsError(f"No jobs found for analysis {analysis_id}")
 
-        status: TrailblazerStatus = get_status(analysis.jobs)
-        if (
-            analysis.workflow_manager == WorkflowManager.TOWER
-            and status == TrailblazerStatus.COMPLETED
-        ):
-            status = TrailblazerStatus.QC
-        return status
+        if analysis.workflow_manager == WorkflowManager.TOWER:
+            return self.tower_service.get_status(analysis_id)
+
+        return get_status(analysis.jobs)
 
     def get_analysis_progression(self, analysis_id: int) -> float:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
