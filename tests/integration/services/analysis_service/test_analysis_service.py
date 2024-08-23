@@ -1,5 +1,5 @@
 from trailblazer.clients.slurm_api_client.dto.job_response import SlurmJobResponse
-from trailblazer.clients.tower.models import TowerTasksResponse
+from trailblazer.clients.tower.models import TowerTasksResponse, TowerWorkflowResponse
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.store.models import Analysis
@@ -9,10 +9,12 @@ def test_updating_tower_analysis(
     analysis_service: AnalysisService,
     tower_analysis: Analysis,
     tower_tasks_response: TowerTasksResponse,
+    tower_workflow_response: TowerWorkflowResponse,
 ):
 
     # GIVEN an analysis started with tower without any job entries but running tasks
     analysis_service.job_service.tower_service.client.get_tasks.return_value = tower_tasks_response
+    analysis_service.job_service.tower_service.client.get_workflow.return_value = tower_workflow_response
 
     # WHEN updating the tower analysis
     analysis_service.update_analysis_meta_data(tower_analysis.id)

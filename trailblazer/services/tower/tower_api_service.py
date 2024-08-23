@@ -26,7 +26,7 @@ class TowerAPIService:
         self.client.cancel_workflow(workflow_id)
         self.update_jobs(analysis_id)
 
-    def get_status(self, workflow_id: str) -> str:
+    def get_status(self, workflow_id: str) -> TrailblazerStatus:
         response = self.client.get_workflow(workflow_id)
         status = TOWER_WORKFLOW_STATUS.get(response.workflow.status, TrailblazerStatus.ERROR)
         if status == TrailblazerStatus.COMPLETED:

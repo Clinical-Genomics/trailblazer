@@ -9,7 +9,14 @@ from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
 from trailblazer.clients.slurm_api_client.dto.common import SlurmAPIJobInfo
 from trailblazer.clients.slurm_api_client.dto.job_response import SlurmJobResponse
-from trailblazer.clients.tower.models import TaskWrapper, TowerTask, TowerTasksResponse
+from trailblazer.clients.tower.models import (
+    TaskWrapper,
+    TowerProgress,
+    TowerTask,
+    TowerTasksResponse,
+    TowerWorkflow,
+    TowerWorkflowResponse,
+)
 from trailblazer.constants import (
     PRIORITY_OPTIONS,
     TOWER_TIMESTAMP_FORMAT,
@@ -351,6 +358,16 @@ def tower_tasks_response():
     task_wrapper_1 = TaskWrapper(task=task_1)
     task_wrapper_2 = TaskWrapper(task=task_2)
     return TowerTasksResponse(tasks=[task_wrapper_1, task_wrapper_2], total=2)
+
+
+@pytest.fixture
+def tower_workflow_response() -> TowerWorkflowResponse:
+    worfklow = TowerWorkflow(status="RUNNING")
+    progress = TowerProgress(workflowProgress={}, processesProgress=[])
+    return TowerWorkflowResponse(
+        workflow=worfklow,
+        progress=progress,
+    )
 
 
 @pytest.fixture
