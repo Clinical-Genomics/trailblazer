@@ -8,3 +8,15 @@ class JobServiceError(TrailblazerError):
 
 class NoJobsError(JobServiceError):
     pass
+
+
+class SlurmAPIServiceError(TrailblazerError):
+    pass
+
+
+class SlurmCLIServiceError(TrailblazerError):
+    pass
+
+
+class TowerServiceError(TrailblazerError):
+    pass
