@@ -1,8 +1,11 @@
 from datetime import datetime
 
+import pytest
+
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
 from trailblazer.constants import TrailblazerStatus
+from trailblazer.exc import MissingAnalysis
 from trailblazer.store.models import Analysis, Job, User
 
 
@@ -143,10 +146,8 @@ def test_get_analysis_with_id_when_missing(analysis_store: MockStore):
     missing_analysis_id: int = 12312423534
 
     # WHEN accessing the analysis
-    analysis: Analysis | None = analysis_store.get_analysis_with_id(analysis_id=missing_analysis_id)
-
-    # THEN it should return None
-    assert not analysis
+    with pytest.raises(MissingAnalysis):
+        analysis_store.get_analysis_with_id(analysis_id=missing_analysis_id)
 
 
 def test_get_analyses_for_case(analysis_store: MockStore, case_id: str):

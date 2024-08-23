@@ -18,7 +18,6 @@ from trailblazer.io.controller import ReadFile
 from trailblazer.models import Config
 from trailblazer.server.wiring import setup_dependency_injection
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
-from trailblazer.services.job_service import JobService
 from trailblazer.store.database import get_session, initialize_database
 from trailblazer.store.models import Analysis, User
 from trailblazer.store.store import Store
@@ -104,12 +103,14 @@ def scan(analysis_service: AnalysisService = Provide[Container.analysis_service]
 
 
 @base.command("update-analysis")
+@inject
 @click.argument("analysis_id")
-@click.pass_context
-def update_analysis(context, analysis_id: int):
+def update_analysis(
+    analysis_id: int,
+    analysis_service: AnalysisService = Provide[Container.analysis_service],
+):
     """Update status of a single analysis."""
-    trailblazer_db: Store = context.obj["trailblazer_db"]
-    trailblazer_db.update_run_status(analysis_id=analysis_id)
+    analysis_service.update_analysis_meta_data(analysis_id)
 
 
 @base.command("add-user")
@@ -190,13 +191,15 @@ def unarchive_user(context, email: str) -> None:
 
 
 @base.command()
+@inject
 @click.argument("analysis_id", type=int)
-@click.pass_context
-def cancel(context, analysis_id):
+def cancel(
+    analysis_id: int,
+    analysis_service: AnalysisService = Provide[Container.analysis_service],
+):
     """Cancel all jobs in an analysis."""
-    trailblazer_db: Store = context.obj["trailblazer_db"]
     try:
-        trailblazer_db.cancel_ongoing_analysis(analysis_id=analysis_id, email=environ_email())
+        analysis_service.cancel_analysis(analysis_id)
     except Exception as error:
         LOG.error(error)
 
