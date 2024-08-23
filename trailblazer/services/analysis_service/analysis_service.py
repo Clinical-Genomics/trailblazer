@@ -49,6 +49,7 @@ class AnalysisService:
             raise CancelSlurmAnalysisNotSupportedError()
 
         self.cancel_analysis(analysis_id)
+        return CancelAnalysisResponse()
 
     def get_analyses(self, request: AnalysesRequest) -> AnalysesResponse:
         analyses, total_count = self.store.get_paginated_analyses(request)
