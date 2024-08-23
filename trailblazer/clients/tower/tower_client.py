@@ -4,7 +4,7 @@ from trailblazer.clients.tower.models import (
     TowerTasksResponse,
     TowerWorkflowResponse,
 )
-from trailblazer.clients.tower.utils import handle_client_errors
+from trailblazer.clients.tower.error_handler import handle_client_errors
 
 
 class TowerAPIClient:

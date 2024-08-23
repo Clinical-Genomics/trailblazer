@@ -4,7 +4,7 @@ from pydantic import ValidationError
 from requests import ConnectionError, HTTPError
 from requests.exceptions import MissingSchema
 
-from trailblazer.exc import InvalidTowerAPIResponse, TowerAPIClientError, TowerRequestFailed
+from trailblazer.exc import InvalidTowerAPIResponse, TowerRequestFailed
 
 LOG = logging.getLogger(__name__)
 
@@ -13,9 +13,9 @@ def handle_client_errors(func):
     """Handle errors that may occur when interacting with the Tower API.
 
     Raises:
+        TowerAPIClientError
         TowerRequestFailed: when the request to the Tower API fails.
         InvalidTowerAPIResponse: when the returned data from the Tower API is invalid.
-        TowerAPIClientError: when an unexpected error occurs in the Tower API client.
     """
 
     @wraps(func)
@@ -30,6 +30,6 @@ def handle_client_errors(func):
             raise InvalidTowerAPIResponse(error) from error
         except Exception as error:
             LOG.error(f"Unexpected error in Tower API client: {error}")
-            raise TowerAPIClientError(error) from error
+            raise
 
     return wrapper

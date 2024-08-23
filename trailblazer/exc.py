@@ -39,14 +39,6 @@ class MissingSqueueOutput(TrailblazerError):
     """Raised when squeue results sre missing."""
 
 
-class TowerRequirementsError(TowerError):
-    """Raised when Tower requirements are not satisfied."""
-
-
-class TowerResponseError(TowerError):
-    """Raised when an invalid Tower response is returned."""
-
-
 class ValidationError(TrailblazerError):
     """
     Exception related to validations.
@@ -59,9 +51,15 @@ class SlurmAPIClientError(TrailblazerError):
     """
 
 
-class ResponseDeserializationError(SlurmAPIClientError):
+class InvalidSlurmResponseError(SlurmAPIClientError):
     """
     Exception related to the data in a  Slurm API client response.
+    """
+
+
+class SlurmRequestFailed(SlurmAPIClientError):
+    """
+    Exception raised when the Slurm API request fails.
     """
 
 
