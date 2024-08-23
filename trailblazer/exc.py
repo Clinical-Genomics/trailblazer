@@ -85,3 +85,27 @@ class AnalysisServiceError(TrailblazerError):
     """
     Exception related to Analysis Service.
     """
+
+
+class JobServiceError(TrailblazerError):
+    pass
+
+
+class NoJobsError(JobServiceError):
+    pass
+
+
+class SlurmAPIServiceError(TrailblazerError):
+    pass
+
+
+class SlurmCLIServiceError(TrailblazerError):
+    pass
+
+
+class TowerServiceError(TrailblazerError):
+    pass
+
+
+class TowerWorkflowIdFileMissing(TowerServiceError):
+    pass

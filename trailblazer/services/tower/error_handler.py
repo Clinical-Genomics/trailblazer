@@ -2,7 +2,7 @@ import logging
 from functools import wraps
 
 from trailblazer.exc import TowerAPIClientError
-from trailblazer.exceptions import TowerServiceError, TowerWorkflowIdFileMissing
+from trailblazer.exc import TowerServiceError, TowerWorkflowIdFileMissing
 
 LOG = logging.getLogger(__name__)
 

@@ -3,7 +3,7 @@ import logging
 
 from trailblazer.constants import TrailblazerStatus, WorkflowManager
 from trailblazer.dto import CreateJobRequest, FailedJobsRequest, FailedJobsResponse, JobResponse
-from trailblazer.exceptions import JobServiceError, NoJobsError
+from trailblazer.exc import JobServiceError, NoJobsError
 from trailblazer.services.job_service.error_handler import handle_job_service_errors
 from trailblazer.services.job_service.mappers import (
     create_failed_jobs_response,

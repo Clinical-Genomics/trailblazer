@@ -2,7 +2,7 @@ import logging
 from functools import wraps
 
 from trailblazer.exc import AnalysisServiceError
-from trailblazer.exceptions import JobServiceError
+from trailblazer.exc import JobServiceError
 
 LOG = logging.getLogger(__name__)
 

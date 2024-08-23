@@ -1,7 +1,7 @@
 import logging
 from functools import wraps
 
-from trailblazer.exceptions import (
+from trailblazer.exc import (
     JobServiceError,
     SlurmAPIServiceError,
     SlurmCLIServiceError,
