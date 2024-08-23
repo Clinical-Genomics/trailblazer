@@ -20,3 +20,7 @@ class SlurmCLIServiceError(TrailblazerError):
 
 class TowerServiceError(TrailblazerError):
     pass
+
+
+class TowerWorkflowIdFileMissing(TowerServiceError):
+    pass

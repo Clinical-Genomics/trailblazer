@@ -81,3 +81,9 @@ class TowerRequestFailed(TowerAPIClientError):
     """
     Exception raised when the Tower API request fails.
     """
+
+
+class AnalysisServiceError(TrailblazerError):
+    """
+    Exception related to Analysis Service.
+    """
