@@ -1,5 +1,6 @@
 from trailblazer.clients.tower.models import TowerTasksResponse
 from trailblazer.clients.tower.tower_client import TowerAPIClient
+from trailblazer.services.tower.error_handler import handle_tower_service_errors
 from trailblazer.services.tower.utils import create_job_from_tower_task, get_tower_workflow_id
 from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
@@ -12,6 +13,7 @@ class TowerAPIService:
         self.client = client
         self.store = store
 
+    @handle_tower_service_errors
     def update_jobs(self, analysis_id: int) -> list[Job]:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
         workflow_id: str = get_tower_workflow_id(analysis)
@@ -19,6 +21,7 @@ class TowerAPIService:
         jobs: list[Job] = [create_job_from_tower_task(task) for task in response.get_tasks()]
         self.store.replace_jobs(analysis_id=analysis_id, jobs=jobs)
 
+    @handle_tower_service_errors
     def cancel_jobs(self, analysis_id: int) -> None:
         analysis: Analysis = self.store.get_analysis_with_id(analysis_id)
         workflow_id: str = get_tower_workflow_id(analysis)
