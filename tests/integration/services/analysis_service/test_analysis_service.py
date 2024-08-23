@@ -14,7 +14,9 @@ def test_updating_tower_analysis(
 
     # GIVEN an analysis started with tower without any job entries but running tasks
     analysis_service.job_service.tower_service.client.get_tasks.return_value = tower_tasks_response
-    analysis_service.job_service.tower_service.client.get_workflow.return_value = tower_workflow_response
+    analysis_service.job_service.tower_service.client.get_workflow.return_value = (
+        tower_workflow_response
+    )
 
     # WHEN updating the tower analysis
     analysis_service.update_analysis_meta_data(tower_analysis.id)
