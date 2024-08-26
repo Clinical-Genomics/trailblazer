@@ -1,13 +1,7 @@
-import logging
-from pydantic import ValidationError
 import requests
 
 from trailblazer.clients.slurm_api_client.dto import SlurmJobResponse
 from trailblazer.clients.slurm_api_client.error_handler import handle_errors
-from trailblazer.exc import ResponseDeserializationError, SlurmAPIClientError
-
-
-LOG = logging.getLogger(__name__)
 
 
 class SlurmAPIClient:
