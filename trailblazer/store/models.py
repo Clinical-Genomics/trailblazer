@@ -92,6 +92,7 @@ class Analysis(Model):
     version = Column(types.String(32))
     workflow = Column(types.String(32))
     workflow_manager = Column(types.Enum(*WorkflowManager.list()), default=WorkflowManager.SLURM)
+    tower_workflow_id = Column(types.String(32))
 
     jobs = orm.relationship("Job", cascade="all,delete", backref="analysis")
     delivery = orm.relationship("Delivery", uselist=False)
