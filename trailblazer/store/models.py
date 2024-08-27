@@ -120,6 +120,13 @@ class Analysis(Model):
     def delivered_date(self) -> datetime.datetime | None:
         return self.delivery.delivered_date if self.delivery else None
 
+    @property
+    def is_cancellable(self) -> bool:
+        return (
+            self.status in [TrailblazerStatus.PENDING, TrailblazerStatus.RUNNING]
+            and self.workflow_manager == WorkflowManager.TOWER
+        )
+
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object."""
         return {
@@ -146,6 +153,7 @@ class Analysis(Model):
             "ticket_id": self.ticket_id,
             "uploaded_at": self.uploaded_at,
             "workflow_manager": self.workflow_manager,
+            "is_cancellable": self.is_cancellable,
         }
 
 
