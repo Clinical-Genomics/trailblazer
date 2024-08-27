@@ -14,3 +14,4 @@ class CreateAnalysisRequest(BaseModel):
     ticket: str | None = None
     type: TrailblazerTypes
     workflow_manager: WorkflowManager | None = None
+    tower_workflow_id: str | None = None
