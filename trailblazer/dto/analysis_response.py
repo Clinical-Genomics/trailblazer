@@ -53,3 +53,4 @@ class AnalysisResponse(BaseModel):
     version: str | None = None
     workflow: str | None = None
     workflow_manager: WorkflowManager
+    is_cancellable: bool = False
