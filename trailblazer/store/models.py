@@ -123,8 +123,7 @@ class Analysis(Model):
     @property
     def is_cancellable(self) -> bool:
         return (
-            self.status == TrailblazerStatus.PENDING
-            or self.status == TrailblazerStatus.RUNNING
+            self.status in [TrailblazerStatus.PENDING, TrailblazerStatus.RUNNING]
             and self.workflow_manager == WorkflowManager.TOWER
         )
 
