@@ -38,6 +38,7 @@ class Analysis(BaseModel):
     user_id: int | None = None
     version: str | None = None
     workflow_manager: str
+    is_cancellable: bool = False
 
 
 class AnalysesResponse(BaseModel):
