@@ -1,12 +1,7 @@
-import logging
-from pydantic import ValidationError
 import requests
 
 from trailblazer.clients.slurm_api_client.dto import SlurmJobResponse
-from trailblazer.exc import ResponseDeserializationError, SlurmAPIClientError
-
-
-LOG = logging.getLogger(__name__)
+from trailblazer.clients.slurm_api_client.error_handler import handle_errors
 
 
 class SlurmAPIClient:
@@ -14,26 +9,15 @@ class SlurmAPIClient:
         self.base_url = base_url
         self.headers = {"X-SLURM-USER-NAME": user_name, "X-SLURM-USER-TOKEN": access_token}
 
+    @handle_errors
     def get_job(self, job_id: str) -> SlurmJobResponse:
         endpoint: str = f"{self.base_url}/slurm/v0.0.40/job/{job_id}"
-        try:
-            response = requests.get(endpoint, headers=self.headers)
-            response.raise_for_status()
-        except requests.exceptions.HTTPError as e:
-            LOG.error(f"Error getting job {job_id}: {e.response.content}")
-            raise SlurmAPIClientError(e)
+        response = requests.get(endpoint, headers=self.headers)
+        response.raise_for_status()
+        return SlurmJobResponse.model_validate(response.json())
 
-        try:
-            return SlurmJobResponse.model_validate(response.json())
-        except ValidationError as e:
-            LOG.error(f"Error deserializing job response: {e}")
-            raise ResponseDeserializationError(e)
-
+    @handle_errors
     def cancel_job(self, job_id: str) -> None:
         endpoint: str = f"{self.base_url}/slurm/v0.0.40/job/{job_id}"
-        try:
-            response = requests.delete(endpoint, headers=self.headers)
-            response.raise_for_status()
-        except requests.exceptions.HTTPError as e:
-            LOG.error(f"Error cancelling job {job_id}: {e.response.content}")
-            raise SlurmAPIClientError(e)
+        response = requests.delete(endpoint, headers=self.headers)
+        response.raise_for_status()
