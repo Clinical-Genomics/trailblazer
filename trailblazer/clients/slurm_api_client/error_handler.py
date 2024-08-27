@@ -2,7 +2,8 @@ from functools import wraps
 import logging
 
 from pydantic import ValidationError
-import requests
+from requests import HTTPError
+
 
 from trailblazer.exc import ResponseDeserializationError, SlurmAPIClientError
 
@@ -15,11 +16,11 @@ def handle_errors(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except requests.exceptions.HTTPError as e:
-            LOG.error(f"Error getting job: {e.response.content}")
-            raise SlurmAPIClientError(e)
+        except HTTPError as e:
+            LOG.error(f"Error for request in slurm API client: {e.response.content}")
+            raise SlurmAPIClientError()
         except ValidationError as e:
-            LOG.error(f"Error deserializing job response: {e}")
-            raise ResponseDeserializationError(e)
+            LOG.error(f"Error deserializing slurm API response: {e}")
+            raise ResponseDeserializationError()
 
     return wrapper
