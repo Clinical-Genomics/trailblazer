@@ -23,7 +23,15 @@ def handle_client_errors(func):
         try:
             return func(*args, **kwargs)
         except (MissingSchema, HTTPError, ConnectionError) as error:
-            LOG.error(f"Request against tower failed: {error}, {error.response.text}")
+            LOG.error(
+                "Request against tower failed",
+                exc_info=True,
+                extra={
+                    "error_message": str(error),
+                    "response_status_code": getattr(error.response, "status_code", "N/A"),
+                    "response_text": getattr(error.response, "text", "N/A"),
+                },
+            )
             raise TowerRequestFailed(error) from error
         except ValidationError as error:
             LOG.error(f"Invalidly formatted response from Tower API: {error}")

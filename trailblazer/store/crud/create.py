@@ -28,6 +28,7 @@ class CreateHandler(BaseHandler):
             ticket_id=analysis_data.ticket,
             type=analysis_data.type,
             workflow_manager=analysis_data.workflow_manager,
+            tower_workflow_id=analysis_data.tower_workflow_id,
         )
 
         if analysis_data.email:
