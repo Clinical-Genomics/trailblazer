@@ -81,3 +81,17 @@ class TowerRequestFailed(TowerAPIClientError):
     """
     Exception raised when the Tower API request fails.
     """
+
+
+class TowerServiceError(TrailblazerError):
+    """
+    Exception raised when an error occurs in the Tower service.
+    """
+
+
+class WorkflowIdFileMissingError(TowerServiceError):
+    """
+    Exception raised when the workflow ID file is missing.
+    """
+
+    message = "Workflow ID file is missing"
