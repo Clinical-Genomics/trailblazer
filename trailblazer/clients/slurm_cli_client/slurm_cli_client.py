@@ -1,5 +1,5 @@
-from trailblazer.apps.slurm.api import cancel_slurm_job, get_slurm_queue
-from trailblazer.apps.slurm.models import SqueueResult
+from trailblazer.clients.slurm_cli_client.utils import cancel_slurm_job, get_slurm_queue
+from trailblazer.clients.slurm_cli_client.models import SqueueResult
 
 
 class SlurmCLIClient:

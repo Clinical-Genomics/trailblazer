@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from trailblazer.apps.slurm.models import SqueueJob, SqueueResult
+from trailblazer.clients.slurm_cli_client.models import SqueueJob, SqueueResult
 from trailblazer.constants import FileFormat, SlurmJobStatus
 from trailblazer.io.controller import ReadStream
 

@@ -1,5 +1,5 @@
-from trailblazer.apps.slurm.api import get_squeue_result
-from trailblazer.apps.slurm.models import SqueueResult
+from trailblazer.clients.slurm_cli_client.utils import get_squeue_result
+from trailblazer.clients.slurm_cli_client.models import SqueueResult
 
 
 def test_get_squeue_result(squeue_stream_jobs):
