@@ -1,7 +1,3 @@
-import subprocess
-from datetime import datetime
-
-import pytest
 from click.testing import CliRunner
 
 import trailblazer
@@ -10,16 +6,13 @@ from trailblazer.cli.core import (
     add_user,
     archive_user,
     base,
-    cancel,
-    delete,
     get_user_from_db,
     get_users_from_db,
-    ls_cmd,
     set_analysis_completed,
     set_analysis_status,
     unarchive_user,
 )
-from trailblazer.constants import CharacterFormat, SlurmJobStatus, TrailblazerStatus
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.models import Analysis
 
 FUNC_GET_SLURM_SQUEUE_OUTPUT_PATH: str = "trailblazer.store.crud.update.get_slurm_squeue_output"

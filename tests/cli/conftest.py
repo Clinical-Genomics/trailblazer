@@ -21,12 +21,6 @@ def cli_runner() -> CliRunner:
     return CliRunner()
 
 
-@pytest.fixture(scope="session")
-def invoke_cli(cli_runner: CliRunner) -> partial:
-    """Invokes CLI base with partial functionality."""
-    return partial(cli_runner.invoke, base)
-
-
 @pytest.fixture(autouse=True)
 def container() -> Container:
     container: Container = setup_dependency_injection()

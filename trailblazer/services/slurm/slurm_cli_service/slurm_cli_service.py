@@ -1,6 +1,6 @@
-from trailblazer.apps.slurm.models import SqueueJob, SqueueResult
+from trailblazer.clients.slurm_cli_client.models import SqueueJob, SqueueResult
 from trailblazer.clients.slurm_cli_client.slurm_cli_client import SlurmCLIClient
-from trailblazer.clients.slurm_cli_client.utils import create_job_info_dto
+from trailblazer.clients.slurm_cli_client.mapper import create_job_info_dto
 from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.services.slurm.slurm_api_service.mappers import create_job
 from trailblazer.services.slurm.slurm_service import SlurmService
