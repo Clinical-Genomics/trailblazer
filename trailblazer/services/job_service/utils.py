@@ -1,6 +1,7 @@
 from trailblazer.constants import JobType, SlurmJobStatus, TrailblazerStatus
 from trailblazer.store.models import Job
 
+
 def get_status(jobs: list[Job]) -> TrailblazerStatus:
     if has_same_status(jobs):
         return get_single_status(jobs)
