@@ -2,7 +2,7 @@ from trailblazer.clients.tower.models import TowerTasksResponse
 from trailblazer.clients.tower.tower_client import TowerAPIClient
 from trailblazer.constants import TOWER_WORKFLOW_STATUS, TrailblazerStatus
 from trailblazer.services.tower.error_handler import handle_errors
-from trailblazer.services.tower.utils import create_job_from_tower_task, get_tower_workflow_id
+from trailblazer.services.tower.utils import create_job_from_tower_task
 from trailblazer.store.models import Analysis, Job
 from trailblazer.store.store import Store
 

@@ -1,14 +1,5 @@
-from pathlib import Path
-from trailblazer.constants import FileFormat, JobType, SlurmJobStatus, TrailblazerStatus
-from trailblazer.io.controller import ReadFile
-from trailblazer.store.models import Analysis, Job
-
-
-def get_tower_workflow_id(analysis: Analysis) -> str:
-    file = Path(analysis.config_path)
-    content: dict = ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=file)
-    return content.get(analysis.case_id)[-1]
-
+from trailblazer.constants import JobType, SlurmJobStatus, TrailblazerStatus
+from trailblazer.store.models import Job
 
 def get_status(jobs: list[Job]) -> TrailblazerStatus:
     if has_same_status(jobs):
