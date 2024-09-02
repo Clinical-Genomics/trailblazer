@@ -15,3 +15,4 @@ class CreateAnalysisRequest(BaseModel):
     type: TrailblazerTypes
     workflow_manager: WorkflowManager | None = None
     tower_workflow_id: str | None = None
+    is_hidden: bool | None = None

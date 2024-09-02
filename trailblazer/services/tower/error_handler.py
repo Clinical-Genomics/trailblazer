@@ -7,7 +7,6 @@ LOG = logging.getLogger(__name__)
 
 
 def handle_errors(func):
-
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
