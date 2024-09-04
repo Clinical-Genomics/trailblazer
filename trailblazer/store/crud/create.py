@@ -29,6 +29,7 @@ class CreateHandler(BaseHandler):
             type=analysis_data.type,
             workflow_manager=analysis_data.workflow_manager,
             tower_workflow_id=analysis_data.tower_workflow_id,
+            is_visible=not analysis_data.is_hidden,
         )
 
         if analysis_data.email:
