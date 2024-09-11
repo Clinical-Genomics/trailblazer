@@ -11,7 +11,6 @@ def test_updating_tower_analysis(
     tower_tasks_response: TowerTasksResponse,
     tower_workflow_response: TowerWorkflowResponse,
 ):
-
     # GIVEN an analysis started with tower without any job entries but running tasks
     analysis_service.job_service.tower_service.client.get_tasks.return_value = tower_tasks_response
     analysis_service.job_service.tower_service.client.get_workflow.return_value = (
@@ -36,7 +35,6 @@ def test_updating_slurm_analysis(
     slurm_analysis: Analysis,
     slurm_job_response: SlurmJobResponse,
 ):
-
     # GIVEN an analysis started with slurm without any job entries but running jobs
     analysis_service.job_service.slurm_service.client.get_job.return_value = slurm_job_response
 

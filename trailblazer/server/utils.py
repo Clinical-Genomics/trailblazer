@@ -36,7 +36,6 @@ def stringify_timestamps(data: dict) -> dict[str, str]:
 
 
 def handle_endpoint_errors(func):
-
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
