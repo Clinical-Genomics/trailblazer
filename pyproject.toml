@@ -46,6 +46,10 @@ ruff = "*"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+
+[tool.poetry.scripts]
+trailblazer = "trailblazer.cli.base:base"
+
 [tool.black]
 line-length = 100
 
