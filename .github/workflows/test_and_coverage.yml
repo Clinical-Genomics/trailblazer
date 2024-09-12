@@ -24,16 +24,8 @@ jobs:
       run: |
         poetry run pytest --cov=trailblazer/
         poetry run coveralls
+        coveralls --service=github
       env:
         GITHUB: 1
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-
-  finish:
-    needs: tests-coverage
-    runs-on: ubuntu-latest
-    steps:
-      - name: Coveralls Finished
-        uses: coverallsapp/github-action@v2
-        with:
-          github-token: ${{ secrets.github_token }}
-          parallel-finished: true
