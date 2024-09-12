@@ -31,6 +31,7 @@ marshmallow = "*"
 pydantic = "*"
 python = "^3.11"
 requests = "*"
+setuptools  = "*"
 tabulate = "*"
 
 [tool.poetry.group.dev.dependencies]
@@ -48,7 +49,7 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.poetry.scripts]
-trailblazer = "trailblazer.cli.base:base"
+trailblazer = "trailblazer.cli.core:base"
 
 [tool.black]
 line-length = 100
