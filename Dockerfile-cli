@@ -6,6 +6,10 @@ RUN addgroup --system nonroot \
 WORKDIR /app
 COPY . /app/
 
-RUN pip install --no-cache-dir .
+RUN pip install poetry \
+&& poetry export -f requirements.txt -o requirements.txt --without-hashes \
+&& pip install --no-cache-dir -r requirements.txt -e .
 
 USER nonroot
+
+ENTRYPOINT ["python", "-m", "trailblazer"]

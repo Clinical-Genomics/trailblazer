@@ -15,8 +15,10 @@ ENV GOOGLE_REDIRECT_URI="http://localhost:8000/auth"
 WORKDIR /home/src/app
 COPY . /home/src/app
 
-RUN pip install -r requirements.txt
-RUN pip install -e .
+# Install app requirements
+RUN pip install poetry \
+&& poetry export -f requirements.txt -o requirements.txt --without-hashes \
+&& pip install -r requirements.txt
 
 
 CMD gunicorn \
