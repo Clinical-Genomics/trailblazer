@@ -17,11 +17,10 @@ COPY . /home/src/app
 
 # Install app requirements
 RUN pip install poetry \
-&& poetry export -f requirements.txt -o requirements.txt --without-hashes \
-&& pip install -r requirements.txt
+&& poetry install
 
 
-CMD gunicorn \
+CMD poetry run gunicorn \
   --workers=$GUNICORN_WORKERS \
   --bind=$GUNICORN_BIND \
   --threads=$GUNICORN_TREADS \
