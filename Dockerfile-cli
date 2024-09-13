@@ -7,9 +7,10 @@ WORKDIR /app
 COPY . /app/
 
 RUN pip install poetry \
-    && poetry config virtualenvs.create false \
-    && poetry install
+    && poetry config virtualenvs.create false
 
 USER nonroot
+
+RUN poetry install
 
 ENTRYPOINT ["poetry", "run", "trailblazer"]
