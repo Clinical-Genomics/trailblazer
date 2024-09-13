@@ -11,6 +11,6 @@ RUN pip install poetry \
 
 USER nonroot
 
-RUN poetry install
+RUN poetry install --no-root
 
 ENTRYPOINT ["poetry", "run", "trailblazer"]
