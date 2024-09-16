@@ -1,6 +1,0 @@
-alembic
-pre-commit
-pytest
-pytest-mock
-ruff
-requests_mock

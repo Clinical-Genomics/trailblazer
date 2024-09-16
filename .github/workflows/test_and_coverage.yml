@@ -5,11 +5,8 @@ on: [push]
 jobs:
 
   tests-coverage:
-
     runs-on: ubuntu-latest
-
     steps:
-
     - uses: actions/checkout@v4.1.1
 
     - name: Set up Python
@@ -17,21 +14,27 @@ jobs:
       with:
         python-version: 3.11
 
-    - name: Install Trailblazer
-      run: |
-        python -m pip install --upgrade pip
-        pip install .
-        pip install -r requirements-dev.txt
+    - name: Install and configure Poetry
+      uses: snok/install-poetry@v1
 
-    - name: Coveralls Dependencies
-      run: |
-        pip install pytest-cov coveralls
+    - name: Install dependencies
+      run: poetry install --no-interaction
 
-    - name: Test with pytest & Coveralls
+    - name: Test with Pytest & Coveralls
       run: |
-        pytest --cov=trailblazer/
-        coveralls --service=github
+        poetry run pytest --cov=trailblazer/
+        poetry run coveralls
       env:
         GITHUB: 1
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.github_token }}
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+
+  finish:
+    needs: tests-coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel-finished: true
