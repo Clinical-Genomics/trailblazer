@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "trailblazer"
-version = "21.5.48"
+version = "21.5.49"
 description = "Keep track of and manage analyses"
 authors = ["Your Name <you@example.com>"]
 license = "MIT"
