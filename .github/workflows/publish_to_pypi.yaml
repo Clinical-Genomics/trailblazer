@@ -21,9 +21,12 @@ jobs:
    - name: Install poetry
      uses: snok/install-poetry@v1
 
-   - name: Build and publish to PYPI
-     run: |
-       poetry publish --build
+   - name: Build and Publish Distribution to PyPI 📦
      env:
-       GITHUB: 1
-       POETRY_PYPI_TOKEN_PYPI: ${{ secrets.POETRY_PYPI_TOKEN_PYPI }}
+       PYPI_USERNAME: __token__
+       PYPI_PASSWORD: ${{ secrets.pypi_password }}
+       POETRY_REQUESTS_TIMEOUT: 60
+     run: |
+       poetry publish --no-interaction --build \
+         --username $PYPI_USERNAME \
+         --password $PYPI_PASSWORD
