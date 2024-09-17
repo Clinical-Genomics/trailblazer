@@ -1,11 +1,10 @@
 FROM docker.io/library/python:3.11-slim-bullseye
 
-RUN addgroup --system nonroot \
-    && adduser --system --ingroup nonroot nonroot
-
 WORKDIR /app
 COPY . /app/
 
-RUN pip install --no-cache-dir .
+RUN pip install poetry \
+    && poetry config virtualenvs.create false \
+    && poetry install
 
-USER nonroot
+ENTRYPOINT ["poetry", "run", "trailblazer"]
