@@ -1,49 +1,28 @@
-# Steps
+# Deployment guide
+This includes instructions for deploying Houskeeper in the Clinical Genomics :hospital: setting. General instructions for deployment is in the [development guide][development-guide]
 
-When all tests done and successful and PR is approved, follow these steps:
+## Steps
+When all tests are done and successful and the PR is approved by codeowners, follow these steps:
 
+### Deploy feature branch for testing
+To deploy your feature branch to test it, run
+1. `trailblazer-test-deploy <branch_name>`
+2. `trailblazer-test --help` or the command you want to test.
+
+This will pull the latest image tagged with your branch from dockerhub and make it available with `trailblazer-test`.
+Note that it is not necessary to paxa the environment to do this, unless you need to apply database revisions.
+
+
+### Deploy to stage and production
 1. Select "Squash and merge" to merge branch into default branch (master/main).
+2. Append version increment value `( major | minor | patch )` in the commit message to specify what kind of release is to be created.
+3. Review the details and merge the branch into master.
+4. Deploy the latest version to stage and production with `trailblazer-deploy`.
+5. Apply any migrations against the stage and prod databases with alembic.
+    - Ensure that you have the latest revisions in your branch.
+    - Ensure that you have the correct tunnels open against Hasta.
+    - Ensure that you point to the correct alembic config when you apply the revisions with `alembic --config <config path>` upgrade head`
+6. Take a screenshot or copy log text and post as a comment on the PR. Screenshot should include environment and that it succeeded.
+7. Great job :whale2:
 
-
-2. A prompt for writing merge commit message will pop up.
-
-
-3. Find the title of the pull request already pre-filled in the merge commit title, or copy and paste 
-the title if not.
-
-
-4. Append version increment value `( major | minor | patch )` to specify what kind of release is to be created.
-
-
-5. Fill in markdown formatted changelog in merge commit comment details:
-
-` ### Added `
-
-` ### Changed `
-
-` ### Fixed `
-
-6. Review the details once again and merge the branch into master.
-
-
-7. Wait for GitHub actions to process the event, bump version, create release, publish to Dockerhub and PyPi where applicable.
-
-8. Deploy on the appropriate server:
-    1. Deploy on hasta:
-        1. Deploy master to stage
-            1. `ssh hasta`
-            1. `us`
-            1. Request stage environment `paxa` and follow instructions
-            1. ```Shell
-               bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-tool-stage.sh -e S_trailblazer -t trailblazer -b master -a
-               ```
-            1. Make sure that installation was successful
-            1. `down`
-        1. Deploy master to production
-            1. Ensure the publish action to PyPi is finished.
-            1. `up`
-            1. ```Shell
-               bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-tool-prod.sh -e P_trailblazer -t trailblazer -b master -a
-               ```
-            1. Make sure that installation was successful
-1. Take a screenshot and post as a comment on the PR. Screenshot should include environment and that it succeeded
+[development-guide]: http://www.clinicalgenomics.se/development/publish/prod/

@@ -13,16 +13,11 @@
 -
 
 ### How to prepare for test
-- [ ] ssh to hasta (depending on type of change)
-- [ ] activate stage: `us`
-- [ ] request trailblazer-stage on hasta: `paxa`
-- [ ] install on stage:
-    ```Shell
-    bash /home/proj/production/servers/resources/hasta.scilifelab.se/update-tool-stage.sh -e S_trailblazer -t trailblazer -b [THIS-BRANCH-NAME] -a
-    ```
-- [ ] ssh to clinical-db (depending on type of change)
-- [ ] install on stage:
-`bash /home/proj/production/servers/resources/clinical-db.scilifelab.se/update-trailblazer-ui-stage.sh [THIS-BRANCH-NAME]`
+```bash
+trailblazer-test-deploy <branch-name>
+trailblazer-test <command here>
+```
+Any migrations need to be applied manually with alembic against the stage database.
 
 ### How to test
 - [ ] login to ...
