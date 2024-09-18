@@ -11,8 +11,8 @@ WORKDIR /home/src/app
 COPY . /home/src/app
 
 # Install app requirements
-RUN pip install poetry \
-&& poetry install
+RUN pip install --ignore-installed poetry \
+&& poetry install --only main
 
 
 CMD poetry run gunicorn \
