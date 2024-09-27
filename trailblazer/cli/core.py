@@ -64,11 +64,11 @@ def base(
         log_format = "%(message)s" if sys.stdout.isatty() else None
 
     coloredlogs.install(level=log_level, fmt=log_format)
+    setup_dependency_injection()
+
     validated_config = Config(
         **ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=Path(config.name))
     )
-    setup_dependency_injection(validated_config)
-
     context.obj = dict(validated_config)
     context.with_resource(DatabaseResource(validated_config.database_url))
     context.obj["trailblazer_db"] = Store()
