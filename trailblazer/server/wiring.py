@@ -6,12 +6,10 @@ def setup_dependency_injection(validated_config: Config = None) -> Container:
     import trailblazer.cli.core
     import trailblazer.server.api
 
+    container = Container()
     if validated_config:
-        container = Container(
-            tower_base_url=validated_config.tower_base_url,
-            tower_access_token=validated_config.tower_access_token,
-        )
-    else:
-        container = Container()
+        container.tower_access_token = validated_config.tower_base_url
+        container.tower_base_url = validated_config.tower_base_url
+        container.tower_workspace_id = validated_config.tower_workspace_id
     container.wire(modules=[trailblazer.server.api, trailblazer.cli.core])
     return container
