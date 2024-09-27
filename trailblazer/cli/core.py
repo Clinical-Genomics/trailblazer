@@ -5,8 +5,8 @@ from pathlib import Path
 
 import click
 import coloredlogs
+from dependency_injector.wiring import Provide, inject
 from sqlalchemy.orm import scoped_session
-from dependency_injector.wiring import inject, Provide
 
 import trailblazer
 from trailblazer.cli.utils.ls_helper import _get_ls_analysis_message
@@ -64,11 +64,11 @@ def base(
         log_format = "%(message)s" if sys.stdout.isatty() else None
 
     coloredlogs.install(level=log_level, fmt=log_format)
-    setup_dependency_injection()
-
     validated_config = Config(
         **ReadFile.get_content_from_file(file_format=FileFormat.YAML, file_path=Path(config.name))
     )
+    setup_dependency_injection(validated_config)
+
     context.obj = dict(validated_config)
     context.with_resource(DatabaseResource(validated_config.database_url))
     context.obj["trailblazer_db"] = Store()
