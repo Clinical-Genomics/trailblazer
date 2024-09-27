@@ -14,6 +14,7 @@
 
 ### How to prepare for test
 ```bash
+us
 trailblazer-test-deploy <branch-name>
 trailblazer-test <command here>
 ```
