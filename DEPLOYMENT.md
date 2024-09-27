@@ -6,8 +6,9 @@ When all tests are done and successful and the PR is approved by codeowners, fol
 
 ### Deploy feature branch for testing
 To deploy your feature branch to test it, run
+1. `us`
 1. `trailblazer-test-deploy <branch_name>`
-2. `trailblazer-test --help` or the command you want to test.
+1`trailblazer-test --help` or the command you want to test.
 
 This will pull the latest image tagged with your branch from dockerhub and make it available with `trailblazer-test`.
 Note that it is not necessary to paxa the environment to do this, unless you need to apply database revisions.
