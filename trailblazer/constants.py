@@ -42,7 +42,7 @@ class Workflow(StrEnum):
     MIP_RNA: str = "MIP-RNA"
     MUTANT: str = "MUTANT"
     RSYNC: str = "RSYNC"
-    FASTQ: str = "FASTQ"
+    RAW_DATA: str = "RAW-DATA"
 
 
 class SlurmSqueueHeader(StrEnum):
