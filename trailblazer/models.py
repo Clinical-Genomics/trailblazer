@@ -5,6 +5,3 @@ class Config(BaseModel):
     """Initialize base settings."""
 
     database_url: str = Field("sqlite:///:memory:")
-    tower_base_url: str = Field("a_tower_endpoint_url")
-    tower_access_token: str = Field("a_tower_access_token")
-    tower_workspace_id: int = Field("a_tower_workspace_id")
