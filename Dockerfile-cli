@@ -1,5 +1,8 @@
 FROM docker.io/library/python:3.11-slim-bullseye
 
+ENV TOWER_API_ENDPOINT="a_tower_endpoint"
+ENV TOWER_ACCESS_TOKEN="a_tower_access_token"
+
 WORKDIR /app
 COPY . /app/
 
