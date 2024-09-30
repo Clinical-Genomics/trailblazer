@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bullseye
+FROM python:3.12-slim-bullseye
 
 ENV SECRET_KEY="Authkey"
 ENV SQLALCHEMY_DATABASE_URI="sqlite:///:memory:"
@@ -11,8 +11,8 @@ WORKDIR /home/src/app
 COPY . /home/src/app
 
 # Install app requirements
-RUN pip install poetry \
-&& poetry install
+RUN pip install --ignore-installed poetry \
+&& poetry install --only main
 
 
 CMD poetry run gunicorn \
