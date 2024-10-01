@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 from trailblazer.constants import SlurmJobStatus, SlurmSqueueHeader
@@ -69,3 +70,4 @@ class SqueueResult(BaseModel):
             job_status: round(job_statuses.count(job_status) / len(self.jobs), 2)
             for job_status in set(job_statuses)
         }
+        return SqueueResult
