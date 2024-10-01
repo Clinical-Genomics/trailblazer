@@ -70,4 +70,4 @@ class SqueueResult(BaseModel):
             job_status: round(job_statuses.count(job_status) / len(self.jobs), 2)
             for job_status in set(job_statuses)
         }
-        return SqueueResult
+        return self
