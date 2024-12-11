@@ -1,4 +1,10 @@
-from trailblazer.constants import TrailblazerStatus
+from unittest import mock
+
+import pytest
+
+from trailblazer.clients.tower.models import TowerWorkflowResponse
+from trailblazer.constants import TrailblazerStatus, TowerStatus
+from trailblazer.exceptions import NoJobsError
 from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Analysis
 
@@ -57,3 +63,29 @@ def test_analysis_status_when_running_jobs(
 
     # THEN the status is running
     assert status == TrailblazerStatus.RUNNING
+
+
+def test_tower_analysis_status_pending_no_jobs(
+    job_service: JobService,
+    tower_analysis_without_jobs_and_pending: Analysis,
+    tower_workflow_response: TowerWorkflowResponse,
+):
+    # GIVEN a Tower analysis with no jobs and a SUBMITTED status
+    job_service.tower_service.client.get_workflow.return_value = tower_workflow_response
+
+    # Simulate a SUBMITTED workflow status from Tower
+    tower_workflow_response.workflow.status = TowerStatus.SUBMITTED
+
+    # WHEN fetching the analysis status
+    status = job_service.get_analysis_status(tower_analysis_without_jobs_and_pending.id)
+
+    # THEN the analysis status should be PENDING
+    assert status == TrailblazerStatus.PENDING
+
+
+def test_no_jobs_error_for_slurm_analysis(job_service: JobService, analysis_without_jobs: Analysis):
+    # GIVEN an analysis without any associated jobs
+    # WHEN fetching the analysis status
+    # THEN a NoJobsError should be raised
+    with pytest.raises(NoJobsError):
+        job_service.get_analysis_status(analysis_without_jobs.id)
