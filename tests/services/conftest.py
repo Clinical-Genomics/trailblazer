@@ -176,7 +176,7 @@ def tower_analysis_without_jobs_and_pending(analysis_store: Store):
         out_dir="out_dir",
         priority=PRIORITY_OPTIONS[0],
         started_at=datetime.now() - timedelta(weeks=1),
-        status=TrailblazerStatus.PENDING, #TODO: Issue analyses are not allowed to have `SUBMITTED` (Lets add it)
+        status=TrailblazerStatus.PENDING,
         ticket_id="ticket_id",
         type=TYPES[0],
         workflow_manager=WorkflowManager.TOWER,
