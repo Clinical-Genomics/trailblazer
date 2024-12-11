@@ -137,6 +137,7 @@ class TrailblazerStatusColor(StrEnum):
     PENDING: str = "yellow"
     RUNNING: str = "blue"
 
+
 class TowerStatus(StrEnum):
     """Tower statuses"""
 
@@ -153,16 +154,16 @@ class TowerStatus(StrEnum):
 
 
 TOWER_WORKFLOW_STATUS: dict[str, str] = {
-    TowerStatus.ABORTED : TrailblazerStatus.FAILED,
-    TowerStatus.CACHED : TrailblazerStatus.COMPLETED,
-    TowerStatus.CANCELLED : TrailblazerStatus.CANCELLED,
-    TowerStatus.COMPLETED : TrailblazerStatus.COMPLETED,
-    TowerStatus.FAILED : TrailblazerStatus.FAILED,
-    TowerStatus.NEW : TrailblazerStatus.PENDING,
-    TowerStatus.RUNNING : TrailblazerStatus.RUNNING,
-    TowerStatus.SUBMITTED : TrailblazerStatus.PENDING,
-    TowerStatus.SUCCEEDED : TrailblazerStatus.COMPLETED,
-    TowerStatus.UNKNOWN : TrailblazerStatus.FAILED,
+    TowerStatus.ABORTED: TrailblazerStatus.FAILED,
+    TowerStatus.CACHED: TrailblazerStatus.COMPLETED,
+    TowerStatus.CANCELLED: TrailblazerStatus.CANCELLED,
+    TowerStatus.COMPLETED: TrailblazerStatus.COMPLETED,
+    TowerStatus.FAILED: TrailblazerStatus.FAILED,
+    TowerStatus.NEW: TrailblazerStatus.PENDING,
+    TowerStatus.RUNNING: TrailblazerStatus.RUNNING,
+    TowerStatus.SUBMITTED: TrailblazerStatus.PENDING,
+    TowerStatus.SUCCEEDED: TrailblazerStatus.COMPLETED,
+    TowerStatus.UNKNOWN: TrailblazerStatus.FAILED,
 }
 
 

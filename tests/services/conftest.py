@@ -167,6 +167,7 @@ def analysis_without_jobs(analysis_store: Store):
 def analysis_service(analysis_store: Store, job_service_mock: JobService) -> AnalysisService:
     return AnalysisService(store=analysis_store, job_service=job_service_mock)
 
+
 @pytest.fixture
 def tower_analysis_without_jobs_and_pending(analysis_store: Store):
     analysis = Analysis(
@@ -187,4 +188,3 @@ def tower_analysis_without_jobs_and_pending(analysis_store: Store):
     session.add(analysis)
     session.commit()
     return analysis
-
