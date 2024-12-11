@@ -118,6 +118,7 @@ class TrailblazerStatus(StrEnum):
     PENDING: str = "pending"
     QC: str = "qc"
     RUNNING: str = "running"
+    SUBMITTED: str = "submitted"
 
     @classmethod
     def statuses(cls) -> tuple:
@@ -137,18 +138,32 @@ class TrailblazerStatusColor(StrEnum):
     PENDING: str = "yellow"
     RUNNING: str = "blue"
 
+class TowerStatus(StrEnum):
+    """Tower statuses"""
+
+    ABORTED: str = "ABORTED"
+    CACHED: str = "CACHED"
+    CANCELLED: str = "CANCELLED"
+    COMPLETED: str = "COMPLETED"
+    FAILED: str = "FAILED"
+    NEW: str = "NEW"
+    RUNNING: str = "RUNNING"
+    SUBMITTED: str = "SUBMITTED"
+    SUCCEEDED: str = "SUCCEEDED"
+    UNKNOWN: str = "UNKNOWN"
+
 
 TOWER_WORKFLOW_STATUS: dict[str, str] = {
-    "ABORTED": TrailblazerStatus.FAILED,
-    "CACHED": TrailblazerStatus.COMPLETED,
-    "CANCELLED": TrailblazerStatus.CANCELLED,
-    "COMPLETED": TrailblazerStatus.COMPLETED,
-    "FAILED": TrailblazerStatus.FAILED,
-    "NEW": TrailblazerStatus.PENDING,
-    "RUNNING": TrailblazerStatus.RUNNING,
-    "SUBMITTED": TrailblazerStatus.PENDING,
-    "SUCCEEDED": TrailblazerStatus.COMPLETED,
-    "UNKNOWN": TrailblazerStatus.FAILED,
+    TowerStatus.ABORTED : TrailblazerStatus.FAILED,
+    TowerStatus.CACHED : TrailblazerStatus.COMPLETED,
+    TowerStatus.CANCELLED : TrailblazerStatus.CANCELLED,
+    TowerStatus.COMPLETED : TrailblazerStatus.COMPLETED,
+    TowerStatus.FAILED : TrailblazerStatus.FAILED,
+    TowerStatus.NEW : TrailblazerStatus.PENDING,
+    TowerStatus.RUNNING : TrailblazerStatus.RUNNING,
+    TowerStatus.SUBMITTED : TrailblazerStatus.PENDING,
+    TowerStatus.SUCCEEDED : TrailblazerStatus.COMPLETED,
+    TowerStatus.UNKNOWN : TrailblazerStatus.FAILED,
 }
 
 
