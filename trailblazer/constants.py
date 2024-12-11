@@ -118,7 +118,6 @@ class TrailblazerStatus(StrEnum):
     PENDING: str = "pending"
     QC: str = "qc"
     RUNNING: str = "running"
-    SUBMITTED: str = "submitted"
 
     @classmethod
     def statuses(cls) -> tuple:
