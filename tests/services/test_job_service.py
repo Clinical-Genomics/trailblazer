@@ -1,5 +1,3 @@
-from unittest import mock
-
 import pytest
 
 from trailblazer.clients.tower.models import TowerWorkflowResponse
@@ -69,10 +67,16 @@ def test_tower_analysis_status_pending_no_jobs(
     job_service: JobService,
     tower_analysis_without_jobs_and_pending: Analysis,
     tower_workflow_response: TowerWorkflowResponse,
+    ## Add the analysis store fixture
 ):
+
+    ### Inject the analysis store into the job service
+    ### assert your created analysis is there
+
+    ### do the test...
     # GIVEN a Tower analysis with no jobs and a SUBMITTED status
     job_service.tower_service.client.get_workflow.return_value = tower_workflow_response
-
+    # set the job service store to the analysis store in the conftest
     # Simulate a SUBMITTED workflow status from Tower
     tower_workflow_response.workflow.status = TowerStatus.SUBMITTED
 

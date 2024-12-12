@@ -170,21 +170,8 @@ def analysis_service(analysis_store: Store, job_service_mock: JobService) -> Ana
 
 @pytest.fixture
 def tower_analysis_without_jobs_and_pending(analysis_store: Store):
-    analysis = Analysis(
-        config_path="config_path",
-        workflow="workflow",
-        case_id="case_id",
-        out_dir="out_dir",
-        priority=PRIORITY_OPTIONS[0],
-        started_at=datetime.now() - timedelta(weeks=1),
-        status=TrailblazerStatus.PENDING,
-        ticket_id="ticket_id",
-        type=TYPES[0],
-        workflow_manager=WorkflowManager.TOWER,
-        is_visible=True,
-        order_id=1,
-    )
-    session: Session = get_session()
-    session.add(analysis)
-    session.commit()
+    ## Create an CreateAnalysisRequest object
+    ## Use Store to add the analysis
+    ## Return the STORE
+    ## Use a specific name to test that your analysis is found
     return analysis
