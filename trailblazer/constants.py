@@ -139,7 +139,7 @@ class TrailblazerStatusColor(StrEnum):
 
 
 class TowerStatus(StrEnum):
-    """Tower statuses"""
+    """Tower statuses."""
 
     ABORTED: str = "ABORTED"
     CACHED: str = "CACHED"
