@@ -362,10 +362,20 @@ def tower_tasks_response():
 
 @pytest.fixture
 def tower_workflow_response() -> TowerWorkflowResponse:
-    worfklow = TowerWorkflow(status="RUNNING")
+    workflow = TowerWorkflow(status="RUNNING")
     progress = TowerProgress(workflowProgress={}, processesProgress=[])
     return TowerWorkflowResponse(
-        workflow=worfklow,
+        workflow=workflow,
+        progress=progress,
+    )
+
+
+@pytest.fixture
+def tower_response_submitted() -> TowerWorkflowResponse:
+    workflow = TowerWorkflow(status="SUBMITTED")
+    progress = TowerProgress(workflowProgress={}, processesProgress=[])
+    return TowerWorkflowResponse(
+        workflow=workflow,
         progress=progress,
     )
 
