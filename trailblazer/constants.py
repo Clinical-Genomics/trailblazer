@@ -153,7 +153,7 @@ class TowerStatus(StrEnum):
     UNKNOWN: str = "UNKNOWN"
 
 
-TOWER_WORKFLOW_STATUS: dict[str, str] = {
+TOWER_WORKFLOW_STATUS: dict[str, TrailblazerStatus] = {
     TowerStatus.ABORTED: TrailblazerStatus.FAILED,
     TowerStatus.CACHED: TrailblazerStatus.COMPLETED,
     TowerStatus.CANCELLED: TrailblazerStatus.CANCELLED,

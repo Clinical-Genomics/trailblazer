@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from unittest.mock import MagicMock, Mock
+
 import pytest
 from sqlalchemy.orm import Session
-
 
 from trailblazer.clients.tower.tower_client import TowerAPIClient
 from trailblazer.constants import (
@@ -166,12 +166,3 @@ def analysis_without_jobs(analysis_store: Store):
 @pytest.fixture
 def analysis_service(analysis_store: Store, job_service_mock: JobService) -> AnalysisService:
     return AnalysisService(store=analysis_store, job_service=job_service_mock)
-
-
-@pytest.fixture
-def tower_analysis_without_jobs_and_pending(analysis_store: Store):
-    ## Create an CreateAnalysisRequest object
-    ## Use Store to add the analysis
-    ## Return the STORE
-    ## Use a specific name to test that your analysis is found
-    return analysis
