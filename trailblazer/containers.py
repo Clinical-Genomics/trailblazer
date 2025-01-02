@@ -13,6 +13,9 @@ from trailblazer.services.job_service import JobService
 from trailblazer.services.slurm.slurm_api_service.slurm_api_service import SlurmAPIService
 from trailblazer.services.slurm.slurm_cli_service.slurm_cli_service import SlurmCLIService
 from trailblazer.services.tower.tower_api_service import TowerAPIService
+from trailblazer.services.user_verification_service.user_verification_service import (
+    GoogleUserVerificationService,
+)
 from trailblazer.store.store import Store
 
 
@@ -78,10 +81,14 @@ class Container(containers.DeclarativeContainer):
 
     encryption_service = providers.Singleton(EncryptionService, secret_key=encryption_key)
 
+    user_verification_service = providers.Singleton(
+        GoogleUserVerificationService,
+    )
     auth_service = providers.Singleton(
         AuthenticationService,
         google_oauth_client=google_oauth_client,
         google_api_client=google_api_client,
         encryption_service=encryption_service,
+        verification_service=user_verification_service,
         store=store,
     )
