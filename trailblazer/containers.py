@@ -91,6 +91,5 @@ class Container(containers.DeclarativeContainer):
         google_oauth_client=google_oauth_client,
         google_api_client=google_api_client,
         encryption_service=encryption_service,
-        verification_service=user_verification_service,
         store=store,
     )
