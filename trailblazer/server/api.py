@@ -41,6 +41,7 @@ blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
 
 @blueprint.before_request
+@inject
 def before_request(
     user_verification_service: UserVerificationService = Provide[
         Container.user_verification_service
