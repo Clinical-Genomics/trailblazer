@@ -5,9 +5,5 @@ class UserTokenVerificationError(TrailblazerError):
     pass
 
 
-class InvalidTokenError(UserTokenVerificationError):
-    pass
-
-
-class ExpiredTokenError(UserTokenVerificationError):
+class GoogleCertsError(TrailblazerError):
     pass

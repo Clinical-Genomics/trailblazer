@@ -3,7 +3,7 @@ from typing import Mapping
 from google.auth import jwt
 import requests
 
-from trailblazer.services.user_verification_service.exc import InvalidTokenError
+from trailblazer.services.user_verification_service.exc import GoogleCertsError
 from trailblazer.store.models import User
 from trailblazer.store.store import Store
 
@@ -50,7 +50,7 @@ class UserVerificationService:
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
-            raise InvalidTokenError("Failed to fetch Google public keys") from e
+            raise GoogleCertsError("Failed to fetch Google public keys") from e
 
     def _get_user(self, user_email: str) -> User:
         """Check if the user is known."""

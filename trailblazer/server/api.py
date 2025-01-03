@@ -32,6 +32,7 @@ from trailblazer.server.utils import (
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
 from trailblazer.services.job_service import JobService
+from trailblazer.services.user_verification_service.exc import UserTokenVerificationError
 from trailblazer.services.user_verification_service.user_verification_service import (
     UserVerificationService,
 )
@@ -54,7 +55,10 @@ def before_request(
         return make_response(jsonify(ok=True), 204)
     if os.environ.get("SCOPE") == "DEVELOPMENT":
         return
-    g.current_user = user_verification_service.verify_user(request.headers.get("Authorization"))
+    try:
+        g.current_user = user_verification_service.verify_user(request.headers.get("Authorization"))
+    except (UserTokenVerificationError, ValueError) as error:
+        abort(HTTPStatus.UNAUTHORIZED, str(error))
 
 
 @blueprint.route("/auth", methods=["POST"])
