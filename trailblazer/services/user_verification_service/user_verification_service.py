@@ -3,7 +3,10 @@ from typing import Mapping
 from google.auth import jwt
 import requests
 
-from trailblazer.services.user_verification_service.exc import GoogleCertsError
+from trailblazer.services.user_verification_service.exc import (
+    GoogleCertsError,
+    UserTokenVerificationError,
+)
 from trailblazer.store.models import User
 from trailblazer.store.store import Store
 
@@ -24,7 +27,7 @@ class UserVerificationService:
                 token=jwt_token, certs=google_certs, verify=True, audience=self.google_client_id
             )
         except Exception as error:
-            raise InvalidTokenError(
+            raise UserTokenVerificationError(
                 "Could not verify user token. It might be false or expired."
             ) from error
         user_email: str = payload["email"]
