@@ -32,22 +32,13 @@ from trailblazer.server.utils import (
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
 from trailblazer.services.job_service import JobService
-from trailblazer.services.user_verification_service.exc import UserTokenVerificationError
-from trailblazer.services.user_verification_service.user_verification_service import (
-    UserVerificationService,
-)
 from trailblazer.store.models import Info, User
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
 
 @blueprint.before_request
-@inject
-def before_request(
-    user_verification_service: UserVerificationService = Provide[
-        Container.user_verification_service
-    ],
-):
+def before_request():
     """Authentication that is run before processing requests to the application"""
     if request.endpoint == "api.authenticate":
         return
@@ -55,10 +46,16 @@ def before_request(
         return make_response(jsonify(ok=True), 204)
     if os.environ.get("SCOPE") == "DEVELOPMENT":
         return
-    try:
-        g.current_user = user_verification_service.verify_user(request.headers.get("Authorization"))
-    except (UserTokenVerificationError, ValueError) as error:
-        abort(HTTPStatus.UNAUTHORIZED, str(error))
+    if auth_header := request.headers.get("Authorization"):
+        jwt_token = auth_header.split("Bearer ")[-1]
+    else:
+        return abort(403, "no JWT token found on request")
+
+    user_data: Mapping = jwt.decode(jwt_token, verify=False)
+    if user := store.get_user(email=user_data["email"], exclude_archived=True):
+        g.current_user = user
+    else:
+        return abort(403, f"{user_data['email']} doesn't have access")
 
 
 @blueprint.route("/auth", methods=["POST"])
