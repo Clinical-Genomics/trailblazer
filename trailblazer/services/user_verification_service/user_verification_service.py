@@ -24,12 +24,12 @@ class UserVerificationService:
         google_certs: Mapping = self._get_google_certs()
         try:
             payload: Mapping = jwt.decode(
-                token=jwt_token, certs=google_certs, verify=True, audience=self.google_client_id
+                token=jwt_token,
+                certs=google_certs,
+                verify=True,
             )
         except Exception as error:
-            raise UserTokenVerificationError(
-                "Could not verify user token. It might be false or expired."
-            ) from error
+            raise UserTokenVerificationError(f"{error}") from error
         user_email: str = payload["email"]
         return self._get_user(user_email)
 
