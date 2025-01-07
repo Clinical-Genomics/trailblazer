@@ -14,9 +14,10 @@ from trailblazer.store.store import Store
 class UserVerificationService:
     """Service to verify the user."""
 
-    def __init__(self, store: Store, google_client_id: str):
+    def __init__(self, store: Store, google_client_id: str, client_certs_url: str):
         self.store: Store = store
         self.google_client_id: str = google_client_id
+        self.client_certs_url: str = client_certs_url
 
     def verify_user(self, authorization_header: str) -> User:
         """Verify the user by checking if the JWT token provided is valid."""
@@ -44,12 +45,11 @@ class UserVerificationService:
             return jwt_token
         raise ValueError("No authorization header provided with request")
 
-    @staticmethod
-    def _get_google_certs() -> Mapping:
+    def _get_google_certs(self) -> Mapping:
         """Get the Google certificates."""
         try:
             # Fetch the Google public keys. Google oauth uses v1 certs.
-            response = requests.get("https://www.googleapis.com/oauth2/v1/certs")
+            response = requests.get(self.client_certs_url)
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
