@@ -49,7 +49,7 @@ class UserVerificationService:
         """Get the Google certificates."""
         try:
             # Fetch the Google public keys. Google oauth uses v1 certs.
-            response = requests.get(self.google_api_base_url + "oauth2/v1/certs")
+            response = requests.get(self.google_api_base_url + "/oauth2/v1/certs")
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
