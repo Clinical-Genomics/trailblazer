@@ -20,7 +20,6 @@ from trailblazer.store.store import Store
 
 
 class Container(containers.DeclarativeContainer):
-    client_certs_url: str | None = os.environ.get("CLIENT_CERTS_URL")
     slurm_host: str | None = os.environ.get("ANALYSIS_HOST")
     oauth_client_id: str | None = os.environ.get("GOOGLE_CLIENT_ID")
     oauth_client_secret: str | None = os.environ.get("GOOGLE_CLIENT_SECRET")
@@ -86,7 +85,7 @@ class Container(containers.DeclarativeContainer):
         UserVerificationService,
         store=store,
         google_client_id=oauth_client_id,
-        client_certs_url=client_certs_url,
+        google_oauth_base_url=google_oauth_base_url,
     )
     auth_service = providers.Singleton(
         AuthenticationService,
