@@ -85,7 +85,7 @@ class Container(containers.DeclarativeContainer):
         UserVerificationService,
         store=store,
         google_client_id=oauth_client_id,
-        google_oauth_base_url=google_oauth_base_url,
+        google_oauth_base_url=google_api_base_url,
     )
     auth_service = providers.Singleton(
         AuthenticationService,
