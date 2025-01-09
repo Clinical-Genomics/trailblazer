@@ -35,7 +35,6 @@ class UserVerificationService:
                 token=jwt_token,
                 certs=google_certs,
                 verify=True,
-                audience=self.google_client_id,
             )
         except Exception as error:
             raise UserTokenVerificationError(f"{error}") from error
