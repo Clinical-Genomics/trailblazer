@@ -14,10 +14,17 @@ from trailblazer.store.store import Store
 class UserVerificationService:
     """Service to verify the user."""
 
-    def __init__(self, store: Store, google_client_id: str, google_api_base_url: str):
+    def __init__(
+        self,
+        store: Store,
+        google_client_id: str,
+        google_api_base_url: str,
+        google_service_account_cert_url: str,
+    ):
         self.store: Store = store
         self.google_client_id: str = google_client_id
         self.google_api_base_url: str = google_api_base_url
+        self.google_service_account_cert_url: str = google_service_account_cert_url
 
     def verify_user(self, authorization_header: str) -> User:
         """Verify the user by checking if the JWT token provided is valid."""
@@ -48,11 +55,19 @@ class UserVerificationService:
 
     def _get_google_certs(self) -> Mapping:
         """Get the Google certificates."""
+        certs: Mapping = {}
         try:
             # Fetch the Google public keys. Google oauth uses v1 certs.
             response = requests.get(self.google_api_base_url + "/oauth2/v1/certs")
             response.raise_for_status()
-            return response.json()
+            certs = response.json()
+        except requests.RequestException as e:
+            raise GoogleCertsError("Failed to fetch Google public keys") from e
+        try:
+            # Fetch the Google public keys for the service account.
+            response = requests.get(self.google_service_account_cert_url)
+            response.raise_for_status()
+            certs = response.json()
         except requests.RequestException as e:
             raise GoogleCertsError("Failed to fetch Google public keys") from e
 

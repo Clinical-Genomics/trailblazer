@@ -25,6 +25,7 @@ class Container(containers.DeclarativeContainer):
     oauth_client_secret: str | None = os.environ.get("GOOGLE_CLIENT_SECRET")
     oauth_redirect_uri: str | None = os.environ.get("GOOGLE_REDIRECT_URI")
     google_oauth_base_url: str | None = os.environ.get("GOOGLE_OAUTH_BASE_URL")
+    google_service_account_cert_url: str | None = os.environ.get("GOOGLE_SERVICE_ACCOUNT_CERTS_URL")
     encryption_key: str | None = os.environ.get("ENCRYPTION_KEY")
     google_api_base_url: str | None = os.environ.get("GOOGLE_API_BASE_URL")
     slurm_jwt_token: str | None = os.environ.get("SLURM_JWT")
@@ -84,8 +85,10 @@ class Container(containers.DeclarativeContainer):
     user_verification_service = providers.Singleton(
         UserVerificationService,
         store=store,
+        google_service_account=google_service_account,
         google_client_id=oauth_client_id,
         google_api_base_url=google_api_base_url,
+        google_service_account_cert_url=google_service_account_cert_url,
     )
     auth_service = providers.Singleton(
         AuthenticationService,
