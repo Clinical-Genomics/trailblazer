@@ -55,6 +55,7 @@ class UserVerificationService:
     def _get_google_certs(self) -> Mapping:
         """Get the Google certificates."""
         certs = {}
+        # Get the google certs for the public oauth2 endpoint and the service account cert url
         cert_urls: list[str] = [
             self.google_api_base_url + "/oauth2/v1/certs",
             self.google_service_account_cert_url,
