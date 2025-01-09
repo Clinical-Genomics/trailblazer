@@ -34,6 +34,7 @@ class UserVerificationService:
             payload: Mapping = jwt.decode(
                 token=jwt_token,
                 certs=google_certs,
+                audience=self.google_client_id,
                 verify=True,
             )
         except Exception as error:
