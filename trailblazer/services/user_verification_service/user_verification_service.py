@@ -70,6 +70,7 @@ class UserVerificationService:
             certs = response.json()
         except requests.RequestException as e:
             raise GoogleCertsError("Failed to fetch Google public keys") from e
+        return certs
 
     def _get_user(self, user_email: str) -> User:
         """Check if the user is known."""
