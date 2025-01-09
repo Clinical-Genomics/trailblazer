@@ -55,20 +55,17 @@ class UserVerificationService:
     def _get_google_certs(self) -> Mapping:
         """Get the Google certificates."""
         certs = {}
-        try:
-            # Fetch the Google public keys. Google oauth uses v1 certs.
-            response = requests.get(self.google_api_base_url + "/oauth2/v1/certs")
-            response.raise_for_status()
-            certs.update(response.json())
-        except requests.RequestException as e:
-            raise GoogleCertsError("Failed to fetch Google public keys") from e
-        try:
-            # Fetch the Google public keys for the service account.
-            response = requests.get(self.google_service_account_cert_url)
-            response.raise_for_status()
-            certs.update(response.json())
-        except requests.RequestException as e:
-            raise GoogleCertsError("Failed to fetch Google public keys") from e
+        cert_urls: list[str] = [
+            self.google_api_base_url + "/oauth2/v1/certs",
+            self.google_service_account_cert_url,
+        ]
+        for url in cert_urls:
+            try:
+                response = requests.get(url)
+                response.raise_for_status()
+                certs.update(response.json())
+            except requests.RequestException as e:
+                raise GoogleCertsError("Failed to fetch Google public keys") from e
         return certs
 
     def _get_user(self, user_email: str) -> User:
