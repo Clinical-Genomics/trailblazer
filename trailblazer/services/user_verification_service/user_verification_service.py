@@ -14,9 +14,9 @@ from trailblazer.store.store import Store
 class UserVerificationService:
     """Service to verify the user."""
 
-    def __init__(self, store: Store, oauth_clinet_id: str):
+    def __init__(self, store: Store, oauth_client_id: str):
         self.store: Store = store
-        self.oauth_client_id: str = oauth_clinet_id
+        self.oauth_client_id: str = oauth_client_id
 
     def verify_user(self, authorization_header: str) -> User:
         """Verify the user by checking if the JWT token provided is valid."""
@@ -59,7 +59,8 @@ class UserVerificationService:
         if not email:
             raise UserTokenVerificationError("Email claim not found in the token.")
         if email.endswith("gserviceaccount.com"):
-            return f"https://www.googleapis.com/robot/v1/metadata/x509/{email}"
+            return "https://www.googleapis.com/oauth2/v1/certs"
+            # return f"https://www.googleapis.com/robot/v1/metadata/x509/{email}"
         return "https://www.googleapis.com/oauth2/v1/certs"
 
     def _get_google_certs(self, jwt_token: str) -> Mapping:
