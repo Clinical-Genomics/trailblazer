@@ -30,9 +30,7 @@ class UserVerificationService:
                 audience=[self.oauth_client_id, "CG-TB-CLIENT"],
             )
         except Exception as error:
-            raise UserTokenVerificationError(
-                "Could not verify user token. It might be false or expired."
-            ) from error
+            raise UserTokenVerificationError(f"{error}") from error
         user_email: str = payload["email"]
         return self._get_user(user_email)
 
