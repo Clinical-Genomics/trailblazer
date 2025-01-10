@@ -21,7 +21,7 @@ class UserVerificationService:
     def verify_user(self, authorization_header: str) -> User:
         """Verify the user by checking if the JWT token provided is valid."""
         jwt_token: str = self._extract_token_from_header(authorization_header)
-        google_certs: Mapping = self._get_google_certs(jwt_token)
+        google_certs: Mapping = self._get_google_certs()
         try:
             payload: Mapping = jwt.decode(
                 token=jwt_token,
@@ -48,26 +48,10 @@ class UserVerificationService:
         raise ValueError("No authorization header provided with request")
 
     @staticmethod
-    def _get_certs_url(jwt_token: str) -> str:
-        """
-        Get the URL to fetch the Google certificates.
-        If the email present in the payload belongs to a Google service account then return the URL for service accounts.
-        Else it uses the URL for OAuth2.
-        """
-        decoded_token = jwt.decode(token=jwt_token, verify=False)
-        email: str = decoded_token.get("email")
-        if not email:
-            raise UserTokenVerificationError("Email claim not found in the token.")
-        if email.endswith("gserviceaccount.com"):
-            return "https://www.googleapis.com/oauth2/v1/certs"
-            # return f"https://www.googleapis.com/robot/v1/metadata/x509/{email}"
-        return "https://www.googleapis.com/oauth2/v1/certs"
-
-    def _get_google_certs(self, jwt_token: str) -> Mapping:
+    def _get_google_certs() -> Mapping:
         """Get the Google certificates."""
-        url = self._get_certs_url(jwt_token)
         try:
-            response = requests.get(url)
+            response = requests.get("https://www.googleapis.com/oauth2/v1/certs")
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
