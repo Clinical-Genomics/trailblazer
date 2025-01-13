@@ -27,7 +27,7 @@ class UserVerificationService:
                 token=jwt_token,
                 certs=google_certs,
                 verify=True,
-                audience=[self.oauth_client_id, "CG-TB-CLIENT"],
+                audience=[self.oauth_client_id, "trailblazer"],
             )
         except Exception as error:
             raise UserTokenVerificationError(f"{error}") from error
