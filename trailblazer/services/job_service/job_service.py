@@ -61,11 +61,11 @@ class JobService:
         if analysis.status == TrailblazerStatus.CANCELLED:
             return TrailblazerStatus.CANCELLED
 
-        if not analysis.jobs:
-            raise NoJobsError(f"No jobs found for analysis {analysis_id}")
-
         if analysis.workflow_manager == WorkflowManager.TOWER:
             return self.tower_service.get_status(analysis_id)
+
+        if not analysis.jobs:
+            raise NoJobsError(f"No jobs found for analysis {analysis_id}")
 
         return get_status(analysis.jobs)
 

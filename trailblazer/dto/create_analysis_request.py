@@ -5,14 +5,14 @@ from trailblazer.constants import TrailblazerPriority, TrailblazerTypes, Workflo
 
 class CreateAnalysisRequest(BaseModel):
     case_id: str
-    email: str | None = None
     config_path: str
-    out_dir: str
-    order_id: int | None = None
-    priority: TrailblazerPriority
-    workflow: str | None = None
-    ticket: str | None = None
-    type: TrailblazerTypes
-    workflow_manager: WorkflowManager | None = None
-    tower_workflow_id: str | None = None
+    email: str | None = None
     is_hidden: bool | None = None
+    order_id: int | None = None
+    out_dir: str
+    priority: TrailblazerPriority
+    ticket: str | None = None
+    tower_workflow_id: str | None = None
+    type: TrailblazerTypes
+    workflow: str | None = None
+    workflow_manager: WorkflowManager | None = None
