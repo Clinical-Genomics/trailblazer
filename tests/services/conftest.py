@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from unittest.mock import MagicMock, Mock
+
 import pytest
 from sqlalchemy.orm import Session
-
 
 from trailblazer.clients.tower.tower_client import TowerAPIClient
 from trailblazer.constants import (
