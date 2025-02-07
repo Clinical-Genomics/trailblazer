@@ -84,17 +84,6 @@ analyses:
     user: tom.cruise@magnolia.com
     workflow: BALSAMIC
 
-  - case_id: assumedcrocodile
-    version: v4.2.0
-    started_at: 2017-06-15T11:00:42
-    status: pending
-    priority: low
-    out_dir: fixtures/runs/politesnake/analysis
-    config_path: fixtures/runs/politesnake/analysis/politesnake_config.yaml
-    type: wes
-    user: tom.cruise@magnolia.com
-    workflow: BALSAMIC-QC
-
   - case_id: escapedgoat
     version: v3.6.0
     started_at: 2017-06-17T12:11:42
