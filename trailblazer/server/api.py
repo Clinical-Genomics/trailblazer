@@ -1,10 +1,8 @@
 import os
 from http import HTTPStatus
-from typing import Mapping
-
 from dependency_injector.wiring import Provide, inject
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
-from google.auth import jwt
+
 
 from trailblazer.containers import Container
 from trailblazer.dto import (
@@ -18,7 +16,6 @@ from trailblazer.dto import (
     JobResponse,
 )
 from trailblazer.dto.analyses_response import UpdateAnalysesResponse
-from trailblazer.dto.authentication.code_exchange_request import CodeExchangeRequest
 from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.dto.summaries_request import SummariesRequest
 from trailblazer.dto.summaries_response import SummariesResponse
@@ -32,54 +29,34 @@ from trailblazer.server.utils import (
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
 from trailblazer.services.job_service import JobService
-from trailblazer.services.user_verification_service.exc import UserTokenVerificationError
-from trailblazer.services.user_verification_service.user_verification_service import (
-    UserVerificationService,
-)
 from trailblazer.store.models import Info, User
-
+from keycloak import KeycloakAuthenticationError
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
 
 @blueprint.before_request
 @inject
 def before_request(
-    user_verification_service: UserVerificationService = Provide[
-        Container.user_verification_service
+    auth_service: AuthenticationService = Provide[
+        Container.auth_service
     ],
 ):
     """Authentication that is run before processing requests to the application"""
-    if request.endpoint == "api.authenticate":
-        return
     if request.method == "OPTIONS":
         return make_response(jsonify(ok=True), 204)
     if os.environ.get("SCOPE") == "DEVELOPMENT":
         return
     try:
-        g.current_user = user_verification_service.verify_user(request.headers.get("Authorization"))
-    except (UserTokenVerificationError, ValueError) as error:
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
+            raise abort(HTTPStatus.UNAUTHORIZED, "No Authorization header provided.")
+        token = auth_header.split(" ")[-1]
+        g.current_user = auth_service.verify_token(token)
+        auth_service.check_user_role(token=token, role="cg-employee")
+    except (KeycloakAuthenticationError, ValueError) as error:
         abort(HTTPStatus.UNAUTHORIZED, str(error))
-
-
-@blueprint.route("/auth", methods=["POST"])
-@handle_endpoint_errors
-@inject
-def authenticate(auth_service: AuthenticationService = Provide[Container.auth_service]):
-    """Exchange authorization code for an access token."""
-    request_data = CodeExchangeRequest.model_validate(request.json)
-    token: str = auth_service.authenticate(request_data.code)
-    return jsonify({"token": token}), HTTPStatus.OK
-
-
-@blueprint.route("/auth/refresh", methods=["GET"])
-@handle_endpoint_errors
-@inject
-def refresh_token(auth_service: AuthenticationService = Provide[Container.auth_service]):
-    """Refresh access token."""
-    user: User = g.current_user
-    token: str = auth_service.refresh_token(user.id)
-    return jsonify({"token": token}), HTTPStatus.OK
-
+    except Exception as error:
+        abort(HTTPStatus.INTERNAL_SERVER_ERROR, str(error))
 
 @blueprint.route("/analyses", methods=["GET"])
 @handle_endpoint_errors

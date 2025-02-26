@@ -14,7 +14,7 @@ include = [
 
 [tool.poetry.dependencies]
 "ruamel.yaml" = "*"
-dependency-injector = "*"
+dependency-injector = "^4.45.0"
 Flask = "*"
 Flask-Cors = "*"
 MarkupSafe = "*"
@@ -25,7 +25,6 @@ click = "*"
 coloredlogs = "*"
 cryptography = "*"
 flask-reverse-proxy = "*"
-google-auth = "*"
 gunicorn = "*"
 marshmallow = "*"
 pydantic = "*"
@@ -33,6 +32,8 @@ python = "^3.12"
 requests = "*"
 setuptools  = "*"
 tabulate = "*"
+python-keycloak = ">=5.1.2,<6.0.0"
+keycloak-client = "^0.15.4"
 
 [tool.poetry.group.dev.dependencies]
 
