@@ -28,7 +28,6 @@ class AuthenticationService:
         self.redirect_uri = redirect_uri
         self.client = keycloak_client
 
-
     def verify_token(self, token: str) -> User:
         """Verify the token and return the user.
 

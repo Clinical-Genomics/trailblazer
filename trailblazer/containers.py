@@ -31,9 +31,7 @@ class Container(containers.DeclarativeContainer):
     keycloak_server_url: str | None = os.environ.get("KEYCLOAK_SERVER_URL")
     keycloak_realm: str | None = os.environ.get("KEYCLOAK_REALM")
     keycloak_redirect_uri: str | None = os.environ.get("KEYCLOAK_REDIRECT_URI", "/")
-    
-    
-    
+
     store = providers.Singleton(Store)
 
     if slurm_base_url and slurm_jwt_token and slurm_user_name:

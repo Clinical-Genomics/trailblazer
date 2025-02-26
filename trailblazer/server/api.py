@@ -31,15 +31,14 @@ from trailblazer.services.authentication_service.authentication_service import A
 from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Info, User
 from keycloak import KeycloakAuthenticationError
+
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 
 
 @blueprint.before_request
 @inject
 def before_request(
-    auth_service: AuthenticationService = Provide[
-        Container.auth_service
-    ],
+    auth_service: AuthenticationService = Provide[Container.auth_service],
 ):
     """Authentication that is run before processing requests to the application"""
     if request.method == "OPTIONS":
@@ -57,6 +56,7 @@ def before_request(
         abort(HTTPStatus.UNAUTHORIZED, str(error))
     except Exception as error:
         abort(HTTPStatus.INTERNAL_SERVER_ERROR, str(error))
+
 
 @blueprint.route("/analyses", methods=["GET"])
 @handle_endpoint_errors
