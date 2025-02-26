@@ -1,5 +1,5 @@
-from keycloak_client import KeycloakOpenID
-from keycloak_client import KeycloakGetError
+from keycloak import KeycloakOpenID
+from keycloak import KeycloakGetError
 import logging
 
 LOG = logging.getLogger(__name__)
