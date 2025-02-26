@@ -30,7 +30,7 @@ from trailblazer.services.analysis_service.analysis_service import AnalysisServi
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
 from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Info, User
-from keycloak import KeycloakAuthenticationError
+from keycloak.exceptions import KeycloakAuthenticationError
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 

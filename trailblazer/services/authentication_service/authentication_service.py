@@ -1,4 +1,4 @@
-from keycloak import KeycloakAuthenticationError, KeycloakGetError
+from keycloak.exceptions import KeycloakAuthenticationError, KeycloakGetError
 import logging
 
 from trailblazer.clients.authentication.keycloak_client import KeycloakClient
