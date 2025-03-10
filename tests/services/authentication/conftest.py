@@ -1,41 +1,12 @@
 import pytest
 
-from trailblazer.services.authentication_service.models import RealmAccess
+from trailblazer.services.authentication_service.models import DecodingResponse, RealmAccess, TokenResponseModel
 
 
 
 @pytest.fixture
 def realm_access() -> RealmAccess:
     return RealmAccess(roles=["cg-employee"])
-
-
-@pytest.fixture
-def introspection_response(realm_access) -> IntrospectionResponse:
-    return IntrospectionResponse(
-        exp=1672531199,
-        iat=1672531199,
-        auth_time=1672531199,
-        jti="unique-jti",
-        iss="https://issuer.example.com",
-        sub="subject-id",
-        typ="Bearer",
-        azp="client-id",
-        sid="session-id",
-        acr="1",
-        allowed_origins=["https://allowed.example.com"],
-        realm_access=realm_access,
-        scope="email profile",
-        email_verified=True,
-        name="John Doe",
-        preferred_username="johndoe",
-        given_name="John",
-        family_name="Doe",
-        email="johndoe@example.com",
-        client_id="client-id",
-        username="johndoe",
-        token_type="Bearer",
-        active=True,
-    )
 
 
 @pytest.fixture
@@ -69,19 +40,6 @@ def decode_token_response(realm_access) -> DecodingResponse:
         allowed_origins=["https://allowed.example.com"],
         realm_access=realm_access,
         scope="email profile",
-        email_verified=True,
-        name="John Doe",
-        preferred_username="johndoe",
-        given_name="John",
-        family_name="Doe",
-        email="johndoe@example.com",
-    )
-
-
-@pytest.fixture
-def user_info() -> UserInfo:
-    return UserInfo(
-        sub="subject-id",
         email_verified=True,
         name="John Doe",
         preferred_username="johndoe",
