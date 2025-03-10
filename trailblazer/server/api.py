@@ -28,6 +28,7 @@ from trailblazer.server.utils import (
 )
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
+from trailblazer.services.authentication_service.exceptions import UserNotFoundError, UserRoleError
 from trailblazer.services.job_service import JobService
 from trailblazer.store.models import Info, User
 from keycloak.exceptions import KeycloakAuthenticationError
@@ -51,9 +52,10 @@ def before_request(
             raise abort(HTTPStatus.UNAUTHORIZED, "No Authorization header provided.")
         token = auth_header.split(" ")[-1]
         g.current_user = auth_service.verify_token(token)
-        auth_service.check_user_role(token=token, role="cg-employee")
-    except (KeycloakAuthenticationError, ValueError) as error:
+    except (KeycloakAuthenticationError, UserRoleError) as error:
         abort(HTTPStatus.UNAUTHORIZED, str(error))
+    except UserNotFoundError as error:
+        abort(HTTPStatus.FORBIDDEN, str(error))
     except Exception as error:
         abort(HTTPStatus.INTERNAL_SERVER_ERROR, str(error))
 

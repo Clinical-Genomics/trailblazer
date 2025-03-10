@@ -29,7 +29,7 @@ class Container(containers.DeclarativeContainer):
     keycloak_client_id: str | None = os.environ.get("KEYCLOAK_CLIENT_ID")
     keycloak_client_secret: str | None = os.environ.get("KEYCLOAK_CLIENT_SECRET")
     keycloak_server_url: str | None = os.environ.get("KEYCLOAK_SERVER_URL")
-    keycloak_realm: str | None = os.environ.get("KEYCLOAK_REALM")
+    keycloak_realm_name: str | None = os.environ.get("KEYCLOAK_REALM_NAME")
     keycloak_redirect_uri: str | None = os.environ.get("KEYCLOAK_REDIRECT_URI", "/")
 
     store = providers.Singleton(Store)
@@ -76,10 +76,11 @@ class Container(containers.DeclarativeContainer):
 
     keycloak_client = providers.Singleton(
         KeycloakClient,
-        server_url=keycloak_server_url,
         client_id=keycloak_client_id,
         client_secret_key=keycloak_client_secret,
-        realm_name=keycloak_realm,
+        realm_name=keycloak_realm_name,
+        redirect_uri=keycloak_redirect_uri,
+        server_url=keycloak_server_url,
     )
 
     auth_service = providers.Singleton(
