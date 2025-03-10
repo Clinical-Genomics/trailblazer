@@ -5,6 +5,7 @@ from typing import List
 class RealmAccess(BaseModel):
     roles: List[str]
 
+
 class TokenResponseModel(BaseModel):
     access_token: str
     expires_in: int
@@ -28,7 +29,7 @@ class DecodingResponse(BaseModel):
     azp: str
     sid: str
     acr: str
-    allowed_origins: List[str]
+    allowed_origins: List[str] | None = None
     realm_access: RealmAccess
     scope: str
     email_verified: bool

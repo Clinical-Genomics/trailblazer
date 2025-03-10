@@ -52,4 +52,5 @@ def handle_endpoint_errors(func):
                 jsonify(error="An error occurred while processing your request."),
                 HTTPStatus.INTERNAL_SERVER_ERROR,
             )
+
     return wrapper

@@ -33,7 +33,6 @@ requests = "*"
 setuptools  = "*"
 tabulate = "*"
 python-keycloak = ">=5.1.2,<6.0.0"
-keycloak-client = "^0.15.4"
 
 [tool.poetry.group.dev.dependencies]
 

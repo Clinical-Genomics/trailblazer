@@ -23,7 +23,6 @@ SQLALCHEMY_POOL_RECYCLE = os.environ.get("SQLALCHEMY_POOL_RECYCLE", 7200)
 SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get("FLASK_DEBUG", False)
 
 
-
 app.config.from_object(__name__)
 
 # register blueprints
