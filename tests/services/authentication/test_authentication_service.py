@@ -8,7 +8,6 @@ from trailblazer.services.user_service.service import UserService
 from trailblazer.store.models import User
 
 
-
 def test_verify_token_success(decode_token_response):
 
     # GIVEN a mock user service and a keycloak client

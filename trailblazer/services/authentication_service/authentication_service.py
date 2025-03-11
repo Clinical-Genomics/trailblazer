@@ -18,9 +18,7 @@ class AuthenticationService:
         keycloak_client: KeycloakClient,
     ):
         """Initialize the AuthenticationService.
-
         Args:
-            user_service (UserService): Service to interact with user data.
             redirect_uri: Redirect uri for keycloak
             keycloak_client: KeycloakOpenID client.
         """

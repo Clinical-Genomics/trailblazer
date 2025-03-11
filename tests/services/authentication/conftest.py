@@ -1,7 +1,10 @@
 import pytest
 
-from trailblazer.services.authentication_service.models import DecodingResponse, RealmAccess, TokenResponseModel
-
+from trailblazer.services.authentication_service.models import (
+    DecodingResponse,
+    RealmAccess,
+    TokenResponseModel,
+)
 
 
 @pytest.fixture
