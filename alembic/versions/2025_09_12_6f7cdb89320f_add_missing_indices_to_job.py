@@ -23,5 +23,5 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_index(index_name="status_index", table_name="status")
+    op.drop_index(index_name="status_index", table_name="job")
     op.drop_index(index_name="job_type_index", table_name="job")
