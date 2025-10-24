@@ -99,12 +99,11 @@ def analysis_data(analysis_data_path: Path) -> dict[str, list]:
 @pytest.fixture(scope="session")
 def squeue_stream_jobs() -> str:
     """Return a squeue output stream."""
-    return """JOBID,NAME,STATE,TIME_LIMIT,TIME,START_TIME
-690994,gatk_genotypegvcfs2,COMPLETED,10:00:00,1:01:52,2020-10-22T11:43:33
-702463,bwa_mem_ACC3218A1,COMPLETED,1-06:00:00,1-1:28:12,2020-10-27T23:06:34
-690992,gatk_genotypegvcfs3,COMPLETED,10:00:00,5:54,2020-10-22T11:43:02
-690988,gatk_genotypegvcfs4,RUNNING,10:00:00,0:19,N/A
-690989,gatk_genotypegvcfs5,PENDING,10:00:00,0:00,N/A"""
+    return """690994,gatk_genotypegvcfs2,COMPLETED,10:00:00,01:01:52,2020-10-22T11:43:33
+702463,bwa_mem_ACC3218A1,COMPLETED,1-06:00:00,1-01:28:12,2020-10-27T23:06:34
+690992,gatk_genotypegvcfs3,COMPLETED,10:00:00,00:05:54,2020-10-22T11:43:02
+690988,gatk_genotypegvcfs4,RUNNING,10:00:00,00:00:19,2020-10-22T11:42:41
+690989,gatk_genotypegvcfs5,PENDING,10:00:00,00:00:00,2020-10-22T11:42:00"""
 
 
 @pytest.fixture
