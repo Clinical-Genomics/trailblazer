@@ -1,2 +1,0 @@
-class GoogleAPIClientError(Exception):
-    pass
