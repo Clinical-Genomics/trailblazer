@@ -5,7 +5,7 @@ from trailblazer.constants import TrailblazerPriority, TrailblazerTypes, Workflo
 
 class CreateAnalysisRequest(BaseModel):
     case_id: str
-    config_path: str
+    config_path: str | None = None
     email: str | None = None
     is_hidden: bool | None = None
     order_id: int | None = None
