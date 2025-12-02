@@ -26,8 +26,8 @@ class FileExtension(StrEnum):
 class WorkflowManager(StrEnum):
     """Supported task managers."""
 
-    SLURM: str = "slurm"
-    TOWER: str = "nf_tower"
+    SLURM = "slurm"
+    TOWER = "nf_tower"
 
     @classmethod
     def list(cls) -> list:

@@ -1,9 +1,10 @@
+import json
 from http import HTTPStatus
 
 from flask.testing import FlaskClient
 from werkzeug.test import TestResponse
 
-from trailblazer.constants import TrailblazerPriority, TrailblazerTypes
+from trailblazer.constants import TrailblazerPriority, TrailblazerTypes, WorkflowManager
 from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.store.models import Analysis
 from trailblazer.store.store import Store
@@ -45,6 +46,7 @@ def test_adding_analysis_without_config_path(client: FlaskClient, store: Store):
         case_id="case_id",
         config_path=None,
         workflow=TrailblazerTypes.WGS,
+        workflow_manager=WorkflowManager.TOWER,
         priority=TrailblazerPriority.NORMAL,
         out_dir="out_dir",
         ticket="ticket_id",
@@ -66,3 +68,35 @@ def test_adding_analysis_without_config_path(client: FlaskClient, store: Store):
     analysis_id = int(response.json["id"])
     analysis: Analysis = store.get_analysis_with_id(analysis_id)
     assert analysis.config_path is None
+
+
+def test_adding_analysis_without_config_path_and_slurm_workflow_manager_fails(
+    client: FlaskClient,
+):
+    # GIVEN a request to add an analysis with slurm as workflow manager and no config_path
+    data: str = json.dumps(
+        {
+            "case_id": "case_id",
+            "config_path": None,
+            "email": None,
+            "is_hidden": None,
+            "order_id": 123,
+            "out_dir": "out_dir",
+            "priority": "normal",
+            "ticket": "ticket_id",
+            "tower_workflow_id": None,
+            "type": "wgs",
+            "workflow": "wgs",
+            "workflow_manager": "slurm",
+        }
+    )
+
+    # WHEN sending the request
+    response: TestResponse = client.post(
+        "/api/v1/add-pending-analysis", data=data, content_type=TYPE_JSON
+    )
+
+    # THEN an error response is returned
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    assert response.json
+    assert response.json["error"]
