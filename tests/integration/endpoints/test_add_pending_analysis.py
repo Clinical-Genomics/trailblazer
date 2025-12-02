@@ -4,8 +4,6 @@ from http import HTTPStatus
 from flask.testing import FlaskClient
 from werkzeug.test import TestResponse
 
-from trailblazer.constants import TrailblazerPriority, TrailblazerTypes, WorkflowManager
-from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.store.models import Analysis
 from trailblazer.store.store import Store
 
@@ -14,17 +12,19 @@ TYPE_JSON = "application/json"
 
 def test_adding_analysis(client: FlaskClient, store: Store):
     # GIVEN a valid request to add an analysis
-    create_analysis_request = CreateAnalysisRequest(
-        case_id="case_id",
-        config_path="config_path",
-        workflow=TrailblazerTypes.WGS,
-        priority=TrailblazerPriority.NORMAL,
-        out_dir="out_dir",
-        ticket="ticket_id",
-        type=TrailblazerTypes.WGS,
-        order_id=123,
+    data: str = json.dumps(
+        {
+            "case_id": "case_id",
+            "config_path": "config_path",
+            "order_id": 123,
+            "out_dir": "out_dir",
+            "priority": "normal",
+            "ticket": "ticket_id",
+            "tower_workflow_id": None,
+            "type": "wgs",
+            "workflow": "wgs",
+        }
     )
-    data: str = create_analysis_request.model_dump_json()
 
     # WHEN sending the request
     response: TestResponse = client.post(
@@ -41,19 +41,21 @@ def test_adding_analysis(client: FlaskClient, store: Store):
 
 
 def test_adding_analysis_without_config_path(client: FlaskClient, store: Store):
-    # GIVEN a valid request to add an analysis
-    create_analysis_request = CreateAnalysisRequest(
-        case_id="case_id",
-        config_path=None,
-        workflow=TrailblazerTypes.WGS,
-        workflow_manager=WorkflowManager.TOWER,
-        priority=TrailblazerPriority.NORMAL,
-        out_dir="out_dir",
-        ticket="ticket_id",
-        type=TrailblazerTypes.WGS,
-        order_id=123,
+    # GIVEN a request to add an analysis with tower as workflow manager and no config_path
+    data: str = json.dumps(
+        {
+            "case_id": "case_id",
+            "config_path": None,
+            "order_id": 123,
+            "out_dir": "out_dir",
+            "priority": "normal",
+            "ticket": "ticket_id",
+            "tower_workflow_id": None,
+            "type": "wgs",
+            "workflow": "wgs",
+            "workflow_manager": "nf_tower",
+        }
     )
-    data: str = create_analysis_request.model_dump_json()
 
     # WHEN sending the request
     response: TestResponse = client.post(
