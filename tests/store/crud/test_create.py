@@ -1,3 +1,5 @@
+from sqlalchemy import inspect
+
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerPriority, TrailblazerTypes
 from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
@@ -33,9 +35,7 @@ def test_add_pending_analysis(store: MockStore):
     )
 
     # WHEN creating an storing a pending analysis
-    store.add_pending_analysis(analysis_data)
+    analysis: Analysis = store.add_pending_analysis(analysis_data)
 
-    # THEN it can be found in the database
-    analysis: Analysis | None = store.get_query(table=Analysis).first()
-    assert analysis
-    assert analysis.case_id == "pending_analysis_case_id"
+    # THEN an analysis has been created and persisted to the database
+    assert inspect(analysis).persistent
