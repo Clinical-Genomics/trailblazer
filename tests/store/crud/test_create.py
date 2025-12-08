@@ -1,6 +1,8 @@
 from tests.mocks.store_mock import MockStore
+from trailblazer.constants import TrailblazerPriority, TrailblazerTypes
+from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
-from trailblazer.store.models import User
+from trailblazer.store.models import Analysis, User
 
 
 def test_add_user(store: MockStore, user_email: str, username: str):
@@ -19,3 +21,21 @@ def test_add_user(store: MockStore, user_email: str, username: str):
     ).first()
     assert new_user
     assert user == new_user
+
+
+def test_add_pending_analysis(store: MockStore):
+    # GIVEN a valid CreateAnalysisRequest
+    analysis_data = CreateAnalysisRequest(
+        case_id="pending_analysis_case_id",
+        out_dir="/out/dir",
+        priority=TrailblazerPriority.LOW,
+        type=TrailblazerTypes.WGS,
+    )
+
+    # WHEN creating an storing a pending analysis
+    store.add_pending_analysis(analysis_data)
+
+    # THEN it can be found in the database
+    analysis: Analysis | None = store.get_query(table=Analysis).first()
+    assert analysis
+    assert analysis.case_id == "pending_analysis_case_id"
