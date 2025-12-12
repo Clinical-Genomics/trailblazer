@@ -34,7 +34,7 @@ def test_add_pending_analysis(store: MockStore):
         type=TrailblazerTypes.WGS,
     )
 
-    # WHEN creating an storing a pending analysis
+    # WHEN creating and storing a pending analysis
     analysis: Analysis = store.add_pending_analysis(analysis_data)
 
     # THEN an analysis has been created and persisted to the database
