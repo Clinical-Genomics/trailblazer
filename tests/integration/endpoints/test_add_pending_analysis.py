@@ -79,7 +79,6 @@ def test_adding_analysis_without_config_path_and_slurm_workflow_manager_fails(
     data: str = json.dumps(
         {
             "case_id": "case_id",
-            "config_path": None,
             "email": None,
             "is_hidden": None,
             "order_id": 123,
