@@ -26,8 +26,8 @@ class FileExtension(StrEnum):
 class WorkflowManager(StrEnum):
     """Supported task managers."""
 
-    SLURM: str = "slurm"
-    TOWER: str = "nf_tower"
+    SLURM = "slurm"
+    TOWER = "nf_tower"
 
     @classmethod
     def list(cls) -> list:
@@ -89,22 +89,22 @@ class CharacterFormat(StrEnum):
 class TrailblazerTypes(StrEnum):
     """Trailblazer analysis types."""
 
-    OTHER: str = "other"
-    RNA: str = "rna"
-    TGS: str = "tgs"
-    WES: str = "wes"
-    WGS: str = "wgs"
-    WTS: str = "wts"
+    OTHER = "other"
+    RNA = "rna"
+    TGS = "tgs"
+    WES = "wes"
+    WGS = "wgs"
+    WTS = "wts"
 
 
 class TrailblazerPriority(StrEnum):
     """Trailblazer analysis priorities."""
 
-    LOW: str = "low"
-    NORMAL: str = "normal"
-    HIGH: str = "high"
-    EXPRESS: str = "express"
-    MAINTENANCE: str = "maintenance"
+    LOW = "low"
+    NORMAL = "normal"
+    HIGH = "high"
+    EXPRESS = "express"
+    MAINTENANCE = "maintenance"
 
 
 class TrailblazerStatus(StrEnum):

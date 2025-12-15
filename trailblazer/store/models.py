@@ -75,7 +75,7 @@ class Analysis(Model):
     case_id = Column(types.String(128), nullable=False)
     comment = Column(types.Text)
     completed_at = Column(types.DateTime)
-    config_path = Column(types.Text)
+    config_path = Column(types.Text, nullable=True, default=None)
     id = Column(types.Integer, primary_key=True)
     is_visible = Column(types.Boolean, default=True)
     logged_at = Column(types.DateTime, default=datetime.datetime.now)
