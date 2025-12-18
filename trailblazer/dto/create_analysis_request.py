@@ -21,6 +21,6 @@ class CreateAnalysisRequest(BaseModel):
 
     @model_validator(mode="after")
     def check_config_path_set_for_slurm_workflow_manager(self) -> Self:
-        if (self.workflow_manager == WorkflowManager.SLURM) and (not self.config_path):
+        if (self.workflow_manager == WorkflowManager.SLURM) and (self.config_path is None):
             raise ValueError("config_path needs to be set when SLURM is workflow manager")
         return self

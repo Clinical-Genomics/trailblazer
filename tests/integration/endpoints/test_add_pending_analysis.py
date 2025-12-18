@@ -101,3 +101,32 @@ def test_adding_analysis_without_config_path_and_slurm_workflow_manager_fails(
     assert response.status_code == HTTPStatus.BAD_REQUEST
     assert response.json
     assert response.json["error"]
+
+
+def test_adding_slurm_analysis_with_empty_string_config_path(client: FlaskClient):
+    # This behaviour is currently needed by the raw-data analyses
+
+    # GIVEN a request to add an analysis with an empty string as config_path and slurm as workflow_manager
+    data: str = json.dumps(
+        {
+            "case_id": "case_id",
+            "config_path": "",
+            "order_id": 123,
+            "out_dir": "out_dir",
+            "priority": "normal",
+            "ticket": "ticket_id",
+            "tower_workflow_id": None,
+            "type": "wgs",
+            "workflow": "wgs",
+            "workflow_manager": "slurm",
+        }
+    )
+
+    # WHEN sending the request
+    response: TestResponse = client.post(
+        "/api/v1/add-pending-analysis", data=data, content_type=TYPE_JSON
+    )
+
+    # THEN it gives a success response with json contents
+    assert response.status_code == HTTPStatus.CREATED
+    assert response.json
