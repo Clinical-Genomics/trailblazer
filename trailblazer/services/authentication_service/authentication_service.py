@@ -1,42 +1,58 @@
-from trailblazer.clients.authentication_client.dtos.tokens_response import TokensResponse
-from trailblazer.clients.authentication_client.google_oauth_client import GoogleOAuthClient
-from trailblazer.clients.google_api_client.google_api_client import GoogleAPIClient
-from trailblazer.services.authentication_service.exceptions import UserNotFoundError
-from trailblazer.services.encryption_service.encryption_service import EncryptionService
+import logging
+from trailblazer.clients.authentication.keycloak_client import KeycloakClient
+from trailblazer.services.authentication_service.exceptions import UserNotFoundError, UserRoleError
+from trailblazer.services.authentication_service.models import DecodingResponse
+from trailblazer.services.user_service.service import UserService
 from trailblazer.store.models import User
-from trailblazer.store.store import Store
+
+LOG = logging.getLogger(__name__)
 
 
 class AuthenticationService:
+    """Authentication service to verify tokens against Keycloak and return user information."""
+
     def __init__(
         self,
-        google_oauth_client: GoogleOAuthClient,
-        google_api_client: GoogleAPIClient,
-        encryption_service: EncryptionService,
-        store: Store,
+        user_service: UserService,
+        redirect_uri: str,
+        keycloak_client: KeycloakClient,
     ):
-        self.google_oauth_client = google_oauth_client
-        self.google_api_client = google_api_client
-        self.encryption_service = encryption_service
-        self.store = store
+        """Initialize the AuthenticationService.
+        Args:
+            redirect_uri: Redirect uri for keycloak
+            keycloak_client: KeycloakOpenID client.
+        """
+        self.user_service = user_service
+        self.redirect_uri = redirect_uri
+        self.client = keycloak_client
 
-    def authenticate(self, authorization_code: str) -> str:
-        """Exchange the authorization code for an id token."""
-        tokens: TokensResponse = self.google_oauth_client.get_tokens(authorization_code)
-        user_email: str = self.google_api_client.get_user_email(tokens.access_token)
-        user: User | None = self.store.get_user(user_email)
+    def verify_token(self, jwt_token: str) -> User:
+        """Verify the token and return the user if required roles are present.
+        Args:
+            token (str): The token to verify.
 
-        if not user:
-            raise UserNotFoundError
+        Returns:
+            User: The user object from the statusDB database.
 
-        encrypted_token: str = self.encryption_service.encrypt(tokens.refresh_token)
-        self.store.update_user_token(user_id=user.id, refresh_token=encrypted_token)
+        Raises:
+            UserNotFoundError: If the user is not present in the statusDB user table
+        """
+        try:
+            decoded_token = DecodingResponse(**self.client.decode_token(jwt_token))
+            self.check_role(decoded_token.realm_access.roles)
+            user_email = decoded_token.email
+            return self.user_service.get_user_by_email(user_email)
+        except ValueError as error:
+            raise UserNotFoundError(f"FORBIDDEN: {error}")
 
-        return tokens.id_token
-
-    def refresh_token(self, user_id: int) -> str:
-        """Retrieve a refreshed id token for the user."""
-        user: User = self.store.get_user_by_id(user_id)
-        refresh_token: str = self.encryption_service.decrypt(user.refresh_token)
-        id_token: str = self.google_oauth_client.get_id_token(refresh_token)
-        return id_token
+    @staticmethod
+    def check_role(roles: list[str]) -> None:
+        """Check the user roles.
+        Currently set to a single permissable role, expand if needed.
+        Args:
+            roles (list[str]): The user roles received from the RealmAccess.
+        Raises:
+            UserRoleError: if required role not present
+        """
+        if not "cg-employee" in roles:
+            raise UserRoleError("The user does not have the required role to access this service.")
