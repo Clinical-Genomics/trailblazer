@@ -62,7 +62,7 @@ class TowerTask(BaseModel):
     writeBytes: int | None = None
     volCtxt: int | None = None
     invCtxt: int | None = None
-    exit: str | None = None
+    exit: int | None = None
     id: int | None = None
     taskId: int | None = None
     model_config = ConfigDict(validate_default=True)

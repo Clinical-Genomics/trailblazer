@@ -15,7 +15,6 @@ depends_on = None
 from alembic import op
 import sqlalchemy as sa
 
-
 OLD_OPTIONS = ("pending", "running", "completed", "failed", "error", "canceled", "completing", "qc")
 NEW_OPTIONS = (
     "pending",
