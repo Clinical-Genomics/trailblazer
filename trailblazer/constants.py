@@ -163,7 +163,7 @@ TOWER_WORKFLOW_STATUS: dict[str, TrailblazerStatus] = {
     TowerStatus.RUNNING: TrailblazerStatus.RUNNING,
     TowerStatus.SUBMITTED: TrailblazerStatus.PENDING,
     TowerStatus.SUCCEEDED: TrailblazerStatus.COMPLETED,
-    TowerStatus.UNKNOWN: TrailblazerStatus.FAILED,
+    TowerStatus.UNKNOWN: TrailblazerStatus.ERROR,
 }
 
 
