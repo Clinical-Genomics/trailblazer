@@ -1,6 +1,9 @@
-class AuthenticationError(Exception):
+from trailblazer.exc import TrailblazerError
+
+
+class UserRoleError(TrailblazerError):
     pass
 
 
-class UserNotFoundError(AuthenticationError):
+class UserNotFoundError(TrailblazerError):
     pass
