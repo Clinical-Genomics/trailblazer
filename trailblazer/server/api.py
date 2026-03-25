@@ -56,7 +56,9 @@ def before_request(
     if os.environ.get("SCOPE") == "DEVELOPMENT":
         return
     try:
-        g.current_user = user_verification_service.verify_user(request.headers.get("X-On-Behalf-Of") or request.headers.get("Authorization"))
+        g.current_user = user_verification_service.verify_user(
+            request.headers.get("X-On-Behalf-Of") or request.headers.get("Authorization")
+        )
     except (UserTokenVerificationError, ValueError) as error:
         abort(HTTPStatus.UNAUTHORIZED, str(error))
 
