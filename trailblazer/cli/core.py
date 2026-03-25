@@ -278,7 +278,7 @@ def ls_cmd(context, before: str, status: TrailblazerStatus, comment: str, limit:
     )
     if analyses:
         for analysis in analyses[:limit]:
-            (message, color) = _get_ls_analysis_message(analysis=analysis)
+            message, color = _get_ls_analysis_message(analysis=analysis)
             click.echo(click.style(message, fg=color))
     else:
         LOG.warning("No analyses matching search criteria")
