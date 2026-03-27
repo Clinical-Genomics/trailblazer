@@ -120,9 +120,6 @@ class UpdateHandler(BaseHandler):
             LOG.info(f"Setting status to {status} for analysis {analysis.id}")
             analysis.status = status
 
-        session: Session = get_session()
-        session.commit()
-
         return analysis
 
     def update_analyses(self, data: UpdateAnalyses, user: User | None = None) -> list[Analysis]:

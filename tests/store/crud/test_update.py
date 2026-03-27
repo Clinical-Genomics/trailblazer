@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from pytest_mock import MockerFixture
-from sqlalchemy import inspect
 from sqlalchemy.orm import Session
 
 from tests.mocks.store_mock import MockStore
@@ -177,6 +176,29 @@ def test_update_analysis_visibility(analysis_store: MockStore, case_id: str):
     # THEN the analysis should be visible
     assert analysis.is_visible
 
+
+def test_update_analysis_is_delivered(analysis_store: MockStore, case_id: str, mocker: MockerFixture):
+    # GIVEN an analysis which has not been delivered
+    session: Session = get_session()
+    analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_id)
+
+    # GIVEN a valid user
+    user = User(
+        id=1,
+        abbreviation="CG",
+        email="some_mail@some_domain",
+    )
+    commit_spy = mocker.spy(session, "commit")
+
+    # WHEN updating the analysis to be delivered
+    analysis_store.update_analysis(analysis_id=analysis.id, is_delivered=True, user=user)
+
+
+    # THEN the analysis should have a delivery entry
+    assert analysis.delivery
+
+    # THEN the change should not have been committed
+    commit_spy.assert_not_called()
 
 def test_update_deliver_analysis_success(store: Store, mocker: MockerFixture):
     # GIVEN an analysis in the database that has not been delivered
