@@ -1,8 +1,13 @@
 from datetime import datetime
+
+from sqlalchemy.orm import Session
+
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
+from trailblazer.store.database import get_session
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, User
+from trailblazer.store.store import Store
 
 
 def test_update_analysis_jobs(analysis_store: MockStore, tower_jobs: list[dict], case_id: str):
@@ -169,3 +174,36 @@ def test_update_analysis_visibility(analysis_store: MockStore, case_id: str):
 
     # THEN the analysis should be visible
     assert analysis.is_visible
+
+
+def test_update_deliver_analysis_success(store: Store):
+    # GIVEN an analysis that has not been delivered
+    session: Session = get_session()
+    analysis = Analysis(
+        id=1,
+        case_id="test_case",
+        status=TrailblazerStatus.COMPLETED,
+        logged_at=datetime.now(),
+        version="1.0",
+        workflow_manager="tower",
+    )
+
+    # GIVEN a valid user
+    user = User(
+        id=1,
+        abbreviation="CG",
+        email="some_mail@some_domain",
+    )
+
+    session.add(analysis)
+    session.add(user)
+    session.commit()
+
+    # WHEN calling update_analysis_delivery with is_delivered=True
+    store.update_analysis_delivery(analysis=analysis, is_delivered=True, user=user)
+
+    # THEN the analysis should have an associated delivery entry
+    assert analysis.delivery
+
+    # THEN the change should not have been committed
+    # TODO
