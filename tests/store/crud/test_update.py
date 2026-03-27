@@ -7,7 +7,7 @@ from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.database import get_session
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
-from trailblazer.store.models import Analysis, User, Delivery
+from trailblazer.store.models import Analysis, Delivery, User
 from trailblazer.store.store import Store
 
 
@@ -177,7 +177,9 @@ def test_update_analysis_visibility(analysis_store: MockStore, case_id: str):
     assert analysis.is_visible
 
 
-def test_update_analysis_is_delivered(analysis_store: MockStore, case_id: str, mocker: MockerFixture):
+def test_update_analysis_is_delivered(
+    analysis_store: MockStore, case_id: str, mocker: MockerFixture
+):
     # GIVEN an analysis which has not been delivered
     session: Session = get_session()
     analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_id)
@@ -193,12 +195,15 @@ def test_update_analysis_is_delivered(analysis_store: MockStore, case_id: str, m
     # WHEN updating the analysis to be delivered
     analysis_store.update_analysis(analysis_id=analysis.id, is_delivered=True, user=user)
 
-
     # THEN the analysis should have a delivery entry
     assert analysis.delivery
 
     # THEN the change should not have been committed
     commit_spy.assert_not_called()
+
+
+# TODO: Test update_analysis MissingAnalysis
+
 
 def test_update_deliver_analysis_success(store: Store, mocker: MockerFixture):
     # GIVEN an analysis in the database that has not been delivered
@@ -268,3 +273,6 @@ def test_update_undeliver_analysis_success(store: Store, mocker: MockerFixture):
 
     # THEN the change should not have been committed
     commit_spy.assert_not_called()
+
+
+# TODO: Test update_analyses Happy path

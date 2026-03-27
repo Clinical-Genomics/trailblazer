@@ -1,4 +1,5 @@
 import logging
+
 from trailblazer.constants import TrailblazerStatus, Workflow, WorkflowManager
 from trailblazer.dto import (
     AnalysesRequest,
@@ -19,6 +20,7 @@ from trailblazer.services.analysis_service.utils import (
     get_upload_date,
 )
 from trailblazer.services.job_service.job_service import JobService
+from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis, Job, User
 from trailblazer.store.store import Store
 
@@ -70,10 +72,14 @@ class AnalysisService:
             is_visible=update.is_visible,
             user=user,
         )
+        session = get_session()
+        session.commit()
         return create_analysis_response(analysis)
 
     def update_analyses(self, data: UpdateAnalyses, user: User) -> UpdateAnalysesResponse:
         analyses: list[Analysis] = self.store.update_analyses(data=data, user=user)
+        session = get_session()
+        session.commit()
         return create_update_analyses_response(analyses)
 
     def add_pending_analysis(self, request_data: CreateAnalysisRequest) -> AnalysisResponse:

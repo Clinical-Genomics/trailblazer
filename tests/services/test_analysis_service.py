@@ -5,7 +5,7 @@ from trailblazer.store.models import Analysis, User
 from trailblazer.store.store import Store
 
 
-def test_patch_analyses_delivered(
+def test_patch_analyses_delivered(  # TODO: Expand to include another analysis
     analysis_store: Store,
     analysis_id: int,
     analysis_service: AnalysisService,
@@ -21,6 +21,11 @@ def test_patch_analyses_delivered(
 
     # THEN the analysis should be marked as delivered
     assert analysis.delivered_by
+
+
+# TODO: Test update_analyses with one analysis failing verifying that no commit is done
+
+# TODO: Add test for update_analysis both happy path and failure.
 
 
 def test_cancel_analysis(analysis_service: AnalysisService, analysis_with_running_jobs: Analysis):
