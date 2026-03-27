@@ -1,12 +1,13 @@
 from datetime import datetime
 
+from pytest_mock import MockerFixture
 from sqlalchemy.orm import Session
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.store.database import get_session
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
-from trailblazer.store.models import Analysis, User
+from trailblazer.store.models import Analysis, User, Delivery
 from trailblazer.store.store import Store
 
 
@@ -176,8 +177,8 @@ def test_update_analysis_visibility(analysis_store: MockStore, case_id: str):
     assert analysis.is_visible
 
 
-def test_update_deliver_analysis_success(store: Store):
-    # GIVEN an analysis that has not been delivered
+def test_update_deliver_analysis_success(store: Store, mocker: MockerFixture):
+    # GIVEN an analysis in the database that has not been delivered
     session: Session = get_session()
     analysis = Analysis(
         id=1,
@@ -198,14 +199,50 @@ def test_update_deliver_analysis_success(store: Store):
     session.add(analysis)
     session.add(user)
     session.commit()
+    commit_spy = mocker.spy(session, "commit")
 
     # WHEN calling update_analysis_delivery with is_delivered=True
-    with session.no_autoflush:
-        store.update_analysis_delivery(analysis=analysis, is_delivered=True, user=user)
+    store.update_analysis_delivery(analysis=analysis, is_delivered=True, user=user)
 
     # THEN the analysis should have an associated delivery entry
     assert analysis.delivery
 
     # THEN the change should not have been committed
-    db_analysis: Analysis = store.get_analysis_with_id(1)
-    assert not db_analysis.delivery
+    commit_spy.assert_not_called()
+
+
+def test_update_undeliver_analysis_success(store: Store, mocker: MockerFixture):
+    # GIVEN an analysis in the database that has been delivered
+    session: Session = get_session()
+    analysis = Analysis(
+        id=1,
+        case_id="test_case",
+        status=TrailblazerStatus.COMPLETED,
+        logged_at=datetime.now(),
+        version="1.0",
+        workflow_manager="nf_tower",
+    )
+    delivery = Delivery(analysis_id=1, delivered_by=1, delivered_date=datetime.now())
+
+    # GIVEN a valid user
+    user = User(
+        id=1,
+        abbreviation="CG",
+        email="some_mail@some_domain",
+    )
+
+    session.add(analysis)
+    session.add(user)
+    session.add(delivery)
+    session.commit()
+    commit_spy = mocker.spy(session, "commit")
+
+    # WHEN calling update_analysis_delivery with is_delivered=False
+    store.update_analysis_delivery(analysis=analysis, is_delivered=False, user=user)
+
+    # THEN the analysis should not have an associated delivery entry
+    session.commit()
+    assert not analysis.delivery
+
+    # THEN the change should not have been committed
+    commit_spy.assert_not_called()
