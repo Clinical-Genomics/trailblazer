@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from pytest_mock import MockerFixture
+from sqlalchemy import inspect
 from sqlalchemy.orm import Session
 
 from tests.mocks.store_mock import MockStore
@@ -241,8 +242,7 @@ def test_update_undeliver_analysis_success(store: Store, mocker: MockerFixture):
     store.update_analysis_delivery(analysis=analysis, is_delivered=False, user=user)
 
     # THEN the analysis should not have an associated delivery entry
-    session.commit()
-    assert not analysis.delivery
+    assert analysis.delivery in session.deleted
 
     # THEN the change should not have been committed
     commit_spy.assert_not_called()
