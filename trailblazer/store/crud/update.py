@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+
 from sqlalchemy.orm import Session
 
 from trailblazer.constants import TrailblazerStatus
@@ -83,7 +84,6 @@ class UpdateHandler(BaseHandler):
                 delivered_date=datetime.today(),
             )
             session.add(delivery)
-            session.commit()
             analysis.delivery = delivery
         elif not is_delivered:
             if delivery := analysis.delivery:

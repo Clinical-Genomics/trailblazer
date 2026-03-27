@@ -185,7 +185,7 @@ def test_update_deliver_analysis_success(store: Store):
         status=TrailblazerStatus.COMPLETED,
         logged_at=datetime.now(),
         version="1.0",
-        workflow_manager="tower",
+        workflow_manager="nf_tower",
     )
 
     # GIVEN a valid user
@@ -200,10 +200,12 @@ def test_update_deliver_analysis_success(store: Store):
     session.commit()
 
     # WHEN calling update_analysis_delivery with is_delivered=True
-    store.update_analysis_delivery(analysis=analysis, is_delivered=True, user=user)
+    with session.no_autoflush:
+        store.update_analysis_delivery(analysis=analysis, is_delivered=True, user=user)
 
     # THEN the analysis should have an associated delivery entry
     assert analysis.delivery
 
     # THEN the change should not have been committed
-    # TODO
+    db_analysis: Analysis = store.get_analysis_with_id(1)
+    assert not db_analysis.delivery
