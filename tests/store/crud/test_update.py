@@ -1,10 +1,12 @@
 from datetime import datetime
 
+import pytest
 from pytest_mock import MockerFixture
 from sqlalchemy.orm import Session
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
+from trailblazer.exc import MissingAnalysis
 from trailblazer.store.database import get_session
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, Delivery, User
@@ -200,9 +202,6 @@ def test_update_analysis_is_delivered(
 
     # THEN the change should not have been committed
     commit_spy.assert_not_called()
-
-
-# TODO: Test update_analysis MissingAnalysis
 
 
 def test_update_deliver_analysis_success(store: Store, mocker: MockerFixture):

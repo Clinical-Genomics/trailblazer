@@ -119,7 +119,6 @@ def test_update_analysis_success(mocker: MockerFixture):
 
 
 def test_update_analysis_store_raises_error(mocker: MockerFixture):
-    # TODO: Review this test
     # GIVEN a store that fails when calling update_analysis
     store: Store = create_autospec(Store)
     store.update_analysis = Mock(side_effect=Exception("Some fun error"))
@@ -144,7 +143,7 @@ def test_update_analysis_store_raises_error(mocker: MockerFixture):
     with pytest.raises(Exception):
         analysis_service.update_analysis(analysis_id=1, update=update_request, user=user)
 
-    # THEN the changes were persisted only once
+    # THEN the changes were not persisted
     session.commit.assert_not_called()
 
 
