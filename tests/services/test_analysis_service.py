@@ -7,31 +7,33 @@ import trailblazer.services.analysis_service.analysis_service as service
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.dto.update_analyses import AnalysisUpdate, UpdateAnalyses
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
+from trailblazer.services.job_service.job_service import JobService
 from trailblazer.store.models import Analysis, User
 from trailblazer.store.store import Store
 
 
-def test_patch_analyses_delivered(  # TODO: Expand to include another analysis, autospec store
-    # analysis_store: Store,
-    analysis_id: int,
-    analysis_service: AnalysisService,
+def test_patch_analyses_delivered(
     mocker: MockerFixture,
 ):
     # GIVEN a store with two analyses and a user
     store: Store = create_autospec(Store)
-    analysis_1 = create_autospec(Analysis, id=1)
-    analysis_2 = create_autospec(Analysis, id=2)
+    analysis_1: Analysis = create_autospec(Analysis, id=1)
+    analysis_2: Analysis = create_autospec(Analysis, id=2)
     store.update_analyses = Mock(return_value=[analysis_1, analysis_2])
     user = User(id=1)
 
     # GIVEN a store session
-    session = create_autospec(Session)
+    session: Session = create_autospec(Session)
     mocker.patch.object(service, "get_session", return_value=session)
+    create_response_call: Mock = mocker.patch.object(service, "create_update_analyses_response")
 
     # GIVEN a request to mark an analysis as delivered
     analysis_update_1 = AnalysisUpdate(id=1, is_delivered=True)
     analysis_update_2 = AnalysisUpdate(id=2, is_delivered=True)
     update_analyses = UpdateAnalyses(analyses=[analysis_update_1, analysis_update_2])
+
+    # GIVEN an AnalysisService
+    analysis_service = AnalysisService(store=store, job_service=create_autospec(JobService))
 
     # WHEN updating the analysis
     analysis_service.update_analyses(data=update_analyses, user=user)
@@ -41,6 +43,9 @@ def test_patch_analyses_delivered(  # TODO: Expand to include another analysis, 
 
     # THEN the changes were persisted only once
     session.commit.assert_called_once()
+
+    # THEN create_update_analyses_response was called with the analyses
+    create_response_call.assert_called_once_with([analysis_1, analysis_2])
 
 
 # TODO: Test update_analyses with one analysis failing verifying that no commit is done
