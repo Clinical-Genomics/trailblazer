@@ -1,13 +1,12 @@
+from http import HTTPStatus
+
 import flask.cli
 import pytest
 from flask.testing import FlaskClient
-from http import HTTPStatus
-from trailblazer.dto.create_job_request import CreateJobRequest
 
+from trailblazer.dto.create_job_request import CreateJobRequest
 from trailblazer.store.models import Analysis
 from trailblazer.store.store import Store
-from t
-
 
 TYPE_JSON = "application/json"
 
@@ -15,15 +14,18 @@ TYPE_JSON = "application/json"
 @pytest.fixture()
 def app():
     app = create_app()
-    app.config.update({
-        "TESTING": True,
-    })
+    app.config.update(
+        {
+            "TESTING": True,
+        }
+    )
 
     # other setup can go here
 
     yield app
 
     # clean up / reset resources here
+
 
 def test_add_job_to_analysis(client: FlaskClient, analysis: Analysis, store: Store):
     # GIVEN an analysis
@@ -46,5 +48,3 @@ def test_add_job_to_analysis(client: FlaskClient, analysis: Analysis, store: Sto
 
     # THEN the job was persisted
     assert store.get_analysis_with_id(analysis_id).jobs
-
-    with client.test_request_context("/analyses", headers= {"Authorization": "1" }):

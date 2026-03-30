@@ -1,5 +1,6 @@
 from http import HTTPStatus
 
+from flask import g
 from flask.testing import FlaskClient
 
 from trailblazer.dto import CreateJobRequest
@@ -8,24 +9,16 @@ from trailblazer.store.store import Store
 
 TYPE_JSON = "application/json"
 
-def test_add_job_to_analysis(client: FlaskClient, analysis: Analysis, store: Store):
-    # GIVEN an analysis
-    analysis_id: int = analysis.id
 
-    # GIVEN a valid request to add a job to the analysis
-    create_job_request = CreateJobRequest(slurm_id=123)
-    data: str = create_job_request.model_dump_json()
+def test_add_job_to_analysis(client: FlaskClient, analysis: Analysis, store: Store, flask_app):
+    # GIVEN an endpoint decorated with before_request
+    # GIVEN that both X-On-Behalf-Of and Authorization are set as headers
+    with flask_app.test_request_context(
+        "/analysis/1/jobs",
+        headers={"X-On-Behalf-Of": "Bearer eyhgi2", "Authorization": "Bearer eyeeyeeye"},
+    ):
+        # WHEN calling before_request upon calling the endpoint
+        flask_app.preprocess_request()
 
-    # WHEN sending the request
-    response = client.post(
-        f"/api/v1/analysis/{analysis_id}/jobs", data=data, content_type=TYPE_JSON
-    )
-
-    # THEN it gives a success response
-    assert response.status_code == HTTPStatus.CREATED
-
-    # THEN it should return the job
-    assert response.json["slurm_id"] == create_job_request.slurm_id
-
-    # THEN the job was persisted
-    assert store.get_analysis_with_id(analysis_id).jobs
+        # THEN the user is set using the On-Behalf-Of header
+        assert g.current_user
