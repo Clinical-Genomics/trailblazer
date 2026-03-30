@@ -273,7 +273,7 @@ def test_update_undeliver_analysis_success(store: Store, mocker: MockerFixture):
     commit_spy.assert_not_called()
 
 
-def test_update_analyses(store: Store):
+def test_update_analyses(store: Store, mocker: MockerFixture):
     # GIVEN a store with two analyses
     analysis_1 = Analysis(
         id=1, case_id="updog", comment="", is_visible=False, status=TrailblazerStatus.FAILED
@@ -283,6 +283,7 @@ def test_update_analyses(store: Store):
     )
 
     session = get_session()
+    commit_call = mocker.spy(session, "commit")
     session.add_all([analysis_1, analysis_2])
 
     analysis_update_1 = AnalysisUpdate(
@@ -307,3 +308,10 @@ def test_update_analyses(store: Store):
     assert analysis_1.comment is "hey (horse)"
     assert analysis_1.is_visible is True
     assert analysis_1.status is TrailblazerStatus.COMPLETED
+
+    assert analysis_2.comment is "hey (cow)"
+    assert analysis_2.is_visible is True
+    assert analysis_2.status is TrailblazerStatus.COMPLETED
+
+    # THEN the changes should not have been committed
+    commit_call.assert_not_called()
