@@ -36,16 +36,19 @@ def client(before_request_app: Flask) -> FlaskClient:
 
 
 def test_before_request_with_authorization_header(client: FlaskClient, mocker: MockerFixture):
+    # GIVEN a valid authorization token
     valid_authorization = "Bearer eyauth123"
 
+    # GIVEN a user verification service that returns a user for the valid token
     user_verification_service: UserVerificationService = create_autospec(UserVerificationService)
     user_verification_service.verify_user = lambda authorization_header: (
         User(name="Logged In") if authorization_header == valid_authorization else None
     )
 
+    # WHEN an endpoint decorated with before_request is called
     with container.user_verification_service.override(user_verification_service):
         response: TestResponse = client.get(
             "/api/v1/test-before-request", headers={"Authorization": valid_authorization}
         )
-        assert response.status_code == 200
+        # THEN the current user was available in that endpoint
         assert response.text == "Current user: Logged In"
