@@ -274,4 +274,9 @@ def test_update_undeliver_analysis_success(store: Store, mocker: MockerFixture):
     commit_spy.assert_not_called()
 
 
-# TODO: Test update_analyses Happy path
+def test_update_analyses(store: Store):
+    # GIVEN a store with two analyses
+    analysis_1 = Analysis(id=1, case_id="updog")
+    analysis_2 = Analysis(id=2, case_id="badbunny")
+
+
