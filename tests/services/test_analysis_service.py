@@ -5,7 +5,7 @@ from trailblazer.store.models import Analysis, User
 from trailblazer.store.store import Store
 
 
-def test_patch_analyses_delivered(  # TODO: Expand to include another analysis
+def test_patch_analyses_delivered(  # TODO: Expand to include another analysis, autospec store
     analysis_store: Store,
     analysis_id: int,
     analysis_service: AnalysisService,
