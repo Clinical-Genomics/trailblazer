@@ -1,12 +1,11 @@
 from datetime import datetime
 
-import pytest
 from pytest_mock import MockerFixture
 from sqlalchemy.orm import Session
 
 from tests.mocks.store_mock import MockStore
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.exc import MissingAnalysis
+from trailblazer.dto.update_analyses import AnalysisUpdate, UpdateAnalyses
 from trailblazer.store.database import get_session
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
 from trailblazer.store.models import Analysis, Delivery, User
@@ -276,5 +275,35 @@ def test_update_undeliver_analysis_success(store: Store, mocker: MockerFixture):
 
 def test_update_analyses(store: Store):
     # GIVEN a store with two analyses
-    analysis_1 = Analysis(id=1, case_id="updog")
-    analysis_2 = Analysis(id=2, case_id="badbunny")
+    analysis_1 = Analysis(
+        id=1, case_id="updog", comment="", is_visible=False, status=TrailblazerStatus.FAILED
+    )
+    analysis_2 = Analysis(
+        id=2, case_id="badbunny", comment="", is_visible=False, status=TrailblazerStatus.PENDING
+    )
+
+    session = get_session()
+    session.add_all([analysis_1, analysis_2])
+
+    analysis_update_1 = AnalysisUpdate(
+        id=1,
+        comment="hey (horse)",
+        is_visible=True,
+        status=TrailblazerStatus.COMPLETED,
+    )
+    analysis_update_2 = AnalysisUpdate(
+        id=2,
+        comment="hey (cow)",
+        is_visible=True,
+        status=TrailblazerStatus.COMPLETED,
+    )
+
+    update_analyses = UpdateAnalyses(analyses=[analysis_update_1, analysis_update_2])
+
+    # WHEN updating analyses
+    store.update_analyses(data=update_analyses)
+
+    # THEN the analyses should have been updated
+    assert analysis_1.comment is "hey (horse)"
+    assert analysis_1.is_visible is True
+    assert analysis_1.status is TrailblazerStatus.COMPLETED
