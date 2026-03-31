@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+
 from sqlalchemy.orm import Session
 
 from trailblazer.constants import TrailblazerStatus
@@ -83,7 +84,6 @@ class UpdateHandler(BaseHandler):
                 delivered_date=datetime.today(),
             )
             session.add(delivery)
-            session.commit()
             analysis.delivery = delivery
         elif not is_delivered:
             if delivery := analysis.delivery:
@@ -99,10 +99,7 @@ class UpdateHandler(BaseHandler):
         user: User | None = None,
     ) -> Analysis:
         """Update an analysis."""
-        analysis: Analysis | None = self.get_analysis_with_id(analysis_id)
-
-        if not analysis:
-            raise MissingAnalysis(f"Analysis {analysis_id} does not exist")
+        analysis: Analysis = self.get_analysis_with_id(analysis_id)
 
         if comment is not None:
             LOG.info(f"Adding comment {comment} to analysis {analysis.id}")
@@ -119,9 +116,6 @@ class UpdateHandler(BaseHandler):
         if status is not None:
             LOG.info(f"Setting status to {status} for analysis {analysis.id}")
             analysis.status = status
-
-        session: Session = get_session()
-        session.commit()
 
         return analysis
 
