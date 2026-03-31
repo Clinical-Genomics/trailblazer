@@ -305,11 +305,11 @@ def test_update_analyses(store: Store, mocker: MockerFixture):
     store.update_analyses(data=update_analyses)
 
     # THEN the analyses should have been updated
-    assert analysis_1.comment is "hey (horse)"
+    assert analysis_1.comment == "hey (horse)"
     assert analysis_1.is_visible is True
     assert analysis_1.status is TrailblazerStatus.COMPLETED
 
-    assert analysis_2.comment is "hey (cow)"
+    assert analysis_2.comment == "hey (cow)"
     assert analysis_2.is_visible is True
     assert analysis_2.status is TrailblazerStatus.COMPLETED
 
