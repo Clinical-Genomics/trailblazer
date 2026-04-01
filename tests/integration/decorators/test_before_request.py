@@ -16,12 +16,11 @@ from trailblazer.store.models import User
 
 container: Container = setup_dependency_injection()
 
-
 app.before_request(before_request)
 
 
 @app.route("/test-before-request")
-def test_endpoint():
+def before_request_endpoint():
     return f"Current user: {g.current_user.name}", 200
 
 
