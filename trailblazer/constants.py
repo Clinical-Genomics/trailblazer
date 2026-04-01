@@ -110,14 +110,14 @@ class TrailblazerPriority(StrEnum):
 class TrailblazerStatus(StrEnum):
     """Trailblazer allowed status."""
 
-    CANCELLED: str = "cancelled"
-    COMPLETED: str = "completed"
-    COMPLETING: str = "completing"
-    ERROR: str = "error"
-    FAILED: str = "failed"
-    PENDING: str = "pending"
-    QC: str = "qc"
-    RUNNING: str = "running"
+    CANCELLED = "cancelled"
+    COMPLETED = "completed"
+    COMPLETING = "completing"
+    ERROR = "error"
+    FAILED = "failed"
+    PENDING = "pending"
+    QC = "qc"
+    RUNNING = "running"
 
     @classmethod
     def statuses(cls) -> tuple:
