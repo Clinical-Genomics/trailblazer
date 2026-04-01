@@ -3,9 +3,9 @@ from unittest.mock import create_autospec
 import pytest
 from flask import g
 from flask.testing import FlaskClient
-from pytest_mock import MockerFixture
 from werkzeug.test import TestResponse
 
+from trailblazer.containers import Container
 from trailblazer.server.api import before_request
 from trailblazer.server.app import app
 from trailblazer.server.wiring import setup_dependency_injection
@@ -14,7 +14,7 @@ from trailblazer.services.user_verification_service.user_verification_service im
 )
 from trailblazer.store.models import User
 
-container = setup_dependency_injection()
+container: Container = setup_dependency_injection()
 
 
 app.before_request(before_request)
@@ -31,7 +31,7 @@ def client() -> FlaskClient:
     return app.test_client()
 
 
-def test_before_request_with_authorization_header(client: FlaskClient, mocker: MockerFixture):
+def test_before_request_with_authorization_header(client: FlaskClient):
     # GIVEN a valid authorization token
     valid_authorization = "Bearer eyauth123"
 
