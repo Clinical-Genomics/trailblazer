@@ -1,7 +1,5 @@
 from http import HTTPStatus
 
-import flask.cli
-import pytest
 from flask.testing import FlaskClient
 
 from trailblazer.dto.create_job_request import CreateJobRequest
@@ -9,22 +7,6 @@ from trailblazer.store.models import Analysis
 from trailblazer.store.store import Store
 
 TYPE_JSON = "application/json"
-
-
-@pytest.fixture()
-def app():
-    app = create_app()
-    app.config.update(
-        {
-            "TESTING": True,
-        }
-    )
-
-    # other setup can go here
-
-    yield app
-
-    # clean up / reset resources here
 
 
 def test_add_job_to_analysis(client: FlaskClient, analysis: Analysis, store: Store):
