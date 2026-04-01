@@ -1,8 +1,9 @@
 from typing import Generator
 from unittest.mock import patch
+
+import pytest
 from flask import Flask
 from flask.testing import FlaskClient
-import pytest
 
 from trailblazer.server.app import app
 from trailblazer.store.store import Store
@@ -10,6 +11,11 @@ from trailblazer.store.store import Store
 
 @pytest.fixture
 def flask_app(user_store: Store):
+    app.config.update(
+        {
+            "TESTING": True,
+        }
+    )
     yield app
 
 

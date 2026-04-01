@@ -1,7 +1,8 @@
-from flask.testing import FlaskClient
 from http import HTTPStatus
-from trailblazer.dto.create_job_request import CreateJobRequest
 
+from flask.testing import FlaskClient
+
+from trailblazer.dto.create_job_request import CreateJobRequest
 from trailblazer.store.models import Analysis
 from trailblazer.store.store import Store
 
