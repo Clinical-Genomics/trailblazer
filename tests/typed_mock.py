@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import Generic, TypeVar, cast
 from unittest.mock import Mock, create_autospec
 
-
 T = TypeVar("T")
 
 
