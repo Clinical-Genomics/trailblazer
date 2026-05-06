@@ -5,6 +5,7 @@ from pytest_mock import MockerFixture
 from sqlalchemy.orm import Session
 
 import trailblazer.services.analysis_service.analysis_service as service
+from tests.typed_mock import TypedMock, create_typed_mock
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.dto import AnalysisUpdateRequest
 from trailblazer.dto.update_analyses import AnalysisUpdate, UpdateAnalyses
@@ -57,8 +58,8 @@ def test_update_analyses_store_raises_error(mocker: MockerFixture):
     user = User(id=1)
 
     # GIVEN a store session
-    session = create_autospec(Session)
-    mocker.patch.object(service, "get_session", return_value=session)
+    session: TypedMock[Session] = create_typed_mock(Session)
+    mocker.patch.object(service, "get_session", return_value=session.as_type)
 
     # GIVEN a request to mark an analysis as delivered
     analysis_update = AnalysisUpdate(id=1, is_delivered=True)
@@ -72,7 +73,7 @@ def test_update_analyses_store_raises_error(mocker: MockerFixture):
         analysis_service.update_analyses(data=update_analyses, user=user)
 
     # THEN the changes were persisted only once
-    session.commit.assert_not_called()
+    session.as_mock.commit.assert_not_called()
 
 
 def test_update_analysis_success(mocker: MockerFixture):
