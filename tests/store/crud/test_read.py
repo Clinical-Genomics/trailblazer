@@ -313,8 +313,16 @@ def test_get_user_by_email_strict(store: Store):
         abbreviation="CG",
         refresh_token="abcd1234",
     )
+    different_user = User(
+        email="a_different_email@cg.se",
+        google_id="123abc",
+        name="CG User",
+        abbreviation="GC",
+        refresh_token="1234abcd",
+    )
     session = get_session()
     session.add(user)
+    session.add(different_user)
 
     # WHEN getting the user by e-mail
     fetched_user = store.get_user_by_email_strict("email@cg.se")
@@ -322,9 +330,12 @@ def test_get_user_by_email_strict(store: Store):
     # THEN the correct user is fetched
     assert fetched_user == user
 
+
 def test_get_user_by_email_strict_no_user(store: Store):
     # GIVEN a store without a user
     # WHEN getting a user by email
     # THEN a UserNotFoundError is raised
     with pytest.raises(UserNotFoundError):
          store.get_user_by_email_strict("email@cg.se")
+
+
