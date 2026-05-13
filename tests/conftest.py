@@ -114,7 +114,7 @@ def trailblazer_context(analysis_store: MockStore) -> dict[str, MockStore]:
 
 
 @pytest.fixture
-def store() -> Generator[MockStore, None, None]:
+def store() -> Generator[Store, None, None]:
     """Empty Trailblazer database."""
     initialize_database("sqlite:///:memory:")
     _store = Store()
