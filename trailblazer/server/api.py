@@ -104,7 +104,10 @@ def get_analyses(analysis_service: AnalysisService = Provide[Container.analysis_
 def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysis_service]):
     """Update data (such as status, visibility, comments etc.) for multiple analyses at once."""
     request_data = UpdateAnalyses.model_validate(request.json)
-    user: User = g.get("current_user")
+    if email := request_data.email:
+        user: User = store.get_user_by_email_strict(email=email)
+    else:
+        user: User = g.get("current_user")
     response: UpdateAnalysesResponse = analysis_service.update_analyses(
         data=request_data, user=user
     )

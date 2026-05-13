@@ -126,7 +126,7 @@ class ReadHandler(BaseHandler):
         self,
         email: str = None,
         exclude_archived: bool = True,
-    ) -> User:
+    ) -> User | None:
         """Return user from the database."""
         filter_map: dict[Callable, str | bool | None] = {
             UserFilter.BY_CONTAINS_EMAIL: email,
@@ -140,6 +140,13 @@ class ReadHandler(BaseHandler):
             users=self.get_query(table=User),
             email=email,
         ).first()
+
+    def get_user_by_email_strict(self, email: str, exclude_archived: bool = True) -> User:
+        query: Query = self.get_query(table=User).filter_by(email=email)
+        if exclude_archived:
+            query: Query = query.filter_by(is_archived=False)
+        # TODO: Wrap this error in a more meaningful one
+        return query.one()
 
     def get_user_by_id(self, user_id: int) -> User | None:
         return apply_user_filter(
