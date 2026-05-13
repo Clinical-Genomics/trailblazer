@@ -5,7 +5,7 @@ import pytest
 from tests.mocks.store_mock import MockStore
 from tests.store.utils.store_helper import StoreHelpers
 from trailblazer.constants import TrailblazerStatus
-from trailblazer.exc import MissingAnalysis
+from trailblazer.exc import MissingAnalysis, UserNotFoundError
 from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis, Job, User
 from trailblazer.store.store import Store
@@ -305,6 +305,7 @@ def test_get_latest_failed_job_when_none_failed(job_store: MockStore):
 
 
 def test_get_user_by_email_strict(store: Store):
+    # GIVEN a store with a user
     user = User(
         email="email@cg.se",
         google_id="abc123",
@@ -314,10 +315,16 @@ def test_get_user_by_email_strict(store: Store):
     )
     session = get_session()
     session.add(user)
+
+    # WHEN getting the user by e-mail
     fetched_user = store.get_user_by_email_strict("email@cg.se")
 
+    # THEN the correct user is fetched
     assert fetched_user == user
 
 def test_get_user_by_email_strict_no_user(store: Store):
-    with pytest.raises()
-        fetched_user = store.get_user_by_email_strict("email@cg.se")
+    # GIVEN a store without a user
+    # WHEN getting a user by email
+    # THEN a UserNotFoundError is raised
+    with pytest.raises(UserNotFoundError):
+         store.get_user_by_email_strict("email@cg.se")

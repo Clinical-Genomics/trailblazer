@@ -2,11 +2,12 @@ from datetime import datetime
 from typing import Callable
 
 from sqlalchemy import desc
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import JobType, TrailblazerStatus, Workflow
 from trailblazer.dto.analyses_request import AnalysesRequest
-from trailblazer.exc import MissingAnalysis, MissingJob
+from trailblazer.exc import MissingAnalysis, MissingJob, UserNotFoundError
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
 from trailblazer.store.filters.job_filters import JobFilter, apply_job_filters
@@ -142,11 +143,14 @@ class ReadHandler(BaseHandler):
         ).first()
 
     def get_user_by_email_strict(self, email: str, exclude_archived: bool = True) -> User:
+        # TODO: fill docstring
         query: Query = self.get_query(table=User).filter_by(email=email)
         if exclude_archived:
             query: Query = query.filter_by(is_archived=False)
-        # TODO: Wrap this error in a more meaningful one
-        return query.one()
+        try:
+            return query.one()
+        except NoResultFound:
+            raise UserNotFoundError(f"No user found for e-mail: {email}")
 
     def get_user_by_id(self, user_id: int) -> User | None:
         return apply_user_filter(
