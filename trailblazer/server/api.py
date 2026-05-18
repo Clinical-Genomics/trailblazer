@@ -21,6 +21,7 @@ from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.dto.summaries_request import SummariesRequest
 from trailblazer.dto.summaries_response import SummariesResponse
 from trailblazer.dto.update_analyses import UpdateAnalyses
+from trailblazer.exc import UserNotFoundError
 from trailblazer.server.ext import store
 from trailblazer.server.utils import (
     handle_endpoint_errors,
@@ -103,8 +104,10 @@ def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysi
     """Update data (such as status, visibility, comments etc.) for multiple analyses at once."""
     request_data = UpdateAnalyses.model_validate(request.json)
     if email := request_data.email:
-        # TODO raise 403 bad request if no user is found
-        user: User = store.get_user_by_email_strict(email=email)
+        try:
+            user: User = store.get_user_by_email_strict(email=email)
+        except UserNotFoundError as error:
+            return jsonify({"error": str(error)}), HTTPStatus.BAD_REQUEST
     else:
         user: User = g.get("current_user")
     response: UpdateAnalysesResponse = analysis_service.update_analyses(

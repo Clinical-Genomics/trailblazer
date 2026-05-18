@@ -70,12 +70,13 @@ def test_patch_analysis_nonexistent_email(client: FlaskClient, mocker: MockerFix
         "email": "not_fun@cg.se",
     }
     status_db: Store = create_autospec(Store)
-    status_db.get_user_by_email_strict = Mock(side_effect=UserNotFoundError)
+    status_db.get_user_by_email_strict = Mock(side_effect=UserNotFoundError("User not found"))
 
     mocker.patch.object(api, "store", status_db)
 
     # WHEN patching an analysis
-    # THEN a bad request response is returned
-    client.patch(
+    response = client.patch(
         "/api/v1/analyses", data=json.dumps(analysis_update), content_type="application/json"
     )
+    # THEN a bad request response is returned
+    assert response.status_code == HTTPStatus.BAD_REQUEST
