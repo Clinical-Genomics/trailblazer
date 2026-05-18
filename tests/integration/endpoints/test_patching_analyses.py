@@ -7,6 +7,7 @@ from pytest_mock import MockerFixture
 
 from trailblazer.containers import Container
 from trailblazer.dto.update_analyses import AnalysisUpdate, UpdateAnalyses
+from trailblazer.exc import UserNotFoundError
 from trailblazer.server import api
 from trailblazer.server.wiring import setup_dependency_injection
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
@@ -62,5 +63,19 @@ def test_patch_analysis_email_provided(client: FlaskClient, mocker: MockerFixtur
     analysis_service.update_analyses.assert_called_once_with(data=ANY, user=user)
 
 
-def test_patch_analysis_nonexistent_email(client: FlaskClient):
-    pass
+def test_patch_analysis_nonexistent_email(client: FlaskClient, mocker: MockerFixture):
+    # GIVEN an analysis update with an email that doesn't correspond to a user in the database
+    analysis_update = {
+        "analyses": [{"id": 0}],
+        "email": "not_fun@cg.se",
+    }
+    status_db: Store = create_autospec(Store)
+    status_db.get_user_by_email_strict = Mock(side_effect=UserNotFoundError)
+
+    mocker.patch.object(api, "store", status_db)
+
+    # WHEN patching an analysis
+    # THEN a bad request response is returned
+    client.patch(
+        "/api/v1/analyses", data=json.dumps(analysis_update), content_type="application/json"
+    )
