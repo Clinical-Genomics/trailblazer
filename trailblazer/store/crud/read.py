@@ -143,7 +143,13 @@ class ReadHandler(BaseHandler):
         ).first()
 
     def get_user_by_email_strict(self, email: str, exclude_archived: bool = True) -> User:
-        # TODO: fill docstring
+        """
+        Get user by associated email.
+        Raises:
+            UserNotFoundError: If no user is found with the given email.
+            sqlalchemy.orm.exc.MultipleResultsFound: If multiple users are found with the same
+            email. This should not happen due to database constraints.
+        """
         query: Query = self.get_query(table=User).filter_by(email=email)
         if exclude_archived:
             query: Query = query.filter_by(is_archived=False)
