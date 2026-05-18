@@ -1,3 +1,4 @@
+import json
 from http import HTTPStatus
 
 from flask.testing import FlaskClient
@@ -22,3 +23,23 @@ def test_patch_analysis(client: FlaskClient, analysis: Analysis):
 
     # THEN it should return the analysis
     assert response.json["analyses"]
+
+
+def test_patch_analysis_email_provided(client: FlaskClient):
+    # GIVEN an analysis update
+    analysis_update = {
+        "analyses": [{"id": 0}],
+        "email": "fun@cg.se",
+    }
+
+    # WHEN patching an analysis
+    response = client.patch(
+        "/api/v1/analyses", data=json.dumps(analysis_update), content_type="application/json"
+    )
+
+    # THEN the correct user should have been used to update the analysis
+    # TODO
+
+
+def test_patch_analysis_nonexistent_email(client: FlaskClient):
+    pass

@@ -1,10 +1,8 @@
 import os
 from http import HTTPStatus
-from typing import Mapping
 
 from dependency_injector.wiring import Provide, inject
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
-from google.auth import jwt
 
 from trailblazer.containers import Container
 from trailblazer.dto import (
@@ -105,6 +103,7 @@ def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysi
     """Update data (such as status, visibility, comments etc.) for multiple analyses at once."""
     request_data = UpdateAnalyses.model_validate(request.json)
     if email := request_data.email:
+        # TODO raise 403 bad request if no user is found
         user: User = store.get_user_by_email_strict(email=email)
     else:
         user: User = g.get("current_user")
