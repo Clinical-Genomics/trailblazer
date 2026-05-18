@@ -336,6 +336,4 @@ def test_get_user_by_email_strict_no_user(store: Store):
     # WHEN getting a user by email
     # THEN a UserNotFoundError is raised
     with pytest.raises(UserNotFoundError):
-         store.get_user_by_email_strict("email@cg.se")
-
-
+        store.get_user_by_email_strict("email@cg.se")

@@ -1,10 +1,14 @@
 import json
 from http import HTTPStatus
+from unittest.mock import Mock, create_autospec
 
 from flask.testing import FlaskClient
+from pytest_mock import MockerFixture
 
 from trailblazer.dto.update_analyses import AnalysisUpdate, UpdateAnalyses
-from trailblazer.store.models import Analysis
+from trailblazer.server import api
+from trailblazer.store.models import Analysis, User
+from trailblazer.store.store import Store
 
 
 def test_patch_analysis(client: FlaskClient, analysis: Analysis):
@@ -25,12 +29,24 @@ def test_patch_analysis(client: FlaskClient, analysis: Analysis):
     assert response.json["analyses"]
 
 
-def test_patch_analysis_email_provided(client: FlaskClient):
+def test_patch_analysis_email_provided(client: FlaskClient, mocker: MockerFixture):
     # GIVEN an analysis update
     analysis_update = {
         "analyses": [{"id": 0}],
         "email": "fun@cg.se",
     }
+    status_db: Store = create_autospec(Store)
+    status_db.get_user_by_email_strict = Mock(
+        return_value=User(
+            email="fun@cg.se",
+            abbreviation="fc",
+            name="Mr. Fun CG",
+            google_id="0",
+            refresh_token="abc123",
+        )
+    )
+
+    mocker.patch.object(api, "store", status_db)
 
     # WHEN patching an analysis
     response = client.patch(
@@ -38,7 +54,6 @@ def test_patch_analysis_email_provided(client: FlaskClient):
     )
 
     # THEN the correct user should have been used to update the analysis
-    # TODO
 
 
 def test_patch_analysis_nonexistent_email(client: FlaskClient):
