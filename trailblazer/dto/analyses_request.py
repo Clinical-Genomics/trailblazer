@@ -32,3 +32,4 @@ class AnalysesRequest(BaseModel):
     case_id: str | None = None
     delivered: bool | None = None
     include_hidden: bool | None = Field(alias="includeHidden", default=None)
+    is_uploaded: bool | None = None
