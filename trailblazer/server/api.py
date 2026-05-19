@@ -105,7 +105,7 @@ def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysi
     request_data = UpdateAnalyses.model_validate(request.json)
     if signature := request_data.signature:
         try:
-            user: User = store.get_user_by_signature_strict(signature=email)
+            user: User = store.get_user_by_signature_strict(signature=signature)
         except UserNotFoundError as error:
             return jsonify({"error": str(error)}), HTTPStatus.BAD_REQUEST
     else:

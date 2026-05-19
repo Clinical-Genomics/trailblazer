@@ -143,13 +143,12 @@ class ReadHandler(BaseHandler):
         ).first()
 
     def get_user_by_signature_strict(self, signature: str, exclude_archived: bool = True) -> User:
-        # TODO: Refactor to get user by signature
         """
         Get user by signature (abbreviation in User table).
         Raises:
             UserNotFoundError: If no user is found with the given signature.
             sqlalchemy.orm.exc.MultipleResultsFound: If multiple users are found with the same
-            email. This should not happen due to database constraints.
+            signature. This should not happen due to database constraints.
         """
         query: Query = self.get_query(table=User).filter_by(abbreviation=signature)
         if exclude_archived:
@@ -157,7 +156,7 @@ class ReadHandler(BaseHandler):
         try:
             return query.one()
         except NoResultFound:
-            raise UserNotFoundError(f"No user found for e-mail: {signature}")
+            raise UserNotFoundError(f"No user found for signature: {signature}")
 
     def get_user_by_id(self, user_id: int) -> User | None:
         return apply_user_filter(

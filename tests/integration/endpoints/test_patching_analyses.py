@@ -1,5 +1,5 @@
 import json
-from http import HTTPStatus
+from http import HTTPStatus, client
 from unittest.mock import ANY, Mock, create_autospec
 
 from flask.testing import FlaskClient
@@ -35,16 +35,16 @@ def test_patch_analysis(client: FlaskClient, analysis: Analysis):
     assert response.json["analyses"]
 
 
-def test_patch_analysis_email_provided(client: FlaskClient, mocker: MockerFixture):
+def test_patch_analysis_signature_provided(client: FlaskClient, mocker: MockerFixture):
     # GIVEN an analysis update
     analysis_update = {
         "analyses": [{"id": 0}],
-        "email": "fun@cg.se",
+        "signature": "CG",
     }
     status_db: Store = create_autospec(Store)
     user = User(
         email="fun@cg.se",
-        abbreviation="fc",
+        abbreviation="CG",
         name="Mr. Fun CG",
         google_id="0",
         refresh_token="abc123",
@@ -55,7 +55,7 @@ def test_patch_analysis_email_provided(client: FlaskClient, mocker: MockerFixtur
     analysis_service = create_autospec(AnalysisService)
     with container.analysis_service.override(analysis_service):
         # WHEN patching an analysis
-        response = client.patch(
+        client.patch(
             "/api/v1/analyses", data=json.dumps(analysis_update), content_type="application/json"
         )
 
@@ -63,11 +63,11 @@ def test_patch_analysis_email_provided(client: FlaskClient, mocker: MockerFixtur
     analysis_service.update_analyses.assert_called_once_with(data=ANY, user=user)
 
 
-def test_patch_analysis_nonexistent_email(client: FlaskClient, mocker: MockerFixture):
-    # GIVEN an analysis update with an email that doesn't correspond to a user in the database
+def test_patch_analysis_nonexistent_signature(client: FlaskClient, mocker: MockerFixture):
+    # GIVEN an analysis update with a signature that doesn't correspond to a user in the database
     analysis_update = {
         "analyses": [{"id": 0}],
-        "email": "not_fun@cg.se",
+        "signature": "NOT_A_USER",
     }
     status_db: Store = create_autospec(Store)
     status_db.get_user_by_signature_strict = Mock(side_effect=UserNotFoundError("User not found"))

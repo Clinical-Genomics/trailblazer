@@ -304,7 +304,7 @@ def test_get_latest_failed_job_when_none_failed(job_store: MockStore):
     assert not job
 
 
-def test_get_user_by_email_strict(store: Store):
+def test_get_user_by_signature_strict(store: Store):
     # GIVEN a store with a user
     user = User(
         email="email@cg.se",
@@ -324,16 +324,16 @@ def test_get_user_by_email_strict(store: Store):
     session.add(user)
     session.add(different_user)
 
-    # WHEN getting the user by e-mail
-    fetched_user = store.get_user_by_signature_strict("email@cg.se")
+    # WHEN getting the user by signature
+    fetched_user = store.get_user_by_signature_strict("CG")
 
     # THEN the correct user is fetched
     assert fetched_user == user
 
 
-def test_get_user_by_email_strict_no_user(store: Store):
+def test_get_user_by_signature_strict_no_user(store: Store):
     # GIVEN a store without a user
-    # WHEN getting a user by email
+    # WHEN getting a user by signature
     # THEN a UserNotFoundError is raised
     with pytest.raises(UserNotFoundError):
-        store.get_user_by_signature_strict("email@cg.se")
+        store.get_user_by_signature_strict("CG")
