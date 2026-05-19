@@ -103,9 +103,9 @@ def get_analyses(analysis_service: AnalysisService = Provide[Container.analysis_
 def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysis_service]):
     """Update data (such as status, visibility, comments etc.) for multiple analyses at once."""
     request_data = UpdateAnalyses.model_validate(request.json)
-    if email := request_data.email:
+    if signature := request_data.signature:
         try:
-            user: User = store.get_user_by_email_strict(email=email)
+            user: User = store.get_user_by_signature_strict(signature=email)
         except UserNotFoundError as error:
             return jsonify({"error": str(error)}), HTTPStatus.BAD_REQUEST
     else:

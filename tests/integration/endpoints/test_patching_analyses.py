@@ -49,7 +49,7 @@ def test_patch_analysis_email_provided(client: FlaskClient, mocker: MockerFixtur
         google_id="0",
         refresh_token="abc123",
     )
-    status_db.get_user_by_email_strict = Mock(return_value=user)
+    status_db.get_user_by_signature_strict = Mock(return_value=user)
 
     mocker.patch.object(api, "store", status_db)
     analysis_service = create_autospec(AnalysisService)
@@ -70,7 +70,7 @@ def test_patch_analysis_nonexistent_email(client: FlaskClient, mocker: MockerFix
         "email": "not_fun@cg.se",
     }
     status_db: Store = create_autospec(Store)
-    status_db.get_user_by_email_strict = Mock(side_effect=UserNotFoundError("User not found"))
+    status_db.get_user_by_signature_strict = Mock(side_effect=UserNotFoundError("User not found"))
 
     mocker.patch.object(api, "store", status_db)
 

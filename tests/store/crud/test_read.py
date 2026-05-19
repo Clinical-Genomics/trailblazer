@@ -325,7 +325,7 @@ def test_get_user_by_email_strict(store: Store):
     session.add(different_user)
 
     # WHEN getting the user by e-mail
-    fetched_user = store.get_user_by_email_strict("email@cg.se")
+    fetched_user = store.get_user_by_signature_strict("email@cg.se")
 
     # THEN the correct user is fetched
     assert fetched_user == user
@@ -336,4 +336,4 @@ def test_get_user_by_email_strict_no_user(store: Store):
     # WHEN getting a user by email
     # THEN a UserNotFoundError is raised
     with pytest.raises(UserNotFoundError):
-        store.get_user_by_email_strict("email@cg.se")
+        store.get_user_by_signature_strict("email@cg.se")

@@ -13,4 +13,4 @@ class AnalysisUpdate(BaseModel):
 
 class UpdateAnalyses(BaseModel):
     analyses: list[AnalysisUpdate]
-    email: str | None = None
+    signature: str | None = None
