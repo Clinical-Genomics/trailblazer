@@ -98,7 +98,6 @@ def test_authorization_succeeds(
 def test_authorization_fails(
     client: FlaskClient, headers: dict[str, str], mock_verify_user: Callable
 ):
-
     # GIVEN a user verification service that raises an error for an invalid token
     user_verification_service: UserVerificationService = create_autospec(UserVerificationService)
     user_verification_service.verify_user = mock_verify_user
