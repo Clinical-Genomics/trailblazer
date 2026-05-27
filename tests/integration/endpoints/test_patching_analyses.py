@@ -1,18 +1,23 @@
 import json
-from http import HTTPStatus, client
+from http import HTTPStatus
 from unittest.mock import ANY, Mock, create_autospec
 
 from flask.testing import FlaskClient
 from pytest_mock import MockerFixture
 
+from tests.typed_mock import TypedMock, create_typed_mock
 from trailblazer.containers import Container
+from trailblazer.dto import analyses_response
+from trailblazer.dto.analyses_response import UpdateAnalysesResponse
 from trailblazer.dto.update_analyses import AnalysisUpdate, UpdateAnalyses
 from trailblazer.exc import UserNotFoundError
 from trailblazer.server import api
+from trailblazer.store.models import User
+from trailblazer.store.store import Store
+
 from trailblazer.server.wiring import setup_dependency_injection
 from trailblazer.services.analysis_service.analysis_service import AnalysisService
-from trailblazer.store.models import Analysis, User
-from trailblazer.store.store import Store
+from trailblazer.store.models import Analysis
 
 container: Container = setup_dependency_injection()
 
@@ -20,19 +25,32 @@ container: Container = setup_dependency_injection()
 def test_patch_analysis(client: FlaskClient, analysis: Analysis):
     # GIVEN an analysis
 
-    # GIVEN a valid request to pach the analysis
-    update = AnalysisUpdate(id=analysis.id, comment="new_comment")
-    request = UpdateAnalyses(analyses=[update])
-    data: str = request.model_dump_json()
+    # GIVEN a valid request to patch the analysis
+    request = {"analyses": [{"id": analysis.id, "comment": "new_comment"}]}
+    data: str = json.dumps(request)
+
+    analysis_service: TypedMock[AnalysisService] = create_typed_mock(AnalysisService)
+    mock_response = UpdateAnalysesResponse(
+        analyses=[
+            analyses_response.Analysis(
+                id=analysis.id, case_id=analysis.case_id, workflow_manager=analysis.workflow_manager
+            )
+        ]
+    )
+    analysis_service.as_type.update_analyses = Mock(return_value=mock_response)
 
     # WHEN patching the analysis
-    response = client.patch("/api/v1/analyses", data=data, content_type="application/json")
+    with container.analysis_service.override(analysis_service.as_type):
+        response = client.patch("/api/v1/analyses", data=data, content_type="application/json")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
 
-    # THEN it should return the analysis
-    assert response.json["analyses"]
+    # THEN the analysis service should have been called to update the provided analysis
+    analysis_service.as_mock.update_analyses.assert_called_once_with(
+        data=UpdateAnalyses(analyses=[AnalysisUpdate(id=analysis.id, comment="new_comment")]),
+        user=None,
+    )
 
 
 def test_patch_analysis_signature_provided(client: FlaskClient, mocker: MockerFixture):
