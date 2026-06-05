@@ -238,6 +238,7 @@ class ReadHandler(BaseHandler):
         return page.all(), total_count
 
     def _filter_analyses(self, request: AnalysesRequest) -> Query:
+        # TODO: Add filtering by is_uploaded
         filters: list[AnalysisFilter] = [
             AnalysisFilter.BY_WORKFLOW,
             AnalysisFilter.BY_HAS_COMMENT,
