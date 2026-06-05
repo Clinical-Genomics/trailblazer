@@ -65,7 +65,7 @@ def test_patch_analysis_signature_provided(client: FlaskClient, mocker: MockerFi
     )
     status_db.get_user_by_signature_strict = Mock(return_value=user)
 
-   # GIVEN an analysis update with the signature corresponding to the user in the database
+    # GIVEN an analysis update with the signature corresponding to the user in the database
     analysis_update = {
         "analyses": [{"id": 0}],
         "signature": "CG",
