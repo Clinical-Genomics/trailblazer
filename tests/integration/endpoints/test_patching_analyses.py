@@ -54,7 +54,7 @@ def test_patch_analysis(client: FlaskClient, analysis: Analysis):
 
 
 def test_patch_analysis_signature_provided(client: FlaskClient, mocker: MockerFixture):
-  # GIVEN a store with a user
+    # GIVEN a store with a user
     status_db: Store = create_autospec(Store)
     user = User(
         email="fun@cg.se",
