@@ -54,11 +54,7 @@ def test_patch_analysis(client: FlaskClient, analysis: Analysis):
 
 
 def test_patch_analysis_signature_provided(client: FlaskClient, mocker: MockerFixture):
-    # GIVEN an analysis update
-    analysis_update = {
-        "analyses": [{"id": 0}],
-        "signature": "CG",
-    }
+  # GIVEN a store with a user
     status_db: Store = create_autospec(Store)
     user = User(
         email="fun@cg.se",
@@ -69,10 +65,16 @@ def test_patch_analysis_signature_provided(client: FlaskClient, mocker: MockerFi
     )
     status_db.get_user_by_signature_strict = Mock(return_value=user)
 
+   # GIVEN an analysis update with the signature corresponding to the user in the database
+    analysis_update = {
+        "analyses": [{"id": 0}],
+        "signature": "CG",
+    }
+
+    # WHEN patching an analysis
     mocker.patch.object(api, "store", status_db)
     analysis_service = create_autospec(AnalysisService)
     with container.analysis_service.override(analysis_service):
-        # WHEN patching an analysis
         client.patch(
             "/api/v1/analyses", data=json.dumps(analysis_update), content_type="application/json"
         )
@@ -90,11 +92,11 @@ def test_patch_analysis_nonexistent_signature(client: FlaskClient, mocker: Mocke
     status_db: Store = create_autospec(Store)
     status_db.get_user_by_signature_strict = Mock(side_effect=UserNotFoundError("User not found"))
 
-    mocker.patch.object(api, "store", status_db)
-
     # WHEN patching an analysis
+    mocker.patch.object(api, "store", status_db)
     response = client.patch(
         "/api/v1/analyses", data=json.dumps(analysis_update), content_type="application/json"
     )
+
     # THEN a bad request response is returned
     assert response.status_code == HTTPStatus.BAD_REQUEST
