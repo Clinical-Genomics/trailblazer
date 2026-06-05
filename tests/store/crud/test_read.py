@@ -305,7 +305,7 @@ def test_get_latest_failed_job_when_none_failed(job_store: MockStore):
 
 
 def test_get_user_by_signature_strict(store: Store):
-    # GIVEN a store with a user
+    # GIVEN a store with several users
     user = User(
         email="email@cg.se",
         google_id="abc123",
@@ -324,7 +324,7 @@ def test_get_user_by_signature_strict(store: Store):
     session.add(user)
     session.add(different_user)
 
-    # WHEN getting the user by signature
+    # WHEN getting the user by signature for one of the users
     fetched_user = store.get_user_by_signature_strict("CG")
 
     # THEN the correct user is fetched
