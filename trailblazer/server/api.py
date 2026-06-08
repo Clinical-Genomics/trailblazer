@@ -1,10 +1,8 @@
 import os
 from http import HTTPStatus
-from typing import Mapping
 
 from dependency_injector.wiring import Provide, inject
 from flask import Blueprint, Response, abort, g, jsonify, make_response, request
-from google.auth import jwt
 
 from trailblazer.containers import Container
 from trailblazer.dto import (
@@ -23,6 +21,7 @@ from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.dto.summaries_request import SummariesRequest
 from trailblazer.dto.summaries_response import SummariesResponse
 from trailblazer.dto.update_analyses import UpdateAnalyses
+from trailblazer.exc import UserNotFoundError
 from trailblazer.server.ext import store
 from trailblazer.server.utils import (
     handle_endpoint_errors,
@@ -104,7 +103,13 @@ def get_analyses(analysis_service: AnalysisService = Provide[Container.analysis_
 def patch_analyses(analysis_service: AnalysisService = Provide[Container.analysis_service]):
     """Update data (such as status, visibility, comments etc.) for multiple analyses at once."""
     request_data = UpdateAnalyses.model_validate(request.json)
-    user: User = g.get("current_user")
+    if signature := request_data.signature:
+        try:
+            user: User = store.get_user_by_signature_strict(signature=signature)
+        except UserNotFoundError as error:
+            return jsonify({"error": str(error)}), HTTPStatus.BAD_REQUEST
+    else:
+        user: User = g.get("current_user")
     response: UpdateAnalysesResponse = analysis_service.update_analyses(
         data=request_data, user=user
     )

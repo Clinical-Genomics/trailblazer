@@ -13,3 +13,4 @@ class AnalysisUpdate(BaseModel):
 
 class UpdateAnalyses(BaseModel):
     analyses: list[AnalysisUpdate]
+    signature: str | None = None

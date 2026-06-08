@@ -95,3 +95,9 @@ class WorkflowIdFileMissingError(TowerServiceError):
     """
 
     message = "Workflow ID file is missing"
+
+
+class UserNotFoundError(TrailblazerError):
+    """
+    Exception raised when a user is not found
+    """

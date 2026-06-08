@@ -2,11 +2,12 @@ from datetime import datetime
 from typing import Callable
 
 from sqlalchemy import desc
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import JobType, TrailblazerStatus, Workflow
 from trailblazer.dto.analyses_request import AnalysesRequest
-from trailblazer.exc import MissingAnalysis, MissingJob
+from trailblazer.exc import MissingAnalysis, MissingJob, UserNotFoundError
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
 from trailblazer.store.filters.job_filters import JobFilter, apply_job_filters
@@ -126,7 +127,7 @@ class ReadHandler(BaseHandler):
         self,
         email: str = None,
         exclude_archived: bool = True,
-    ) -> User:
+    ) -> User | None:
         """Return user from the database."""
         filter_map: dict[Callable, str | bool | None] = {
             UserFilter.BY_CONTAINS_EMAIL: email,
@@ -140,6 +141,22 @@ class ReadHandler(BaseHandler):
             users=self.get_query(table=User),
             email=email,
         ).first()
+
+    def get_user_by_signature_strict(self, signature: str, exclude_archived: bool = True) -> User:
+        """
+        Get user by signature (abbreviation in User table).
+        Raises:
+            UserNotFoundError: If no user is found with the given signature.
+            sqlalchemy.orm.exc.MultipleResultsFound: If multiple users are found with the same
+            signature. This should not happen due to database constraints.
+        """
+        query: Query = self.get_query(table=User).filter_by(abbreviation=signature)
+        if exclude_archived:
+            query: Query = query.filter_by(is_archived=False)
+        try:
+            return query.one()
+        except NoResultFound:
+            raise UserNotFoundError(f"No user found for signature: {signature}")
 
     def get_user_by_id(self, user_id: int) -> User | None:
         return apply_user_filter(
