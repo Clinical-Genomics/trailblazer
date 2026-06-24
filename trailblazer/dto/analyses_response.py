@@ -14,17 +14,17 @@ class Job(BaseModel):
 
 
 class Analysis(BaseModel):
-    # TODO: Add hold_delivery field
     case_id: str
     comment: str | None = None
     completed_at: datetime | None = None
     config_path: str | None = None
     delivered_by: str | None = None
     delivered_date: date | None = None
-    is_delivered: bool | None = None
-    workflow: str | None = None
     failed_job: Job | None = None
+    hold_delivery: bool
     id: int
+    is_cancellable: bool = False
+    is_delivered: bool | None = None
     is_visible: bool = True
     logged_at: datetime | None = None
     order_id: int | None = None
@@ -38,8 +38,8 @@ class Analysis(BaseModel):
     uploaded_at: datetime | None = None
     user_id: int | None = None
     version: str | None = None
+    workflow: str | None = None
     workflow_manager: str
-    is_cancellable: bool = False
 
 
 class AnalysesResponse(BaseModel):
