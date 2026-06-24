@@ -93,18 +93,22 @@ class UpdateHandler(BaseHandler):
         self,
         analysis_id: int,
         comment: str | None = None,
+        hold_delivery: bool | None = None,
         is_delivered: bool | None = None,
         is_visible: bool | None = None,
         status: str | None = None,
         user: User | None = None,
     ) -> Analysis:
         """Update an analysis."""
-        # TODO: Add hold_delivery functionality
         analysis: Analysis = self.get_analysis_with_id(analysis_id)
 
         if comment is not None:
             LOG.info(f"Adding comment {comment} to analysis {analysis.id}")
             analysis.comment = comment
+
+        if hold_delivery is not None:
+            LOG.info(f"Setting hold_delivery to {hold_delivery} for analysis {analysis.id}")
+            analysis.hold_delivery = hold_delivery
 
         if is_delivered is not None:
             LOG.info(f"Setting analysis delivered status to {is_delivered}")

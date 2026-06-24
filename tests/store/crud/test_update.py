@@ -178,6 +178,19 @@ def test_update_analysis_visibility(analysis_store: MockStore, case_id: str):
     assert analysis.is_visible
 
 
+def test_update_analysis_hold_delivery(analysis_store: MockStore, case_id: str):
+    # GIVEN an analysis which is not visible
+    # TODO: Complete this test
+    analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_id)
+    analysis.is_visible = False
+
+    # WHEN making the analysis visible
+    analysis_store.update_analysis(analysis_id=analysis.id, is_visible=True)
+
+    # THEN the analysis should be visible
+    assert analysis.is_visible
+
+
 def test_update_analysis_is_delivered(
     analysis_store: MockStore, case_id: str, mocker: MockerFixture
 ):
