@@ -106,6 +106,7 @@ def test_update_analysis_success(mocker: MockerFixture):
     store.update_analysis.assert_called_once_with(
         analysis_id=1,
         comment="New comment",
+        hold_delivery=None,
         is_delivered=True,
         status=TrailblazerStatus.COMPLETED,
         is_visible=True,

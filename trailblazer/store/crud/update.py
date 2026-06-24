@@ -129,12 +129,12 @@ class UpdateHandler(BaseHandler):
         for analysis_update in data.analyses:
             analysis: Analysis = self.update_analysis(
                 analysis_id=analysis_update.id,
-                is_delivered=analysis_update.is_delivered,
                 comment=analysis_update.comment,
+                hold_delivery=analysis_update.hold_delivery,
+                is_delivered=analysis_update.is_delivered,
                 is_visible=analysis_update.is_visible,
                 status=analysis_update.status,
                 user=user,
-                # TODO: Add hold_delivery
             )
             updated_analyses.append(analysis)
         return updated_analyses

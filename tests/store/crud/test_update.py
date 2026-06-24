@@ -179,16 +179,15 @@ def test_update_analysis_visibility(analysis_store: MockStore, case_id: str):
 
 
 def test_update_analysis_hold_delivery(analysis_store: MockStore, case_id: str):
-    # GIVEN an analysis which is not visible
-    # TODO: Complete this test
+    # GIVEN an analysis that has hold_delivery=False
     analysis: Analysis = analysis_store.get_latest_analysis_for_case(case_id)
-    analysis.is_visible = False
+    analysis.hold_delivery = False
 
-    # WHEN making the analysis visible
-    analysis_store.update_analysis(analysis_id=analysis.id, is_visible=True)
+    # WHEN setting the hold_delivery to True for the analysis
+    analysis_store.update_analysis(analysis_id=analysis.id, hold_delivery=True)
 
-    # THEN the analysis should be visible
-    assert analysis.is_visible
+    # THEN the analysis should have hold_delivery=True
+    assert analysis.hold_delivery
 
 
 def test_update_analysis_is_delivered(
@@ -304,12 +303,14 @@ def test_update_analyses(store: Store, mocker: MockerFixture):
         comment="hey (horse)",
         is_visible=True,
         status=TrailblazerStatus.COMPLETED,
+        hold_delivery=True
     )
     analysis_update_2 = AnalysisUpdate(
         id=2,
         comment="hey (cow)",
         is_visible=True,
         status=TrailblazerStatus.COMPLETED,
+        hold_delivery=False
     )
 
     update_analyses = UpdateAnalyses(analyses=[analysis_update_1, analysis_update_2])
@@ -321,10 +322,12 @@ def test_update_analyses(store: Store, mocker: MockerFixture):
     assert analysis_1.comment == "hey (horse)"
     assert analysis_1.is_visible is True
     assert analysis_1.status is TrailblazerStatus.COMPLETED
+    assert analysis_1.hold_delivery is True
 
     assert analysis_2.comment == "hey (cow)"
     assert analysis_2.is_visible is True
     assert analysis_2.status is TrailblazerStatus.COMPLETED
+    assert analysis_2.hold_delivery is False
 
     # THEN the changes should not have been committed
     commit_call.assert_not_called()

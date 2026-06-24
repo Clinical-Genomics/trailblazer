@@ -67,11 +67,11 @@ class AnalysisService:
         analysis: Analysis = self.store.update_analysis(
             analysis_id=analysis_id,
             comment=update.comment,
+            hold_delivery=update.hold_delivery,
             is_delivered=update.is_delivered,
             status=update.status,
             is_visible=update.is_visible,
             user=user,
-            # TODO: Pass hold_delivery parameter
         )
         session = get_session()
         session.commit()
