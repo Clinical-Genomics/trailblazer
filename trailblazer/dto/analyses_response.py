@@ -14,6 +14,7 @@ class Job(BaseModel):
 
 
 class Analysis(BaseModel):
+    # TODO: Add hold_delivery field
     case_id: str
     comment: str | None = None
     completed_at: datetime | None = None

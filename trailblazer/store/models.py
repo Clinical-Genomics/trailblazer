@@ -71,6 +71,7 @@ class Analysis(Model):
     __table_args__ = (
         UniqueConstraint("case_id", "started_at", "status", name="_uc_case_id_start_status"),
     )
+    # TODO: Add column called 'hold_delivery' which is a boolean
 
     case_id = Column(types.String(128), nullable=False)
     comment = Column(types.Text)

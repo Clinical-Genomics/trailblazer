@@ -99,6 +99,7 @@ class UpdateHandler(BaseHandler):
         user: User | None = None,
     ) -> Analysis:
         """Update an analysis."""
+        # TODO: Add hold_delivery functionality
         analysis: Analysis = self.get_analysis_with_id(analysis_id)
 
         if comment is not None:
@@ -129,6 +130,7 @@ class UpdateHandler(BaseHandler):
                 is_visible=analysis_update.is_visible,
                 status=analysis_update.status,
                 user=user,
+                # TODO: Add hold_delivery
             )
             updated_analyses.append(analysis)
         return updated_analyses

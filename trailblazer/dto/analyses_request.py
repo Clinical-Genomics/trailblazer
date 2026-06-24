@@ -18,6 +18,7 @@ class AnalysisSortField(StrEnum):
 
 
 class AnalysesRequest(BaseModel):
+    # TODO: Add new boolean field 'hold_delivery'
     workflow: str = ""
     search: str | None = None
     page_size: int = Field(alias="pageSize", default=250)

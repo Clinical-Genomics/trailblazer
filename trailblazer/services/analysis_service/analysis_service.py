@@ -71,6 +71,7 @@ class AnalysisService:
             status=update.status,
             is_visible=update.is_visible,
             user=user,
+            # TODO: Pass hold_delivery parameter
         )
         session = get_session()
         session.commit()

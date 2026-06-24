@@ -4,6 +4,7 @@ from trailblazer.constants import TrailblazerStatus
 
 
 class AnalysisUpdate(BaseModel):
+    # TODO: Add hold_delivery boolean field
     id: int
     comment: str | None = None
     is_delivered: bool | None = None
