@@ -34,6 +34,12 @@ def filter_analyses_by_is_visible(analyses: Query, show_hidden: bool | None, **k
     return analyses if show_hidden else analyses.filter(Analysis.is_visible.is_(True))
 
 
+def filter_analyses_by_hold_delivery(analyses: Query, hold_delivery: bool | None, **kwargs) -> Query:
+    if hold_delivery is None:
+        return analyses
+    return analyses.filter(Analysis.hold_delivery == hold_delivery)
+
+
 def filter_analyses_by_order_id(analyses: Query, order_id: int | None, **kwargs) -> Query:
     if order_id is None:
         return analyses
@@ -181,24 +187,25 @@ class AnalysisFilter(Enum):
     BY_BEFORE_STARTED_AT: Callable = filter_analyses_by_before_started_at
     BY_CASE_ID: Callable = filter_analyses_by_case_id
     BY_COMMENT: Callable = filter_analyses_by_comment
-    BY_HAS_COMMENT: Callable = filter_analyses_by_has_comment
+    BY_COMPLETED: Callable = get_completed_analyses
+    BY_DELIVERED: Callable = filter_analyses_by_delivered
     BY_ENTRY_ID: Callable = filter_analyses_by_entry_id
-    BY_SEARCH_TERM: Callable = filter_analyses_by_search_term
+    BY_HAS_COMMENT: Callable = filter_analyses_by_has_comment
+    BY_HOLD_DELIVERY: Callable = filter_analyses_by_hold_delivery
     BY_IS_VISIBLE: Callable = filter_analyses_by_is_visible
+    BY_LATEST_PER_CASE: Callable = filter_analyses_by_latest_per_case
+    BY_NOT_UPLOADED: Callable = get_not_uploaded_analyses
     BY_ORDER_ID: Callable = filter_analyses_by_order_id
     BY_PRIORITIES: Callable = filter_analyses_by_priorites
+    BY_SEARCH_TERM: Callable = filter_analyses_by_search_term
     BY_STARTED_AT: Callable = filter_analyses_by_started_at
     BY_STATUS: Callable = filter_analyses_by_status
     BY_STATUSES: Callable = filter_analyses_by_statuses
     BY_TYPES: Callable = filter_analyses_by_types
-    BY_DELIVERED: Callable = filter_analyses_by_delivered
-    BY_NOT_UPLOADED: Callable = get_not_uploaded_analyses
-    BY_COMPLETED: Callable = get_completed_analyses
     BY_WORKFLOW: Callable = filter_analyses_by_workflow
-    BY_LATEST_PER_CASE: Callable = filter_analyses_by_latest_per_case
     EXCLUDE_RSYNC: Callable = exclude_rsync_analyses
-    SORTING: Callable = sort_analyses
     PAGINATION: Callable = paginate_analyses
+    SORTING: Callable = sort_analyses
 
 
 def apply_analysis_filter(
@@ -207,21 +214,22 @@ def apply_analysis_filter(
     analysis_id: int | None = None,
     case_id: str | None = None,
     comment: str | None = None,
+    delivered: bool | None = None,
+    has_comment: bool | None = None,
+    hold_delivery: bool | None = None,
     order_id: int | None = None,
+    page: int | None = None,
+    page_size: int | None = None,
     priorities: list[str] | None = None,
     search_term: str | None = None,
+    show_hidden: bool | None = None,
+    sort_field: AnalysisSortField | None = None,
+    sort_order: SortOrder | None = None,
     started_at: datetime | None = None,
     status: str | None = None,
     statuses: list[str] | None = None,
     types: list[str] | None = None,
-    delivered: bool | None = None,
     workflow: str | None = None,
-    has_comment: bool | None = None,
-    show_hidden: bool | None = None,
-    page: int | None = None,
-    page_size: int | None = None,
-    sort_field: AnalysisSortField | None = None,
-    sort_order: SortOrder | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
     if statuses is None:
@@ -232,20 +240,21 @@ def apply_analysis_filter(
             analysis_id=analysis_id,
             case_id=case_id,
             comment=comment,
+            delivered=delivered,
+            has_comment=has_comment,
+            hold_delivery=hold_delivery,
             order_id=order_id,
+            page=page,
+            page_size=page_size,
             priorities=priorities,
             search_term=search_term,
+            show_hidden=show_hidden,
+            sort_field=sort_field,
+            sort_order=sort_order,
             started_at=started_at,
             status=status,
             statuses=statuses,
             types=types,
-            delivered=delivered,
             workflow=workflow,
-            has_comment=has_comment,
-            show_hidden=show_hidden,
-            page=page,
-            page_size=page_size,
-            sort_field=sort_field,
-            sort_order=sort_order,
         )
     return analyses

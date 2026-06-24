@@ -71,12 +71,12 @@ class Analysis(Model):
     __table_args__ = (
         UniqueConstraint("case_id", "started_at", "status", name="_uc_case_id_start_status"),
     )
-    # TODO: Add column called 'hold_delivery' which is a boolean
 
     case_id = Column(types.String(128), nullable=False)
     comment = Column(types.Text)
     completed_at = Column(types.DateTime)
     config_path = Column(types.Text, nullable=True, default=None)
+    hold_delivery = Column(types.Boolean, nullable=False, default=False)
     id = Column(types.Integer, primary_key=True)
     is_visible = Column(types.Boolean, default=True)
     logged_at = Column(types.DateTime, default=datetime.datetime.now)

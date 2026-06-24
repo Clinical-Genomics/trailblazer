@@ -15,6 +15,7 @@ from trailblazer.store.filters.analyses_filters import (
     filter_analyses_by_statuses,
 )
 from trailblazer.store.models import Analysis
+from trailblazer.store.store import Store
 
 
 def test_filter_analyses_by_id(analysis_store: MockStore):
@@ -105,6 +106,27 @@ def test_filter_analyses_by_is_visible(analysis_store: MockStore):
 
     # THEN the analysis should match the original
     assert existing_analysis == analyses.first()
+
+def test_filter_analyses_by_hold_delivery(analysis_store: Store):
+    """Test return analysis when is visible is true."""
+    # GIVEN a store containing analyses
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # GIVEN a visible analysis
+    existing_analysis.is_visible = True
+
+    # GIVEN an analysis query
+    analyses: Query = analysis_store.get_query(table=Analysis)
+
+    # WHEN retrieving analyses by is visible
+    analyses: Query = filter_analyses_by_is_visible(analyses=analyses, show_hidden=True)
+
+    # THEN the analyses is a query
+    assert isinstance(analyses, Query)
+
+    # THEN the analysis should match the original
+    assert existing_analysis == analyses.first()
+
 
 
 def test_filter_analyses_by_is_visible_when_false(analysis_store: MockStore):
