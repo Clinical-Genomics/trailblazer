@@ -250,6 +250,7 @@ class ReadHandler(BaseHandler):
             AnalysisFilter.BY_SEARCH_TERM,
             AnalysisFilter.BY_IS_VISIBLE,
             AnalysisFilter.BY_DELIVERED,
+            AnalysisFilter.BY_HOLD_DELIVERY,
             AnalysisFilter.SORTING,
         ]
         show_hidden = bool(request.search) or request.include_hidden
@@ -262,6 +263,7 @@ class ReadHandler(BaseHandler):
             statuses=request.status,
             types=request.type,
             case_id=request.case_id,
+            hold_delivery=request.hold_delivery,
             workflow=request.workflow,
             search_term=request.search,
             show_hidden=show_hidden,
