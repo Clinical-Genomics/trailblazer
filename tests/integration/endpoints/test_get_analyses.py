@@ -174,7 +174,6 @@ def test_get_analyses_by_hold_delivery_none(client: FlaskClient, analyses: list[
     # GIVEN analyses with different hold_delivery values
     analyses[0].hold_delivery = True
 
-
     # WHEN retrieving all analyses without specifying a value for holdDelivery
     response = client.get("/api/v1/analyses?pageSize=0")
 

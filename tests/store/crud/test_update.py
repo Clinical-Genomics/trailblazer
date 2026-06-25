@@ -303,14 +303,14 @@ def test_update_analyses(store: Store, mocker: MockerFixture):
         comment="hey (horse)",
         is_visible=True,
         status=TrailblazerStatus.COMPLETED,
-        hold_delivery=True
+        hold_delivery=True,
     )
     analysis_update_2 = AnalysisUpdate(
         id=2,
         comment="hey (cow)",
         is_visible=True,
         status=TrailblazerStatus.COMPLETED,
-        hold_delivery=False
+        hold_delivery=False,
     )
 
     update_analyses = UpdateAnalyses(analyses=[analysis_update_1, analysis_update_2])

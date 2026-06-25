@@ -14,7 +14,8 @@ from trailblazer.store.filters.analyses_filters import (
     filter_analyses_by_search_term,
     filter_analyses_by_started_at,
     filter_analyses_by_status,
-    filter_analyses_by_statuses, filter_analyses_by_hold_delivery,
+    filter_analyses_by_statuses,
+    filter_analyses_by_hold_delivery,
 )
 from trailblazer.store.models import Analysis
 from trailblazer.store.store import Store
@@ -109,21 +110,14 @@ def test_filter_analyses_by_is_visible(analysis_store: MockStore):
     # THEN the analysis should match the original
     assert existing_analysis == analyses.first()
 
+
 @pytest.mark.parametrize("hold_delivery", [True, False])
 def test_filter_analyses_by_hold_delivery(store: Store, hold_delivery: bool):
     """Test return analysis when hold_delivery is True."""
     # GIVEN a store with two analyses, one whose delivery should be held
     session: Session = get_session()
-    analysis_to_hold = Analysis(
-        id=1,
-        case_id="case_to_hold",
-        hold_delivery=True
-    )
-    analysis_not_to_hold = Analysis(
-        id=2,
-        case_id="case_not_to_hold",
-        hold_delivery=False
-    )
+    analysis_to_hold = Analysis(id=1, case_id="case_to_hold", hold_delivery=True)
+    analysis_not_to_hold = Analysis(id=2, case_id="case_not_to_hold", hold_delivery=False)
     session.add(analysis_to_hold)
     session.add(analysis_not_to_hold)
 
@@ -131,7 +125,9 @@ def test_filter_analyses_by_hold_delivery(store: Store, hold_delivery: bool):
     analyses: Query = store.get_query(table=Analysis)
 
     # WHEN retrieving analyses by hold_delivery
-    analyses: Query = filter_analyses_by_hold_delivery(analyses=analyses, hold_delivery=hold_delivery)
+    analyses: Query = filter_analyses_by_hold_delivery(
+        analyses=analyses, hold_delivery=hold_delivery
+    )
 
     # THEN the analyses is a query
     assert isinstance(analyses, Query)
@@ -144,16 +140,8 @@ def test_filter_analyses_by_hold_delivery_equals_none(store: Store):
     """Test return analysis when hold_delivery is None."""
     # GIVEN a store with two analyses, one whose delivery should be held
     session: Session = get_session()
-    analysis_to_hold = Analysis(
-        id=1,
-        case_id="case_to_hold",
-        hold_delivery=True
-    )
-    analysis_not_to_hold = Analysis(
-        id=2,
-        case_id="case_not_to_hold",
-        hold_delivery=False
-    )
+    analysis_to_hold = Analysis(id=1, case_id="case_to_hold", hold_delivery=True)
+    analysis_not_to_hold = Analysis(id=2, case_id="case_not_to_hold", hold_delivery=False)
     session.add(analysis_to_hold)
     session.add(analysis_not_to_hold)
 
@@ -161,14 +149,15 @@ def test_filter_analyses_by_hold_delivery_equals_none(store: Store):
     analyses: Query = store.get_query(table=Analysis)
 
     # WHEN retrieving analyses
-    filtered_analyses: Query = filter_analyses_by_hold_delivery(analyses=analyses, hold_delivery=None)
+    filtered_analyses: Query = filter_analyses_by_hold_delivery(
+        analyses=analyses, hold_delivery=None
+    )
 
     # THEN the analyses is a query
     assert isinstance(analyses, Query)
 
     # THEN no filtering should be done on the query
     assert filtered_analyses == analyses
-
 
 
 def test_filter_analyses_by_is_visible_when_false(analysis_store: MockStore):

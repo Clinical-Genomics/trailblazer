@@ -34,7 +34,9 @@ def filter_analyses_by_is_visible(analyses: Query, show_hidden: bool | None, **k
     return analyses if show_hidden else analyses.filter(Analysis.is_visible.is_(True))
 
 
-def filter_analyses_by_hold_delivery(analyses: Query, hold_delivery: bool | None, **kwargs) -> Query:
+def filter_analyses_by_hold_delivery(
+    analyses: Query, hold_delivery: bool | None, **kwargs
+) -> Query:
     if hold_delivery is None:
         return analyses
     return analyses.filter(Analysis.hold_delivery == hold_delivery)
