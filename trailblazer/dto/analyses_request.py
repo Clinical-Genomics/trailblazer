@@ -28,6 +28,7 @@ class AnalysesRequest(BaseModel):
     priority: list[TrailblazerPriority] = []
     type: list[TrailblazerTypes] = []
     has_comment: bool | None = Field(alias="hasComment", default=None)
+    hold_delivery: bool | None = Field(alias="holdDelivery", default=None)
     order_id: int | None = Field(alias="orderId", default=None)
     case_id: str | None = None
     delivered: bool | None = None

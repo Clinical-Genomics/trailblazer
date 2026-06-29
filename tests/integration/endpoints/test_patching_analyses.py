@@ -33,7 +33,10 @@ def test_patch_analysis(client: FlaskClient, analysis: Analysis):
     mock_response = UpdateAnalysesResponse(
         analyses=[
             analyses_response.Analysis(
-                id=analysis.id, case_id=analysis.case_id, workflow_manager=analysis.workflow_manager
+                id=analysis.id,
+                case_id=analysis.case_id,
+                hold_delivery=False,
+                workflow_manager=analysis.workflow_manager,
             )
         ]
     )

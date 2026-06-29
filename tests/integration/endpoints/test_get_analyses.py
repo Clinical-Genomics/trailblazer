@@ -134,3 +134,51 @@ def test_get_analyses_by_order_id(client: FlaskClient, analyses: list[Analysis])
 
     # THEN it should only return the analyses with order_id=0
     assert all(analysis["order_id"] == 0 for analysis in response.json["analyses"])
+
+
+def test_get_analyses_by_hold_delivery_true(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different hold_delivery values
+    analyses[0].hold_delivery = True
+
+    # WHEN retrieving all analyses with hold_delivery=True
+    response = client.get("/api/v1/analyses?pageSize=0&holdDelivery=True")
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN at least one analysis is returned
+    assert response.json["analyses"]
+
+    # THEN it should only return the analyses with hold_delivery=True
+    assert all(analysis["hold_delivery"] is True for analysis in response.json["analyses"])
+
+
+def test_get_analyses_by_hold_delivery_false(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different hold_delivery values
+    analyses[0].hold_delivery = True
+
+    # WHEN retrieving all analyses with hold_delivery=False
+    response = client.get("/api/v1/analyses?pageSize=0&holdDelivery=False")
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN at least one analysis is returned
+    assert response.json["analyses"]
+
+    # THEN it should only return the analyses with hold_delivery=False
+    assert all(analysis["hold_delivery"] is False for analysis in response.json["analyses"])
+
+
+def test_get_analyses_by_hold_delivery_none(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different hold_delivery values
+    analyses[0].hold_delivery = True
+
+    # WHEN retrieving all analyses without specifying a value for holdDelivery
+    response = client.get("/api/v1/analyses?pageSize=0")
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN the same numebr of analyses is returned
+    assert len(response.json["analyses"]) == len(analyses)

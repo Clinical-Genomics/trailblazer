@@ -33,6 +33,7 @@ class AnalysisResponse(BaseModel):
     config_path: str | None = None
     delivered_by: str | None = None
     delivered_date: date | None = None
+    hold_delivery: bool
     is_visible: bool = True
     is_delivered: bool
     jobs: list[Job] = []

@@ -93,6 +93,7 @@ class UpdateHandler(BaseHandler):
         self,
         analysis_id: int,
         comment: str | None = None,
+        hold_delivery: bool | None = None,
         is_delivered: bool | None = None,
         is_visible: bool | None = None,
         status: str | None = None,
@@ -104,6 +105,10 @@ class UpdateHandler(BaseHandler):
         if comment is not None:
             LOG.info(f"Adding comment {comment} to analysis {analysis.id}")
             analysis.comment = comment
+
+        if hold_delivery is not None:
+            LOG.info(f"Setting hold_delivery to {hold_delivery} for analysis {analysis.id}")
+            analysis.hold_delivery = hold_delivery
 
         if is_delivered is not None:
             LOG.info(f"Setting analysis delivered status to {is_delivered}")
@@ -124,8 +129,9 @@ class UpdateHandler(BaseHandler):
         for analysis_update in data.analyses:
             analysis: Analysis = self.update_analysis(
                 analysis_id=analysis_update.id,
-                is_delivered=analysis_update.is_delivered,
                 comment=analysis_update.comment,
+                hold_delivery=analysis_update.hold_delivery,
+                is_delivered=analysis_update.is_delivered,
                 is_visible=analysis_update.is_visible,
                 status=analysis_update.status,
                 user=user,
