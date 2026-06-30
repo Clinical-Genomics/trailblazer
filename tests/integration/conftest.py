@@ -32,6 +32,7 @@ def analysis(order_id_with_multiple_analyses) -> Analysis:
         started_at=datetime.datetime.now() - datetime.timedelta(weeks=1),
         status=TrailblazerStatus.PENDING,
         ticket_id="ticket_id",
+        tower_workflow_id="abc123",
         type=TYPES[0],
         workflow_manager=WorkflowManager.SLURM,
         is_visible=True,
