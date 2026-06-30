@@ -17,6 +17,7 @@ def test_get_existing_analysis(client: FlaskClient, analysis: Analysis):
     assert response.json["id"] == analysis.id
     assert response.json["tower_workflow_id"] == analysis.tower_workflow_id
 
+
 def test_get_non_existing_analysis(client: FlaskClient, non_existing_analysis_id: str):
     # GIVEN a non existing analysis id
 
