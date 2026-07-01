@@ -150,6 +150,7 @@ class Analysis(Model):
             "started_at": self.started_at,
             "status": self.status,
             "ticket_id": self.ticket_id,
+            "tower_workflow_id": self.tower_workflow_id,
             "type": self.type,
             "uploaded_at": self.uploaded_at,
             "user_id": self.user_id,

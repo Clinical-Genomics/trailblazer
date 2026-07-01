@@ -46,6 +46,7 @@ class AnalysisResponse(BaseModel):
     started_at: datetime | None = None
     status: TrailblazerStatus
     ticket_id: str | None = None
+    tower_workflow_id: str | None = None
     type: str | None = None
     upload_jobs: list[Job] = []
     uploaded_at: datetime | None = None
