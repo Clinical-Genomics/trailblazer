@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy.orm import Query, Session
 
 from tests.mocks.store_mock import MockStore
+from trailblazer.constants import Workflow
 from trailblazer.store.database import get_session
 from trailblazer.store.filters.analyses_filters import (
     exclude_analysis_with_workflow,
@@ -376,6 +377,27 @@ def test_exclude_analysis_with_workflow(analysis_store: MockStore):
     # THEN no returned analysis should have the excluded workflow
     for analysis in analyses:
         assert analysis.workflow != existing_analysis.workflow
+
+
+def test_exclude_analysis_with_multiple_workflows(analysis_store: MockStore):
+    """Test excluding analyses with more than one workflow at once."""
+    # GIVEN a store containing analyses with, among others, RNAFUSION and MIP-DNA workflows
+    analyses: Query = analysis_store.get_query(table=Analysis)
+    assert analyses.filter(Analysis.workflow == Workflow.RNAFUSION).first()
+    assert analyses.filter(Analysis.workflow == Workflow.MIP_DNA).first()
+
+    # WHEN excluding analyses with either workflow
+    filtered_analyses: Query = exclude_analysis_with_workflow(
+        analyses=analysis_store.get_query(table=Analysis),
+        exclude_workflow=[Workflow.RNAFUSION, Workflow.MIP_DNA],
+    )
+
+    # THEN neither excluded workflow should be present in the results
+    for analysis in filtered_analyses:
+        assert analysis.workflow not in (Workflow.RNAFUSION, Workflow.MIP_DNA)
+
+    # THEN analyses with other workflows should still be returned
+    assert filtered_analyses.count() > 0
 
 
 def test_exclude_analysis_with_workflow_when_empty(analysis_store: MockStore):
