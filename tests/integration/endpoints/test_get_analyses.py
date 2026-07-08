@@ -42,7 +42,7 @@ def test_get_analyses_filtered_by_single_status(client: FlaskClient, analyses: l
     # GIVEN analyses with different statuses
 
     # WHEN retrieving completed analyses
-    response = client.get("/api/v1/analyses?status[]=completed")
+    response = client.get(f"/api/v1/analyses?status[]=completed&pageSize={len(analyses)}")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -181,4 +181,61 @@ def test_get_analyses_by_hold_delivery_none(client: FlaskClient, analyses: list[
     assert response.status_code == HTTPStatus.OK
 
     # THEN the same numebr of analyses is returned
+    assert len(response.json["analyses"]) == len(analyses)
+
+
+def test_get_analyses_by_excluding_workflow(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different workflows
+    analyses[0].workflow = Workflow.RSYNC
+
+    # WHEN retrieving all analyses excluding the RSYNC workflow
+    response = client.get(
+        f"/api/v1/analyses?excludeWorkflow[]={Workflow.RSYNC}&pageSize={len(analyses)}"
+    )
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN no analysis with the RSYNC workflow should be returned
+    assert all(analysis["workflow"] != Workflow.RSYNC for analysis in response.json["analyses"])
+
+
+def test_get_analyses_by_excluding_multiple_workflows(
+    client: FlaskClient, analyses: list[Analysis]
+):
+    # GIVEN analyses with different workflows, two of which are RSYNC and MUTANT
+    analyses[0].workflow = Workflow.RSYNC
+    analyses[1].workflow = Workflow.MUTANT
+
+    # WHEN retrieving all analyses excluding the RSYNC and MUTANT workflows
+    response = client.get(
+        f"/api/v1/analyses?excludeWorkflow[]={Workflow.RSYNC}"
+        f"&excludeWorkflow[]={Workflow.MUTANT}&pageSize={len(analyses)}"
+    )
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN neither of the excluded analyses should be returned
+    assert len(response.json["analyses"]) == len(analyses) - 2
+
+    # THEN no analysis with the RSYNC or MUTANT workflow should be returned
+    assert all(
+        analysis["workflow"] not in (Workflow.RSYNC, Workflow.MUTANT)
+        for analysis in response.json["analyses"]
+    )
+
+
+def test_get_analyses_by_excluding_workflow_when_not_provided(
+    client: FlaskClient, analyses: list[Analysis]
+):
+    # GIVEN analyses with different workflows
+
+    # WHEN retrieving all analyses without excluding any workflow
+    response = client.get(f"/api/v1/analyses?pageSize={len(analyses)}")
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN all analyses are returned
     assert len(response.json["analyses"]) == len(analyses)

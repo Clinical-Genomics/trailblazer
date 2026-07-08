@@ -4,8 +4,10 @@ import pytest
 from sqlalchemy.orm import Query, Session
 
 from tests.mocks.store_mock import MockStore
+from trailblazer.constants import Workflow
 from trailblazer.store.database import get_session
 from trailblazer.store.filters.analyses_filters import (
+    exclude_analysis_with_workflow,
     filter_analyses_by_before_started_at,
     filter_analyses_by_case_id,
     filter_analyses_by_comment,
@@ -356,3 +358,57 @@ def test_filter_analyses_by_statuses(analysis_store: MockStore):
 
     # THEN the analysis should match the original
     assert existing_analysis == analysis.first()
+
+
+def test_exclude_analysis_with_workflow(analysis_store: MockStore):
+    """Test excluding analyses with a given workflow."""
+    # GIVEN a store containing analyses
+    existing_analysis: Analysis = analysis_store.get_query(table=Analysis).first()
+
+    # WHEN excluding analyses with the existing analysis's workflow
+    analyses: Query = exclude_analysis_with_workflow(
+        analyses=analysis_store.get_query(table=Analysis),
+        exclude_workflow=[existing_analysis.workflow],
+    )
+
+    # THEN the analyses is a query
+    assert isinstance(analyses, Query)
+
+    # THEN no returned analysis should have the excluded workflow
+    for analysis in analyses:
+        assert analysis.workflow != existing_analysis.workflow
+
+
+def test_exclude_analysis_with_multiple_workflows(analysis_store: MockStore):
+    """Test excluding analyses with more than one workflow at once."""
+    # GIVEN a store containing analyses with, among others, RNAFUSION and MIP-DNA workflows
+    analyses: Query = analysis_store.get_query(table=Analysis)
+    assert analyses.filter(Analysis.workflow == Workflow.RNAFUSION).first()
+    assert analyses.filter(Analysis.workflow == Workflow.MIP_DNA).first()
+
+    # WHEN excluding analyses with either workflow
+    filtered_analyses: Query = exclude_analysis_with_workflow(
+        analyses=analysis_store.get_query(table=Analysis),
+        exclude_workflow=[Workflow.RNAFUSION, Workflow.MIP_DNA],
+    )
+
+    # THEN neither excluded workflow should be present in the results
+    for analysis in filtered_analyses:
+        assert analysis.workflow not in (Workflow.RNAFUSION, Workflow.MIP_DNA)
+
+    # THEN analyses with other workflows should still be returned
+    assert filtered_analyses.count() > 0
+
+
+def test_exclude_analysis_with_workflow_when_empty(analysis_store: MockStore):
+    """Test that no filtering is done when exclude_workflow is empty."""
+    # GIVEN a store containing analyses
+    analyses: Query = analysis_store.get_query(table=Analysis)
+
+    # WHEN excluding analyses without providing any workflow
+    filtered_analyses: Query = exclude_analysis_with_workflow(
+        analyses=analyses, exclude_workflow=None
+    )
+
+    # THEN no filtering should be done on the query
+    assert filtered_analyses == analyses

@@ -240,6 +240,7 @@ class ReadHandler(BaseHandler):
     def _filter_analyses(self, request: AnalysesRequest) -> Query:
         filters: list[AnalysisFilter] = [
             AnalysisFilter.BY_WORKFLOW,
+            AnalysisFilter.BY_EXCLUDE_WORKFLOW,
             AnalysisFilter.BY_HAS_COMMENT,
             AnalysisFilter.BY_ORDER_ID,
             AnalysisFilter.BY_PRIORITIES,
@@ -262,6 +263,7 @@ class ReadHandler(BaseHandler):
             statuses=request.status,
             types=request.type,
             case_id=request.case_id,
+            exclude_workflow=request.exclude_workflow,
             hold_delivery=request.hold_delivery,
             workflow=request.workflow,
             search_term=request.search,
