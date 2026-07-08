@@ -154,6 +154,15 @@ def filter_analyses_by_latest_per_case(analyses: Query, **kwargs) -> Query:
     return latest_analysis_per_case
 
 
+def exclude_analysis_with_workflow(
+    analyses: Query, exclude_workflow: list[Workflow] | None, **kwargs
+) -> Query:
+    """Exclude analyses with any of the given workflows."""
+    if not exclude_workflow:
+        return analyses
+    return analyses.filter(Analysis.workflow.notin_(exclude_workflow))
+
+
 def sort_analyses(
     analyses: Query, sort_field: AnalysisSortField, sort_order: SortOrder, **kwargs
 ) -> Query:
@@ -192,6 +201,7 @@ class AnalysisFilter(Enum):
     BY_COMPLETED: Callable = get_completed_analyses
     BY_DELIVERED: Callable = filter_analyses_by_delivered
     BY_ENTRY_ID: Callable = filter_analyses_by_entry_id
+    BY_EXCLUDE_WORKFLOW: Callable = exclude_analysis_with_workflow
     BY_HAS_COMMENT: Callable = filter_analyses_by_has_comment
     BY_HOLD_DELIVERY: Callable = filter_analyses_by_hold_delivery
     BY_IS_VISIBLE: Callable = filter_analyses_by_is_visible
@@ -217,6 +227,7 @@ def apply_analysis_filter(
     case_id: str | None = None,
     comment: str | None = None,
     delivered: bool | None = None,
+    exclude_workflow: list[Workflow] | None = None,
     has_comment: bool | None = None,
     hold_delivery: bool | None = None,
     order_id: int | None = None,
@@ -243,6 +254,7 @@ def apply_analysis_filter(
             case_id=case_id,
             comment=comment,
             delivered=delivered,
+            exclude_workflow=exclude_workflow,
             has_comment=has_comment,
             hold_delivery=hold_delivery,
             order_id=order_id,

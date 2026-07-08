@@ -37,12 +37,24 @@ class WorkflowManager(StrEnum):
 class Workflow(StrEnum):
     """Analysis workflow names."""
 
-    BALSAMIC: str = "BALSAMIC"
-    MIP_DNA: str = "MIP-DNA"
-    MIP_RNA: str = "MIP-RNA"
-    MUTANT: str = "MUTANT"
-    RSYNC: str = "RSYNC"
-    RAW_DATA: str = "RAW-DATA"
+    BALSAMIC = "BALSAMIC"
+    BALSAMIC_PON = "BALSAMIC-PON"
+    BALSAMIC_UMI = "BALSAMIC-UMI"
+    DEMULTIPLEX = "DEMULTIPLEX"
+    FLUFFY = "FLUFFY"
+    JASEN = "JASEN"
+    MICROSALT = "MICROSALT"
+    MIP_DNA = "MIP-DNA"
+    MIP_RNA = "MIP-RNA"
+    MUTANT = "MUTANT"
+    NALLO = "NALLO"
+    RAREDISEASE = "RAREDISEASE"
+    RAW_DATA = "RAW-DATA"
+    RNAFUSION = "RNAFUSION"
+    RSYNC = "RSYNC"
+    SPRING = "SPRING"
+    TAXPROFILER = "TAXPROFILER"
+    TOMTE = "TOMTE"
 
 
 class SlurmSqueueHeader(StrEnum):
