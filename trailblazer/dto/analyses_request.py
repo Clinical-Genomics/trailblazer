@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from trailblazer.constants import (
     TrailblazerPriority,
     TrailblazerStatus,
-    TrailblazerTypes,
+    TrailblazerTypes, Workflow,
 )
 from trailblazer.dto.common import SortOrder
 
@@ -19,6 +19,7 @@ class AnalysisSortField(StrEnum):
 
 class AnalysesRequest(BaseModel):
     workflow: str = ""
+    exclude_workflow: list[Workflow] = Field(alias="excludeWorkflow", default=[])
     search: str | None = None
     page_size: int = Field(alias="pageSize", default=250)
     page: int = 1

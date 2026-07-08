@@ -42,7 +42,7 @@ def test_get_analyses_filtered_by_single_status(client: FlaskClient, analyses: l
     # GIVEN analyses with different statuses
 
     # WHEN retrieving completed analyses
-    response = client.get("/api/v1/analyses?status[]=completed")
+    response = client.get(f"/api/v1/analyses?status[]=completed&pageSize={len(analyses)}")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -180,5 +180,21 @@ def test_get_analyses_by_hold_delivery_none(client: FlaskClient, analyses: list[
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
 
-    # THEN the same numebr of analyses is returned
+    # THEN the same number of analyses is returned
     assert len(response.json["analyses"]) == len(analyses)
+
+
+def test_get_analyses_by_excluding_workflow(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different workflows
+    analyses[0].workflow = Workflow.RSYNC
+
+    # WHEN retrieving all analyses excluding the RSYNC workflow
+    response = client.get(
+        f"/api/v1/analyses?excludeWorkflow[]={Workflow.RSYNC}&pageSize={len(analyses)}"
+    )
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN no analysis with the RSYNC workflow should be returned
+    assert all(analysis["workflow"] != Workflow.RSYNC for analysis in response.json["analyses"])
