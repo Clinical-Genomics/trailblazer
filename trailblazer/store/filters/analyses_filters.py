@@ -205,7 +205,6 @@ class AnalysisFilter(Enum):
     BY_STATUSES: Callable = filter_analyses_by_statuses
     BY_TYPES: Callable = filter_analyses_by_types
     BY_WORKFLOW: Callable = filter_analyses_by_workflow
-    BY_EXCLUDE_WORKFLOW: Callable[]
     EXCLUDE_RSYNC: Callable = exclude_rsync_analyses
     PAGINATION: Callable = paginate_analyses
     SORTING: Callable = sort_analyses
