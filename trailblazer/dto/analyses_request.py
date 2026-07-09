@@ -22,7 +22,7 @@ class AnalysesRequest(BaseModel):
     workflow: str = ""
     exclude_workflow: list[Workflow] = Field(alias="excludeWorkflow", default=[])
     search: str | None = None
-    page_size: int = Field(alias="pageSize", default=250)
+    page_size: int | None = Field(alias="pageSize", default=None)
     page: int = 1
     sort_field: AnalysisSortField = Field(alias="sortField", default=AnalysisSortField.STARTED_AT)
     sort_order: SortOrder = Field(alias="sortOrder", default=SortOrder.DESC)
