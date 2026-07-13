@@ -189,9 +189,7 @@ def test_get_analyses_by_excluding_workflow(client: FlaskClient, analyses: list[
     analyses[0].workflow = Workflow.RSYNC
 
     # WHEN retrieving all analyses excluding the RSYNC workflow
-    response = client.get(
-        f"/api/v1/analyses?excludeWorkflow[]={Workflow.RSYNC}&pageSize={len(analyses)}"
-    )
+    response = client.get(f"/api/v1/analyses?excludeWorkflow[]={Workflow.RSYNC}")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
@@ -210,7 +208,7 @@ def test_get_analyses_by_excluding_multiple_workflows(
     # WHEN retrieving all analyses excluding the RSYNC and MUTANT workflows
     response = client.get(
         f"/api/v1/analyses?excludeWorkflow[]={Workflow.RSYNC}"
-        f"&excludeWorkflow[]={Workflow.MUTANT}&pageSize={len(analyses)}"
+        f"&excludeWorkflow[]={Workflow.MUTANT}"
     )
 
     # THEN it gives a success response
@@ -232,10 +230,25 @@ def test_get_analyses_by_excluding_workflow_when_not_provided(
     # GIVEN analyses with different workflows
 
     # WHEN retrieving all analyses without excluding any workflow
-    response = client.get(f"/api/v1/analyses?pageSize={len(analyses)}")
+    response = client.get("/api/v1/analyses?")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
 
     # THEN all analyses are returned
     assert len(response.json["analyses"]) == len(analyses)
+
+
+def test_get_analyses_pagination(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN list of analyses
+    first_analysis = analyses[0]
+    first_analysis.id = 1337
+
+    # WHEN retrieving analyses with page size one
+    response = client.get("/api/v1/analyses?pageSize=1&page=1&sortOrder=asc")
+
+    # THEN there should only be one analysis
+    assert len(response.json["analyses"]) == 1
+
+    # THEN it should be the first analysis
+    assert response.json["analyses"][0]["id"] == first_analysis.id
