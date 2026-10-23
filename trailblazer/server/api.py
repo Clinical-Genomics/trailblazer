@@ -223,7 +223,7 @@ def set_analysis_uploaded():
     """Set the analysis uploaded at attribute."""
     put_request: Response.json = request.json
     store.update_analysis_uploaded_at(
-        case_id=put_request.get("case_id"), uploaded_at=put_request.get("uploaded_at")
+        analysis_id=put_request.get("analysis_id"), uploaded_at=put_request.get("uploaded_at")
     )
     return jsonify("Success! Uploaded at request sent"), HTTPStatus.CREATED
 
