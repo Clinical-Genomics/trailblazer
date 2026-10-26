@@ -233,9 +233,9 @@ def set_analysis_uploaded():
 def set_analysis_status():
     """Update analysis status of a case with supplied status."""
     put_request: Response.json = request.json
-    case_id: str = put_request.get("case_id")
+    analysis_id: int = put_request.get("analysis_id")
     status: str = put_request.get("status")
-    store.update_analysis_status_by_case_id(case_id=case_id, status=status)
+    store.update_analysis_status(analysis_id=analysis_id, status=status)
     return (
         jsonify(f"Success! Analysis set to {put_request.get('status')} request sent"),
         HTTPStatus.CREATED,
@@ -247,7 +247,7 @@ def set_analysis_status():
 def add_comment():
     """Updating comment on analysis."""
     put_request: Response.json = request.json
-    case_id: str = put_request.get("case_id")
+    analysis_id: int = put_request.get("analysis_id")
     comment: str = put_request.get("comment")
-    store.update_latest_analysis_comment(case_id=case_id, comment=comment)
+    store.update_analysis_comment(analysis_id=analysis_id, comment=comment)
     return jsonify("Success! Adding comment request sent"), HTTPStatus.CREATED
