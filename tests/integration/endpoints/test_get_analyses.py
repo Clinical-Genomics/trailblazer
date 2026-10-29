@@ -123,6 +123,24 @@ def test_get_analyses_by_workflow(client: FlaskClient, analyses: list[Analysis])
     )
 
 
+def test_get_analyses_by_multiple_workflows(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different workflows
+
+    # WHEN retrieving all mip and nallo analyses
+    response = client.get(
+        f"/api/v1/analyses?workflows[]={Workflow.MIP_DNA}&workflows[]={Workflow.NALLO}"
+    )
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN it should only return mip and nallo analyses
+    assert all(
+        analysis["workflow"] in (Workflow.MIP_DNA.lower(), Workflow.NALLO.lower())
+        for analysis in response.json["analyses"]
+    )
+
+
 def test_get_analyses_by_order_id(client: FlaskClient, analyses: list[Analysis]):
     # GIVEN analyses with different workflows
 
