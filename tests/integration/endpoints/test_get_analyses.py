@@ -141,6 +141,21 @@ def test_get_analyses_by_multiple_workflows(client: FlaskClient, analyses: list[
     )
 
 
+def test_get_analyses_by_unknown_workflow(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different workflows
+
+    # WHEN retrieving all analyses with an unknown workflow
+    response = client.get(
+        f"/api/v1/analyses?workflows[]={Workflow.MIP_DNA}&workflows[]=unknown_workflow"
+    )
+
+    # THEN it gives a bad request response
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+
+    # THEN it should return an error message
+    assert response.json["error"]
+
+
 def test_get_analyses_by_order_id(client: FlaskClient, analyses: list[Analysis]):
     # GIVEN analyses with different workflows
 
