@@ -107,14 +107,29 @@ def filter_analyses_by_delivered(analyses: Query, delivered: bool | None, **kwar
     return analyses
 
 
-def filter_analyses_by_workflow(analyses: Query, workflow: Workflow, **kwargs) -> Query:
-    """Filter analyses by workflow."""
+def filter_analyses_by_workflow(
+    analyses: Query,
+    workflow: str | None = None,
+    workflows: list[Workflow] | None = None,
+    **kwargs,
+) -> Query:
+    """Filter analyses by any selected workflow, including Balsamic variants."""
     balsamic_workflow: str = Workflow.BALSAMIC.lower()
-    if workflow == balsamic_workflow:
-        analyses = analyses.filter(Analysis.workflow.startswith(balsamic_workflow))
+
+    if workflows:
+        selected_workflows = [item.value.lower() for item in workflows]
     elif workflow:
-        analyses = analyses.filter(Analysis.workflow == workflow)
-    return analyses
+        selected_workflows = [workflow]
+    else:
+        return analyses
+
+    condition = []
+    for selected_workflow in selected_workflows:
+        if selected_workflow == balsamic_workflow:
+            condition.append(Analysis.workflow.startswith(balsamic_workflow))
+        else:
+            condition.append(Analysis.workflow == selected_workflow)
+    return analyses.filter(sqlalchemy.or_(*condition))
 
 
 def filter_analyses_by_latest_per_case(analyses: Query, **kwargs) -> Query:
@@ -243,6 +258,7 @@ def apply_analysis_filter(
     statuses: list[str] | None = None,
     types: list[str] | None = None,
     workflow: str | None = None,
+    workflows: list[Workflow] | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
     if statuses is None:
@@ -270,5 +286,6 @@ def apply_analysis_filter(
             statuses=statuses,
             types=types,
             workflow=workflow,
+            workflows=workflows,
         )
     return analyses

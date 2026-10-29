@@ -123,6 +123,88 @@ def test_get_analyses_by_workflow(client: FlaskClient, analyses: list[Analysis])
     )
 
 
+def test_get_analyses_by_multiple_workflows(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different workflows
+
+    # WHEN retrieving all mip and nallo analyses
+    response = client.get(
+        f"/api/v1/analyses?workflows[]={Workflow.MIP_DNA}&workflows[]={Workflow.NALLO}"
+    )
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN it should only return mip and nallo analyses
+    assert all(
+        analysis["workflow"] in (Workflow.MIP_DNA.lower(), Workflow.NALLO.lower())
+        for analysis in response.json["analyses"]
+    )
+
+
+def test_get_analyses_by_unknown_workflow(client: FlaskClient, analyses: list[Analysis]):
+    # GIVEN analyses with different workflows
+
+    # WHEN retrieving all analyses with an unknown workflow
+    response = client.get(
+        f"/api/v1/analyses?workflows[]={Workflow.MIP_DNA}&workflows[]=unknown_workflow"
+    )
+
+    # THEN it gives a bad request response
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+
+    # THEN it should return an error message
+    assert response.json["error"]
+
+
+def test_get_analyses_with_conflicting_workflow_filters(
+    client: FlaskClient, analyses: list[Analysis]
+):
+    # GIVEN analyses with different workflows
+
+    # WHEN retrieving all analyses with conflicting workflow filters
+    response = client.get(
+        f"/api/v1/analyses?workflows[]={Workflow.MIP_DNA}&workflow={Workflow.MIP_DNA}"
+    )
+
+    # THEN it gives a bad request response
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+
+    # THEN it should return an error message
+    assert response.json["error"]
+
+
+def test_get_analyses_by_multiple_workflows_includes_balsamic_variants(
+    client: FlaskClient, analyses: list[Analysis]
+):
+    # GIVEN analyses with different workflows
+
+    # WHEN retrieving all analyses with multiple workflows including balsamic
+    response = client.get(
+        f"/api/v1/analyses?workflows[]={Workflow.MIP_DNA}&workflows[]={Workflow.BALSAMIC}"
+    )
+
+    # THEN it gives a success response
+    assert response.status_code == HTTPStatus.OK
+
+    # THEN it should only return analyses with the specified workflows
+    assert all(
+        analysis["workflow"]
+        in (
+            Workflow.MIP_DNA.lower(),
+            Workflow.BALSAMIC.lower(),
+            Workflow.BALSAMIC_PON.lower(),
+            Workflow.BALSAMIC_UMI.lower(),
+        )
+        for analysis in response.json["analyses"]
+    )
+
+    # THEN both Balsamic variants should be included
+    returned_workflows = {analysis["workflow"] for analysis in response.json["analyses"]}
+    assert Workflow.BALSAMIC.lower() in returned_workflows
+    assert Workflow.BALSAMIC_PON.lower() in returned_workflows
+    assert Workflow.BALSAMIC_UMI.lower() in returned_workflows
+
+
 def test_get_analyses_by_order_id(client: FlaskClient, analyses: list[Analysis]):
     # GIVEN analyses with different workflows
 
