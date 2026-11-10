@@ -23,6 +23,10 @@ def upgrade():
         sa.Column("id", sa.Integer, primary_key=True),
         sa.Column("version", sa.Integer, nullable=False),
         sa.Column("workblocks", sa.JSON, nullable=False),
+        sa.Column("updated_by", sa.String(32), nullable=True),
+        sa.Column(
+            "updated_at", sa.DateTime, nullable=True, comment="UTC timestamp of latest change"
+        ),
     )
 
     op.bulk_insert(
