@@ -13,7 +13,7 @@ from trailblazer.constants import (
     WorkflowManager,
 )
 from trailblazer.store.database import get_session
-from trailblazer.store.models import Analysis, Job
+from trailblazer.store.models import Analysis, Job, WorkblockConfiguration
 
 
 @pytest.fixture
@@ -147,3 +147,33 @@ def analysis_with_failed_job() -> Analysis:
 @pytest.fixture
 def non_existing_analysis_id() -> str:
     return "00"
+
+
+@pytest.fixture
+def workblock_configuration(store) -> WorkblockConfiguration:
+    """Create a saved workblock configuration."""
+    configuration = WorkblockConfiguration(
+        id=1,
+        version=1,
+        workblocks=[
+            {
+                "id": "workblock-1",
+                "name": "Workblock 1",
+                "color": "#8dd909",
+                "workflows": ["nallo"],
+            },
+            {
+                "id": "workblock-2",
+                "name": "Workblock 2",
+                "color": "#d98910",
+                "workflows": ["balsamic", "mip-dna"],
+            },
+        ],
+        updated_by="test_user",
+        updated_at=datetime.datetime.now(),
+    )
+
+    session = get_session()
+    session.add(configuration)
+    session.commit()
+    return configuration
