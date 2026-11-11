@@ -46,3 +46,14 @@ def test_get_workblocks_without_edit_information(
         "updated_by": None,
         "updated_at": None,
     }
+
+
+def test_get_workblocks_without_configuration(client: FlaskClient):
+    # GIVEN no saved workblock configuration
+
+    # WHEN retrieving the configuration
+    response = client.get("/api/v1/workblocks")
+
+    # THEN it returns a server error
+    assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
+    assert response.json == {"error": "An error occurred while processing your request."}
