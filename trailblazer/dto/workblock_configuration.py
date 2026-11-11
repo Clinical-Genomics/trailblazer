@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class Workblock(BaseModel):
@@ -8,6 +8,13 @@ class Workblock(BaseModel):
     name: str = Field(min_length=1, max_length=128)
     color: str = Field(pattern=r"^#[0-9a-fA-F]{6}$")
     workflows: list[str] = Field(min_length=1)
+
+    @field_validator("id", "name", mode="before")
+    @classmethod
+    def trim_spaces(cls, value):
+        if isinstance(value, str):
+            return value.strip()
+        return value
 
 
 class WorkblockConfigurationResponse(BaseModel):
