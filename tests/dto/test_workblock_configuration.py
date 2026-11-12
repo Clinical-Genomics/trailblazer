@@ -161,3 +161,22 @@ def test_workblock_configuration_with_unknown_workflow():
     # WHEN validating, THEN the unknown workflow is rejected
     with pytest.raises(ValidationError, match="Unsupported workflow: unknown"):
         WorkblockConfigurationRequest.model_validate(data)
+
+
+def test_workblock_configuration_with_empty_workflow_list():
+    # GIVEN a block with an empty workflow list
+    data = {
+        "version": 1,
+        "workblocks": [
+            {
+                "id": "workblock-1",
+                "name": "Workblock 1",
+                "color": "#8dd909",
+                "workflows": [],
+            }
+        ],
+    }
+
+    # WHEN validating, THEN the empty workflow list is rejected
+    with pytest.raises(ValidationError, match="List should have at least 1 item"):
+        WorkblockConfigurationRequest.model_validate(data)
