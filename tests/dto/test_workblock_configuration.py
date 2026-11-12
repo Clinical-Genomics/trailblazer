@@ -76,3 +76,39 @@ def test_workblock_configuration_with_duplicate_workflows():
         match="Workflow assigned more than once: nallo",
     ):
         WorkblockConfigurationRequest.model_validate(data)
+
+
+def test_workblock_configuration_without_workblocks():
+    # GIVEN a configuration without workblocks
+    data = {"version": 1, "workblocks": []}
+
+    # WHEN validating, THEN an empty list is rejected
+    with pytest.raises(ValidationError) as error:
+        WorkblockConfigurationRequest.model_validate(data)
+
+    assert error.value.errors()[0]["loc"] == ("workblocks",)
+    assert error.value.errors()[0]["type"] == "too_short"
+
+
+def test_workblock_configuration_with_too_many_workblocks():
+    # GIVEN six blocks with unique IDs and workflows
+    workflows = ["nallo", "tomte", "fluffy", "balsamic", "rnafusion", "microsalt"]
+    data = {
+        "version": 1,
+        "workblocks": [
+            {
+                "id": f"workblock-{index}",
+                "name": f"Workblock {index}",
+                "color": "#8dd909",
+                "workflows": [workflow],
+            }
+            for index, workflow in enumerate(workflows, start=1)
+        ],
+    }
+
+    # WHEN validating, THEN more than five blocks are rejected
+    with pytest.raises(ValidationError) as error:
+        WorkblockConfigurationRequest.model_validate(data)
+
+    assert error.value.errors()[0]["loc"] == ("workblocks",)
+    assert error.value.errors()[0]["type"] == "too_long"
