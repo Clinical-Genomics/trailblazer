@@ -199,3 +199,26 @@ def test_workblock_configuration_with_duplicate_workflows_inside_one_block():
     # WHEN validating, THEN the duplicate workflow is rejected
     with pytest.raises(ValidationError, match="Workflow assigned more than once: nallo"):
         WorkblockConfigurationRequest.model_validate(data)
+
+
+@pytest.mark.parametrize("value", [0, -1, "1", True])
+def test_workblock_configuration_with_invalid_version(value):
+    # GIVEN a block with an invalid version
+    data = {
+        "version": 1,
+        "workblocks": [
+            {
+                "id": "workblock-1",
+                "name": "Workblock 1",
+                "color": "#8dd909",
+                "workflows": ["nallo", "balsamic"],
+            }
+        ],
+    }
+    data["version"] = value
+
+    # WHEN validating, THEN the invalid field is rejected
+    with pytest.raises(ValidationError) as error:
+        WorkblockConfigurationRequest.model_validate(data)
+
+    assert error.value.errors()[0]["loc"] == ("version",)
