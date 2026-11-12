@@ -180,3 +180,22 @@ def test_workblock_configuration_with_empty_workflow_list():
     # WHEN validating, THEN the empty workflow list is rejected
     with pytest.raises(ValidationError, match="List should have at least 1 item"):
         WorkblockConfigurationRequest.model_validate(data)
+
+
+def test_workblock_configuration_with_duplicate_workflows_inside_one_block():
+    # GIVEN a block with duplicate workflows inside one block
+    data = {
+        "version": 1,
+        "workblocks": [
+            {
+                "id": "workblock-1",
+                "name": "Workblock 1",
+                "color": "#8dd909",
+                "workflows": ["nallo", "balsamic", "nallo"],
+            }
+        ],
+    }
+
+    # WHEN validating, THEN the duplicate workflow is rejected
+    with pytest.raises(ValidationError, match="Workflow assigned more than once: nallo"):
+        WorkblockConfigurationRequest.model_validate(data)
