@@ -48,3 +48,31 @@ def test_workblock_configuration_with_duplicate_ids():
     # WHEN validating, THEN duplicate workblock IDs are rejected
     with pytest.raises(ValidationError, match="Duplicate workblock ID: workblock-1"):
         WorkblockConfigurationRequest.model_validate(data)
+
+
+def test_workblock_configuration_with_duplicate_workflows():
+    # GIVEN two blocks containing the same workflow
+    data = {
+        "version": 1,
+        "workblocks": [
+            {
+                "id": "workblock-1",
+                "name": "Workblock 1",
+                "color": "#8dd909",
+                "workflows": ["nallo"],
+            },
+            {
+                "id": "workblock-2",
+                "name": "Workblock 2",
+                "color": "#d57012",
+                "workflows": ["nallo"],
+            },
+        ],
+    }
+
+    # WHEN validating, THEN duplicate workflows are rejected
+    with pytest.raises(
+        ValidationError,
+        match="Workflow assigned more than once: nallo",
+    ):
+        WorkblockConfigurationRequest.model_validate(data)
