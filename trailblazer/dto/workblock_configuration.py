@@ -2,6 +2,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field, field_validator
 
+from trailblazer.constants import WORKFLOWS
+
 
 class Workblock(BaseModel):
     id: str = Field(min_length=1, max_length=128)
@@ -15,6 +17,17 @@ class Workblock(BaseModel):
         if isinstance(value, str):
             return value.strip()
         return value
+
+    @field_validator("workflows")
+    @classmethod
+    def validate_workflows(cls, workflows: list[str]) -> list[str]:
+        normalized = [workflow.strip().lower() for workflow in workflows]
+
+        for workflow in normalized:
+            if workflow not in WORKFLOWS:
+                raise ValueError(f"Unsupported workflow: {workflow}")
+
+        return normalized
 
 
 class WorkblockConfigurationResponse(BaseModel):
