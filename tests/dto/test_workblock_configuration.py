@@ -246,3 +246,25 @@ def test_workblock_configuration_normalizes_values():
     assert workblock.id == "workblock-1"
     assert workblock.name == "Workblock 1"
     assert workblock.workflows == ["nallo", "mip-dna"]
+
+
+def test_workblock_configuration_with_max_five_valid_blocks():
+    # GIVEN five blocks with unique IDs and workflows
+    workflows = ["nallo", "tomte", "fluffy", "balsamic", "rnafusion"]
+    data = {
+        "version": 1,
+        "workblocks": [
+            {
+                "id": f"workblock-{index}",
+                "name": f"Workblock {index}",
+                "color": "#8dd909",
+                "workflows": [workflow],
+            }
+            for index, workflow in enumerate(workflows, start=1)
+        ],
+    }
+
+    # WHEN validating the configuration
+    configuration = WorkblockConfigurationRequest.model_validate(data)
+
+    assert len(configuration.workblocks) == 5
