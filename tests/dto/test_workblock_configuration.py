@@ -222,3 +222,27 @@ def test_workblock_configuration_with_invalid_version(value):
         WorkblockConfigurationRequest.model_validate(data)
 
     assert error.value.errors()[0]["loc"] == ("version",)
+
+
+def test_workblock_configuration_normalizes_values():
+    # GIVEN names with surrounding spaces and uppercase workflows
+    data = {
+        "version": 1,
+        "workblocks": [
+            {
+                "id": "  workblock-1  ",
+                "name": "  Workblock 1  ",
+                "color": "#8dd909",
+                "workflows": [" NALLO ", "MIP-DNA"],
+            }
+        ],
+    }
+
+    # WHEN validating the configuration
+    configuration = WorkblockConfigurationRequest.model_validate(data)
+
+    # THEN it trims spaces and normalizes workflow names
+    workblock = configuration.workblocks[0]
+    assert workblock.id == "workblock-1"
+    assert workblock.name == "Workblock 1"
+    assert workblock.workflows == ["nallo", "mip-dna"]
