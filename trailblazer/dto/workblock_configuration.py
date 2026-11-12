@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from trailblazer.constants import WORKFLOWS
 
@@ -35,6 +35,23 @@ class WorkblockConfigurationResponse(BaseModel):
     workblocks: list[Workblock]
     updated_by: str | None = None
     updated_at: datetime | None = None
+
+    @model_validator(mode="after")
+    def validate_unique_assignments(self):
+        ids = set()
+        workflows = set()
+
+        for workblock in self.workblocks:
+            if workblock.id in ids:
+                raise ValueError(f"Duplicate workblock ID: {workblock.id}")
+            ids.add(workblock.id)
+
+            for workflow in workblock.workflows:
+                if workflow in workflows:
+                    raise ValueError(f"Workflow assigned more than once: {workflow}")
+                workflows.add(workflow)
+
+        return self
 
 
 class WorkblockConfigurationRequest(BaseModel):
