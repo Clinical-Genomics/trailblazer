@@ -36,6 +36,11 @@ class WorkblockConfigurationResponse(BaseModel):
     updated_by: str | None = None
     updated_at: datetime | None = None
 
+
+class WorkblockConfigurationRequest(BaseModel):
+    version: int = Field(strict=True, ge=1)
+    workblocks: list[Workblock] = Field(min_length=1, max_length=5)
+
     @model_validator(mode="after")
     def validate_unique_assignments(self):
         ids = set()
@@ -52,8 +57,3 @@ class WorkblockConfigurationResponse(BaseModel):
                 workflows.add(workflow)
 
         return self
-
-
-class WorkblockConfigurationRequest(BaseModel):
-    version: int = Field(strict=True, ge=1)
-    workblocks: list[Workblock] = Field(min_length=1, max_length=5)
