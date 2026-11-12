@@ -112,3 +112,33 @@ def test_workblock_configuration_with_too_many_workblocks():
 
     assert error.value.errors()[0]["loc"] == ("workblocks",)
     assert error.value.errors()[0]["type"] == "too_long"
+
+
+@pytest.mark.parametrize(
+    "field, value",
+    [
+        ("name", ""),
+        ("name", "   "),
+        ("name", "a" * 129),
+        ("color", "red"),
+        ("color", "#12345"),
+        ("color", "#gggggg"),
+    ],
+)
+def test_workblock_configuration_with_invalid_name_or_color(field, value):
+    # GIVEN a block with an invalid name or color
+    workblock = {
+        "id": "workblock-1",
+        "name": "Workblock 1",
+        "color": "#8dd909",
+        "workflows": ["nallo"],
+    }
+    workblock[field] = value
+
+    data = {"version": 1, "workblocks": [workblock]}
+
+    # WHEN validating, THEN the invalid field is rejected
+    with pytest.raises(ValidationError) as error:
+        WorkblockConfigurationRequest.model_validate(data)
+
+    assert error.value.errors()[0]["loc"] == ("workblocks", 0, field)
