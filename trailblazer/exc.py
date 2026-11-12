@@ -97,6 +97,12 @@ class WorkflowIdFileMissingError(TowerServiceError):
     message = "Workflow ID file is missing"
 
 
+class WorkblockConfigurationConflictError(Exception):
+    """
+    The submitted workblock configuration version is outdated.
+    """
+
+
 class UserNotFoundError(TrailblazerError):
     """
     Exception raised when a user is not found
