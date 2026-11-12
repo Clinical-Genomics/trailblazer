@@ -142,3 +142,22 @@ def test_workblock_configuration_with_invalid_name_or_color(field, value):
         WorkblockConfigurationRequest.model_validate(data)
 
     assert error.value.errors()[0]["loc"] == ("workblocks", 0, field)
+
+
+def test_workblock_configuration_with_unknown_workflow():
+    # GIVEN a block with unknown workflow
+    data = {
+        "version": 1,
+        "workblocks": [
+            {
+                "id": "workblock-1",
+                "name": "Workblock 1",
+                "color": "#8dd909",
+                "workflows": ["unknown"],
+            }
+        ],
+    }
+
+    # WHEN validating, THEN the unknown workflow is rejected
+    with pytest.raises(ValidationError, match="Unsupported workflow: unknown"):
+        WorkblockConfigurationRequest.model_validate(data)
