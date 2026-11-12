@@ -268,3 +268,30 @@ def test_workblock_configuration_with_max_five_valid_blocks():
     configuration = WorkblockConfigurationRequest.model_validate(data)
 
     assert len(configuration.workblocks) == 5
+
+
+@pytest.mark.parametrize(
+    "field, value",
+    [
+        ("id", ""),
+        ("id", "   "),
+        ("id", "a" * 129),
+    ],
+)
+def test_workblock_configuration_with_invalid_ids(field, value):
+    # GIVEN a block with an invalid id
+    workblock = {
+        "id": "workblock-1",
+        "name": "Workblock 1",
+        "color": "#8dd909",
+        "workflows": ["nallo"],
+    }
+    workblock[field] = value
+
+    data = {"version": 1, "workblocks": [workblock]}
+
+    # WHEN validating, THEN the invalid field is rejected
+    with pytest.raises(ValidationError) as error:
+        WorkblockConfigurationRequest.model_validate(data)
+
+    assert error.value.errors()[0]["loc"] == ("workblocks", 0, field)
