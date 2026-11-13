@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Callable
 
 import sqlalchemy
-from sqlalchemy import Subquery, func, select
+from sqlalchemy import Subquery, func, or_
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import TrailblazerStatus, Workflow
@@ -101,9 +101,9 @@ def filter_analyses_by_has_comment(analyses: Query, has_comment: bool | None, **
 
 def filter_analyses_by_delivered(analyses: Query, delivered: bool | None, **kwargs) -> Query:
     if delivered is True:
-        return analyses.filter(Analysis.delivery != None)
+        return analyses.filter(Analysis.delivery != None)  # noqa: E711
     elif delivered is False:
-        return analyses.filter(Analysis.delivery == None)
+        return analyses.filter(Analysis.delivery == None)  # noqa: E711
     return analyses
 
 
@@ -129,7 +129,7 @@ def filter_analyses_by_workflow(
             condition.append(Analysis.workflow.startswith(balsamic_workflow))
         else:
             condition.append(Analysis.workflow == selected_workflow)
-    return analyses.filter(sqlalchemy.or_(*condition))
+    return analyses.filter(or_(*condition))
 
 
 def filter_analyses_by_latest_per_case(analyses: Query, **kwargs) -> Query:
@@ -200,7 +200,7 @@ def exclude_rsync_analyses(analyses: Query, **kwargs) -> Query:
 
 
 def get_not_uploaded_analyses(analyses: Query, **kwargs) -> Query:
-    return analyses.filter(Analysis.uploaded_at == None)
+    return analyses.filter(Analysis.uploaded_at == None)  # noqa: E711
 
 
 def get_completed_analyses(analyses: Query, **kwargs) -> Query:
