@@ -114,10 +114,10 @@ def filter_analyses_by_workflow(
     **kwargs,
 ) -> Query:
     """Filter analyses by any selected workflow, including Balsamic variants."""
-    balsamic_workflow: str = Workflow.BALSAMIC.lower()
+    balsamic_workflow: str = Workflow.BALSAMIC
 
     if workflows:
-        selected_workflows = [item.value.lower() for item in workflows]
+        selected_workflows = [item.value for item in workflows]
     elif workflow:
         selected_workflows = [workflow]
     else:
@@ -125,7 +125,7 @@ def filter_analyses_by_workflow(
 
     condition = []
     for selected_workflow in selected_workflows:
-        if selected_workflow == balsamic_workflow:
+        if selected_workflow.upper() == balsamic_workflow:
             condition.append(Analysis.workflow.startswith(balsamic_workflow))
         else:
             condition.append(Analysis.workflow == selected_workflow)
