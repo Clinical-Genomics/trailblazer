@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Callable
 
 import sqlalchemy
-from sqlalchemy import Subquery, func, select
+from sqlalchemy import Subquery, func, or_
 from sqlalchemy.orm import Query
 
 from trailblazer.constants import TrailblazerStatus, Workflow
@@ -101,20 +101,35 @@ def filter_analyses_by_has_comment(analyses: Query, has_comment: bool | None, **
 
 def filter_analyses_by_delivered(analyses: Query, delivered: bool | None, **kwargs) -> Query:
     if delivered is True:
-        return analyses.filter(Analysis.delivery != None)
+        return analyses.filter(Analysis.delivery != None)  # noqa: E711
     elif delivered is False:
-        return analyses.filter(Analysis.delivery == None)
+        return analyses.filter(Analysis.delivery == None)  # noqa: E711
     return analyses
 
 
-def filter_analyses_by_workflow(analyses: Query, workflow: Workflow, **kwargs) -> Query:
-    """Filter analyses by workflow."""
-    balsamic_workflow: str = Workflow.BALSAMIC.lower()
-    if workflow == balsamic_workflow:
-        analyses = analyses.filter(Analysis.workflow.startswith(balsamic_workflow))
+def filter_analyses_by_workflow(
+    analyses: Query,
+    workflow: str | None = None,
+    workflows: list[Workflow] | None = None,
+    **kwargs,
+) -> Query:
+    """Filter analyses by any selected workflow, including Balsamic variants."""
+    balsamic_workflow: str = Workflow.BALSAMIC
+
+    if workflows:
+        selected_workflows = [item.value for item in workflows]
     elif workflow:
-        analyses = analyses.filter(Analysis.workflow == workflow)
-    return analyses
+        selected_workflows = [workflow]
+    else:
+        return analyses
+
+    condition = []
+    for selected_workflow in selected_workflows:
+        if selected_workflow.upper() == balsamic_workflow:
+            condition.append(Analysis.workflow.startswith(balsamic_workflow))
+        else:
+            condition.append(Analysis.workflow == selected_workflow)
+    return analyses.filter(or_(*condition))
 
 
 def filter_analyses_by_latest_per_case(analyses: Query, **kwargs) -> Query:
@@ -185,7 +200,7 @@ def exclude_rsync_analyses(analyses: Query, **kwargs) -> Query:
 
 
 def get_not_uploaded_analyses(analyses: Query, **kwargs) -> Query:
-    return analyses.filter(Analysis.uploaded_at == None)
+    return analyses.filter(Analysis.uploaded_at == None)  # noqa: E711
 
 
 def get_completed_analyses(analyses: Query, **kwargs) -> Query:
@@ -243,6 +258,7 @@ def apply_analysis_filter(
     statuses: list[str] | None = None,
     types: list[str] | None = None,
     workflow: str | None = None,
+    workflows: list[Workflow] | None = None,
 ) -> Query:
     """Apply filtering functions and return filtered results."""
     if statuses is None:
@@ -270,5 +286,6 @@ def apply_analysis_filter(
             statuses=statuses,
             types=types,
             workflow=workflow,
+            workflows=workflows,
         )
     return analyses

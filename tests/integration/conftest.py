@@ -7,9 +7,9 @@ from sqlalchemy.orm import Session
 from trailblazer.constants import (
     PRIORITY_OPTIONS,
     TYPES,
-    WORKFLOWS,
     JobType,
     TrailblazerStatus,
+    Workflow,
     WorkflowManager,
 )
 from trailblazer.store.database import get_session
@@ -83,10 +83,10 @@ def analyses() -> list[Analysis]:
     for priority in PRIORITY_OPTIONS:
         for type in TYPES:
             for status in TrailblazerStatus.statuses():
-                for workflow in WORKFLOWS:
+                for workflow in Workflow:
                     analysis = Analysis(
                         config_path="config_path",
-                        workflow=workflow,
+                        workflow="mutant" if workflow == Workflow.MUTANT else workflow.value,
                         case_id="case_id",
                         out_dir="out_dir",
                         priority=priority,

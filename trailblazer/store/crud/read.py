@@ -266,6 +266,7 @@ class ReadHandler(BaseHandler):
             exclude_workflow=request.exclude_workflow,
             hold_delivery=request.hold_delivery,
             workflow=request.workflow,
+            workflows=request.workflows,
             search_term=request.search,
             show_hidden=show_hidden,
             sort_field=request.sort_field,
