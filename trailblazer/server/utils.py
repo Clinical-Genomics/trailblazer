@@ -1,12 +1,17 @@
 import datetime
-from http import HTTPStatus
-from flask import Request, jsonify
 import logging
 from functools import wraps
+from http import HTTPStatus
+
+from flask import Request, jsonify
 from pydantic import ValidationError
 
-from trailblazer.exc import CancelSlurmAnalysisNotSupportedError, MissingAnalysis
 from trailblazer.dto import AnalysesRequest
+from trailblazer.exc import (
+    CancelSlurmAnalysisNotSupportedError,
+    MissingAnalysis,
+    WorkblockConfigurationConflictError,
+)
 from trailblazer.services.authentication_service.exceptions import AuthenticationError
 
 LOG = logging.getLogger(__name__)
@@ -49,6 +54,9 @@ def handle_endpoint_errors(func):
         except ValidationError as error:
             LOG.error(f"Validation error in analysis endpoint: {error}")
             return jsonify(error=str(error)), HTTPStatus.BAD_REQUEST
+        except WorkblockConfigurationConflictError as error:
+            LOG.error(f"Workblock configuration conflict: {error}")
+            return jsonify(error=str(error)), HTTPStatus.CONFLICT
         except Exception as error:
             LOG.error(f"Unexpected error in analysis endpoint: {error}")
             return (

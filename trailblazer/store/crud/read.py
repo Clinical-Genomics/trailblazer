@@ -12,7 +12,7 @@ from trailblazer.store.base import BaseHandler
 from trailblazer.store.filters.analyses_filters import AnalysisFilter, apply_analysis_filter
 from trailblazer.store.filters.job_filters import JobFilter, apply_job_filters
 from trailblazer.store.filters.user_filters import UserFilter, apply_user_filter
-from trailblazer.store.models import Analysis, Job, User
+from trailblazer.store.models import Analysis, Job, User, WorkblockConfiguration
 
 
 class ReadHandler(BaseHandler):
@@ -292,3 +292,7 @@ class ReadHandler(BaseHandler):
             analyses=self.get_query(Analysis),
             workflow=workflow,
         ).all()
+
+    def get_workblock_configuration(self) -> WorkblockConfiguration | None:
+        """Return the workblock configuration record."""
+        return self.get_query(WorkblockConfiguration).filter_by(id=1).one_or_none()

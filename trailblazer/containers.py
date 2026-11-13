@@ -1,4 +1,5 @@
 import os
+
 from dependency_injector import containers, providers
 
 from trailblazer.clients.authentication_client.google_oauth_client import GoogleOAuthClient
@@ -16,6 +17,7 @@ from trailblazer.services.tower.tower_api_service import TowerAPIService
 from trailblazer.services.user_verification_service.user_verification_service import (
     UserVerificationService,
 )
+from trailblazer.services.workblock_service.workblock_service import WorkblockService
 from trailblazer.store.store import Store
 
 
@@ -94,3 +96,5 @@ class Container(containers.DeclarativeContainer):
         encryption_service=encryption_service,
         store=store,
     )
+
+    workblock_service = providers.Factory(WorkblockService, store=store)
