@@ -86,7 +86,7 @@ def analyses() -> list[Analysis]:
                 for workflow in Workflow:
                     analysis = Analysis(
                         config_path="config_path",
-                        workflow="mutant" if workflow == Workflow.MUTANT else workflow.value,
+                        workflow="mutant" if workflow == Workflow.MUTANT else workflow,
                         case_id="case_id",
                         out_dir="out_dir",
                         priority=priority,

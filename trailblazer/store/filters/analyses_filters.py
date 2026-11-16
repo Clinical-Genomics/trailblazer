@@ -117,7 +117,7 @@ def filter_analyses_by_workflow(
     balsamic_workflow: str = Workflow.BALSAMIC
 
     if workflows:
-        selected_workflows = [item.value for item in workflows]
+        selected_workflows = workflows
     elif workflow:
         selected_workflows = [workflow]
     else:
