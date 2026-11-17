@@ -1,9 +1,16 @@
 from enum import StrEnum
+from typing import Annotated, Any
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, BeforeValidator, Field, model_validator
 
 from trailblazer.constants import TrailblazerPriority, TrailblazerStatus, TrailblazerTypes, Workflow
 from trailblazer.dto.common import SortOrder
+
+
+def normalize_workflows(value: Any) -> Any:
+    if isinstance(value, list):
+        return [item.upper() if isinstance(item, str) else item for item in value]
+    return value
 
 
 class AnalysisSortField(StrEnum):
@@ -16,7 +23,7 @@ class AnalysisSortField(StrEnum):
 
 class AnalysesRequest(BaseModel):
     workflow: str = ""
-    workflows: list[Workflow] = []
+    workflows: Annotated[list[Workflow], BeforeValidator(normalize_workflows)] = []
     exclude_workflow: list[Workflow] = Field(alias="excludeWorkflow", default=[])
     search: str | None = None
     page_size: int | None = Field(alias="pageSize", default=None)
@@ -32,13 +39,6 @@ class AnalysesRequest(BaseModel):
     case_id: str | None = None
     delivered: bool | None = None
     include_hidden: bool | None = Field(alias="includeHidden", default=None)
-
-    @field_validator("workflows", mode="before")
-    @classmethod
-    def normalize_workflows(cls, value):
-        if isinstance(value, list):
-            return [item.upper() if isinstance(item, str) else item for item in value]
-        return value
 
     @model_validator(mode="after")
     def validate_workflow_filters(self):

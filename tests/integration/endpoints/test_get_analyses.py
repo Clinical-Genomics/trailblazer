@@ -109,22 +109,20 @@ def test_get_analyses_without_comments(client: FlaskClient, analyses: list[Analy
 
 
 def test_get_analyses_by_workflow(client: FlaskClient, analyses: list[Analysis]):
-    # GIVEN analyses with different workflows
+    # GIVEN analyses covering all workflows
 
     # WHEN retrieving all mip analyses
-    response = client.get("/api/v1/analyses?workflow=mip-dna")
+    response = client.get(f"/api/v1/analyses?workflow={Workflow.MIP_DNA}")
 
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
 
     # THEN it should only return mip analyses
-    assert all(
-        analysis["workflow"] == Workflow.MIP_DNA.lower() for analysis in response.json["analyses"]
-    )
+    assert {analysis["workflow"] for analysis in response.json["analyses"]} == {Workflow.MIP_DNA}
 
 
 def test_get_analyses_by_multiple_workflows(client: FlaskClient, analyses: list[Analysis]):
-    # GIVEN analyses with different workflows
+    # GIVEN analyses covering all workflows
 
     # WHEN retrieving all mip and nallo analyses
     response = client.get(
@@ -135,14 +133,14 @@ def test_get_analyses_by_multiple_workflows(client: FlaskClient, analyses: list[
     assert response.status_code == HTTPStatus.OK
 
     # THEN it should only return mip and nallo analyses
-    assert all(
-        analysis["workflow"] in (Workflow.MIP_DNA.lower(), Workflow.NALLO.lower())
-        for analysis in response.json["analyses"]
-    )
+    assert {analysis["workflow"] for analysis in response.json["analyses"]} == {
+        Workflow.MIP_DNA,
+        Workflow.NALLO,
+    }
 
 
 def test_get_analyses_by_unknown_workflow(client: FlaskClient, analyses: list[Analysis]):
-    # GIVEN analyses with different workflows
+    # GIVEN analyses covering all workflows
 
     # WHEN retrieving all analyses with an unknown workflow
     response = client.get(
@@ -159,7 +157,7 @@ def test_get_analyses_by_unknown_workflow(client: FlaskClient, analyses: list[An
 def test_get_analyses_with_conflicting_workflow_filters(
     client: FlaskClient, analyses: list[Analysis]
 ):
-    # GIVEN analyses with different workflows
+    # GIVEN analyses covering all workflows
 
     # WHEN retrieving all analyses with conflicting workflow filters
     response = client.get(
@@ -176,7 +174,7 @@ def test_get_analyses_with_conflicting_workflow_filters(
 def test_get_analyses_by_multiple_workflows_includes_balsamic_variants(
     client: FlaskClient, analyses: list[Analysis]
 ):
-    # GIVEN analyses with different workflows
+    # GIVEN analyses covering all workflows
 
     # WHEN retrieving all analyses with multiple workflows including balsamic
     response = client.get(
@@ -186,27 +184,17 @@ def test_get_analyses_by_multiple_workflows_includes_balsamic_variants(
     # THEN it gives a success response
     assert response.status_code == HTTPStatus.OK
 
-    # THEN it should only return analyses with the specified workflows
-    assert all(
-        analysis["workflow"]
-        in (
-            Workflow.MIP_DNA.lower(),
-            Workflow.BALSAMIC.lower(),
-            Workflow.BALSAMIC_PON.lower(),
-            Workflow.BALSAMIC_UMI.lower(),
-        )
-        for analysis in response.json["analyses"]
-    )
-
-    # THEN both Balsamic variants should be included
-    returned_workflows = {analysis["workflow"] for analysis in response.json["analyses"]}
-    assert Workflow.BALSAMIC.lower() in returned_workflows
-    assert Workflow.BALSAMIC_PON.lower() in returned_workflows
-    assert Workflow.BALSAMIC_UMI.lower() in returned_workflows
+    # THEN all selected workflows and Balsamic variants should be returned
+    assert {analysis["workflow"] for analysis in response.json["analyses"]} == {
+        Workflow.MIP_DNA,
+        Workflow.BALSAMIC,
+        Workflow.BALSAMIC_PON,
+        Workflow.BALSAMIC_UMI,
+    }
 
 
 def test_get_analyses_by_order_id(client: FlaskClient, analyses: list[Analysis]):
-    # GIVEN analyses with different workflows
+    # GIVEN analyses covering all workflows
 
     # WHEN retrieving all analyses with order_id=0
     response = client.get("/api/v1/analyses?orderId=0")
@@ -267,7 +255,7 @@ def test_get_analyses_by_hold_delivery_none(client: FlaskClient, analyses: list[
 
 
 def test_get_analyses_by_excluding_workflow(client: FlaskClient, analyses: list[Analysis]):
-    # GIVEN analyses with different workflows
+    # GIVEN analyses covering all workflows
     analyses[0].workflow = Workflow.RSYNC
 
     # WHEN retrieving all analyses excluding the RSYNC workflow
@@ -283,7 +271,7 @@ def test_get_analyses_by_excluding_workflow(client: FlaskClient, analyses: list[
 def test_get_analyses_by_excluding_multiple_workflows(
     client: FlaskClient, analyses: list[Analysis]
 ):
-    # GIVEN analyses with different workflows, two of which are RSYNC and MUTANT
+    # GIVEN analyses covering all workflows, two of which are RSYNC and MUTANT
     analyses[0].workflow = Workflow.RSYNC
     analyses[1].workflow = Workflow.MUTANT
 
@@ -297,7 +285,12 @@ def test_get_analyses_by_excluding_multiple_workflows(
     assert response.status_code == HTTPStatus.OK
 
     # THEN neither of the excluded analyses should be returned
-    assert len(response.json["analyses"]) == len(analyses) - 2
+    expected_analyses = [
+        analysis
+        for analysis in analyses
+        if analysis.workflow not in (Workflow.RSYNC, Workflow.MUTANT)
+    ]
+    assert len(response.json["analyses"]) == len(expected_analyses)
 
     # THEN no analysis with the RSYNC or MUTANT workflow should be returned
     assert all(
@@ -309,7 +302,7 @@ def test_get_analyses_by_excluding_multiple_workflows(
 def test_get_analyses_by_excluding_workflow_when_not_provided(
     client: FlaskClient, analyses: list[Analysis]
 ):
-    # GIVEN analyses with different workflows
+    # GIVEN analyses covering all workflows
 
     # WHEN retrieving all analyses without excluding any workflow
     response = client.get("/api/v1/analyses?")
