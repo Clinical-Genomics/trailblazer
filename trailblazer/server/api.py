@@ -35,6 +35,7 @@ from trailblazer.services.user_verification_service.exc import UserTokenVerifica
 from trailblazer.services.user_verification_service.user_verification_service import (
     UserVerificationService,
 )
+from trailblazer.services.workblock_service.workblock_service import WorkblockService
 from trailblazer.store.models import Info, User
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
@@ -251,3 +252,14 @@ def add_comment():
     comment: str = put_request.get("comment")
     store.update_latest_analysis_comment(case_id=case_id, comment=comment)
     return jsonify("Success! Adding comment request sent"), HTTPStatus.CREATED
+
+
+@blueprint.route("/workblocks", methods=["GET"])
+@handle_endpoint_errors
+@inject
+def get_workblocks(
+    workblock_service: WorkblockService = Provide[Container.workblock_service],
+):
+    """Return the shared workblock configuration."""
+    response = workblock_service.get_workblock_configuration()
+    return jsonify(response.model_dump(mode="json")), HTTPStatus.OK

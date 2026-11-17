@@ -5,11 +5,11 @@ from sqlalchemy.orm import Session
 
 from trailblazer.constants import TrailblazerStatus
 from trailblazer.dto.update_analyses import UpdateAnalyses
-from trailblazer.exc import MissingAnalysis
+from trailblazer.exc import WorkblockConfigurationConflictError
 from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.store.base import BaseHandler
 from trailblazer.store.database import get_session
-from trailblazer.store.models import Analysis, Delivery, Job, User
+from trailblazer.store.models import Analysis, Delivery, Job, User, WorkblockConfiguration
 
 LOG = logging.getLogger(__name__)
 
@@ -172,3 +172,30 @@ class UpdateHandler(BaseHandler):
         analysis.uploaded_at = uploaded_at
         session: Session = get_session()
         session.commit()
+
+    def update_workblock_configuration(
+        self,
+        version: int,
+        workblocks: list[dict],
+        updated_by: str,
+        updated_at: datetime,
+    ) -> None:
+        """Update the configuration only if its version matches."""
+        updated_rows = (
+            self.get_query(WorkblockConfiguration)
+            .filter_by(id=1, version=version)
+            .update(
+                {
+                    WorkblockConfiguration.workblocks: workblocks,
+                    WorkblockConfiguration.version: version + 1,
+                    WorkblockConfiguration.updated_by: updated_by,
+                    WorkblockConfiguration.updated_at: updated_at,
+                },
+                synchronize_session="fetch",
+            )
+        )
+
+        if updated_rows != 1:
+            raise WorkblockConfigurationConflictError(
+                "Workblock configuration has changed. Reload before saving."
+            )

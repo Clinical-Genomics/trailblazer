@@ -160,6 +160,18 @@ class Analysis(Model):
         }
 
 
+class WorkblockConfiguration(Model):
+    """Workblock configuration record."""
+
+    __tablename__ = "workblock_configuration"
+
+    id = Column(types.Integer, primary_key=True)
+    version = Column(types.Integer, nullable=False, default=1)
+    workblocks = Column(types.JSON, nullable=False)
+    updated_by = Column(types.String(32), nullable=True)
+    updated_at = Column(types.DateTime, nullable=True, comment="UTC timestamp of latest change")
+
+
 class Delivery(Model):
     """Tracks when and by whom an analysis was delivered."""
 
