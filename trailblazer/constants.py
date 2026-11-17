@@ -55,6 +55,8 @@ class Workflow(StrEnum):
     SPRING = "SPRING"
     TAXPROFILER = "TAXPROFILER"
     TOMTE = "TOMTE"
+    TRANA_16S = "TRANA-16S"
+    TRANA_ITS = "TRANA-ITS"
 
 
 class SlurmSqueueHeader(StrEnum):
