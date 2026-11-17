@@ -1,4 +1,8 @@
-from trailblazer.dto.workblock_configuration import WorkblockConfigurationResponse
+from trailblazer.dto.workblock_configuration import (
+    WorkblockConfigurationRequest,
+    WorkblockConfigurationResponse,
+)
+from trailblazer.store.models import User
 from trailblazer.store.store import Store
 
 
@@ -19,3 +23,11 @@ class WorkblockService:
             updated_by=configuration.updated_by,
             updated_at=configuration.updated_at,
         )
+
+    def update_workblock_configuration(
+        self,
+        data: WorkblockConfigurationRequest,
+        user: User,
+    ) -> WorkblockConfigurationResponse:
+        """Save the shared workblock configuration."""
+        raise NotImplementedError
