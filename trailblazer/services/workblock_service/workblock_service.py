@@ -38,4 +38,10 @@ class WorkblockService:
                 "Workblock configuration has changed. Reload before saving."
             )
 
+        workblocks = [block.model_dump() for block in data.workblocks]
+        current_workblocks = [block.model_dump() for block in current.workblocks]
+
+        if workblocks == current_workblocks:
+            return current
+
         raise NotImplementedError
