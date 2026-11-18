@@ -1,3 +1,6 @@
+from datetime import UTC, datetime
+from typing import cast
+
 from trailblazer.dto.workblock_configuration import (
     WorkblockConfigurationRequest,
     WorkblockConfigurationResponse,
@@ -43,5 +46,15 @@ class WorkblockService:
 
         if workblocks == current_workblocks:
             return current
+
+        updated_by = cast(str, user.abbreviation)
+        updated_at = datetime.now(UTC).replace(tzinfo=None)
+
+        self.store.update_workblock_configuration(
+            version=data.version,
+            workblocks=workblocks,
+            updated_by=updated_by,
+            updated_at=updated_at,
+        )
 
         raise NotImplementedError
