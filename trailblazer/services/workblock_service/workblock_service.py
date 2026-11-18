@@ -2,6 +2,7 @@ from trailblazer.dto.workblock_configuration import (
     WorkblockConfigurationRequest,
     WorkblockConfigurationResponse,
 )
+from trailblazer.exc import WorkblockConfigurationConflictError
 from trailblazer.store.models import User
 from trailblazer.store.store import Store
 
@@ -30,4 +31,11 @@ class WorkblockService:
         user: User,
     ) -> WorkblockConfigurationResponse:
         """Save the shared workblock configuration."""
+        current = self.get_workblock_configuration()
+
+        if current.version != data.version:
+            raise WorkblockConfigurationConflictError(
+                "Workblock configuration has changed. Reload before saving."
+            )
+
         raise NotImplementedError
