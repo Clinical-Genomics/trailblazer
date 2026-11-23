@@ -6,6 +6,7 @@ from trailblazer.dto.workblock_configuration import (
     WorkblockConfigurationResponse,
 )
 from trailblazer.exc import WorkblockConfigurationConflictError
+from trailblazer.store.database import get_session
 from trailblazer.store.models import User
 from trailblazer.store.store import Store
 
@@ -50,11 +51,18 @@ class WorkblockService:
         updated_by = cast(str, user.abbreviation)
         updated_at = datetime.now(UTC).replace(tzinfo=None)
 
-        self.store.update_workblock_configuration(
-            version=data.version,
-            workblocks=workblocks,
-            updated_by=updated_by,
-            updated_at=updated_at,
-        )
+        session = get_session()
 
-        raise NotImplementedError
+        try:
+            self.store.update_workblock_configuration(
+                version=data.version,
+                workblocks=workblocks,
+                updated_by=updated_by,
+                updated_at=updated_at,
+            )
+            response = self.get_workblock_configuration()
+            session.commit()
+            return response
+        except Exception:
+            session.rollback()
+            raise
