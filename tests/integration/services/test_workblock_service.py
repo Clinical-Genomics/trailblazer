@@ -79,8 +79,25 @@ def test_update_workblock_configuration_with_outdated_version(
     assert workblock_service.get_workblock_configuration() == saved
 
 
-def test_update_workblock_configuration_without_changes():
-    pass
+def test_update_workblock_configuration_without_changes(
+    workblock_service, user, workblock_configuration
+):
+    # GIVEN the current configuration
+    before = workblock_service.get_workblock_configuration()
+    request = WorkblockConfigurationRequest(
+        version=before.version,
+        workblocks=before.workblocks,
+    )
+
+    # WHEN saving without changing anything
+    response = workblock_service.update_workblock_configuration(
+        data=request,
+        user=user,
+    )
+
+    # THEN the response and database configuration remain unchanged
+    assert response == before
+    assert workblock_service.get_workblock_configuration() == before
 
 
 def test_update_workblock_configuration_rolls_back_on_failure():
