@@ -113,8 +113,8 @@ def filter_analyses_by_workflow(
     workflows: list[Workflow] | None = None,
     **kwargs,
 ) -> Query:
-    """Filter analyses by any selected workflow, including Balsamic variants."""
-    balsamic_workflow: str = Workflow.BALSAMIC
+    """Filter workflows case-insensitively, including Balsamic variants."""
+    balsamic_workflow: str = Workflow.BALSAMIC.lower()
 
     if workflows:
         selected_workflows = workflows
@@ -124,11 +124,13 @@ def filter_analyses_by_workflow(
         return analyses
 
     condition = []
+    stored_workflow = func.lower(Analysis.workflow)
     for selected_workflow in selected_workflows:
-        if selected_workflow.upper() == balsamic_workflow:
-            condition.append(Analysis.workflow.startswith(balsamic_workflow))
+        normalized_workflow = selected_workflow.lower()
+        if normalized_workflow == balsamic_workflow:
+            condition.append(stored_workflow.startswith(balsamic_workflow))
         else:
-            condition.append(Analysis.workflow == selected_workflow)
+            condition.append(stored_workflow == normalized_workflow)
     return analyses.filter(or_(*condition))
 
 
