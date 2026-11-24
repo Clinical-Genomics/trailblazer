@@ -2,6 +2,7 @@ import pytest
 
 from trailblazer.dto.workblock_configuration import WorkblockConfigurationRequest
 from trailblazer.exc import WorkblockConfigurationConflictError
+from trailblazer.store.database import get_session
 
 
 def test_update_workblock_configuration(workblock_service, user, workblock_configuration):
@@ -100,8 +101,52 @@ def test_update_workblock_configuration_without_changes(
     assert workblock_service.get_workblock_configuration() == before
 
 
-def test_update_workblock_configuration_rolls_back_on_failure():
-    pass
+def test_update_workblock_configuration_rolls_back_on_failure(
+    workblock_service, user, workblock_configuration, mocker
+):
+    # GIVEN a workblock configuration and a user
+    workblock_config = WorkblockConfigurationRequest.model_validate(
+        {
+            "version": 1,
+            "workblocks": [
+                {
+                    "id": "wb1",
+                    "name": "Workblock 1",
+                    "color": "#FF5733",
+                    "workflows": ["nallo"],
+                },
+                {
+                    "id": "wb2",
+                    "name": "Workblock 2",
+                    "color": "#33FF57",
+                    "workflows": ["balsamic"],
+                },
+            ],
+        }
+    )
+
+    # GIVEN the original saved configuration and a commit that will fail
+    before = workblock_service.get_workblock_configuration()
+    session = get_session()
+    commit = mocker.patch.object(
+        session,
+        "commit",
+        side_effect=RuntimeError("Simulated save failure"),
+    )
+
+    # WHEN committing fails, THEN the service propagates the error
+    with pytest.raises(RuntimeError, match="Simulated save failure"):
+        workblock_service.update_workblock_configuration(
+            data=workblock_config,
+            user=user,
+        )
+
+    commit.assert_called_once()
+
+    # THEN rollback restores all configuration fields in the database
+    session.expire_all()
+    after = workblock_service.get_workblock_configuration()
+    assert after == before
 
 
 def test_update_workblock_configuration_with_concurrent_edits():
