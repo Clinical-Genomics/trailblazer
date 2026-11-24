@@ -147,7 +147,3 @@ def test_update_workblock_configuration_rolls_back_on_failure(
     session.expire_all()
     after = workblock_service.get_workblock_configuration()
     assert after == before
-
-
-def test_update_workblock_configuration_with_concurrent_edits():
-    pass
