@@ -1,9 +1,36 @@
 from http import HTTPStatus
 
+import pytest
 from flask.testing import FlaskClient
 
 from trailblazer.constants import TrailblazerPriority, TrailblazerStatus, Workflow
 from trailblazer.store.models import Analysis
+
+
+@pytest.mark.parametrize("parameter", ["workflow", "workflows[]"])
+@pytest.mark.parametrize("request_uppercase", [False, True])
+def test_workflow_filter_is_case_insensitive(
+    client: FlaskClient, workflow_case_analyses: list[Analysis], parameter, request_uppercase
+):
+    # GIVEN stored workflows in either case, including Balsamic variants
+
+    # WHEN requesting workflows in either case
+    for selected in ("mip-dna", "balsamic"):
+        value = selected.upper() if request_uppercase else selected
+        query = [(parameter, value)]
+        expected = {selected}
+        if selected == "balsamic":
+            expected = {"balsamic", "balsamic-pon", "balsamic-umi"}
+        if parameter == "workflows[]":
+            query.append((parameter, "NALLO" if request_uppercase else "nallo"))
+            expected.add("nallo")
+
+        response = client.get("/api/v1/analyses", query_string=query)
+
+        # THEN all requested analyses and variants are returned, without unrelated rows
+        assert response.status_code == HTTPStatus.OK
+        assert response.json["total_count"] == len(expected)
+        assert {row["workflow"].lower() for row in response.json["analyses"]} == expected
 
 
 def test_get_analyses(client: FlaskClient, analyses: list[Analysis]):

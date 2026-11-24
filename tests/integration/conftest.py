@@ -16,6 +16,24 @@ from trailblazer.store.database import get_session
 from trailblazer.store.models import Analysis, Job, WorkblockConfiguration
 
 
+@pytest.fixture(params=["lower", "upper"])
+def workflow_case_analyses(store, request) -> list[Analysis]:
+    """Save workflows in either case, including Balsamic variants."""
+    workflows = ["mip-dna", "nallo", "balsamic", "balsamic-pon", "balsamic-umi"]
+    analyses = [
+        Analysis(
+            case_id=f"case-{index}",
+            workflow=workflow.upper() if request.param == "upper" else workflow,
+            is_visible=True,
+        )
+        for index, workflow in enumerate(workflows)
+    ]
+    session = get_session()
+    session.add_all(analyses)
+    session.commit()
+    return analyses
+
+
 @pytest.fixture
 def order_id_with_multiple_analyses() -> int:
     return 1
