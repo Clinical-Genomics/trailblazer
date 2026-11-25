@@ -1,2 +1,2 @@
 __title__ = "trailblazer"
-__version__ = "21.12.2"
+__version__ = "21.13.0"
