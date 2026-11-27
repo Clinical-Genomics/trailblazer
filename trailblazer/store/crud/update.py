@@ -54,9 +54,9 @@ class UpdateHandler(BaseHandler):
             case_id=analysis.case_id, status=TrailblazerStatus.COMPLETED
         )
 
-    def update_analysis_uploaded_at(self, case_id: str, uploaded_at: datetime) -> None:
+    def update_analysis_uploaded_at(self, analysis_id: int, uploaded_at: datetime) -> None:
         """Set analysis uploaded at for an analysis."""
-        analysis: Analysis | None = self.get_latest_analysis_for_case(case_id)
+        analysis: Analysis = self.get_analysis_with_id(analysis_id)
         analysis.uploaded_at = uploaded_at
         session: Session = get_session()
         session.commit()
