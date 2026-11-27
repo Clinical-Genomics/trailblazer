@@ -21,6 +21,7 @@ from trailblazer.dto.create_analysis_request import CreateAnalysisRequest
 from trailblazer.dto.summaries_request import SummariesRequest
 from trailblazer.dto.summaries_response import SummariesResponse
 from trailblazer.dto.update_analyses import UpdateAnalyses
+from trailblazer.dto.workblock_configuration import WorkblockConfigurationRequest
 from trailblazer.exc import UserNotFoundError
 from trailblazer.server.ext import store
 from trailblazer.server.utils import (
@@ -35,6 +36,7 @@ from trailblazer.services.user_verification_service.exc import UserTokenVerifica
 from trailblazer.services.user_verification_service.user_verification_service import (
     UserVerificationService,
 )
+from trailblazer.services.workblock_service.workblock_service import WorkblockService
 from trailblazer.store.models import Info, User
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
@@ -251,3 +253,27 @@ def add_comment():
     comment: str = put_request.get("comment")
     store.update_analysis_comment(analysis_id=analysis_id, comment=comment)
     return jsonify("Success! Adding comment request sent"), HTTPStatus.CREATED
+
+
+@blueprint.route("/workblocks", methods=["GET"])
+@handle_endpoint_errors
+@inject
+def get_workblocks(
+    workblock_service: WorkblockService = Provide[Container.workblock_service],
+):
+    """Return the shared workblock configuration."""
+    response = workblock_service.get_workblock_configuration()
+    return jsonify(response.model_dump(mode="json")), HTTPStatus.OK
+
+
+@blueprint.route("/workblocks", methods=["PUT"])
+@handle_endpoint_errors
+@inject
+def update_workblocks(
+    workblock_service: WorkblockService = Provide[Container.workblock_service],
+):
+    """Update the shared workblock configuration."""
+    request_data = WorkblockConfigurationRequest.model_validate(request.json)
+    user = g.get("current_user")
+    response = workblock_service.update_workblock_configuration(request_data, user=user)
+    return jsonify(response.model_dump(mode="json")), HTTPStatus.OK

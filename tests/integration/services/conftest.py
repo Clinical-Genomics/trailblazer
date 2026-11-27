@@ -1,32 +1,34 @@
 import base64
-from datetime import datetime, timedelta
 import os
+from datetime import datetime
+
 import pytest
 from requests_mock import Mocker
-from sqlalchemy.orm import Session
-
 
 from trailblazer.clients.authentication_client.google_oauth_client import GoogleOAuthClient
 from trailblazer.clients.google_api_client.google_api_client import GoogleAPIClient
 from trailblazer.clients.slurm_cli_client.slurm_cli_client import SlurmCLIClient
 from trailblazer.clients.tower.tower_client import TowerAPIClient
-from trailblazer.constants import (
-    PRIORITY_OPTIONS,
-    TYPES,
-    JobType,
-    TrailblazerStatus,
-    WorkflowManager,
-)
+from trailblazer.constants import TrailblazerStatus
 from trailblazer.services.authentication_service.authentication_service import AuthenticationService
 from trailblazer.services.encryption_service.encryption_service import EncryptionService
 from trailblazer.services.job_service import JobService
 from trailblazer.services.slurm.dtos import SlurmJobInfo
 from trailblazer.services.slurm.slurm_cli_service.slurm_cli_service import SlurmCLIService
-
 from trailblazer.services.tower.tower_api_service import TowerAPIService
-from trailblazer.store.database import get_session
-from trailblazer.store.models import Analysis, Job
+from trailblazer.services.workblock_service.workblock_service import WorkblockService
+from trailblazer.store.models import User
 from trailblazer.store.store import Store
+
+
+@pytest.fixture
+def workblock_service(store: Store) -> WorkblockService:
+    return WorkblockService(store=store)
+
+
+@pytest.fixture
+def user(user_store: Store, user_email: str) -> User:
+    return user_store.get_user(email=user_email)
 
 
 @pytest.fixture
